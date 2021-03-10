@@ -1,0 +1,169 @@
+#home.main--home--container{
+    background-color:var(--light-gray);
+    min-height: calc(100vh - 10px);
+}
+#home.main--home--container .main--home--inner{
+    display:flex;
+    /* grid-template-columns: 60% 40%; */
+    gap:10px;
+    flex-direction: row;
+    justify-content:center;
+    flex-wrap:wrap;
+    max-width:1200px;
+    margin-left:auto;
+    margin-right:auto;
+    min-width:1000px;
+}
+#home.main--home--container .home--posts--side, #home.main--home--container .home--sider{
+    width:100%;
+    overflow-x:auto;
+    /* padding-bottom: 100px; */
+}
+.home--sider::-webkit-scrollbar{
+    width:10px;
+}
+.home--sider::-webkit-scrollbar-thumb{
+    width:10px;
+    background-color: var(--second--gray);
+    border-radius:5px;
+}
+#home.main--home--container .home--posts--side{
+    margin:0 20px 20px 0;
+    padding-right:40%;
+}
+.side--user--info h5,svg {
+    cursor:pointer;
+}
+#home.main--home--container .home--posts--side #post.post--card--container{
+    margin-bottom:60px;
+}
+#home.main--home--container .home--sider{
+    position:fixed;
+    right:0;
+    top:60px;
+    height:100%;
+    z-index:90;
+    width:40%;
+}
+.side--user--info{
+    align-items: center;
+    margin-left:18px;
+    padding-top:60px;
+}
+.side--user--info h5{
+    margin-left:10px;
+    font-size:16px;
+    margin-bottom:0;
+    text-transform :none;
+    align-items:center;
+    color: var(--main-black);
+}
+.instagram__embed{
+    max-width: 80%;
+}
+#home.main--home--container .suggestions--home--container{
+    margin:20px 0;
+    padding:0px 10px;
+    width:70%;
+}
+#home.main--home--container .suggestions--header{
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:5px;
+}
+#home.main--home--container .suggestions--header h5{
+    color: var(--light-gray);
+    font-size:17px;
+    font-weight:400;
+}
+#home.main--home--container .suggestions--header button{
+    border:none;
+    padding:1px 4px;
+    background-color: transparent;
+    text-transform: uppercase;
+    font-size:11px;
+    font-weight:bold;
+}
+#home.main--home--container .loading__card{
+    height:350px;
+}
+#home.main--home--container .suggestions--home--container .suggestions--list .side--user--info{
+    padding:0;
+    margin:0;
+}
+#home.main--home--container .suggestions--header button:focus{
+    outline:none;
+}
+#home.main--home--container .suggestion--item{
+    justify-content:space-between;
+    align-items:center;
+}
+/* #home.main--home--container .suggestions--list{
+    margin:20px auto;
+    padding:10px;
+} */
+#home.main--home--container .suggestions--list ul{
+    list-style:none;
+    padding:0;
+}
+#home.main--home--container .suggestions--list ul li{
+    margin-bottom: 13px;
+}
+@media only screen and  (max-width:670px){
+    #home.main--home--container .main--home--inner{
+        /* grid-template-columns: 1fr !important; */
+        flex-direction: column;
+    }
+    #home.main--home--container{
+        padding: 55px 0 0 0;
+        background: #fff;
+    }
+    #home.main--home--container .home--posts--side{
+        margin:6px 0 35px 0;
+        padding:0 !important;
+        max-width:100%;
+        align-items:auto;
+    }
+    #home.main--home--container .home--sider{
+        position:static;
+        width:100%;
+        top:0;
+        z-index:400;
+    }
+    .instagram--embed--container{
+        padding:10px;
+    }
+    .instagram__embed{
+        max-width:100% !important;
+
+    }
+    .side--user--info , #home.main--home--container{
+        padding-top: 0 !important;
+    }
+    #home.main--home--container .desktop-comp{
+         padding: 0 !important;
+    }
+    #home.main--home--container .suggestions--home--container{
+        padding:1px 20px;
+        width:100%;
+    }
+    #home.main--home--container .home--posts--side #post.post--card--container{
+        margin-bottom:3px;
+    }
+}
+
+@media only screen and (max-width: 930px){
+    #home.main--home--container .main--home--inner{
+        flex-direction: column ;
+        min-width: auto !important;
+    }
+    #home.main--home--container .home--sider{
+        position:static;
+    }
+    #home.main--home--container .home--posts--side{
+        margin:0 auto 20px auto;
+        padding-right:0;
+        /* max-width:400px; */
+        align-items:center;
+    }
+}

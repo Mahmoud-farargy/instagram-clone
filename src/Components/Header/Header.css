@@ -1,0 +1,262 @@
+#header.main--header {
+    width:100%;
+    position:sticky;
+    top:0px;
+    left:0px;
+    z-index:300;
+    margin:0;
+    background-color:#fff;
+    border-bottom: 1px solid var(--gray);
+    align-items:center;
+    padding:6px var(--padding-sides);
+    height:54px;
+}
+.header--inner{
+    justify-content:space-between;
+    width: 100%;
+    max-width:1200px;
+    position: relative;
+}
+#profilePopup .noti--popup--inner{
+    max-height:auto;
+    min-height:auto; 
+    width:150px !important;
+}
+
+#profilePopup.noti--popup--window{
+    right:5px !important;
+}
+#profilePopup.noti--popup--window .noti--popup--inner .prof--popup--ul{
+    list-style:none;
+    padding:0;
+    justify-content:center;
+}
+#profilePopup .prof--popup--ul li{
+    font-size:14px;
+    font-weight:400px;
+    margin-bottom:1px;
+    padding:8px 0;
+    border-bottom: 1px solid#ebebeb;
+    width:100%;
+}
+#profilePopup .prof--popup--ul li:hover{
+    background-color: rgb(219, 219, 219);
+}
+#profilePopup .prof--popup--ul > *:last-child{
+    border-bottom:none;
+}
+.prof__popup{
+    margin-right:6px;
+    font-size:23px;
+    text-decoration: none;
+}
+.noti--popup--arrow{
+    position: absolute;
+    top:-7px;
+    left: 445px;
+    width:14px;
+    height:14px;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    /* box-shadow: 0 0 5px 1px rgba(0,0,0,0.0979); */
+    /* -webkit-box-shadow: 0 0 5px 1px rgba(0,0,0,0.0979); */
+    border-left: 1px solid var(--gray);
+    border-top: 1px solid var(--gray);
+    background-color:#fff;
+    z-index:200;
+}
+.noti--popup--window{
+    position: absolute;
+    top:45px;
+    right:30px;
+    border-radius:6px;
+    background-color:#fff;
+    z-index:200;
+    box-shadow: 0 0 5px 1px rgba(0,0,0,0.0979);
+    -webkit-box-shadow: 0 0 5px 1px rgba(0,0,0,0.0979);
+    transform-origin: top center;
+    -webkit-transform-origin: top center;
+}
+
+.noti--popup--inner{
+    overflow: hidden  auto;
+    position: relative;
+}
+#header.main--header .noti--popup--inner{
+    max-height:360px;
+    min-height:100px;
+    width:500px;
+}
+.noti__transparent{
+    background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0.9),1) 100%;
+    width:100%;
+    height:10px;
+    position: absolute;
+    bottom:0;
+    left:0;
+    border-radius:20px;
+}
+.noti--popup--ul{
+    padding:1px 0;
+}
+.noti--popup--inner .noti--popup--ul .noti--popup-item{
+    min-height:40px;
+    padding:12px 16px 13px;
+    white-space:normal;
+    align-items:center;
+    position:relative;
+    width:100%;
+}
+.noti--popup--inner .noti--popup--ul .noti--popup-item:after{
+    content:"";
+    position:absolute;
+    border-bottom: 1px solid #dbdbdb;
+    right:12px; 
+    bottom:0;
+    left:58px;
+    height:0;
+}
+.noti--popup--inner .noti--popup--ul > *:last-child:after{
+    border:none;
+}
+.noti--popup--inner .noti--popup--ul .noti--popup-item .noti__user__img .MuiAvatar-root{
+    width:34px;
+    height:34px;
+}
+.noti--popup--inner .noti--popup--ul .noti--popup-item .noti--user--info{
+    margin-left:10px;
+}
+.noti--popup--inner .noti--popup--ul .noti--popup-item .noti--user--info h6{
+    font-size: 14px;
+    font-weight:600;
+    line-height: 18px;
+    margin-bottom:0;
+}
+.noti--popup--inner .noti--popup--ul .noti--popup-item .noti--user--info p.noti__text{
+    width:350px;
+    font-weight:400;
+    line-height: 18px;
+    font-size: 14px;
+    /* white-space:nowrap; */
+    word-break: break-word;
+    margin-bottom:0;
+    text-overflow: ellipsis;
+}
+.like__icon__item{
+    position: relative;
+}
+.like__icon__item  .like__noti__dot{
+    position: absolute;
+    top:30px;
+    left:50%;
+    transform: translate(-50%,-50%);
+    margin-left:1px;
+    background: rgb(237, 73, 86);
+    width:5px;
+    height:5px;
+    border-radius:50%;
+}
+.noti--popup--inner .noti--popup--ul .noti--popup-item .noti--user--info .noti--action{
+    font-size: 14px;
+    margin-left:10px;
+    padding:5px;
+}
+.noti--popup--inner .noti--popup--ul .noti--popup-item .noti--user--info p.noti__text time, #messages .messages__user__date{
+    font-size:11px !important;
+    font-weight:800;
+    color:var(--second--gray);
+    flex:0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.header--nav .header__user__avatar{
+    width:25px;
+    height:25px;
+    justify-content: center;
+}
+.header--nav .header__user__avatar svg{
+    margin:0 auto;
+}
+.header--nav {
+    align-items:center;
+}
+.header--nav .header--ul{
+    margin:0;
+    padding:0;
+    list-style: none;
+    align-items:center;
+}
+.header--nav .header--ul li{
+    margin-right:10px;
+    transition: transform 0.3s ease;
+    font-size:23px;
+    /* color: rgb(71, 71, 71); */
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    
+}
+.header--nav .header--ul li a:visited,.header--nav .header--ul li a{
+    color: var(--main-black);
+}
+.header--nav .header--ul li a, .noti--parent--container{
+    padding:5px 8px;
+}
+.hidden--backdrop{
+    position:fixed;
+    width:100%;
+    height: 100vh;
+    z-index:100;
+    left:0;
+    top:0;
+    padding:0;
+    margin:0;
+}
+.header--nav .header--ul li .active-nav-link{
+    color: var(--secondary-clr)  !important;
+}
+/* .header--nav .header--ul li:hover{
+    transform: scale(1.02);
+} */
+
+/* --------------Mobile Nav------------- */
+#mobNav.mobile--nav{
+    display:none;
+    position: fixed;
+    bottom:0;
+    margin:0;
+    width:100%;
+    left:0px;
+    z-index:2000;
+    background-color:#fff;
+    border-top: 1px solid var(--gray);
+    align-items:center;
+    padding:6px var(--padding-sides);
+    height:50px;
+   
+}
+#mobNav.mobile--nav .header--nav .header--ul{
+     justify-content: space-between;
+     flex:1;
+     width:100%;
+}
+#mobNav.mobile--nav .header--nav{
+    width: 100%;
+    max-width:350px;
+    margin:0 auto;
+    align-items:center;
+}
+/* --------x------Mobile Nav------x------- */
+
+@media only screen and (max-width:670px){
+    #header.main--header {
+        display: none !important;
+    }
+    #mobNav.mobile--nav{
+        display: flex;
+    }
+    .noti--popup--inner{
+        max-height:auto ;
+    }
+}

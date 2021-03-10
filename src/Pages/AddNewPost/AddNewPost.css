@@ -1,0 +1,42 @@
+#upload.post--uploading--container{
+    background-color: var(--light-gray);
+    justify-content:center;
+    align-items:center;
+}
+#upload.post--uploading--container .post--uploading--card{
+    min-width:300px;
+    background-color: #fff;
+    padding:20px;
+    border: 1px solid var(--gray);
+    border-radius:30px;
+    justify-content:center;
+    margin:5px;
+    box-shadow: inset 0px 1px 6px rgba(0,0,0,0.1);
+}
+#upload.post--uploading--container .uploading__in__progress{
+    justify-content:center;
+    text-align:center;
+    align-items:center;
+}
+#upload.post--uploading--container .showing--upladed--content{    
+    min-height:300px;
+}
+#upload.post--uploading--container .post--uploading--inner{
+    align-items:center;
+}
+#upload.post--uploading--container .showing--upladed--content img, #upload.post--uploading--container .showing--upladed--content video{
+ width:95%;
+ object-fit:contain;
+}
+@media only screen and (max-width: 670px){
+    #upload.post--uploading--container .post--uploading--card form{
+        display:flex;
+       flex-direction:column;
+    }
+    #upload.post--uploading--container .post--uploading--card{
+        width:80%;
+    }
+    #upload.post--uploading--container{
+        padding-bottom:50px;
+    }
+}
