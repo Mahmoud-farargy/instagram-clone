@@ -120,7 +120,6 @@ const App = (props)=>{
                         <Header />
                         <Home />
                         <MobileNav />
-                             <Footer /> 
                     </Route>
                     <Route exact path="/auth" component={AuthPage}  />
                     <Route exact path="/messages">
