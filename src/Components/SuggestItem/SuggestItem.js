@@ -18,7 +18,7 @@ const SuggestItem =(props)=>{
         <Fragment>
             <div className="suggest--item--container">
                 <li className="suggestion--item flex-row">
-                    <div onClick={()=> browseUser(userUid)} className="side--user--info flex-row">
+                    <div onClick={()=> browseUser(userUid, userName )} className="side--user--info flex-row">
                         <Avatar src={userAvatarUrl} alt={userName}/>
                         <h5 className="flex-row">{userName}{isVerified ?  <span><GoVerified className="verified_icon"/></span> : null} </h5>                                    
                     </div>

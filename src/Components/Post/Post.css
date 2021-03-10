@@ -98,7 +98,7 @@
 }
 #post.post--card--container .post--card--article .post--card--body .post__card__content{
     max-height:600px;
-    min-height:250px;
+    min-height:300px;
     background-color: rgb(214, 212, 212);
     margin:0;
     padding:0;

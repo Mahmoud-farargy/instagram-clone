@@ -1,4 +1,4 @@
-import React, {useContext, Fragment, useState,useEffect} from "react";
+import React, {useContext, Fragment, useState} from "react";
 import {AppContext} from "../../Context";
 import {Avatar} from "@material-ui/core";
 import {withRouter} from "react-router-dom";
@@ -9,6 +9,7 @@ import {GoVerified } from "react-icons/go";
 import {IoMdGrid} from "react-icons/io";
 import {RiLayoutRowLine} from "react-icons/ri";
 import {BsPlusSquare} from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 const MyProfile =(props)=>{
     const [_,loading] = useAuthState(auth);
@@ -33,8 +34,8 @@ const MyProfile =(props)=>{
                         <div className="user--pic--container flex-column">
                             <Avatar className="user__picture" src={receivedData?.userAvatarUrl} alt={receivedData?.userName} />
                         </div>
-                        <div className="desktop--inner--info flex-column">
-                            <div className="users--action--row flex-row">
+                    <div className="desktop--inner--info flex-column">
+                            <div className="users--action--row w-100 flex-row">
                                 <h5 className="profile__display__name">{receivedData?.userName}
                                {
                                    receivedData?.isVerified ?
@@ -43,7 +44,7 @@ const MyProfile =(props)=>{
                                }
                                 </h5>
                                 <div className="flex-row">
-                                <button className="edit__btn mr-1">Edit profile</button>
+                                <button className="profile__btn prof__btn__unfollowed mr-2"><Link exact to="/edit-profile" >Edit profile</Link></button>
                                 <button className="mobile-only" onClick={()=> {authLogout(); window.location.reload()}}>Log out</button>
                                 </div>
                                 
@@ -108,31 +109,6 @@ const MyProfile =(props)=>{
                             </div>
                         )
                     }
-                    {/* <div style={{
-                        opacity: openUsersModal ? "1" : "0",
-                        display: openUsersModal ? "block" : "none",
-                        transition:"all 0.4s ease",
-                    }} className="backdrop" onClick={()=> handleUsersModal(false,"")}></div> */}
-                </div>
-                {/* footer */}
-                <div id="userProfFooter" className="userProfile--footer auth--footer--container desktop-only">
-                    <ul className="auth--footer--ul flex-row">
-                            <li>ABOUT</li>
-                            <li>HELP</li>
-                            <li>PRESS</li>
-                            <li>API</li>
-                            <li>JOBS</li>
-                            <li>PRIVACY</li>
-                            <li>TERMS</li>
-                            <li>LOCATIONS</li>
-                            <li>TOP ACCOUNTS</li>
-                            <li>HASHTAGS</li>
-                            <li>LANGUAGE</li>
-                        </ul>
-                        <div className="auth--copyright">
-                            <span>This app was made for personal use</span>
-                            <span>@2020 Instagram clone made by Mahmoud Farargy</span>
-                        </div>
                 </div>
             </section>
             

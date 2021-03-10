@@ -1,6 +1,7 @@
 import React ,{Fragment, useEffect, useContext} from "react";
 import {Switch, Route} from "react-router-dom";
 import Header from "../Header/Header";
+import Footer from "../../Components/Footer/Footer";
 import Home from "../../Pages/Home/Home";
 import AuthPage from "../../Pages/AuthPage/AuthPage";
 import AddNewPost from "../../Pages/AddNewPost/AddNewPost";
@@ -15,6 +16,7 @@ import MobileNotifications from "../../Pages/MobileNotifications/MobileNotificat
 import UsersModal from "../../Components/UsersModal/UsersModal";
 import MyProfile from "../../Pages/MyProfile/MyProfile";
 import CommentsModal from "../../Components/CommentsModal/CommentsModal";
+import EditProfile from "../../Pages/EditProfile/EditProfile";
 import $ from "jquery";
 
 const App = (props)=>{
@@ -96,7 +98,7 @@ const App = (props)=>{
                 $("body").css("overflow","auto");
             }
         });        
-    },[context?.openUsersModal, context?.openCommentsModal ]);
+    },[ context?.openUsersModal, context?.openCommentsModal ]);
 
     return(
         <Fragment>
@@ -114,12 +116,13 @@ const App = (props)=>{
               } 
                {/* Routes */}
                 <Switch>
-                    <Route exact path="/auth" component={AuthPage}  />
                     <Route exact path="/" >
                         <Header />
                         <Home />
                         <MobileNav />
+                             <Footer /> 
                     </Route>
+                    <Route exact path="/auth" component={AuthPage}  />
                     <Route exact path="/messages">
                         <Header />
                         <Messages messages={receivedData?.messages} />
@@ -139,17 +142,25 @@ const App = (props)=>{
                         <Header />
                         <MyProfile />
                         <MobileNav />
+                        <Footer /> 
                     </Route>
-                    <Route exact path="/user-profile">
+                    <Route path="/user-profile">
                         <Header />
                         <UsersProfile />
                         <MobileNav />
+                        <Footer /> 
                     </Route>
                     <Route exact path="/browse-post">
                         <Header />
                         <PostPage />
                         <MobileNav />
                     </Route >
+                    <Route exact path="/edit-profile">
+                        <Header />
+                        <EditProfile/>
+                        <MobileNav />
+                        <Footer/>
+                    </Route>
                 </Switch>
             </main>
         </Fragment>

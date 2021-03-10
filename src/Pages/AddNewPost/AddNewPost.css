@@ -3,6 +3,10 @@
     justify-content:center;
     align-items:center;
 }
+#page {
+    background-color: var(--light-gray);
+    min-height: 57vh;
+}
 #upload.post--uploading--container .post--uploading--card{
     min-width:300px;
     background-color: #fff;
@@ -28,6 +32,7 @@
  width:95%;
  object-fit:contain;
 }
+
 @media only screen and (max-width: 670px){
     #upload.post--uploading--container .post--uploading--card form{
         display:flex;
@@ -38,5 +43,8 @@
     }
     #upload.post--uploading--container{
         padding-bottom:50px;
+    }
+    #page {
+        min-height:95vh;
     }
 }

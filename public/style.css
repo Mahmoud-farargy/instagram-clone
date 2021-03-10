@@ -7,7 +7,7 @@
     -webkit-box-sizing:border-box;
 }
 html{
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth; */
     width:100%;
     -webkit-text-size-adjust: 100%;
 }
@@ -407,6 +407,10 @@ article, div, footer, header, main, nav, section{
     flex-shrink:0;
     padding:0;
     margin:0;
+}
+#main--footer {
+    background-color: var(--light-gray);
+    padding-bottom: 10px;
 }
 #userProfFooter.userProfile--footer .auth--footer--ul{
     justify-content:center;
@@ -895,6 +899,10 @@ button:active{
     text-overflow:ellipsis;
     cursor:pointer;
     text-transform: capitalize;
+    appearance:none;
+}
+.profile__btn:active{
+    outline: none !important;
 }
 .prof__btn__followed{
     border-radius:3px;
@@ -903,12 +911,22 @@ button:active{
     padding:0 24px;
     color:#fff;
 }
+.prof__btn__followed:active{
+    color:rgb(224, 224, 224);
+}
 .prof__btn__unfollowed{
     border-radius:4px;
     border:1px solid #dbdbdb;
     padding:0px 9px;
     background-color: transparent;
     color:#262626;
+}
+.prof__btn__unfollowed a {
+    color:#262626;
+    text-decoration: none;
+}
+.prof__btn__unfollowed:active{
+    color:#424242;
 }
 #usersProfile.users--profile--container .users__profile__image{
     width:100%;
@@ -948,7 +966,7 @@ button:active{
     -webkit-display: grid;
     display:grid;
     grid-template-columns: repeat(3, 1fr);
-    gap:14px;
+    gap:10px;
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
 }
@@ -974,6 +992,7 @@ button:active{
 #usersProfile.users--profile--container .users--action--row{
     max-width:450px;
     flex-wrap:nowrap;
+    
 }
 #usersProfile.users--profile--container .profile__display__name{
     font-size:28px;
@@ -981,6 +1000,7 @@ button:active{
     margin: -5px 0 -6px;
     white-space:nowrap;
     word-break: keep-all;
+    text-align:left;
 }
 #usersProfile.users--profile--container .desktop--social--row p span{
     font-weight:600;
@@ -1214,6 +1234,9 @@ button:active{
         margin-right:auto;
         margin-left:auto;
     }
+    #usersProfile.users--profile--container .users--action--row{
+        flex-direction: column !important;
+    }
     .auth--footer--container .auth--copyright{
         margin-top:10px;
     }
@@ -1222,9 +1245,6 @@ button:active{
     }
     #usersProfile.users--profile--container .users--profile--posts{
         gap:2px !important;
-    }
-    #usersProfile.users--profile--container .users--action--row{
-        flex-direction: column;
     }
     .desktop-only{
         display:none;

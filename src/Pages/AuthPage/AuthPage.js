@@ -244,7 +244,7 @@ const AuthPage =(props)=>{
                     </ul>
                     <div className="auth--copyright">
                         <span>This app was made for personal use</span>
-                        <span>@2020 Instagram clone made by Mahmoud Farargy</span>
+                        <span>@2020 - {new Date().getFullYear()} Instagram clone made by Mahmoud Farargy</span>
                     </div>
                     
                 </div>

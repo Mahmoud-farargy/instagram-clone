@@ -8,6 +8,8 @@ import {FiSend,FiInfo} from "react-icons/fi";
 import {VscSmiley} from "react-icons/vsc";
 import {RiMenu4Fill} from "react-icons/ri";
 import {MdClose} from "react-icons/md";
+import { updateObject } from "../../Utilities/Utility";
+
 import $ from "jquery";
 
 class Messages extends Component{
@@ -43,8 +45,12 @@ class Messages extends Component{
             
             if(this.autoScroll.scrollIntoView){
                this.autoScroll.scrollIntoView({ behavior: "smooth" }); 
+               this.setState(updateObject(this.state, {showEmojis: false}))
             }
             
+        }
+        if(prevState.currentUserIndex != this.state.currentUserIndex){
+            this.autoScroll.scrollIntoViewIfNeeded(); 
         }
     }
     submitMessage(v){

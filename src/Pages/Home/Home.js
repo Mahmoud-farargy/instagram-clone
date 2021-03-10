@@ -17,9 +17,9 @@ import {BsPlusSquare} from "react-icons/bs";
 const Home =(props)=>{
     let {receivedData, handleMyLikes, handleSubmittingComments, isUserOnline, suggestionsList, getUsersProfile, uid, handleFollowing, deletePost, handleSubComments, handleLikingComments, handleUsersModal} = useContext(AppContext);
     let posts = receivedData?.posts;
-    const browseUser=(specialUid)=>{
+    const browseUser=(specialUid, name)=>{
         getUsersProfile(specialUid);
-        props.history.push("/user-profile");
+        props.history.push(`/user-profile/${name}`);
     }  
     
     let [user, loading, error] = useAuthState(auth);
@@ -86,7 +86,7 @@ const Home =(props)=>{
                             receivedData?.userName ?
                                 <div className="side--user--info flex-row">
                                     <Avatar />
-                                    <h5 className="flex-row" onClick={()=> props.history.push("/profile")}>{receivedData?.userName} { receivedData?.isVerified ? <GoVerified className="verified_icon"/> : null}</h5>  
+                                    <h5 className="flex-row" onClick={()=> props.history.push(`/profile`)}>{receivedData?.userName} { receivedData?.isVerified ? <GoVerified className="verified_icon"/> : null}</h5>  
                                 </div>
                                 
                             : null
@@ -130,26 +130,6 @@ const Home =(props)=>{
                         
                         
                     </aside>
-                    {/* footer */}
-                    <div id="userProfFooter" className="userProfile--footer auth--footer--container desktop-only">
-                    <ul className="auth--footer--ul flex-row">
-                            <li>ABOUT</li>
-                            <li>HELP</li>
-                            <li>PRESS</li>
-                            <li>API</li>
-                            <li>JOBS</li>
-                            <li>PRIVACY</li>
-                            <li>TERMS</li>
-                            <li>LOCATIONS</li>
-                            <li>TOP ACCOUNTS</li>
-                            <li>HASHTAGS</li>
-                            <li>LANGUAGE</li>
-                        </ul>
-                        <div className="auth--copyright">
-                            <span>This app was made for personal use</span>
-                            <span>@2020 Instagram clone made by Mahmoud Farargy</span>
-                        </div>
-                </div>
                 </div>
             </section>
             :

@@ -1,7 +1,7 @@
 import React ,{PureComponent} from "react";
 import {db, auth, storageRef} from "./Config/firebase";
 import igVideoImg from "./Assets/instagram-video.png";
-import { truncate } from "fs";
+// import { truncate } from "fs";
 
     const AppContext = React.createContext();
 

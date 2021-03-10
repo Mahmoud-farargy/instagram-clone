@@ -1,4 +1,4 @@
-import React, {useContext, Fragment, useState,useEffect} from "react";
+import React, {useContext, Fragment, useState,useEffect, useRef} from "react";
 import {AppContext} from "../../Context";
 import {Avatar} from "@material-ui/core";
 import {withRouter} from "react-router-dom";
@@ -16,7 +16,8 @@ const UsersProfile =(props)=>{
     const [isFollowed, setFollowingState] = useState(false);
     const [grid, setGrid] = useState(true);
     const context = useContext(AppContext);
-    const {usersProfileData , changeMainState, initializeChatDialog, uid, handleFollowing, receivedData,handleUsersModal,openUsersModal, igVideoImg} = context;
+    const {usersProfileData , changeMainState, initializeChatDialog, uid, handleFollowing, receivedData,handleUsersModal, igVideoImg} = context;
+    // const scrollToPlace = useRef(null);
 
     const redirectToPost=(i, id)=>{
         changeMainState("currentPostIndex", {index: i, id: id});
@@ -30,6 +31,9 @@ const UsersProfile =(props)=>{
         setFollowingState(receivedData?.following?.filter(item => item?.receiverUid  === usersProfileData?.uid)[0] ? true : false);
     },[receivedData?.followers,usersProfileData?.followers]);
     
+    useEffect(() => {
+        window.scrollTo(0,0);
+    }, []);
      return(
         <Fragment>
             <section id="usersProfile" className="users--profile--container ">
@@ -51,7 +55,11 @@ const UsersProfile =(props)=>{
                                }
                                 </h5>
                                 <div className="flex-row">
-                                    <button disabled={!usersProfileData?.uid} className={ isFollowed ? "profile__btn prof__btn__unfollowed": "profile__btn prof__btn__followed" } onClick={()=> message(usersProfileData?.uid, usersProfileData?.userName , usersProfileData?.userAvatarUrl)}>Message</button>
+                                    {
+                                        isFollowed &&
+                                        <button disabled={!usersProfileData?.uid} className="profile__btn prof__btn__unfollowed" onClick={()=> message(usersProfileData?.uid, usersProfileData?.userName , usersProfileData?.userAvatarUrl)}>Message</button>
+                                    }
+                                    
                                     <button disabled={!usersProfileData?.uid} onClick={()=> handleFollowing(isFollowed, usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, uid, receivedData?.userName, receivedData?.userAvatarUrl)} className={ !isFollowed ? "profile__btn prof__btn__followed" : "profile__btn prof__btn__unfollowed" }> {isFollowed ? "unfollow" : "follow"}</button>
                                 </div>
                                 
@@ -112,31 +120,6 @@ const UsersProfile =(props)=>{
                             )
                         }
                     </div>
-                    {/* <div style={{
-                        opacity: openUsersModal ? "1" : "0",
-                        display: openUsersModal ? "block" : "none",
-                        transition:"all 0.4s ease",
-                    }} className="backdrop" onClick={()=> handleUsersModal(false,"")}></div> */}
-                </div>
-                {/* footer */}
-                <div id="userProfFooter" className="userProfile--footer auth--footer--container desktop-only">
-                    <ul className="auth--footer--ul flex-row">
-                            <li>ABOUT</li>
-                            <li>HELP</li>
-                            <li>PRESS</li>
-                            <li>API</li>
-                            <li>JOBS</li>
-                            <li>PRIVACY</li>
-                            <li>TERMS</li>
-                            <li>LOCATIONS</li>
-                            <li>TOP ACCOUNTS</li>
-                            <li>HASHTAGS</li>
-                            <li>LANGUAGE</li>
-                        </ul>
-                        <div className="auth--copyright">
-                            <span>This app was made for personal use</span>
-                            <span>@2020 Instagram clone made by Mahmoud Farargy</span>
-                        </div>
                 </div>
             </section>
             

@@ -145,7 +145,6 @@ class AddNewPost extends PureComponent{
           
       }
     handleFileChange=(w)=>{
-      let {isUserOnline} = this.context;
       let uploadedItem  = w.target.files[0];  
       const metadata ={
         contentType : uploadedItem !== "" ? uploadedItem?.type : null
@@ -223,7 +222,7 @@ class AddNewPost extends PureComponent{
                                     : null
                                 }
                                 {  !this.state.uploading ?
-                                      <input type="file" onChange={(w)=> this.handleFileChange(w)} />
+                                      <input type="file" accept="image/*,video/*" onChange={(w)=> this.handleFileChange(w)} />
                                   : null
                                 } 
                                   
@@ -231,7 +230,7 @@ class AddNewPost extends PureComponent{
                                 !this.state.uploading ?
                                   <div>
                                     <textarea required type="text" placeholder="Enter a caption..." value={this.state.insertedCaption} onChange={(e)=> this.setState({insertedCaption: e.target.value})} />
-                                    <input type="text" placeholder="Location" value={this.state.location} onChange={(e)=> this.setState({location: e.target.value})} />
+                                    <input type="text" placeholder="Location"  value={this.state.location} onChange={(e)=> this.setState({location: e.target.value})} />
                                      {
                                        this.state.contentType !== "" ?
                                         <Button onClick={()=> this.onCancel()} variant="contained" >Cancel</Button>

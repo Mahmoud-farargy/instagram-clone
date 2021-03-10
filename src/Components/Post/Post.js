@@ -91,7 +91,7 @@ class Post extends PureComponent{
         v.preventDefault();
          const {index, id, userName, userAvatar , handleSubmittingComments, postId, postOwnerId, handleSubComments} = this.props;
          if(this.state.insertedComment !== ""){//sub comment (nested comment)
-             if( this.state.replayData !== {}   && /^[@]/.test(this.state.insertedComment)){
+             if( this.state.replayData !== {} && /^[@]/.test(this.state.insertedComment)){
                  handleSubComments(this.state.replayData, this.state.insertedComment, userAvatar, true);
              }else{ //regular comment
                 handleSubmittingComments("mine",index, id, userName, this.state.insertedComment, userAvatar, new Date(), postId, postOwnerId);
@@ -106,6 +106,7 @@ class Post extends PureComponent{
 
     replayFunc(postOwnerName,commentIndex, postIndex, postId, postOwnerId){
         this.setState({
+            ...this.state,
             showInputForm: true,
             replayData: {postOwnerName, commentIndex, postIndex, postId, postOwnerId},
             insertedComment: `@${postOwnerName} `
@@ -127,7 +128,7 @@ class Post extends PureComponent{
                                     <Avatar className="post__header__avatar" src="" alt="avatar" />
                                     <div className="post--header--user--info flex-column">
                                         <span tabIndex="0" aria-disabled="false" role="button" >
-                                            <h5 className="flex-row" ><Link to="/profile"style={{whiteSpace: "nowrap",wordBreak:"keep-all", display:"flex",flexWrap:"nowrap"}} ><TruncateMarkup line={1} ellipsis="...">{userName}</TruncateMarkup>{ isVerified ?  <GoVerified className="verified_icon"/> : null} </Link> </h5>
+                                            <h5 className="flex-row" ><Link to={`/profile`} style={{whiteSpace: "nowrap",wordBreak:"keep-all", display:"flex",flexWrap:"nowrap"}} ><TruncateMarkup line={1} ellipsis="...">{userName}</TruncateMarkup>{ isVerified ?  <GoVerified className="verified_icon"/> : null} </Link> </h5>
                                                               
                                         </span>
                                         <span tabIndex="0" aria-disabled="false" role="button">
@@ -248,7 +249,7 @@ class Post extends PureComponent{
                                     : null
                                 }
                                 
-                                <small className="post__date">{new Date(postDate?.seconds * 1000).toLocaleString()}</small>
+                                <small className="post__date pb-2">{new Date(postDate?.seconds * 1000).toLocaleString()}</small>
                              {
                                  this.state.showInputForm ?
                                  <form onSubmit={(e)=> this.submitComment(e)}  className="post--bottom--comment--adding">
