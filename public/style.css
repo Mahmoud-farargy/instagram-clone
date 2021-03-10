@@ -52,6 +52,11 @@ a:visited{
 .liked__heart{
     color: rgb(237, 73, 86) !important;
 }
+.bottom--row--user-info span{
+    font-size: 16px;
+    line-height: 24px;
+    white-space: pre-line;
+}
 .flex-row{
     display: -webkit-flex;
     display: -moz-box;
@@ -921,12 +926,18 @@ button:active{
     background-color: transparent;
     color:#262626;
 }
+a.prof__btn__unfollowed{
+    color:#262626;
+}
+.prof__btn__unfollowed:hover{
+    text-decoration: none;
+}
 .prof__btn__unfollowed a {
     color:#262626;
     text-decoration: none;
 }
 .prof__btn__unfollowed:active{
-    color:#424242;
+    color:#424242 !important;
 }
 #usersProfile.users--profile--container .users__profile__image{
     width:100%;
@@ -943,12 +954,12 @@ button:active{
 }
 
 #usersProfile.users--profile--container .desktop--social--row p{
-    padding:2px 6px;
+    padding:2px 6px 2px 0px;
     margin-right:30px;
     font-weight:400;
 }
 #usersProfile.users--profile--container .desktop--social--row p span{
-    font-weight:700;
+    font-weight:800;
 }
 #usersProfile.users--profile--container .MuiAvatar-root{
     width:72px !important;

@@ -69,12 +69,13 @@ const UsersProfile =(props)=>{
                                 <p className="acc-action" onClick={()=> handleUsersModal(true, usersProfileData?.followers, "followers")}><span>{usersProfileData?.followers?.length.toLocaleString()}</span> {usersProfileData?.followers?.length >1 ?"followers": "follower"}</p>
                                 <p className="acc-action"  onClick={()=> handleUsersModal(true, usersProfileData?.following, "following")}><span>{usersProfileData?.following?.length.toLocaleString()}</span> following</p>
                             </div>
+                            {/* bottom row */}
+                            <div className="bottom--row--user-info flex-column">
+                                    <span>{usersProfileData?.bio}</span>
+                            </div>
                     </div>
                 </div>
-                {/* bottom row */}
-                <div className="bottom--row--user-info flex-column">
-                        <p>{usersProfileData?.bio}</p>
-                </div>
+               
                 {/* body */}
                 <div className="users--profile--stripe flex-row">
                   {

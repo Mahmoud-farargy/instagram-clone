@@ -44,7 +44,7 @@ const MyProfile =(props)=>{
                                }
                                 </h5>
                                 <div className="flex-row">
-                                <button className="profile__btn prof__btn__unfollowed mr-2"><Link exact to="/edit-profile" >Edit profile</Link></button>
+                                <Link role="button" className="profile__btn prof__btn__unfollowed mr-2" exact to="/edit-profile" >Edit profile</Link>
                                 <button className="mobile-only" onClick={()=> {authLogout(); window.location.reload()}}>Log out</button>
                                 </div>
                                 
@@ -54,12 +54,13 @@ const MyProfile =(props)=>{
                                 <p className="acc-action" onClick={()=> handleUsersModal(true, receivedData?.followers, "followers")}><span>{receivedData?.followers?.length.toLocaleString()}</span> {receivedData?.followers?.length >1 ?"followers": "follower"}</p>
                                 <p className="acc-action"  onClick={()=> handleUsersModal(true, receivedData?.following, "following")}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
                             </div>
+                            {/* bottom row */}
+                            <div className="bottom--row--user-info flex-column">
+                                    <span>{receivedData?.bio}</span>
+                            </div>
                     </div>
                 </div>
-                {/* bottom row */}
-                <div className="bottom--row--user-info flex-column">
-                        <p>{receivedData?.bio}</p>
-                </div>
+                
                 {/* body */}
                 <div className="users--profile--stripe flex-row">
                   {
