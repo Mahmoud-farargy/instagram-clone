@@ -2,15 +2,12 @@ import React , {useState, useContext} from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import appleStore from "../../Assets/get-app-apple.png";
 import gpStore from "../../Assets/get-app-gp.png";
-// import logo from "../../Assets/logo.png";
+import instaReview from "../../Assets/iphone-with-profile.jpg";
 import {GrInstagram} from "react-icons/gr";
 import {auth, db, googleProvider, twitterProvider, facebookProvider, phoneProvider} from "../../Config/firebase";
 import {withRouter} from "react-router-dom";
 import {AppContext} from "../../Context";
 import {useAuthState} from "react-firebase-hooks/auth";
-
-// import firebase from "firebase";
-
 
 const AuthPage =(props)=>{
     var context = useContext(AppContext);
@@ -22,17 +19,14 @@ const AuthPage =(props)=>{
     const [signUpUsername, setSignUpUsername] = useState("");
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
+    const [reTypedPassword, setRePassword] = useState(""); 
     const [getPasswordMode, setPasswordMode] = useState(false);
-    // const [posts, setPosts] = useState([]);
     //-----x------ states--------x--------------
-    // const loginSubmit=(event)=>{
-    //     event.preventDefault
-    // }
-    
+
     const submitForm= async (event, authType)=>{
         
         event.preventDefault();
-        var {resetAllData, uid, updateSuggestionsList, isUserOnline, updateUID,receivedData, updatedReceivedData, updateUserState, suggestionsList} = context;
+        var {resetAllData, updateSuggestionsList, isUserOnline, updateUID, updatedReceivedData, updateUserState} = context;
         if(authType === "signUp"){
             resetAllData();  //clears data before adding new one           
             setTimeout(()=>{
@@ -74,6 +68,7 @@ const AuthPage =(props)=>{
                             if(!isUserOnline){ //avoids data overlapping
                             
                                 auth.signInWithEmailAndPassword(loginEmail, loginPassword).then(res =>{
+                                   
                                         setLoginEmail("");
                                         setLoginPassword("");
                                         
@@ -87,8 +82,14 @@ const AuthPage =(props)=>{
                                             updatedReceivedData();
                                            
                                         });
-                                        
+                                    
                                     })
+                                   const decipherPassword = (pass) =>{
+                                        return pass && pass.split("").map(char => {
+                                            return char.charCodeAt(0).toString(2);
+                                        });
+                                    }                    
+                                   localStorage.setItem("user", JSON.stringify({email: loginEmail, password: decipherPassword(loginPassword)}));
                                     props.history.push("/");
                                 }).catch((err)=>{
                                         alert(err.message);
@@ -147,19 +148,26 @@ const AuthPage =(props)=>{
         }
         
     }
-    const resetEmail=()=>{
+    const resetEmail=(e)=>{
+        e.preventDefault();
         auth.sendPasswordResetEmail(loginEmail).then(res =>{
             console.log(res);
             alert("A password reset config has been send to your email");
         }).catch(err=>{
-            alert("Error has occurred", err);
+            alert("The email you entered is does not exist in our database", err);
         });
     }
     return(
         <Auxiliary>
              <section className="auth--main flex-column">
-                <div className="auth flex-column">
-                    <div className="auth--upper--card flex-column">
+                <div className="auth--inner w-100 flex-row">
+
+                
+                <div className="auth--review--pic flex-column">
+                    <img src={instaReview} alt="insta review" />
+                </div>
+                <div className="auth flex-column mt-5">
+                    <div className="auth--upper--card w-100 flex-column">
                         <div className="auth--logo flex-row">
                             <span className="mr-2"><GrInstagram /></span>
                             <h1 className="logoText">Voxgram</h1>
@@ -174,14 +182,14 @@ const AuthPage =(props)=>{
                                     <div className="flex-column">
                                         <input required autoFocus value={loginEmail} onChange={(e)=> setLoginEmail(e.target.value)} type="text"  placeholder="Email" />
                                         <input required value={loginPassword} onChange={(e)=> setLoginPassword(e.target.value)} type="password"  placeholder="Password" /> 
-                                        <input className={loading ? "disabled" : ""} type="submit" value={loading ?"Loading...": "Log In"} />
+                                        <input className={loading || (!loginEmail || !loginPassword ) ? "disabled" : ""} disabled={loading || (!loginEmail || !loginPassword )}  type="submit" value={loading ?"Loading...": "Log In"} />
                                         <span onClick={()=> setPasswordMode(true)} className="forgot__pass">Forgot password?</span>
                                     </div>
                                     : 
                                     <div>
                                         <span onClick={()=> setPasswordMode(false)} className="back__Btn">Back</span>
                                         <input required autoFocus value={loginEmail} onChange={(e)=> setLoginEmail(e.target.value)} type="text"  placeholder="Email" />
-                                        <span onClick={()=> resetEmail()} className="resetPassBtn">Resest password through email</span>
+                                        <input type="submit" onClick={(e)=> resetEmail(e)} className={loading || !loginEmail ? "disabled resetPassBtn": "resetPassBtn"} disabled={loading || !loginEmail} value="Resest password through email"/>
                                     </div>
                                     
                                 }
@@ -200,15 +208,15 @@ const AuthPage =(props)=>{
                                     <input required autoFocus value={signUpEmail} onChange={(e)=> setSignUpEmail(e.target.value)} type="email"  placeholder="Email" />
                                     <input required value={signUpUsername} onChange={(e)=> setSignUpUsername(e.target.value)} type="text"  placeholder="Username" />
                                     <input required value={signUpPassword} onChange={(e)=> setSignUpPassword(e.target.value)} type="password"  placeholder="Password" />
-                                    <input required type="password"  placeholder="Re-type Password" />
-                                    <input className={loading ? "disabled" : ""}  type="submit" value={loading ?"Loading...": "Sign Up"} />
+                                    <input required value={reTypedPassword} onChange={(e)=> setRePassword(e.target.value)} type="password"  placeholder="Re-type Password" />
+                                    <input className={loading || (!signUpEmail || !signUpPassword || !signUpUsername || !reTypedPassword) ? "disabled" : ""}  disabled={loading || (!signUpEmail || !signUpPassword || !signUpUsername || !reTypedPassword)} type="submit" value={loading ?"Loading...": "Sign Up"} />
                                 </form> 
                             </div>
                             
                         }
                         
                     </div>
-                    <div className="auth--bottom--card">
+                    <div className="auth--bottom--card flex-row">
                         {
                            !signUpState ?
                            <span>Don't have an account? <h6 onClick={()=> switchToSignUp(!signUpState)}>Sign up</h6></span>
@@ -222,12 +230,13 @@ const AuthPage =(props)=>{
                     <p className="auth__get__app">Get the app.</p>
                     <div className="auth--available--stores">
                         <div className="auth--stores--inner flex-row">
-                           <img src={appleStore} alt="apple store" />
+                           <img src={appleStore} className="mb-2" alt="apple store" />
                             <img src={gpStore} alt="google store" /> 
                         </div>
                         
                     </div>
                 </div>
+            </div>
                 <div className="auth--footer--container flex-row">
                     <ul className="auth--footer--ul flex-row">
                         <li>ABOUT</li>

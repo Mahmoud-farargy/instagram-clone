@@ -24,7 +24,7 @@ ul{
 /* ---------------Global classes-------------- */
 .disabled{
     opacity:0.5;
-    cursor:not-allowed;
+    cursor:not-allowed !important;
 }
 
 :root{
@@ -229,7 +229,25 @@ a:visited{
     width:100%;
     align-items:center;
     background-color: var(--light-gray);
-    min-height:100vh;
+    min-height:90vh;
+    
+}
+.auth--inner{
+    justify-content: center;
+    align-items:center;
+    gap: 0px;
+}
+.auth--review--pic{
+    padding:30px 0px 0px;
+    width: 30%;
+    min-width: 454px;
+}
+.auth--review--pic img{
+    max-width:100%;
+    min-height: 618px;
+    object-fit: contain;
+    display: block;
+    user-select: none;
 }
 .auth{
     color:var(--main-black);
@@ -256,7 +274,7 @@ a:visited{
     margin:0 auto;
     font-weight:100;
     font-size:14px;
-    white-space:nowrap;
+    flex-wrap: wrap;
     word-break: keep-all;
     display:flex;
     color:var(--light-black);
@@ -364,7 +382,7 @@ a:visited{
     width:100%;
     align-self: flex-start;
     flex-wrap:wrap;
-    margin:130px 3vw 35px 4vw;
+    margin:80px 3vw 35px 4vw;
     justify-content:space-between;
     max-width: 1150px;
 }
@@ -1254,6 +1272,12 @@ a.prof__btn__unfollowed{
     #usersProfile.users--profile--container .profile--posts--container{
         padding:1px;
     }
+    .auth--input--form{
+        padding:0;
+    }
+    .auth--input--form input[type="text"], .auth--input--form input[type="password"],.auth--input--form input[type="email"], .auth--input--form input[type="submit"] {
+        width: 100%;
+    }
     #usersProfile.users--profile--container .users--profile--posts{
         gap:2px !important;
     }
@@ -1421,6 +1445,15 @@ a.prof__btn__unfollowed{
     #usersProfile.users--profile--container .users--action--row{
         flex-direction: column;
         flex-wrap: wrap !important;
+    }
+    .auth--review--pic{
+        display:none;
+    }
+    
+}
+@media only screen and (max-width:930px) and (min-width: 670px){
+    .auth--footer--container{
+        justify-content: center;
     }
 }
 /* ---x------Query less than or equal 9300px---x--------- */

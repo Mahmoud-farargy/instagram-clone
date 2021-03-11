@@ -1,12 +1,12 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import "./Home.css";
 import Post from "../../Components/Post/Post";
 import {Avatar} from "@material-ui/core";
 import {AppContext} from "../../Context";
-import {withRouter} from "react-router-dom";
+import {Redirect, withRouter} from "react-router-dom";
 import SuggestItem from "../../Components/SuggestItem/SuggestItem";
-import AuthPage from "../../Pages/AuthPage/AuthPage";
+// import AuthPage from "../../Pages/AuthPage/AuthPage";
 import {GoVerified} from "react-icons/go";
 import {useAuthState} from "react-firebase-hooks/auth";  //firebase hook
 import {auth} from "../../Config/firebase"; 
@@ -15,18 +15,38 @@ import InstagramEmbed from "react-instagram-embed";
 import {BsPlusSquare} from "react-icons/bs";
 
 const Home =(props)=>{
-    let {receivedData, handleMyLikes, handleSubmittingComments, isUserOnline, suggestionsList, getUsersProfile, uid, handleFollowing, deletePost, handleSubComments, handleLikingComments, handleUsersModal} = useContext(AppContext);
+    let {receivedData, handleMyLikes, handleSubmittingComments, suggestionsList, getUsersProfile, uid, handleFollowing, deletePost, handleSubComments, handleLikingComments, handleUsersModal} = useContext(AppContext);
     let posts = receivedData?.posts;
     const browseUser=(specialUid, name)=>{
         getUsersProfile(specialUid);
         props.history.push(`/user-profile/${name}`);
     }  
-    
     let [user, loading, error] = useAuthState(auth);
+    
+    const recievedAuth = localStorage.getItem("user");
+    // useEffect(()=> {
+        
+        // if(!user){
+            // if(recievedAuth && !user){
+            //     console.log(user, loading);
+            //     const {email, password} = JSON.parse(recievedAuth)
+            // const returnPassowrd = (binary) => {
+            //     // const newBin = binary.split(" ");
+            //     const binCode = [];
+            //     for(var i=0; i< binary.length; i++){
+            //         binCode.push(String.fromCharCode(parseInt(binary[i], 2)));
+            //     }
+            //     return binCode.join("");
+            // }
+            //     auth.createUserWithEmailAndPassword(email, returnPassowrd(password));
+            // };
+            
+        // }
+    // },[]);
     return(
         <Auxiliary>
             {
-                user ?
+                user || recievedAuth ?
             <section id="home" className="main--home--container ">
                  
                 <div className="main--home--inner desktop-comp">
@@ -133,7 +153,8 @@ const Home =(props)=>{
                 </div>
             </section>
             :
-            <AuthPage />
+            <Redirect from="/" to="/auth"/>
+           
         }
         </Auxiliary>
     )

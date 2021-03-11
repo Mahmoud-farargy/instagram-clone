@@ -8,7 +8,7 @@ const SuggestItem =(props)=>{
    
     useEffect(()=>{     
         if(receivedData !== {} && receivedData){
-            setFollowingState(receivedData?.following.filter(item => item?.receiverUid  === userUid)[0] ? true : false); 
+            setFollowingState(receivedData && receivedData?.following && receivedData?.following.filter(item => item?.receiverUid  === userUid)[0] ? true : false); 
         }
             
        

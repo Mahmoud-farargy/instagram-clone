@@ -89,16 +89,18 @@ const UsersProfile =(props)=>{
                     
                 </div>
 
-                    <div className={grid ? "users--profile--posts" : "users--profile--rowLine flex-column"}>
+                    
                         {
                             usersProfileData?.posts?.length >=1 && !loading  ?
-                                usersProfileData?.posts?.map((post, i)=>{
+                            <div className={grid ? "users--profile--posts" : "users--profile--rowLine flex-column"}>
+                                {usersProfileData?.posts?.map((post, i)=>{
                                         return (
                                             <div key={post?.id+i}  className="profile--posts--container">                                                    
                                                     <img onClick={()=> redirectToPost(i, post?.id) } style={{width: grid ? "100%" : "auto"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
                                             </div>
                                         )
-                                })
+                                })}
+                            </div>
                             : loading ?
                                 (<CircularProgress
                                     variant="determinate"
@@ -110,7 +112,7 @@ const UsersProfile =(props)=>{
                             :
                             (
                                 <div className="empty--posts--container flex-column">
-                                    <div className="empty--posts--inner flex-column">
+                                    <div className="empty--posts--inner mx-auto flex-column">
                                         <div className="plus--icon--container flex-column"><BsPlusSquare className="plus__icon"/></div>
                                         <h3>Profile</h3>
                                         <p>When you share photos and videos, they'll <br/> be appear on your profile page</p>
@@ -120,7 +122,7 @@ const UsersProfile =(props)=>{
                                 </div>
                             )
                         }
-                    </div>
+                    
                 </div>
             </section>
             

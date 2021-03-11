@@ -44,7 +44,7 @@ const MyProfile =(props)=>{
                                }
                                 </h5>
                                 <div className="flex-row">
-                                <Link role="button" className="profile__btn prof__btn__unfollowed mr-2" exact to="/edit-profile" >Edit profile</Link>
+                                <Link role="button" className="profile__btn prof__btn__unfollowed mr-2" to="/edit-profile" >Edit profile</Link>
                                 <button className="mobile-only" onClick={()=> {authLogout(); window.location.reload()}}>Log out</button>
                                 </div>
                                 
@@ -74,17 +74,16 @@ const MyProfile =(props)=>{
                     
                 </div>
                 {
-                 receivedData?.posts?.length >=1 ?
+                 receivedData?.posts?.length >=1 && !loading ?
                     <div className={grid ? "users--profile--posts" : "users--profile--rowLine flex-column"}>
-                        {
-                                !loading  ?
-                                receivedData?.posts?.map((post, i)=>{
+                        {receivedData?.posts?.map((post, i)=>{
                                         return (
                                             <div key={post?.id+i}  className="profile--posts--container">                                                    
                                                     <img onClick={()=> redirectToPost(i, post?.id) } style={{width: grid ? "100%" : "auto"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
                                             </div>
                                         )
-                                })
+                                })}
+                    </div>
                             : loading ?
                                 (<CircularProgress
                                     variant="determinate"
@@ -93,10 +92,6 @@ const MyProfile =(props)=>{
                                     {...props}
                                     value={100}
                                   />)
-                            :
-                            null
-                        }
-                    </div>
                         :
                         (
                             <div className="empty--posts--container flex-column">
