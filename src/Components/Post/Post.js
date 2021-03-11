@@ -28,7 +28,6 @@ class Post extends PureComponent{
             replayData: {}
         } 
     }
-    
     // const convertSeconds=(s)=>{            
     //         var sec = s % 60;
     //         var secInMinutes = (s- sec) /60;
@@ -51,7 +50,7 @@ class Post extends PureComponent{
     likesCheck(){
         var {likes, id} = this.props;             
         this.setState({
-                postLiked: likes.people?.filter(el =>  el.id === id )[0] ? true : false
+                postLiked: likes.people?.some(el => el.id === id )
         }) 
     }
     handleCurrLikes=(boolean)=>{

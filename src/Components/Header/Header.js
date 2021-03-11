@@ -99,8 +99,8 @@ const Header =(props)=>{
                                     <div  className="noti--popup--inner">
                                         <div className="noti--popup--arrow"> </div>
                                         <ul className="prof--popup--ul flex-column">
-                                            <li onClick={()=> setProf(false)}><Link to="/profile"><CgProfile className="prof__popup" /> Profile</Link></li>
-                                            <li onClick={()=> {authLogout(); setProf(false); window.location.reload()}}><Link to="/auth"><BiPowerOff className="prof__popup"/> Log Out</Link></li>
+                                           <Link to="/profile"><li onClick={()=> setProf(false)}><CgProfile className="prof__popup" /> Profile</li></Link>
+                                           <Link to="/auth"><li onClick={()=> {authLogout(); setProf(false); window.location.reload()}}><BiPowerOff className="prof__popup"/> Log Out</li></Link>
                                         </ul>
                                         <div className="noti__transparent"></div>
                                     </div>

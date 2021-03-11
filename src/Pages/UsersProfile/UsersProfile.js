@@ -1,4 +1,4 @@
-import React, {useContext, Fragment, useState,useEffect, useRef} from "react";
+import React, {useContext, Fragment, useState,useEffect} from "react";
 import {AppContext} from "../../Context";
 import {Avatar} from "@material-ui/core";
 import {withRouter} from "react-router-dom";
@@ -16,8 +16,7 @@ const UsersProfile =(props)=>{
     const [isFollowed, setFollowingState] = useState(false);
     const [grid, setGrid] = useState(true);
     const context = useContext(AppContext);
-    const {usersProfileData , changeMainState, initializeChatDialog, uid, handleFollowing, receivedData,handleUsersModal, igVideoImg} = context;
-    // const scrollToPlace = useRef(null);
+    const {usersProfileData, changeMainState, initializeChatDialog, uid, handleFollowing, receivedData,handleUsersModal, igVideoImg} = context;
 
     const redirectToPost=(i, id)=>{
         changeMainState("currentPostIndex", {index: i, id: id});
@@ -28,12 +27,14 @@ const UsersProfile =(props)=>{
         props.history.push("/messages");
     }
     useEffect(()=>{
-        setFollowingState(receivedData?.following?.filter(item => item?.receiverUid  === usersProfileData?.uid)[0] ? true : false);
-    },[receivedData?.followers,usersProfileData?.followers]);
+       
+        setFollowingState(receivedData?.following?.some(item => item?.receiverUid  === usersProfileData?.uid));
+    },[receivedData?.followers,usersProfileData?.followers,]);
     
     useEffect(() => {
+        changeMainState("currentPage", usersProfileData.userName || "User Profile");
         window.scrollTo(0,0);
-    }, []);
+    }, [usersProfileData?.userName]);
      return(
         <Fragment>
             <section id="usersProfile" className="users--profile--container ">

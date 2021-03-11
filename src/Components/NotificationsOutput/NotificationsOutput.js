@@ -9,7 +9,7 @@ const NotificationOutput =(props)=>{
     const {notification, igVideoImg, myData,handleFollowing, getUsersProfile, changeMainState, postIndex } = props;
     useEffect(()=>{
         if(notification?.type === "follow"){
-            setFollowingState(myData?.following.filter(user  => user?.receiverUid === notification?.uid)[0] ? true : false);
+            setFollowingState(myData?.following.some(user => user?.receiverUid === notification?.uid));
         }
     },[myData?.following]);
     const browseUser=()=>{

@@ -6,6 +6,9 @@ import {AppContext} from "../../Context";
 
 class EditProfile extends PureComponent {
     static contextType = AppContext;
+    componentDidMount(){
+        this.context.changeMainState("currentPage","Edit profile");
+    }
     submitForm () {
         console.log("Form submitted");
     }

@@ -4,7 +4,6 @@
 }
 #home.main--home--container .main--home--inner{
     display:flex;
-    /* grid-template-columns: 60% 40%; */
     gap:10px;
     flex-direction: row;
     justify-content:center;
@@ -17,7 +16,6 @@
 #home.main--home--container .home--posts--side, #home.main--home--container .home--sider{
     width:100%;
     overflow-x:auto;
-    /* padding-bottom: 100px; */
 }
 .home--sider::-webkit-scrollbar{
     width:10px;
@@ -30,6 +28,7 @@
 #home.main--home--container .home--posts--side{
     margin:0 20px 20px 0;
     padding-right:40%;
+    width:100%;
 }
 .side--user--info h5,svg {
     cursor:pointer;
@@ -40,7 +39,8 @@
 #home.main--home--container .home--sider{
     position:fixed;
     right:0;
-    top:60px;
+    top: 88px;
+    left:60%;
     height:100%;
     z-index:90;
     width:40%;
@@ -111,7 +111,6 @@
 }
 @media only screen and  (max-width:670px){
     #home.main--home--container .main--home--inner{
-        /* grid-template-columns: 1fr !important; */
         flex-direction: column;
     }
     #home.main--home--container{
@@ -145,10 +144,10 @@
     }
     #home.main--home--container .suggestions--home--container{
         padding:1px 20px;
-        width:100%;
     }
     #home.main--home--container .home--posts--side #post.post--card--container{
         margin-bottom:3px;
+        flex-wrap: wrap;
     }
 }
 
@@ -159,11 +158,16 @@
     }
     #home.main--home--container .home--sider{
         position:static;
+        padding-left: 20px;
     }
     #home.main--home--container .home--posts--side{
         margin:0 auto 20px auto;
         padding-right:0;
         /* max-width:400px; */
         align-items:center;
+    }
+    #home.main--home--container .suggestions--home--container{
+        width:100%;
+        max-width: 300px;
     }
 }

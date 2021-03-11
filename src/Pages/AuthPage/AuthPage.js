@@ -1,4 +1,4 @@
-import React , {useState, useContext} from "react";
+import React , {useState, useContext, useEffect} from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import appleStore from "../../Assets/get-app-apple.png";
 import gpStore from "../../Assets/get-app-gp.png";
@@ -22,7 +22,9 @@ const AuthPage =(props)=>{
     const [reTypedPassword, setRePassword] = useState(""); 
     const [getPasswordMode, setPasswordMode] = useState(false);
     //-----x------ states--------x--------------
-
+    useEffect(() =>{
+        context.changeMainState("currentPage",signUpState ? "Sign up" : "Log in");
+    },[signUpState]);
     const submitForm= async (event, authType)=>{
         
         event.preventDefault();

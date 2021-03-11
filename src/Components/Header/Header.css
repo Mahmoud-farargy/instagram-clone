@@ -33,11 +33,16 @@
 }
 #profilePopup .prof--popup--ul li{
     font-size:14px;
-    font-weight:400px;
     margin-bottom:1px;
     padding:8px 0;
-    border-bottom: 1px solid#ebebeb;
+    font-weight:400;
     width:100%;
+}
+#profilePopup .prof--popup--ul a{
+   
+    text-decoration: none;
+    padding: 0;
+    border-bottom: 1px solid#ebebeb;
 }
 #profilePopup .prof--popup--ul li:hover{
     background-color: rgb(219, 219, 219);
@@ -84,7 +89,7 @@
 }
 #header.main--header .noti--popup--inner{
     max-height:360px;
-    min-height:100px;
+    min-height:80px;
     width:500px;
 }
 .noti__transparent{

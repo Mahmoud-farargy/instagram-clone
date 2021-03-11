@@ -37,8 +37,7 @@ class Messages extends Component{
                 $(this).addClass("active-msg");
             });           
         });
-         
-            
+        this.context.changeMainState("currentPage", "Messages");
     }
     componentDidUpdate=(prevProps,prevState)=>{
         if(prevProps.messages !== this.props.messages){
@@ -66,7 +65,7 @@ class Messages extends Component{
             inputValue: ""
         })
     }
-    viewUsersMessages(currentUID, loadedIndex){
+    viewUsersMessages(_,loadedIndex){
        const {receivedData} = this.context;
        const {messages} = receivedData;
         // const getUserById=()=>{

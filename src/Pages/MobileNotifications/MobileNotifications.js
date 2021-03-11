@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import NotificationOutput from "../../Components/NotificationsOutput/NotificationsOutput";
 import {useAuthState} from "react-firebase-hooks/auth";
@@ -6,7 +6,10 @@ import {auth} from "../../Config/firebase";
 
 const MobileNotifications =(props)=>{
     const {_, loading} = useAuthState(auth);
-    const {igVideoImg, handleFollowing, getUsersProfile, changeMainState, receivedData } = props.context;
+    const {igVideoImg, handleFollowing, getUsersProfile, changeMainState, receivedData,  } = props.context;
+    useEffect(() =>{
+        changeMainState("currentPage","Notifications");
+    },[]);
     return(
         <Auxiliary>
           {

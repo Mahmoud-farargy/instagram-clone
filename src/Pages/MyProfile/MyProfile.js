@@ -1,4 +1,4 @@
-import React, {useContext, Fragment, useState} from "react";
+import React, {useContext, Fragment, useState, useEffect} from "react";
 import {AppContext} from "../../Context";
 import {Avatar} from "@material-ui/core";
 import {withRouter} from "react-router-dom";
@@ -21,7 +21,9 @@ const MyProfile =(props)=>{
         // changeMainState("currentPostIndex", {index: i, id: id});
         // props.history.push("/browse-post");
     }
-    
+    useEffect(()=>{
+        context.changeMainState("currentPage", "Profile");
+    },[]);
     
      return(
         <Fragment>

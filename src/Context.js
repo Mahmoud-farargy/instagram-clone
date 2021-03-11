@@ -20,6 +20,7 @@ class AppProvider extends PureComponent{ //For termporary memory
             usersModalList: [],
             igVideoImg: igVideoImg,
             openCommentsModal: false,
+            currentPage: "",
         }
     }
   
@@ -538,6 +539,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                 usersModalList: this.state.usersModalList,
                 igVideoImg: this.state.igVideoImg,
                 openCommentsModal: this.state.openCommentsModal,
+                currentPage: this.state.currentPage,
                 isUserOnline: this.state.isUserOnline,//functions
                 updatedReceivedData: this.updatedReceivedData.bind(this),
                 updateUserState: this.updateUserState.bind(this),

@@ -7,6 +7,7 @@ import AuthPage from "../../Pages/AuthPage/AuthPage";
 import AddNewPost from "../../Pages/AddNewPost/AddNewPost";
 import {AppContext} from "../../Context";
 import {db, auth} from "../../Config/firebase";
+import AppConfig from "../../Config/app-config.json";
 // import {useAuthState} from "react-firebase-hooks/auth";  //install react-firebase-hooks
 import UsersProfile from "../../Pages/UsersProfile/UsersProfile";
 import PostPage from "../../Pages/PostPage/PostPage";
@@ -22,7 +23,7 @@ import $ from "jquery";
 const App = (props)=>{
     
     const context = useContext(AppContext);
-    const {updatedReceivedData,updateUserState, updateUID, receivedData , updateSuggestionsList} = context;
+    const {updatedReceivedData,updateUserState, updateUID, receivedData , updateSuggestionsList, currentPage} = context;
     // -------------
     // const test=()=>{ //resembles the functionality of adding posts to the followers
     //     const myArr={
@@ -41,7 +42,6 @@ const App = (props)=>{
         // const [user, loading, error] = useAuthState(auth);
 
     useEffect(()=>{
-        
       const unsubscribe =  auth.onAuthStateChanged(authUser =>{
             // User logged in 
             
@@ -100,6 +100,9 @@ const App = (props)=>{
         });        
     },[ context?.openUsersModal, context?.openCommentsModal ]);
 
+    useEffect(() => {
+        document.title = `${currentPage} • ${AppConfig.title}` ;
+    },[currentPage]);
     return(
         <Fragment>
             <main>

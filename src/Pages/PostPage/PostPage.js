@@ -41,7 +41,8 @@ class PostPage extends PureComponent{
     // console.log(new Date(803980830.toDate()));
     componentDidMount(){
         // this.likesCheck();  
-         const {usersProfileData} = this.context;
+         const {usersProfileData, changeMainState} = this.context;
+         changeMainState("currentPage", "Post");
         this.setState({
             ...this.state,
             currtData: usersProfileData

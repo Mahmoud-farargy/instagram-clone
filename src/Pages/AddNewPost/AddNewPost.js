@@ -22,7 +22,7 @@ class AddNewPost extends PureComponent{
     }
     static contextType = AppContext;
     componentDidMount=()=>{
-      // this.unListen = this.props.listen
+     this.context.changeMainState("currentPage","New Post");
       this.setState({
         ...this.state,
         postingPhase: true

@@ -11,18 +11,20 @@ import {GoVerified} from "react-icons/go";
 import {useAuthState} from "react-firebase-hooks/auth";  //firebase hook
 import {auth} from "../../Config/firebase"; 
 import {Skeleton} from "@material-ui/lab";
-import InstagramEmbed from "react-instagram-embed";
+// import InstagramEmbed from "react-instagram-embed";
 import {BsPlusSquare} from "react-icons/bs";
 
 const Home =(props)=>{
-    let {receivedData, handleMyLikes, handleSubmittingComments, suggestionsList, getUsersProfile, uid, handleFollowing, deletePost, handleSubComments, handleLikingComments, handleUsersModal} = useContext(AppContext);
+    let {receivedData, handleMyLikes, handleSubmittingComments, suggestionsList, getUsersProfile, uid, handleFollowing, deletePost, handleSubComments, handleLikingComments, handleUsersModal, changeMainState} = useContext(AppContext);
     let posts = receivedData?.posts;
     const browseUser=(specialUid, name)=>{
         getUsersProfile(specialUid);
         props.history.push(`/user-profile/${name}`);
     }  
     let [user, loading, error] = useAuthState(auth);
-    
+    useEffect(() => {
+        changeMainState("currentPage","Home");
+    },[]);
     const recievedAuth = localStorage.getItem("user");
     // useEffect(()=> {
         
@@ -138,15 +140,14 @@ const Home =(props)=>{
                             : null
                         }
                         <div className="instagram--embed--container">
-                        <InstagramEmbed
+                        {/* <InstagramEmbed
                             url="https://www.instagram.com/p/CGalYyrJNsX/"
                             // hideCaptions ={false}
                             containerTagName ="div"
                             className="instagram__embed"
                             // maxWidth={320}
-                         />
+                         /> */}
                         </div>
-                        
                         
                         
                     </aside>
