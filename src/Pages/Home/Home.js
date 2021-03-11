@@ -24,6 +24,7 @@ const Home =(props)=>{
     let [user, loading, error] = useAuthState(auth);
     useEffect(() => {
         changeMainState("currentPage","Home");
+        window.scrollTo(0,0);
     },[]);
     const recievedAuth = localStorage.getItem("user");
     // useEffect(()=> {

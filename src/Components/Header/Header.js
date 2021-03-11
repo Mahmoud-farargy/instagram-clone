@@ -73,7 +73,7 @@ const Header =(props)=>{
                                              receivedData?.notifications?.list.length >=1 ?
                                             <ul className="noti--popup--ul flex-column">
                                                 {
-                                                    receivedData?.notifications?.list?.map( (notification, i) =>{
+                                                    receivedData?.notifications?.list?.slice(0,30).map( (notification, i) =>{
                                                         return(
                                                             <div key={notification?.notiId}>
                                                                 <NotificationOutput onClick={()=> setNoti(false)}  notification={notification} igVideoImg={igVideoImg} myData={receivedData} handleFollowing={handleFollowing} getUsersProfile={getUsersProfile} changeMainState={changeMainState} postIndex={i} />                                                                
