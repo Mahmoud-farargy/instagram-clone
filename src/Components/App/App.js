@@ -8,7 +8,7 @@ import AddNewPost from "../../Pages/AddNewPost/AddNewPost";
 import {AppContext} from "../../Context";
 import {db, auth} from "../../Config/firebase";
 import AppConfig from "../../Config/app-config.json";
-// import {useAuthState} from "react-firebase-hooks/auth";  //install react-firebase-hooks
+import {useAuthState} from "react-firebase-hooks/auth";
 import UsersProfile from "../../Pages/UsersProfile/UsersProfile";
 import PostPage from "../../Pages/PostPage/PostPage";
 import Messages from "../../Pages/Messages/Messages";
@@ -39,7 +39,7 @@ const App = (props)=>{
     // test()
     //-----------------------
    
-        // const [user, loading, error] = useAuthState(auth);
+    const [_, loading] = useAuthState(auth);
 
     useEffect(()=>{
       const unsubscribe =  auth.onAuthStateChanged(authUser =>{
@@ -101,6 +101,7 @@ const App = (props)=>{
     },[ context?.openUsersModal, context?.openCommentsModal ]);
 
     useEffect(() => {
+        console.log("data>>>", receivedData);
         document.title = `${currentPage} • ${AppConfig.title}` ;
     },[currentPage]);
     return(
@@ -117,6 +118,12 @@ const App = (props)=>{
                   <CommentsModal context={context}/>
                   : null
               } 
+              {
+                  
+                  loading &&
+                  <div className="global__loading"></div>
+              }
+              
                {/* Routes */}
                 <Switch>
                     <Route exact path="/" >

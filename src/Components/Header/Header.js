@@ -100,7 +100,7 @@ const Header =(props)=>{
                                         <div className="noti--popup--arrow"> </div>
                                         <ul className="prof--popup--ul flex-column">
                                            <Link to="/profile"><li onClick={()=> setProf(false)}><CgProfile className="prof__popup" /> Profile</li></Link>
-                                           <Link to="/auth"><li onClick={()=> {authLogout(); setProf(false); window.location.reload()}}><BiPowerOff className="prof__popup"/> Log Out</li></Link>
+                                           <li onClick={()=> {authLogout(props.history); setProf(false); window.location.reload()}}><BiPowerOff className="prof__popup"/> Log Out</li>
                                         </ul>
                                         <div className="noti__transparent"></div>
                                     </div>

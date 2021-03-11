@@ -84,9 +84,18 @@ const Home =(props)=>{
                                 )
                             })
                         : loading ?
-                            (<Skeleton variant="rect" width="100%">
-                                <div style={{ paddingTop: '57%' }} />
+                            (
+                            <div className="w-100 flex-column">
+                            <Skeleton variant="rect" height="100px" width="80%">
+                                <div style={{ paddingTop: '40px' }} />
                             </Skeleton>
+                            <Skeleton variant="rect" height="100px" width="80%">
+                                <div style={{ paddingTop: '20px' }} />
+                            </Skeleton>
+                            <Skeleton variant="rect" height="100px" width="80%">
+                                <div style={{ paddingTop: '20px' }} />
+                            </Skeleton>
+                            </div>
                           )
                         : posts?.length <1 ?
                             (
@@ -123,15 +132,18 @@ const Home =(props)=>{
                                 <div className="suggestions--list flex-column">
                                     <ul className="flex-column">
                                         {
-                                            suggestionsList?.filter(item => item?.uid !== receivedData?.uid ).slice(0,5).map((user,i) =>{
-                                                return(
-                                                    loading ?
-                                                    (<Skeleton variant="circle" width={40} height={40} />)
-                                                    :
-                                                    (<SuggestItem key={i} userName={user?.userName} isVerified={user?.isVerified} userUid={user?.uid} userAvatarUrl={user?.userAvatarUrl}   browseUser={browseUser} handleFollowing={handleFollowing} receivedData={receivedData} />)
-                                                    
-                                                )
-                                            })
+                                            loading ?
+                                            <div className="flex-column">
+                                               <Skeleton variant="circle" width={40} height={40} />
+                                               <Skeleton variant="circle" width={40} height={40} />
+                                            </div>
+                                            :
+                                                suggestionsList && suggestionsList.length >0 && suggestionsList.filter(item => item?.uid !== receivedData?.uid ).slice(0,5).map((user,i) =>{
+                                                    return(
+                                                        <SuggestItem key={i} userName={user?.userName} isVerified={user?.isVerified} userUid={user?.uid} userAvatarUrl={user?.userAvatarUrl}   browseUser={browseUser} handleFollowing={handleFollowing} receivedData={receivedData} />
+                                                    )
+                                                })                                            
+                                            
                                         } 
                                         
                                     </ul>

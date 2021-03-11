@@ -309,9 +309,10 @@ class AppProvider extends PureComponent{ //For termporary memory
 
         })
     }
-    authLogout(){
+    authLogout(history){
         auth.signOut();
         localStorage.clear();
+        history.replace("/auth");
         this.resetAllData();
     }
     handleFollowing(state, receiverUid, receiverName, receiverAvatarUrl, senderUid, senderName, senderAvatarUrl){

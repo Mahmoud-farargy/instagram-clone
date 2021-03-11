@@ -17,6 +17,9 @@
     max-width:1200px;
     position: relative;
 }
+.header--inner a{
+    text-decoration:none;
+}
 #profilePopup .noti--popup--inner{
     max-height:auto;
     min-height:auto; 

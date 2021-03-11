@@ -1,6 +1,8 @@
 import React, {Fragment} from "react";
 import {Avatar} from "@material-ui/core";
 import {GoVerified} from "react-icons/go";
+import PropTypes from "prop-types";
+import { propTypes } from "react-bootstrap/esm/Image";
 
 const SuggestItem =(props)=>{
     const {userName, isVerified, userUid, userAvatarUrl, browseUser, handleFollowing, receivedData} = props;
@@ -18,5 +20,13 @@ const SuggestItem =(props)=>{
             </div>
         </Fragment>
     )
+}
+SuggestItem.prototype = {
+    receivedData: PropTypes.object.isRequired,
+    userName:PropTypes.string.isRequired,
+    isVerified: PropTypes.bool.isRequired,
+    userUid: PropTypes.string.isRequired,
+    browseUser: PropTypes.func.isRequired,
+    handleFollowing: PropTypes.func.isRequired
 }
 export default SuggestItem;

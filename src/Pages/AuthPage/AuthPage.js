@@ -28,7 +28,7 @@ const AuthPage =(props)=>{
     const submitForm= async (event, authType)=>{
         
         event.preventDefault();
-        var {resetAllData, updateSuggestionsList, isUserOnline, updateUID, updatedReceivedData, updateUserState} = context;
+        var {resetAllData, updateSuggestionsList, isUserOnline, updateUID, updateUserState} = context;
         if(authType === "signUp"){
             resetAllData();  //clears data before adding new one           
             setTimeout(()=>{
@@ -81,7 +81,7 @@ const AuthPage =(props)=>{
                                             })
                                             updateUserState(true);
                                             updateUID(authUser?.uid);
-                                            updatedReceivedData();
+                                            // updatedReceivedData();
                                            
                                         });
                                     

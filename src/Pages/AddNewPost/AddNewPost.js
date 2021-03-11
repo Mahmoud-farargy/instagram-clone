@@ -116,7 +116,7 @@ class AddNewPost extends PureComponent{
     onSubmitPost(x){
         x.preventDefault();
 
-          let {isUserOnline, receivedData, updatedReceivedData , uid} = this.context;
+          let {isUserOnline, receivedData, uid} = this.context;
         
           if(isUserOnline){//adds post
               if(this.state.insertedCaption !== ""){
@@ -127,11 +127,11 @@ class AddNewPost extends PureComponent{
                         db.collection("users").doc(user?.uid).update({
                                 posts: this.state.posts
                         }).then(()=>{
-                          updatedReceivedData();
                           this.props.history.push("/");
                           this.resetState();
                         })
                     })
+                    
                   }else{
                     alert("Content should be inserted");
                   }
