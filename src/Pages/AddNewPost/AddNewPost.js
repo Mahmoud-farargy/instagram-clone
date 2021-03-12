@@ -125,7 +125,7 @@ class AddNewPost extends PureComponent{
 
                     auth.onAuthStateChanged(user =>{
                         db.collection("users").doc(user?.uid).update({
-                                posts: this.state.posts
+                              posts: this.state.posts
                         }).then(()=>{
                           this.props.history.push("/");
                           this.resetState();
@@ -153,15 +153,13 @@ class AddNewPost extends PureComponent{
           const uploadContent = storage.ref(`content/${uploadedItem.name}`).put(uploadedItem, metadata);
         uploadContent.on("state_changed", (snapshot)=>{
           //Progress function .. 
-          const progress  = Math.round(snapshot.bytesTransferred /  snapshot.totalBytes ) * 100;
+          const progress  = Math.round(snapshot.bytesTransferred / snapshot.totalBytes ) * 100;
           this.setState({
             ...this.state,
             uploading: true,
             progressBarPercentage: progress
           })
-          // console.log(uploadContent, progress, timestamp);
         },(error) =>{
-          //Error function..
           alert(error.message);
           this.resetState();
         },
