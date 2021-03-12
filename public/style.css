@@ -237,6 +237,9 @@ a:visited{
     align-items:center;
     gap: 0px;
 }
+#page {
+    min-height: 57vh;
+}
 .auth--review--pic{
     padding:30px 0px 0px;
     width: 30%;
@@ -822,6 +825,9 @@ button:active{
     width:30px;
     height:30px;
 }   
+.mobile--users--sidedrawer .messages--chatbox--body{
+    height:85%;
+}
 #messages.messages--container .messages--chatbox--body{
     padding:44px 20px 0;
     height:70%;
@@ -1265,6 +1271,10 @@ a.prof__btn__unfollowed{
     }
     .auth{
         width:75%;
+    }
+    #page {
+        min-height:95vh;
+        margin-bottom: 50px;
     }
     .mobile-only{
         display:block;

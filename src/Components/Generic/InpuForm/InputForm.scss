@@ -1,0 +1,57 @@
+#input--form--field{
+        .form-group{
+        width:90%;
+        justify-content: space-between;
+        // align-items:center;
+        @media only screen and (max-width: 800px){
+            flex-direction: column !important;
+        }
+        label{
+            margin: 10px 10px 0 0;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 18px;
+            text-transform: capitalize;
+            text-align:left;
+        }
+        .form--input--side{
+           width: 80%; 
+           @media only screen and (max-width: 670px){
+               width: 100%;
+           }
+        }
+        input, select{
+        margin: 8px 0;
+        min-width:250px;    
+        border: 1px solid #dbdbdb;
+        font-size: 16px;
+        height: 32px;
+        padding: 0 10px;
+        color: #262626;
+        color: rgb(38, 38, 38);
+        border-radius: 3px;
+        
+        }
+        textarea{
+        @extend input;
+        width: 100%;
+        resize: vertical;
+        min-height: 70px;
+        padding: 10px;
+        }
+        small{
+            margin-top:6px; 
+            font-size:12px;
+            display:block;
+            line-height: 14px;
+            font-weight:400;
+            color:#8e8e8e;
+            white-space: wrap !important;
+
+        }
+        ::placeholder{
+            text-transform: capitalize;
+            font-size:14px;
+        }
+    }
+}

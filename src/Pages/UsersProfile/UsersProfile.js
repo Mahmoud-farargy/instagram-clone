@@ -27,9 +27,8 @@ const UsersProfile =(props)=>{
         props.history.push("/messages");
     }
     useEffect(()=>{
-       
         setFollowingState(receivedData?.following?.some(item => item?.receiverUid  === usersProfileData?.uid));
-    },[receivedData?.followers,usersProfileData?.followers,]);
+    },[receivedData?.followers,usersProfileData?.followers]);
     
     useEffect(() => {
         changeMainState("currentPage", usersProfileData.userName || "User Profile");
@@ -72,7 +71,7 @@ const UsersProfile =(props)=>{
                             </div>
                             {/* bottom row */}
                             <div className="bottom--row--user-info flex-column">
-                                    <span>{usersProfileData?.bio}</span>
+                                    <span>{usersProfileData?.profileInfo?.bio}</span>
                             </div>
                     </div>
                 </div>

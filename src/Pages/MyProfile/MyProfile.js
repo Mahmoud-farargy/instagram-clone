@@ -58,7 +58,7 @@ const MyProfile =(props)=>{
                             </div>
                             {/* bottom row */}
                             <div className="bottom--row--user-info flex-column">
-                                    <span>{receivedData?.bio}</span>
+                                    <span>{receivedData?.profileInfo?.bio}</span>
                             </div>
                     </div>
                 </div>

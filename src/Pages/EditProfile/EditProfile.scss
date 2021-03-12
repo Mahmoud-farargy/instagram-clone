@@ -1,0 +1,76 @@
+#editProfile {
+  .edit--desktop {
+    width: 100%;
+    height: 100%;
+    max-width:980px;
+    margin:0 auto;
+  }
+  .right--inner{
+    width: 80%;
+  }
+  .right--side{
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      @media only screen and (max-width:670px){
+       padding:5px;
+    }
+  }
+  .edit--box {
+    background-color: #fff;
+    border: 1px solid rgb(219, 219, 219);
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    margin: 30px auto 0;
+    overflow: hidden;
+    width: 100%;
+    max-width: 935px;
+    display: grid;
+    grid-template-columns: 25% 75%;
+  }
+  .edit--box ul {
+    height: 100%;
+    border-right: 1px solid #dbdbdb;
+  }
+  .change--photo {
+    
+    margin: 32px 0px 0px;
+    width: 100%;
+    align-items: center;
+    padding: 4px 0;
+  }
+  .change--photo .MuiAvatar-circle{
+    width:60px;
+    height: 60px;
+  } 
+  .user--pic--container .user__prof__name{
+    padding-bottom:0;
+    margin-bottom:3px;
+    font-size:20px;
+    color: #262626;
+    line-height: 22px;
+    white-space:nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .user--pic--container .change__prof__pic{
+      color: #0095f6;
+      font-size:14px;
+      padding:0;
+      text-align:left;
+      display:inline;
+      user-select:none;
+      background-color: transparent;
+      border:none;
+      font-weight: 600;
+  }
+  .edit--prof--form{
+      margin: 20px 0;
+        input[type='submit']{
+            width:100px;
+            margin-top:10px;
+        }
+  }
+  .edit--mobile {
+  }
+}

@@ -1,9 +1,8 @@
 import React ,{PureComponent} from "react";
 import {db, auth, storageRef} from "./Config/firebase";
 import igVideoImg from "./Assets/instagram-video.png";
-// import { truncate } from "fs";
 
-    const AppContext = React.createContext();
+const AppContext = React.createContext();
 
 class AppProvider extends PureComponent{ //For termporary memory
     constructor(props){
@@ -11,6 +10,7 @@ class AppProvider extends PureComponent{ //For termporary memory
         this.state={
             receivedData: {},
             uid: "",
+            currentUser: {},
             suggestionsList: [],
             initialSuggestions:[],
             isUserOnline: false,
@@ -24,7 +24,7 @@ class AppProvider extends PureComponent{ //For termporary memory
         }
     }
   
-    updatedReceivedData=(data)=>{
+    updatedReceivedData=()=>{
         db.collection("users").doc(this.state.uid).onSnapshot(data=>{  //any fetching overflow? change onSnapshot to get
             
                 this.setState({
@@ -37,7 +37,7 @@ class AppProvider extends PureComponent{ //For termporary memory
     updateSuggestionsList(data){ 
         let sugs = this.state.initialSuggestions; 
         sugs.unshift(data);
-        let suggestList =  Array.from(new Set(sugs?.map(itemId => itemId.uid))).map(ID => sugs?.find(el => el.uid === ID));
+        let suggestList =  Array.from(new Set(sugs?.map(itemId => itemId.uid))).slice(0,5).map(ID => sugs?.find(el => el.uid === ID));
             this.setState({
                 ...this.state,
                 suggestionsList: suggestList
@@ -49,7 +49,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                           [stateBase]: newState,
                   }).then(()=>{
                       if(updateAbility === true || uid === this.state.receivedData?.uid){
-                          this.updatedReceivedData();
+                        //   this.updatedReceivedData();
                       }
                   }) 
                 }else{
@@ -58,7 +58,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                         notifications: withNotifications
                     }).then(()=>{
                         if(updateAbility === true || uid === this.state.receivedData?.uid){
-                            this.updatedReceivedData();
+                            // this.updatedReceivedData();
                         }
                     }) 
                 }
@@ -310,10 +310,12 @@ class AppProvider extends PureComponent{ //For termporary memory
         })
     }
     authLogout(history){
-        auth.signOut();
-        localStorage.clear();
+        auth.signOut().then(() =>{
+            localStorage.clear();
+            this.resetAllData();
+        });
         history.replace("/auth");
-        this.resetAllData();
+        
     }
     handleFollowing(state, receiverUid, receiverName, receiverAvatarUrl, senderUid, senderName, senderAvatarUrl){
         db.collection("users").doc(receiverUid).get().then(items=>{
@@ -401,7 +403,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                 const myData = this.state.receivedData;
                 const unupdatedSendersData = this.state.receivedData?.messages;
                 let sendersCopy = JSON.parse(JSON.stringify(unupdatedSendersData));
-            let currIndex = sendersCopy.map(item => {   //ERROR FOUND
+                let currIndex = sendersCopy.map(item => {   //ERROR FOUND
                         return item?.uid;
                 }).indexOf(uid);
                 sendersCopy[currIndex].chatLog.push({textMsg, uid: myUid, userName: myData?.userName, userAvatarUrl: myData?.userAvatarUrl, date: new Date(), type: type});
@@ -505,6 +507,12 @@ class AppProvider extends PureComponent{ //For termporary memory
             openCommentsModal: boolean
         })
     }
+    handleEditingProfile(formData){
+        if(formData){
+            this.updateParts(this.state.uid, "profileInfo", formData, false, "");
+        }
+    }
+
     deletePost(postId, postIndex, contentPath){
         const myPosts = this.state.receivedData?.posts;
         let postsCopy = JSON.parse(JSON.stringify(myPosts));
@@ -541,6 +549,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                 igVideoImg: this.state.igVideoImg,
                 openCommentsModal: this.state.openCommentsModal,
                 currentPage: this.state.currentPage,
+                currentUser: this.state.currentUser,
                 isUserOnline: this.state.isUserOnline,//functions
                 updatedReceivedData: this.updatedReceivedData.bind(this),
                 updateUserState: this.updateUserState.bind(this),
@@ -563,7 +572,8 @@ class AppProvider extends PureComponent{ //For termporary memory
                 closeNotificationAlert: this.closeNotificationAlert.bind(this),
                 handleUsersModal: this.handleUsersModal.bind(this),
                 handleCommentsModal: this.handleCommentsModal.bind(this),
-                deletePost: this.deletePost.bind(this)
+                deletePost: this.deletePost.bind(this),
+                handleEditingProfile: this.handleEditingProfile.bind(this),
             }}>
                 {this.props.children}
             </AppContext.Provider>

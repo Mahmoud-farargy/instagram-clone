@@ -48,7 +48,7 @@ class Messages extends Component{
             }
             
         }
-        if(prevState.currentUserIndex != this.state.currentUserIndex && this.autoScroll){
+        if(prevState.currentUserIndex != this.state.currentUserIndex && this.autoScroll && this.autoScroll.scrollIntoViewIfNeeded){
             this.autoScroll.scrollIntoViewIfNeeded(); 
         }
     }

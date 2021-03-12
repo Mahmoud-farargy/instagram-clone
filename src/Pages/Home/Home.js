@@ -25,6 +25,7 @@ const Home =(props)=>{
     useEffect(() => {
         changeMainState("currentPage","Home");
         window.scrollTo(0,0);
+        
     },[]);
     const recievedAuth = localStorage.getItem("user");
     // useEffect(()=> {
@@ -139,7 +140,7 @@ const Home =(props)=>{
                                                <Skeleton variant="circle" width={40} height={40} />
                                             </div>
                                             :
-                                                suggestionsList && suggestionsList.length >0 && suggestionsList.filter(item => item?.uid !== receivedData?.uid ).slice(0,5).map((user,i) =>{
+                                                suggestionsList && suggestionsList.length >0 && suggestionsList.filter(item => item?.uid !== receivedData?.uid ).map((user,i) =>{
                                                     return(
                                                         <SuggestItem key={i} userName={user?.userName} isVerified={user?.isVerified} userUid={user?.uid} userAvatarUrl={user?.userAvatarUrl}   browseUser={browseUser} handleFollowing={handleFollowing} receivedData={receivedData} />
                                                     )

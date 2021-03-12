@@ -23,7 +23,7 @@ import $ from "jquery";
 const App = (props)=>{
     
     const context = useContext(AppContext);
-    const {updatedReceivedData,updateUserState, updateUID, receivedData , updateSuggestionsList, currentPage} = context;
+    const {updatedReceivedData,updateUserState, updateUID, receivedData , updateSuggestionsList, currentPage, changeMainState} = context;
     // -------------
     // const test=()=>{ //resembles the functionality of adding posts to the followers
     //     const myArr={
@@ -59,6 +59,7 @@ const App = (props)=>{
                             updateSuggestionsList(user.data());
                     })
                 });
+                changeMainState("currentUser", authUser);
                 updateUserState(true);
                 updateUID(authUser?.uid)
                 updatedReceivedData(); 
@@ -77,7 +78,24 @@ const App = (props)=>{
                         // }
                 // })
             }else{
+                //attempting to log in again using local storage data
+                const recievedAuth = localStorage.getItem("user");
+                
+                if(recievedAuth){
+                    console.log("logout reached");
+                    const {email, password} = JSON.parse(recievedAuth)
+                const returnPassowrd = (binary) => {
+                    const binCode = [];
+                    for(var i=0; i< binary.length; i++){
+                        binCode.push(String.fromCharCode(parseInt(binary[i], 2)));
+                    }
+                    return binCode.join("");
+                }
+                    auth.createUserWithEmailAndPassword(email, returnPassowrd(password));
+                };
+            
                 // user logged out
+
                 updateUserState(false);
             }
             
@@ -85,7 +103,7 @@ const App = (props)=>{
         // ----------------------
         
         return () =>{
-            //perform some clearn up actions
+            //performs some clearn up actions
             unsubscribe();
         }
 
@@ -100,8 +118,7 @@ const App = (props)=>{
         });        
     },[ context?.openUsersModal, context?.openCommentsModal ]);
 
-    useEffect(() => {
-        console.log("data>>>", receivedData);
+    useEffect(() => { //<<make cleanup work here
         document.title = `${currentPage} • ${AppConfig.title}` ;
     },[currentPage]);
     return(

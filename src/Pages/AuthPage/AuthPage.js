@@ -23,7 +23,11 @@ const AuthPage =(props)=>{
     const [getPasswordMode, setPasswordMode] = useState(false);
     //-----x------ states--------x--------------
     useEffect(() =>{
-        context.changeMainState("currentPage",signUpState ? "Sign up" : "Log in");
+        
+        return () => {
+            context.changeMainState("currentPage",signUpState ? "Sign up" : "Log in");
+        };
+       
     },[signUpState]);
     const submitForm= async (event, authType)=>{
         
@@ -41,8 +45,7 @@ const AuthPage =(props)=>{
                                                 followers: [],
                                                 following: [],
                                                 messages: [],
-                                                bio: "",
-                                                websiteUrl: "",
+                                                profileInfo: {bio: "",website: "", gender: "", status: "", name:"", phoneNumber: ""},
                                                 homePosts: [],
                                                 latestLikedPosts: [],
                                                 savedposts: [],
@@ -114,7 +117,7 @@ const AuthPage =(props)=>{
                     //         followers: [],
                     //         following: [],
                     //         messages: [],
-                    //         bio: "",
+                    //         profileInfo: {bio: "",website: "", gender: "", status: "", name:"", phoneNumber: ""},
                     //         homePosts: [],
                     //         latestLikedPosts: [],
                     //         savedposts: [],
