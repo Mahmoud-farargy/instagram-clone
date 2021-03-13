@@ -161,10 +161,13 @@ const AuthPage =(props)=>{
     }
     const resetEmail=(e)=>{
         e.preventDefault();
+        setLoading(true);
         auth.sendPasswordResetEmail(loginEmail).then(res =>{
             console.log(res);
+            setLoading(false);
             alert("A password reset config has been send to your email");
         }).catch(err=>{
+            setLoading(false);
             alert("The email you entered is does not exist in our database", err);
         });
     }
