@@ -145,40 +145,50 @@ class AddNewPost extends PureComponent{
           
       }
     handleFileChange=(w)=>{
-      let uploadedItem  = w.target.files[0];  
+      const {receivedData} = this.context;
+      let uploadedItem  = w.target.files[0];     
+      const fileName = `${Math.random()}${uploadedItem.name}`;
       const metadata ={
         contentType : uploadedItem !== "" ? uploadedItem?.type : null
       }
       if(/(image|video)/g.test(metadata.contentType) && uploadedItem.size <= 12378523){
-          const uploadContent = storage.ref(`content/${uploadedItem.name}`).put(uploadedItem, metadata);
-        uploadContent.on("state_changed", (snapshot)=>{
-          //Progress function .. 
-          const progress  = Math.round(snapshot.bytesTransferred / snapshot.totalBytes ) * 100;
-          this.setState({
-            ...this.state,
-            uploading: true,
-            progressBarPercentage: progress
-          })
-        },(error) =>{
-          alert(error.message);
-          this.resetState();
-        },
-        ()=>{
-          // Complete function..
-          storage.ref("content").child(uploadedItem.name).getDownloadURL().then( url =>{
-            //post content on db
+        const itemType = /image/g.test(metadata.contentType) ? "image" : "video";
+        if(uploadedItem.name.split("").length <= 50){
+              const uploadContent = storage.ref(`content/${receivedData?.uid}/${fileName}`).put(uploadedItem, metadata);
+            uploadContent.on("state_changed", (snapshot)=>{
+              //Progress function .. 
+              const progress  = Math.round(snapshot.bytesTransferred / snapshot.totalBytes ) * 100;
               this.setState({
                 ...this.state,
-                contentName: uploadedItem.name,
-                uploading: false,
-                progressBarPercentage: 0,
-                contentURL: url,
-                contentType: /image/g.test(metadata.contentType) ? "image" : "video"
+                uploading: true,
+                progressBarPercentage: progress
               })
-              uploadedItem =  ""; /*<<changed this (check..)*/
-          })
+            },(error) =>{
+              alert(error.message);
+              this.resetState();
+            },
+            ()=>{
+              // Complete function..
+              storage.ref(`content/${receivedData?.uid}`).child(fileName).getDownloadURL().then( url =>{
+                //post content on db
+                  this.setState({
+                    ...this.state,
+                    contentName: fileName,
+                    uploading: false,
+                    progressBarPercentage: 0,
+                    contentURL: url,
+                    contentType: itemType
+                  })
+                  uploadedItem =  ""; /*<<changed this (check..)*/
+              }).catch(err=>{
+                alert(err);
+              })
+            }
+            );
+        }else{
+          alert(`The name of the ${itemType} is too long. it should not exceed 50 characters`);
         }
-        );
+       
       }else{
         alert("Please choose an image or video that doesn't exceed the size of 12MB.")
       }

@@ -182,7 +182,7 @@ class AppProvider extends PureComponent{ //For termporary memory
     }
     
     deleteContentFromFB(path){
-      storageRef.child(`content/${path}`).delete();
+        path && storageRef.child(`content/${this.state.uid}/${path}`).delete();
     }
     getUsersProfile(uid){ 
         db.collection("users").doc(uid).onSnapshot(snapshot =>{

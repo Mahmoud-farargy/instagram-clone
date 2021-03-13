@@ -19,7 +19,8 @@ const AuthPage =(props)=>{
     const [signUpUsername, setSignUpUsername] = useState("");
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
-    const [reTypedPassword, setRePassword] = useState(""); 
+    const [reTypedPassword, setRePassword] = useState("");
+    const [inProgress, setLoading] = useState(false);
     const [getPasswordMode, setPasswordMode] = useState(false);
     //-----x------ states--------x--------------
     useEffect(() =>{
@@ -34,9 +35,11 @@ const AuthPage =(props)=>{
         event.preventDefault();
         var {resetAllData, updateSuggestionsList, isUserOnline, updateUID, updateUserState} = context;
         if(authType === "signUp"){
-            resetAllData();  //clears data before adding new one           
+            resetAllData();  //clears data before adding new one 
+            setLoading(true);          
             setTimeout(()=>{
                 if(!isUserOnline){  //avoids data overlapping
+                    
                                 auth.createUserWithEmailAndPassword(signUpEmail, signUpPassword).then(cred=>{
                                         db.collection("users").doc(cred.user.uid).set({
                                                 uid: cred.user.uid,
@@ -60,8 +63,9 @@ const AuthPage =(props)=>{
                                             props.history.push("/");
                                             
                                         })
-                                        
+                                        setLoading(false);
                                     }).catch((err)=>{
+                                        setLoading(false);
                                         alert(err.message);
                                     })
                                 }
@@ -69,11 +73,12 @@ const AuthPage =(props)=>{
                             
             }else if(authType ===  "login"){
                         resetAllData(); 
+                        setLoading(true);
                         setTimeout(()=>{
                             if(!isUserOnline){ //avoids data overlapping
-                            
+                                
                                 auth.signInWithEmailAndPassword(loginEmail, loginPassword).then(res =>{
-                                   
+                                    setLoading(false);
                                         setLoginEmail("");
                                         setLoginPassword("");
                                         
@@ -97,6 +102,7 @@ const AuthPage =(props)=>{
                                    localStorage.setItem("user", JSON.stringify({email: loginEmail, password: decipherPassword(loginPassword)}));
                                     props.history.push("/");
                                 }).catch((err)=>{
+                                        setLoading(false);
                                         alert(err.message);
                                 })
                             }
@@ -187,14 +193,14 @@ const AuthPage =(props)=>{
                                     <div className="flex-column">
                                         <input required autoFocus value={loginEmail} onChange={(e)=> setLoginEmail(e.target.value)} type="text"  placeholder="Email" />
                                         <input required value={loginPassword} onChange={(e)=> setLoginPassword(e.target.value)} type="password"  placeholder="Password" /> 
-                                        <input className={loading || (!loginEmail || !loginPassword ) ? "disabled" : ""} disabled={loading || (!loginEmail || !loginPassword )}  type="submit" value={loading ?"Loading...": "Log In"} />
+                                        <input className={loading || (!loginEmail || !loginPassword || inProgress) ? "disabled" : ""} disabled={loading || (!loginEmail || !loginPassword) || inProgress}  type="submit" value={loading ?"Loading...": "Log In"} />
                                         <span onClick={()=> setPasswordMode(true)} className="forgot__pass">Forgot password?</span>
                                     </div>
                                     : 
                                     <div>
                                         <span onClick={()=> setPasswordMode(false)} className="back__Btn">Back</span>
                                         <input required autoFocus value={loginEmail} onChange={(e)=> setLoginEmail(e.target.value)} type="text"  placeholder="Email" />
-                                        <input type="submit" onClick={(e)=> resetEmail(e)} className={loading || !loginEmail ? "disabled resetPassBtn": "resetPassBtn"} disabled={loading || !loginEmail} value="Resest password through email"/>
+                                        <input type="submit" onClick={(e)=> resetEmail(e)} className={(loading || !loginEmail || inProgress) ? "disabled resetPassBtn": "resetPassBtn"} disabled={(loading || !loginEmail || inProgress)} value="Resest password through email"/>
                                     </div>
                                     
                                 }
@@ -214,7 +220,7 @@ const AuthPage =(props)=>{
                                     <input required value={signUpUsername} onChange={(e)=> setSignUpUsername(e.target.value)} type="text"  placeholder="Username" />
                                     <input required value={signUpPassword} onChange={(e)=> setSignUpPassword(e.target.value)} type="password"  placeholder="Password" />
                                     <input required value={reTypedPassword} onChange={(e)=> setRePassword(e.target.value)} type="password"  placeholder="Re-type Password" />
-                                    <input className={loading || (!signUpEmail || !signUpPassword || !signUpUsername || !reTypedPassword) ? "disabled" : ""}  disabled={loading || (!signUpEmail || !signUpPassword || !signUpUsername || !reTypedPassword)} type="submit" value={loading ?"Loading...": "Sign Up"} />
+                                    <input className={loading || (!signUpEmail || !signUpPassword || !signUpUsername || !reTypedPassword || inProgress) ? "disabled" : ""}  disabled={loading || (!signUpEmail || !signUpPassword || !signUpUsername || !reTypedPassword || inProgress)} type="submit" value={loading ?"Loading...": "Sign Up"} />
                                 </form> 
                             </div>
                             

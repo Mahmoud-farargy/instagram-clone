@@ -53,16 +53,25 @@
     text-overflow: ellipsis;
     overflow: hidden;
   }
-  .user--pic--container .change__prof__pic{
+  .form--btns{
+    justify-content:space-between;
+    flex-wrap: wrap;
+  }
+  .change__prof__pic{
       color: #0095f6;
       font-size:14px;
       padding:0;
       text-align:left;
+      cursor: pointer;
       display:inline;
       user-select:none;
       background-color: transparent;
       border:none;
       font-weight: 600;
+      @media only screen and (max-width: 670px){
+        display:block;
+        width:100%;
+      }
   }
   .edit--prof--form{
       margin: 20px 0;

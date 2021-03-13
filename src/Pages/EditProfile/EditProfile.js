@@ -1,7 +1,7 @@
 import React, { PureComponent, lazy, Suspense } from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import "./EditProfile.scss";
-// import {auth} from "../../Config/firebase";
+import {auth, db} from "../../Config/firebase";
 import { Avatar } from "@material-ui/core";
 import { AppContext } from "../../Context";
 import {updateObject} from "../../Utilities/Utility";
@@ -20,8 +20,7 @@ class EditProfile extends PureComponent {
         gender: "",
         status: "Single"
     },
-    submitted: false,
-    
+    submitted: false,    
   };
   static contextType = AppContext;
   
@@ -46,11 +45,40 @@ class EditProfile extends PureComponent {
   submitForm(e) {
     e.preventDefault();
     const {handleEditingProfile} = this.context; 
+   const curr = auth.currentUser;
     this.setState(updateObject(this.state, {submitted: true}));
     if(Object.keys(this.state.form).every(item => this.state.form[item])){
+        curr.updateProfile({
+            displayName: this.state.form.name,
+            // photoURL: ""
+        });
+        // curr.updateEmail(this.);
         handleEditingProfile(this.state.form);
+       
         this.props.history.push("/profile");
     }
+  }
+  onDeleteAccount(x){
+    const {receivedData} = this.context;   
+    x.stopPropagation();
+    console.log("delete clicked"); //temporarily
+    if(window.confirm("Are you sure you want to delete your account permanently?")){
+        console.log(receivedData?.uid);
+        // storageRef.child(`content/${receivedData?.uid}`).delete().then(()=>{
+            auth.currentUser.delete().then(()=>{
+                db.collection("users").doc(receivedData?.uid).delete().then(()=>{
+                    
+                })
+               this.props.history.replace("/auth");
+                    localStorage.clear();
+                    alert("User deleted");
+            // }).catch(err=>{
+            //     alert(err);
+            // }); 
+        });
+        
+    }
+    
   }
   render() {
     const { receivedData, currentUser } = this.context;
@@ -196,14 +224,19 @@ class EditProfile extends PureComponent {
                         />
 
                       </Suspense>
-                      
-                      <input
-                        role="button"
-                        type="submit"
-                        disabled={!isFormValid}
-                        value="Submit"
-                        className={!isFormValid ? "disabled profile__btn prof__btn__followed" : "profile__btn prof__btn__followed"}
-                      />
+                      <div className="form--btns flex-row">
+                         <input
+                            role="button"
+                            type="submit"
+                            disabled={!isFormValid}
+                            value="Submit"
+                            className={!isFormValid ? "disabled profile__btn prof__btn__followed mb-2" : "profile__btn prof__btn__followed mb-2"}
+                        />  
+                         <span
+                            className="change__prof__pic mt-3"
+                            onClick={(x) => this.onDeleteAccount(x)}
+                        >Permanently delete my account</span>  
+                      </div>
                     </form>
                   </div>
                 </div>
