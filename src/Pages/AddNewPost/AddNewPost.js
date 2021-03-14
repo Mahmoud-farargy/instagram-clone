@@ -8,25 +8,35 @@ import {Button, LinearProgress} from "@material-ui/core";
 // import Skeleton from '@material-ui/lab/Skeleton';  //npm install @material-ui/lab
 
 class AddNewPost extends PureComponent{
-    
-    state={
-        posts: [{caption: "", id: "",contentType: "" , contentURL: "", comments: [], date: "", likes: [], userName: "", location: "" , uid: ""}],
-        insertedCaption: "",
-        progressBarPercentage: 0,
-        uploading: false,
-        postingPhase: true,
-        contentType: "",
-        contentURL: "",
-        contentName: "",
-        location: ""
+    constructor(props){
+      super(props);
+        this.state={
+          posts: [{caption: "", id: "",contentType: "" , contentURL: "", comments: [], date: "", likes: [], userName: "", location: "" , uid: ""}],
+          insertedCaption: "",
+          progressBarPercentage: 0,
+          uploading: false,
+          postingPhase: true,
+          contentType: "",
+          contentURL: "",
+          contentName: "",
+          location: ""
+      }
+      this._isMounted =false;
     }
-    static contextType = AppContext;
+   static contextType = AppContext;
     componentDidMount=()=>{
-     this.context.changeMainState("currentPage","New Post");
-      this.setState({
-        ...this.state,
-        postingPhase: true
-      })
+      this._isMounted = true;
+      if(this._isMounted){
+        this.context.changeMainState("currentPage","New Post");
+        this.setState({
+          ...this.state,
+          postingPhase: true
+        })
+      }
+    
+    }
+    componentWillUnmount = ()=>{
+      this._isMounted =false;
     }
     componentDidUpdate=()=>{
         const {receivedData} = this.context;
@@ -116,9 +126,9 @@ class AddNewPost extends PureComponent{
     onSubmitPost(x){
         x.preventDefault();
 
-          let {isUserOnline, receivedData, uid} = this.context;
+          let {receivedData, uid, notify} = this.context;
         
-          if(isUserOnline){//adds post
+          if(uid){//adds post
               if(this.state.insertedCaption !== ""){
                   if(this.state.contentName !== ""){
                       this.state.posts.unshift({caption: this.state.insertedCaption, id: this.generateNewId(),contentType: this.state.contentType , contentURL: this.state.contentURL, comments: [] , date: new Date(), likes: {people : []}, userName: receivedData?.userName, location: this.state.location , postOwnerId: uid, userAvatarUrl: receivedData?.userAvatarUrl, contentName: this.state.contentName} );
@@ -131,13 +141,13 @@ class AddNewPost extends PureComponent{
                           this.resetState();
                         })
                     })
-                    
+                    notify("Post added");
                   }else{
-                    alert("Content should be inserted");
+                    notify("Content should be inserted", "error");
                   }
                 
               }else{
-                alert("Caption should be included");
+                notify("Caption should be included", "error");
               }
               
           }
@@ -145,7 +155,7 @@ class AddNewPost extends PureComponent{
           
       }
     handleFileChange=(w)=>{
-      const {receivedData} = this.context;
+      const {receivedData, notify} = this.context;
       let uploadedItem  = w.target.files[0];     
       const fileName = `${Math.random()}${uploadedItem.name}`;
       const metadata ={
@@ -164,7 +174,7 @@ class AddNewPost extends PureComponent{
                 progressBarPercentage: progress
               })
             },(error) =>{
-              alert(error.message);
+              notify(error.message, "error");
               this.resetState();
             },
             ()=>{
@@ -181,16 +191,16 @@ class AddNewPost extends PureComponent{
                   })
                   uploadedItem =  ""; /*<<changed this (check..)*/
               }).catch(err=>{
-                alert(err);
+                notify(err, "error");
               })
             }
             );
         }else{
-          alert(`The name of the ${itemType} is too long. it should not exceed 50 characters`);
+          notify(`The name of the ${itemType} is too long. it should not exceed 50 characters`, "info");
         }
        
       }else{
-        alert("Please choose an image or video that doesn't exceed the size of 12MB.")
+        notify("Please choose an image or video that doesn't exceed the size of 12MB.", "info")
       }
       
       

@@ -18,7 +18,7 @@ const EditProfileOption = (props) => {
     });
     const [submitted, setSubmission] = useState(false);
     // --x--end of state-x--//
-    const { receivedData, currentUser, handleEditingProfile } = useContext(AppContext);
+    const { receivedData, currentUser, handleEditingProfile, notify } = useContext(AppContext);
     // useEffct
     useEffect(()=>{
         if(receivedData && receivedData?.profileInfo && Object.keys(receivedData?.profileInfo).length > 0){
@@ -48,9 +48,9 @@ const EditProfileOption = (props) => {
                     })
                    props.history.replace("/auth");
                         localStorage.clear();
-                        alert("User deleted");
+                        notify("User deleted");
                 // }).catch(err=>{
-                //     alert(err);
+                //     notify(err, "error");
                 // }); 
             });
             
@@ -71,6 +71,7 @@ const EditProfileOption = (props) => {
             // curr.updateEmail(this.);
             handleEditingProfile(formState, "editProfile");
             props.history.push("/profile");
+            notify("Profile updated", "success");
         }
       }
 

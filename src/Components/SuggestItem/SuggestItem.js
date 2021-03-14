@@ -20,7 +20,7 @@ const SuggestItem =(props)=>{
         </Fragment>
     )
 }
-SuggestItem.prototype = {
+SuggestItem.propTypes = {
     receivedData: PropTypes.object.isRequired,
     userName:PropTypes.string.isRequired,
     isVerified: PropTypes.bool.isRequired,

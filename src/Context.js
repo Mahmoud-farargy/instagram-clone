@@ -1,7 +1,7 @@
 import React ,{PureComponent} from "react";
 import {db, auth, storageRef} from "./Config/firebase";
 import igVideoImg from "./Assets/instagram-video.png";
-
+import {toast} from "react-toastify";
 const AppContext = React.createContext();
 
 class AppProvider extends PureComponent{ //For termporary memory
@@ -121,7 +121,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                 if(currentI !== -1){
                     notiCopy.list.splice(currentI, 1);
                 }else{
-                    // alert("abort 151 error");
+                    // this.notify("abort 151 error", "error");
                 }
                 
             }
@@ -242,7 +242,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                   }
                  this.updateParts(postOwnerId,"posts", postsCopy, updatingAbility, notiCopy); 
              }else {
-                 alert("Error has occurred. Please try again later.");
+                 this.notify("Error has occurred. Please try again later.", "error");
              }
             
         
@@ -291,13 +291,13 @@ class AppProvider extends PureComponent{ //For termporary memory
                         if(notiIndex !== -1){
                             notiCopy.list.splice(notiIndex,1); //<<< FIX THIS
                         }else{
-                            // alert("error likes 304");
+                            // this.notify("error likes 304", "error");
                         }
                         likesArr.likes.splice(index,1);
                        
                         
                     }else{
-                        alert("context 310 err");
+                        this.notify("context 310 err", "error");
                     }
                     
                 }
@@ -356,7 +356,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                                     });     //removes duplicates 
                             this.updateParts(senderUid, "following", newSendersCopy, true,"");
                      }else{
-                         alert("Following yourself is not allowed");
+                         this.notify("Following yourself is not allowed", "warning");
                      }
                 }else if(state){ //unfollow
                     // removes sender from receiver's followers array
@@ -378,11 +378,11 @@ class AppProvider extends PureComponent{ //For termporary memory
                     if(notiIndex !== -1){
                         notiCopy.list.splice(notiIndex,1); 
                     }else{
-                        // alert("aborted2");
+                        // this.notify("aborted2", "error");
                     }
                     this.updateParts(receiverUid, "followers", receiversCopy, false, notiCopy);
                  }else{
-                    alert("aborted");
+                    this.notify("aborted", "error");
                 }      
                
                 const currIndex2 = unupdatedSendersData?.map(item =>{
@@ -425,7 +425,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                 this.updateParts(uid,"messages", receiversCopy, false, notiCopy);
             });
         }else{
-            alert("Sending messages to yourself is not allowed");
+            this.notify("Sending messages to yourself is not allowed", "warning");
         }
     };
 
@@ -549,10 +549,32 @@ class AppProvider extends PureComponent{ //For termporary memory
                 ...this.state,
                 openCommentsModal: false
             });
-            alert("Post deleted");
+            this.notify("Post deleted");
         }
        
     }
+
+    notify(text, type){
+        switch(type){
+            case "success":
+                toast.success(text);
+            break;
+            case "warning":
+                toast.warn(text);
+            break;
+            case "error":
+                toast.error(text);
+            break;
+            case "info":
+                toast.info(text);
+            case "dark":
+                toast.dark(text);
+            break;
+            default: 
+                toast(text);
+        }
+    }
+
     render(){
         return(
             <AppContext.Provider value={{//states
@@ -591,6 +613,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                 handleCommentsModal: this.handleCommentsModal.bind(this),
                 deletePost: this.deletePost.bind(this),
                 handleEditingProfile: this.handleEditingProfile.bind(this),
+                notify: this.notify.bind(this),
             }}>
                 {this.props.children}
             </AppContext.Provider>

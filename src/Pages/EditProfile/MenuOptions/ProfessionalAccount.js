@@ -7,7 +7,7 @@ import {withRouter} from "react-router-dom";
 const InputForm = lazy(() => import("../../../Components/Generic/InpuForm/InputForm"));
 
 const ProfessionalAccount = (props) => {
-    const { receivedData, handleEditingProfile } = useContext(AppContext);
+    const { receivedData, handleEditingProfile, notify } = useContext(AppContext);
     //useState
     const [formState, setForm] = useState({
         professionalAcc: {category: "", show: false},
@@ -42,6 +42,7 @@ const ProfessionalAccount = (props) => {
         if(isFormValid){
             handleEditingProfile(formState?.professionalAcc, "professionalAcc");
             props.history.push("/profile");
+            notify("Profile updated", "success");
         }
         
     }

@@ -10,7 +10,7 @@ import {Avatar} from "@material-ui/core";
 import {AppContext} from "../../Context";
 import {auth} from "../../Config/firebase";
 import {useAuthState} from "react-firebase-hooks/auth";
-import {BiPowerOff} from "react-icons/bi";
+import {BiPowerOff, BiCog} from "react-icons/bi";
 import {CgProfile} from "react-icons/cg";
 import NotificationOutput from "../NotificationsOutput/NotificationsOutput";
 import {withRouter} from "react-router-dom";
@@ -99,7 +99,8 @@ const Header =(props)=>{
                                     <div  className="noti--popup--inner">
                                         <div className="noti--popup--arrow"> </div>
                                         <ul className="prof--popup--ul flex-column">
-                                           <Link to="/profile"><li onClick={()=> setProf(false)}><CgProfile className="prof__popup" /> Profile</li></Link>
+                                           <Link onClick={()=> setProf(false)} to="/profile"><li><CgProfile className="prof__popup" /> Profile</li></Link>
+                                           <Link onClick={()=> setProf(false)} to="/edit-profile"><li><BiCog className="prof__popup" /> Settings</li></Link>
                                            <li onClick={()=> {authLogout(props.history); setProf(false); window.location.reload()}}><BiPowerOff className="prof__popup"/> Log Out</li>
                                         </ul>
                                         <div className="noti__transparent"></div>

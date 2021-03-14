@@ -1324,7 +1324,7 @@ a.prof__btn__unfollowed{
         flex-direction: column !important;
     }
     .auth--footer--container .auth--copyright{
-        margin-top:5px;
+        margin-top:30px;
     }
     #usersProfile.users--profile--container .profile--posts--container{
         padding:1px;

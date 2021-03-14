@@ -33,7 +33,7 @@ const AuthPage =(props)=>{
     const submitForm= async (event, authType)=>{
         
         event.preventDefault();
-        var {resetAllData, updateSuggestionsList, isUserOnline, updateUID, updateUserState} = context;
+        var {resetAllData, updateSuggestionsList, isUserOnline, updateUID, updateUserState, notify} = context;
         if(authType === "signUp"){
             resetAllData();  //clears data before adding new one 
             setLoading(true);          
@@ -66,7 +66,7 @@ const AuthPage =(props)=>{
                                         setLoading(false);
                                     }).catch((err)=>{
                                         setLoading(false);
-                                        alert(err.message);
+                                        notify(err.message, "error");
                                     })
                                 }
                         },1000);
@@ -103,7 +103,7 @@ const AuthPage =(props)=>{
                                     props.history.push("/");
                                 }).catch((err)=>{
                                         setLoading(false);
-                                        alert(err.message);
+                                        notify(err.message, "error");
                                 })
                             }
                             
@@ -161,14 +161,15 @@ const AuthPage =(props)=>{
     }
     const resetEmail=(e)=>{
         e.preventDefault();
+        const {notify} = context;
         setLoading(true);
         auth.sendPasswordResetEmail(loginEmail).then(res =>{
             console.log(res);
             setLoading(false);
-            alert("A password reset config has been send to your email");
+            notify("A password reset config has been send to your email", "success");
         }).catch(err=>{
             setLoading(false);
-            alert("The email you entered is does not exist in our database", err);
+            notify(`The email you entered is does not exist in our database" ${err}`, "error");
         });
     }
     return(

@@ -1,25 +1,30 @@
-import React ,{Fragment, useEffect, useContext} from "react";
+import React ,{Fragment, useEffect, useContext, Suspense, lazy} from "react";
 import {Switch, Route} from "react-router-dom";
-import Header from "../Header/Header";
-import Footer from "../../Components/Footer/Footer";
-import Home from "../../Pages/Home/Home";
-import AuthPage from "../../Pages/AuthPage/AuthPage";
-import AddNewPost from "../../Pages/AddNewPost/AddNewPost";
 import {AppContext} from "../../Context";
 import {db, auth} from "../../Config/firebase";
 import AppConfig from "../../Config/app-config.json";
 import {useAuthState} from "react-firebase-hooks/auth";
-import UsersProfile from "../../Pages/UsersProfile/UsersProfile";
-import PostPage from "../../Pages/PostPage/PostPage";
-import Messages from "../../Pages/Messages/Messages";
-import MobileNav from "../MobileNav/MobileNav";
-import MobileNotifications from "../../Pages/MobileNotifications/MobileNotifications";
 import UsersModal from "../../Components/UsersModal/UsersModal";
-import MyProfile from "../../Pages/MyProfile/MyProfile";
 import CommentsModal from "../../Components/CommentsModal/CommentsModal";
-import EditProfile from "../../Pages/EditProfile/EditProfile";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import $ from "jquery";
+import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
 
+//lazy loading
+const Header = lazy(() => import("../Header/Header"));
+const Home = lazy(() => import("../../Pages/Home/Home"));
+const Footer = lazy(() => import("../../Components/Footer/Footer"));
+const AuthPage = lazy(() => import("../../Pages/AuthPage/AuthPage"));
+const AddNewPost = lazy(() => import("../../Pages/AddNewPost/AddNewPost"));
+const UsersProfile = lazy(() => import("../../Pages/UsersProfile/UsersProfile"));
+const PostPage = lazy(() => import("../../Pages/PostPage/PostPage"));
+const Messages = lazy(() => import("../../Pages/Messages/Messages"));
+const MobileNav = lazy(() => import("../MobileNav/MobileNav")); 
+const MobileNotifications = lazy(() => import("../../Pages/MobileNotifications/MobileNotifications"));
+const MyProfile = lazy(() => import("../../Pages/MyProfile/MyProfile"));
+const EditProfile = lazy(() => import("../../Pages/EditProfile/EditProfile"));
+//--xx---//
 const App = (props)=>{
     
     const context = useContext(AppContext);
@@ -125,54 +130,58 @@ const App = (props)=>{
                   loading &&
                   <div className="global__loading"></div>
               }
-              
+              {/* Notifications container */}
+              <ToastContainer />
                {/* Routes */}
                 <Switch>
-                    <Route exact path="/" >
-                        <Header />
-                        <Home />
-                        <MobileNav />
-                        <Footer/>
-                    </Route>
-                    <Route exact path="/auth" component={AuthPage}  />
-                    <Route exact path="/messages">
-                        <Header />
-                        <Messages messages={receivedData?.messages} />
-                        <MobileNav />
-                    </Route>
-                    <Route exact path="/add-post">
-                        <Header />
-                        <AddNewPost  />
-                        <MobileNav />
-                    </Route>
-                    <Route exact path="/notifications">
-                        <Header />
-                        <MobileNotifications context={context}/>
-                        <MobileNav />
-                    </Route>
-                    <Route exact path="/profile">
-                        <Header />
-                        <MyProfile />
-                        <MobileNav />
-                        <Footer /> 
-                    </Route>
-                    <Route path="/user-profile">
-                        <Header />
-                        <UsersProfile />
-                        <MobileNav />
-                        <Footer /> 
-                    </Route>
-                    <Route exact path="/browse-post">
-                        <Header />
-                        <PostPage />
-                        <MobileNav />
-                    </Route >
-                    <Route exact path="/edit-profile">
-                        <Header />
-                        <EditProfile/>
-                        <MobileNav />
-                        <Footer/>
-                    </Route>
+                    <Suspense fallback={<LoadingScreen /> }>
+                            <Route exact path="/" >
+                            <Header />
+                            <Home />
+                            <MobileNav />
+                            <Footer/>
+                        </Route>
+                        <Route exact path="/auth" component={AuthPage}  />
+                        <Route exact path="/messages">
+                            <Header />
+                            <Messages messages={receivedData?.messages} />
+                            <MobileNav />
+                        </Route>
+                        <Route exact path="/add-post">
+                            <Header />
+                            <AddNewPost  />
+                            <MobileNav />
+                        </Route>
+                        <Route exact path="/notifications">
+                            <Header />
+                            <MobileNotifications context={context}/>
+                            <MobileNav />
+                        </Route>
+                        <Route exact path="/profile">
+                            <Header />
+                            <MyProfile />
+                            <MobileNav />
+                            <Footer /> 
+                        </Route>
+                        <Route path="/user-profile">
+                            <Header />
+                            <UsersProfile />
+                            <MobileNav />
+                            <Footer /> 
+                        </Route>
+                        <Route exact path="/browse-post">
+                            <Header />
+                            <PostPage />
+                            <MobileNav />
+                        </Route >
+                        <Route exact path="/edit-profile">
+                            <Header />
+                            <EditProfile/>
+                            <MobileNav />
+                            <Footer/>
+                        </Route>
+                    </Suspense>
+                    
                 </Switch>
             </main>
         </Fragment>

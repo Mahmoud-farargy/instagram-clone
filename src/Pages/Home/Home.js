@@ -88,13 +88,13 @@ const Home =(props)=>{
                         : loading ?
                             (
                             <div className="w-100 flex-column">
-                            <Skeleton variant="rect" height="100px" width="80%">
+                            <Skeleton variant="rect" height="100px" width="100%">
                                 <div style={{ paddingTop: '40px' }} />
                             </Skeleton>
-                            <Skeleton variant="rect" height="100px" width="80%">
+                            <Skeleton variant="rect" height="100px" width="100%">
                                 <div style={{ paddingTop: '20px' }} />
                             </Skeleton>
-                            <Skeleton variant="rect" height="100px" width="80%">
+                            <Skeleton variant="rect" height="100px" width="100%">
                                 <div style={{ paddingTop: '20px' }} />
                             </Skeleton>
                             </div>
