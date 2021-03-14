@@ -1,7 +1,6 @@
 import React, {PureComponent} from "react";
 import Auxiliary from "../HOC/Auxiliary";
 import Comment from "../Comment/Comment";
-import $ from "jquery";
 
 class CommentsModal extends PureComponent{
     constructor(props){
@@ -13,16 +12,6 @@ class CommentsModal extends PureComponent{
             replayData: {}
         }
     }
-    // componentDidMount=()=>{
-    //   var  openComments =  this.props.context?.openCommentsModal;
-    //     $(document).ready(()=>{
-    //         if(openComments){
-    //             $("body").css("overflow","hidden");
-    //         }else{
-    //             $("body").css("overflow","auto");
-    //         }
-    //     });
-    // };
     replayFunc(postOwnerName,commentIndex, postIndex, postId, postOwnerId){
         if(this.inputField.current){
              this.inputField.current.focus();

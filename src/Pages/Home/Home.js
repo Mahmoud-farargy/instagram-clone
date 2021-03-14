@@ -21,12 +21,12 @@ const Home =(props)=>{
         getUsersProfile(specialUid);
         props.history.push(`/user-profile/${name}`);
     }  
-    let [user, loading, error] = useAuthState(auth);
+    let [user, loading] = useAuthState(auth);
     useEffect(() => {
         changeMainState("currentPage","Home");
         window.scrollTo(0,0);
         
-    },[]);
+    },[changeMainState]);
     const recievedAuth = localStorage.getItem("user");
     // useEffect(()=> {
         

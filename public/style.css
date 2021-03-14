@@ -56,6 +56,8 @@ a:visited{
     font-size: 16px;
     line-height: 24px;
     white-space: pre-line;
+    margin-bottom:8px;
+    width:100%;
 }
 .flex-row{
     display: -webkit-flex;
@@ -383,7 +385,7 @@ a:visited{
 }
 .auth--footer--container{
     width:100%;
-    align-self: flex-start;
+    align-self: center;
     flex-wrap:wrap;
     margin:80px 3vw 35px 4vw;
     justify-content:space-between;
@@ -402,6 +404,7 @@ a:visited{
     flex-wrap:wrap;
     list-style:none;
     align-items:center;
+    /* width: 100%; */
 }
 .auth--footer--ul li{
     color:#00376b;
@@ -995,6 +998,11 @@ a.prof__btn__unfollowed{
     justify-content:space-between;
 }
 
+.user-top-inner{
+    margin:0 auto;
+    flex-wrap: wrap;
+    width:80%;
+}
 #usersProfile.users--profile--container .desktop--social--row p{
     padding:2px 6px 2px 0px;
     margin-right:30px;
@@ -1004,8 +1012,8 @@ a.prof__btn__unfollowed{
     font-weight:800;
 }
 #usersProfile.users--profile--container .MuiAvatar-root{
-    width:72px !important;
-    height: 72px !important;
+    width:100px;
+    height: 100px;
 }
 #usersProfile.users--profile--container .users--profile--stripe{
     width:100%;
@@ -1240,6 +1248,15 @@ a.prof__btn__unfollowed{
 .empty--posts--container .plus--icon--container .plus__icon{
     font-size: 30px;
 }
+.prof--acc--category span {
+    color: #8e8e8e;
+    color: rgb(142, 142, 142);
+    line-height:20px;
+    font-size: 16px;
+    /* font-weight:400; */
+    margin-bottom: 5px;
+}
+
 /* -------x------------Empty page--------x-------- */
 /* -----------Query less than or equal 250px------------ */
 @media only screen and (max-width: 250px){
@@ -1260,7 +1277,9 @@ a.prof__btn__unfollowed{
     .auth--copyright{
         font-size:11px !important;
     }
-    
+    .user-top-inner{
+        flex-direction: column;
+    }
 }
 /* ------x-----Query less than or equal 250px-----x------- */
 /* -----------Query less than or equal 670px------------ */
@@ -1272,9 +1291,19 @@ a.prof__btn__unfollowed{
     .auth{
         width:75%;
     }
+    #usersProfile.users--profile--container .MuiAvatar-root{
+        width:77px;
+        height:77px;
+    }
     #page {
         min-height:95vh;
         margin-bottom: 50px;
+    }
+    .prof--acc--category span {
+        font-size: 14px;
+    }
+    .user-top-inner{
+        width:100%;
     }
     .mobile-only{
         display:block;
@@ -1295,7 +1324,7 @@ a.prof__btn__unfollowed{
         flex-direction: column !important;
     }
     .auth--footer--container .auth--copyright{
-        margin-top:10px;
+        margin-top:5px;
     }
     #usersProfile.users--profile--container .profile--posts--container{
         padding:1px;

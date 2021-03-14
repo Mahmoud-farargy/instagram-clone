@@ -23,22 +23,7 @@ import $ from "jquery";
 const App = (props)=>{
     
     const context = useContext(AppContext);
-    const {updatedReceivedData,updateUserState, updateUID, receivedData , updateSuggestionsList, currentPage, changeMainState} = context;
-    // -------------
-    // const test=()=>{ //resembles the functionality of adding posts to the followers
-    //     const myArr={
-    //         item1: [],
-    //         item2: [],
-    //         item3: []
-    //     }
-    //     Object.keys(myArr).map(el=>{
-    //         return myArr[el].push("123")
-    //     })
-    //     console.log(myArr);
-    // }
-    // test()
-    //-----------------------
-   
+    const {updatedReceivedData,updateUserState, updateUID, receivedData , updateSuggestionsList, currentPage, changeMainState} = context;   
     const [_, loading] = useAuthState(auth);
 
     useEffect(()=>{
@@ -147,6 +132,7 @@ const App = (props)=>{
                         <Header />
                         <Home />
                         <MobileNav />
+                        <Footer/>
                     </Route>
                     <Route exact path="/auth" component={AuthPage}  />
                     <Route exact path="/messages">

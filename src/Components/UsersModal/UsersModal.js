@@ -1,4 +1,4 @@
-import React, {Fragment, useContext, useEffect} from "react";
+import React, {Fragment, useContext} from "react";
 import {AppContext} from "../../Context";
 import ModalListItem from "./ModalListItem/ModalListItem";
 // import $ from "jquery";
@@ -39,26 +39,13 @@ const UsersModal =(props)=>{
                                 <ModalListItem key={user?.id + i} uid ={user?.id} userName={user?.userName} avatarUrl={user?.userAvatarUrl} date={""}  receivedData={receivedData} handleFollowing={handleFollowing} getUsersProfile={getUsersProfile} handleUsersModal={handleUsersModal}/>
                             )
                 })
-        // default :
-            // output =  usersModalList?.list.map((user, i) =>{
-            //     return(
-            //         <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} date={user?.date} />
-            //     )
-            // })
-
-            // : usersModalList?.type === "following" ?
-            //     usersModalList?.list.map((user, i) =>{
-            //         return(
-            //             <ModalListItem key={user?.receiverUid + i} uid={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} date={user?.date} />
-            //         )
-            //     })
-            // : usersModalList?.type === "likes" ?
-            //     usersModalList?.list.map((user, i) =>{
-            //         return(
-            //             <ModalListItem key={user?.uid + i} uid ={user?.uid} userName={user?.userName} avatarUrl={user?.userAvatarUrl} date={""} />
-            //         )
-            //     })
-            // : null
+        break;
+        default: 
+        output =  usersModalList?.list.map((user, i) =>{
+            return(
+                <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} date={user?.date} receivedData={receivedData} handleFollowing={handleFollowing} getUsersProfile={getUsersProfile} handleUsersModal={handleUsersModal}/>
+            )
+        });
     }
     return(
         <Fragment>

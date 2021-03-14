@@ -9,21 +9,21 @@ import {GoVerified } from "react-icons/go";
 import {IoMdGrid} from "react-icons/io";
 import {RiLayoutRowLine} from "react-icons/ri";
 import {BsPlusSquare} from "react-icons/bs";
+// import TruncateMarkup from "react-truncate";
 import { Link } from "react-router-dom";
 
 const MyProfile =(props)=>{
     const [_,loading] = useAuthState(auth);
     const [grid, setGrid] = useState(true);
-    const context = useContext(AppContext);
-    const {receivedData,handleUsersModal, igVideoImg, authLogout} = context;
+    const {receivedData,handleUsersModal, igVideoImg, authLogout, changeMainState} = useContext(AppContext);
     const redirectToPost=(i, id)=>{
         // changeMainState("usersProfileData", receivedData);
         // changeMainState("currentPostIndex", {index: i, id: id});
         // props.history.push("/browse-post");
     }
     useEffect(()=>{
-        context.changeMainState("currentPage", "Profile");
-    },[]);
+        changeMainState("currentPage", "Profile");
+    },[changeMainState]);
     
      return(
         <Fragment>
@@ -47,7 +47,7 @@ const MyProfile =(props)=>{
                                 </h5>
                                 <div className="flex-row">
                                 <Link role="button" className="profile__btn prof__btn__unfollowed mr-2" to="/edit-profile" >Edit profile</Link>
-                                <button className="mobile-only" onClick={()=> {authLogout(); window.location.reload()}}>Log out</button>
+                                <button className="mobile-only" onClick={()=> {authLogout(props.history); window.location.reload()}}>Log out</button>
                                 </div>
                                 
                             </div>
@@ -57,6 +57,12 @@ const MyProfile =(props)=>{
                                 <p className="acc-action"  onClick={()=> handleUsersModal(true, receivedData?.following, "following")}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
                             </div>
                             {/* bottom row */}
+                           {
+                               receivedData?.profileInfo && receivedData?.profileInfo.professionalAcc && receivedData?.profileInfo.professionalAcc.show &&
+                                <div className="prof--acc--category">
+                                     <span>{receivedData.profileInfo?.professionalAcc?.category}</span>
+                                </div>
+                           } 
                             <div className="bottom--row--user-info flex-column">
                                     <span>{receivedData?.profileInfo?.bio}</span>
                             </div>

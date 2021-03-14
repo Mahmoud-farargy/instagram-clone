@@ -10,10 +10,12 @@
   }
   .right--side{
       align-items:center;
-      justify-content:center;
       padding:20px;
+      min-height:80vh;
       @media only screen and (max-width:670px){
        padding:5px;
+       width:100%;
+       border-top: 1px solid #dbdbdb;
     }
   }
   .edit--box {
@@ -27,13 +29,61 @@
     max-width: 935px;
     display: grid;
     grid-template-columns: 25% 75%;
+    @media only screen and (max-width: 670px){
+      grid-template-columns: 100%;
+    }
   }
-  .edit--box ul {
+  .edit--box .left--side{
+    position: relative;
+    padding:0;
+    margin: 0; 
     height: 100%;
     border-right: 1px solid #dbdbdb;
+    @media only screen and (max-width: 670px){
+      width:100%;
+      min-height:200px;
+    }
+  }
+  .active__menu__option{
+    border-left: 2px solid #262626 !important;
+    font-weight:600;
+    
+  }
+  .edit--box .left--bottom--side{
+    position: absolute;
+    bottom: 0;
+    left:0;
+    border-top: 1px solid #dbdbdb;
+    padding: 25px 14px;
+    justify-content: center;
+    width:100;
+    img{
+      width:100%;
+      object-fit: contain;
+    }
+    @media only screen and (max-width: 670px) {
+        display:none;
+    }
+  }
+  .edit--box .left--side li{
+    font-size: 16px;
+    padding: 19px 16px 16px 30px;
+    line-height:18px;
+    display:list-item;
+    border: 2px solid transparent;
+    text-transform: capitalize;
+    cursor: pointer;
+    text-align: -webkit-match-parent;
+    &:hover{
+      background-color: #fafafa;
+      border-left: 2px solid #dbdbdb;
+    }
+    &:active{
+      color: #b9b9b9 !important;
+    }
   }
   .change--photo {
-    
+     flex-wrap: wrap;
     margin: 32px 0px 0px;
     width: 100%;
     align-items: center;
@@ -42,7 +92,7 @@
   .change--photo .MuiAvatar-circle{
     width:60px;
     height: 60px;
-  } 
+  }
   .user--pic--container .user__prof__name{
     padding-bottom:0;
     margin-bottom:3px;
@@ -80,6 +130,15 @@
             margin-top:10px;
         }
   }
-  .edit--mobile {
+  .prof--acc{
+    .prof--acc--inner{
+      width: 70%;
+      margin: 0 auto;
+      flex-wrap:wrap;
+      padding: 15px;
+      @media only screen and (max-width:670px) {
+          width:100%;
+      }
+    }
   }
 }

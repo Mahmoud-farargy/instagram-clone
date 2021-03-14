@@ -48,7 +48,7 @@ class Messages extends Component{
             }
             
         }
-        if(prevState.currentUserIndex != this.state.currentUserIndex && this.autoScroll && this.autoScroll.scrollIntoViewIfNeeded){
+        if(prevState.currentUserIndex !== this.state.currentUserIndex && this.autoScroll && this.autoScroll.scrollIntoViewIfNeeded){
             this.autoScroll.scrollIntoViewIfNeeded(); 
         }
     }
@@ -256,17 +256,17 @@ class Messages extends Component{
                                            opacity: this.state.showEmojis ? "1" :"0",
                                            transition: 'all 0.5s ease'
                                        }} className="chat--emojis--box flex-row">
-                                            <span onClick={()=> this.selectEmoji("😍 ")}>😍</span>
-                                            <span onClick={()=> this.selectEmoji("😂 ")}>😂</span>
-                                            <span onClick={()=> this.selectEmoji("😄 ")}>😄</span>
-                                            <span onClick={()=> this.selectEmoji("😊 ")}>😊</span>
-                                            <span onClick={()=> this.selectEmoji("😘 ")}>😘</span>
-                                            <span onClick={()=> this.selectEmoji("😁 ")}>😁</span>
-                                            <span onClick={()=> this.selectEmoji("😢 ")}>😢</span>
-                                            <span onClick={()=> this.selectEmoji("😎 ")}>😎</span>
-                                            <span onClick={()=> this.selectEmoji("😋 ")}>😋</span>
-                                            <span onClick={()=> this.selectEmoji("😜 ")}>😜</span>
-                                            <span onClick={()=> this.selectEmoji("😫 ")}>😫</span>
+                                            <span role="img" aria-label="emoji"  onClick={()=> this.selectEmoji("😍 ")}>😍</span>
+                                            <span role="img" aria-label="emoji" onClick={()=> this.selectEmoji("😂 ")}>😂</span>
+                                            <span role="img" aria-label="emoji" onClick={()=> this.selectEmoji("😄 ")}>😄</span>
+                                            <span role="img" aria-label="emoji" onClick={()=> this.selectEmoji("😊 ")}>😊</span>
+                                            <span role="img" aria-label="emoji" onClick={()=> this.selectEmoji("😘 ")}>😘</span>
+                                            <span role="img" aria-label="emoji" onClick={()=> this.selectEmoji("😁 ")}>😁</span>
+                                            <span role="img" aria-label="emoji" onClick={()=> this.selectEmoji("😢 ")}>😢</span>
+                                            <span role="img" aria-label="emoji" onClick={()=> this.selectEmoji("😎 ")}>😎</span>
+                                            <span role="img" aria-label="emoji" onClick={()=> this.selectEmoji("😋 ")}>😋</span>
+                                            <span role="img" aria-label="emoji" onClick={()=> this.selectEmoji("😜 ")}>😜</span>
+                                            <span role="img" aria-label="emoji" onClick={()=> this.selectEmoji("😫 ")}>😫</span>
                                         </div>
                                         : null
                                 } 

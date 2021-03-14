@@ -28,12 +28,12 @@ const UsersProfile =(props)=>{
     }
     useEffect(()=>{
         setFollowingState(receivedData?.following?.some(item => item?.receiverUid  === usersProfileData?.uid));
-    },[receivedData?.followers,usersProfileData?.followers]);
+    },[receivedData, usersProfileData]);
     
     useEffect(() => {
         changeMainState("currentPage", usersProfileData.userName || "User Profile");
         window.scrollTo(0,0);
-    }, [usersProfileData?.userName]);
+    }, [usersProfileData.userName, changeMainState]);
      return(
         <Fragment>
             <section id="usersProfile" className="users--profile--container ">
@@ -42,38 +42,47 @@ const UsersProfile =(props)=>{
                 
             <div className="desktop-comp">
                 <div className="user--top--info flex-row">
+                    <div className="user-top-inner flex-row">
                         <div className="user--pic--container flex-column">
-                            <Avatar className="user__picture" src={usersProfileData?.userAvatarUrl} alt={usersProfileData?.userName} />
-                        </div>
-                        <div className="desktop--inner--info flex-column">
-                            <div className="users--action--row flex-row">
-                                <h5 className="profile__display__name">{usersProfileData?.userName}
-                               {
-                                   usersProfileData?.isVerified ?
-                                   <GoVerified className="verified_icon"/>
-                                   : null
-                               }
-                                </h5>
-                                <div className="flex-row">
-                                    {
-                                        isFollowed &&
-                                        <button disabled={!usersProfileData?.uid} className="profile__btn prof__btn__unfollowed" onClick={()=> message(usersProfileData?.uid, usersProfileData?.userName , usersProfileData?.userAvatarUrl)}>Message</button>
-                                    }
+                                <Avatar className="user__picture" src={usersProfileData?.userAvatarUrl} alt={usersProfileData?.userName} />
+                            </div>
+                            <div className="desktop--inner--info flex-column">
+                                <div className="users--action--row flex-row">
+                                    <h5 className="profile__display__name">{usersProfileData?.userName}
+                                {
+                                    usersProfileData?.isVerified ?
+                                    <GoVerified className="verified_icon"/>
+                                    : null
+                                }
+                                    </h5>
+                                    <div className="flex-row">
+                                        {
+                                            isFollowed &&
+                                            <button disabled={!usersProfileData?.uid} className="profile__btn prof__btn__unfollowed" onClick={()=> message(usersProfileData?.uid, usersProfileData?.userName , usersProfileData?.userAvatarUrl)}>Message</button>
+                                        }
+                                        
+                                        <button disabled={!usersProfileData?.uid} onClick={()=> handleFollowing(isFollowed, usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, uid, receivedData?.userName, receivedData?.userAvatarUrl)} className={ !isFollowed ? "profile__btn prof__btn__followed" : "profile__btn prof__btn__unfollowed" }> {isFollowed ? "unfollow" : "follow"}</button>
+                                    </div>
                                     
-                                    <button disabled={!usersProfileData?.uid} onClick={()=> handleFollowing(isFollowed, usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, uid, receivedData?.userName, receivedData?.userAvatarUrl)} className={ !isFollowed ? "profile__btn prof__btn__followed" : "profile__btn prof__btn__unfollowed" }> {isFollowed ? "unfollow" : "follow"}</button>
                                 </div>
-                                
-                            </div>
-                            <div className="desktop--social--row flex-row">
-                                <p><span>{usersProfileData?.posts?.length.toLocaleString()}</span> {usersProfileData?.posts?.length >1 ?"posts": "post"}</p>
-                                <p className="acc-action" onClick={()=> handleUsersModal(true, usersProfileData?.followers, "followers")}><span>{usersProfileData?.followers?.length.toLocaleString()}</span> {usersProfileData?.followers?.length >1 ?"followers": "follower"}</p>
-                                <p className="acc-action"  onClick={()=> handleUsersModal(true, usersProfileData?.following, "following")}><span>{usersProfileData?.following?.length.toLocaleString()}</span> following</p>
-                            </div>
-                            {/* bottom row */}
-                            <div className="bottom--row--user-info flex-column">
-                                    <span>{usersProfileData?.profileInfo?.bio}</span>
-                            </div>
+                                <div className="desktop--social--row flex-row">
+                                    <p><span>{usersProfileData?.posts?.length.toLocaleString()}</span> {usersProfileData?.posts?.length >1 ?"posts": "post"}</p>
+                                    <p className="acc-action" onClick={()=> handleUsersModal(true, usersProfileData?.followers, "followers")}><span>{usersProfileData?.followers?.length.toLocaleString()}</span> {usersProfileData?.followers?.length >1 ?"followers": "follower"}</p>
+                                    <p className="acc-action"  onClick={()=> handleUsersModal(true, usersProfileData?.following, "following")}><span>{usersProfileData?.following?.length.toLocaleString()}</span> following</p>
+                                </div>
+                                {/* bottom row */}
+                                {
+                                usersProfileData?.profileInfo && usersProfileData?.profileInfo.professionalAcc && usersProfileData?.profileInfo.professionalAcc.show &&
+                                    <div className="prof--acc--category">
+                                            <span>{usersProfileData.profileInfo?.professionalAcc?.category}</span>
+                                        </div>
+                                } 
+                                <div className="bottom--row--user-info flex-column">
+                                        <span>{usersProfileData?.profileInfo?.bio}</span>
+                                </div>
+                        </div>  
                     </div>
+                        
                 </div>
                
                 {/* body */}

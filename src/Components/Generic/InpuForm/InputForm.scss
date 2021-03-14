@@ -2,7 +2,6 @@
         .form-group{
         width:90%;
         justify-content: space-between;
-        // align-items:center;
         @media only screen and (max-width: 800px){
             flex-direction: column !important;
         }
@@ -22,7 +21,8 @@
         }
         input, select{
         margin: 8px 0;
-        min-width:250px;    
+        min-width:100px;  
+        width:100%;  
         border: 1px solid #dbdbdb;
         font-size: 16px;
         height: 32px;

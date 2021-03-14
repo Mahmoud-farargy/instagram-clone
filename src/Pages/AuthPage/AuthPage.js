@@ -48,7 +48,7 @@ const AuthPage =(props)=>{
                                                 followers: [],
                                                 following: [],
                                                 messages: [],
-                                                profileInfo: {bio: "",website: "", gender: "", status: "", name:"", phoneNumber: ""},
+                                                profileInfo: {bio: "",website: "", gender: "", status: "", name:"", phoneNumber: "", professionalAcc: {show: true, category: "Just For Fun" }},
                                                 homePosts: [],
                                                 latestLikedPosts: [],
                                                 savedposts: [],

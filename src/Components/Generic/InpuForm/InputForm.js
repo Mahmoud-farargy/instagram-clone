@@ -6,7 +6,7 @@ const InputForm = (props) => {
 
   useEffect(() => {
     props.className && classes.push(props.className);
-  }, []);
+  }, [props.className, classes]);
   return (
     <Fragment>
       <div id="input--form--field">
@@ -79,7 +79,12 @@ const InputForm = (props) => {
               )}
             </div>
           </div>
-        ) : (
+        ) : props.type === "checkbox" ?
+          <div className="flex-row">
+            <input onChange={(x) => props.changeInput(x.target.checked, props.name)} name={props.name} checked={props.val || false} type="checkbox" id={props.label} className="mr-2 mt-1 mb-3" />
+            <label htmlFor={props.label} >{props.labelText}</label> 
+          </div>
+        : (
           <div className={classes.join(" ")}>
             <label htmlFor={props.label}>{props.label}</label>
             <div className="form--input--side">

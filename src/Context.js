@@ -507,9 +507,26 @@ class AppProvider extends PureComponent{ //For termporary memory
             openCommentsModal: boolean
         })
     }
-    handleEditingProfile(formData){
-        if(formData){
-            this.updateParts(this.state.uid, "profileInfo", formData, false, "");
+    handleEditingProfile(formData, type){
+        let copiedArr = JSON.parse(JSON.stringify(this.state.receivedData?.profileInfo));
+        if(formData && copiedArr){
+            switch(type){
+                case "editProfile":
+                    Object.keys(copiedArr).length > 0 && Object.keys(copiedArr).map(item => {
+                        copiedArr[item] = formData[item];
+                    });
+                break;
+                case "professionalAcc":
+                    if(Object.keys(copiedArr).length > 0 && copiedArr.professionalAcc){
+                        copiedArr.professionalAcc = formData;
+                    }
+                break;
+                default :
+                    Object.keys(copiedArr).length > 0 &&  Object.keys(copiedArr).map(item => {
+                        copiedArr[item] = formData[item];
+                    });
+            }
+            this.updateParts(this.state.uid, "profileInfo", copiedArr, false, "");
         }
     }
 
