@@ -11,10 +11,11 @@ import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import $ from "jquery";
+import Header from "../Header/Header";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
 
 //lazy loading
-const Header = lazy(() => import("../Header/Header"));
+// const Header = lazy(() => import("../Header/Header"));
 const Home = lazy(() => import("../../Pages/Home/Home"));
 const Footer = lazy(() => import("../../Components/Footer/Footer"));
 const AuthPage = lazy(() => import("../../Pages/AuthPage/AuthPage"));

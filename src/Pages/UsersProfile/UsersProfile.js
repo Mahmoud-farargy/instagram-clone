@@ -14,6 +14,7 @@ import {BsPlusSquare} from "react-icons/bs";
 const UsersProfile =(props)=>{
     const [_,loading] = useAuthState(auth);
     const [isFollowed, setFollowingState] = useState(false);
+    const [isFollower, setFollowerState] = useState(false);
     const [grid, setGrid] = useState(true);
     const context = useContext(AppContext);
     const {usersProfileData, changeMainState, initializeChatDialog, uid, handleFollowing, receivedData,handleUsersModal, igVideoImg} = context;
@@ -27,7 +28,8 @@ const UsersProfile =(props)=>{
         props.history.push("/messages");
     }
     useEffect(()=>{
-        setFollowingState(receivedData?.following?.some(item => item?.receiverUid  === usersProfileData?.uid));
+        receivedData?.following && setFollowingState(receivedData?.following?.some(item => item?.receiverUid  === usersProfileData?.uid));
+        receivedData?.followers && setFollowerState(receivedData?.followers?.some(item => item?.senderUid  === usersProfileData?.uid));
     },[receivedData, usersProfileData]);
     
     useEffect(() => {
@@ -61,7 +63,7 @@ const UsersProfile =(props)=>{
                                             <button disabled={!usersProfileData?.uid} className="profile__btn prof__btn__unfollowed" onClick={()=> message(usersProfileData?.uid, usersProfileData?.userName , usersProfileData?.userAvatarUrl)}>Message</button>
                                         }
                                         
-                                        <button disabled={!usersProfileData?.uid} onClick={()=> handleFollowing(isFollowed, usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, uid, receivedData?.userName, receivedData?.userAvatarUrl)} className={ !isFollowed ? "profile__btn prof__btn__followed" : "profile__btn prof__btn__unfollowed" }> {isFollowed ? "unfollow" : "follow"}</button>
+                                        <button disabled={!usersProfileData?.uid} onClick={()=> handleFollowing(isFollowed, usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, uid, receivedData?.userName, receivedData?.userAvatarUrl)} className={ !isFollowed ? "profile__btn prof__btn__followed" : "profile__btn prof__btn__unfollowed" }> {!isFollowed && isFollower ? "follow back" : !isFollowed && !isFollower ? "follow" : "unfollow"}</button>
                                     </div>
                                     
                                 </div>

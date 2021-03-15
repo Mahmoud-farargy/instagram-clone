@@ -137,7 +137,7 @@ const EditProfileOption = (props) => {
               extraText={
                 <small>
                   Help people discover your account by using the name you're
-                  known by: either your full name, nickname, or business name.{" "}
+                  known by: either your full name, nickname, or business name.
                   <br /> You can only change your name twice within 14 days.
                 </small>
               }
@@ -189,8 +189,7 @@ const EditProfileOption = (props) => {
                     This email won't be shown to anyone except you.
                   </p>
                   <p className="mt-2">
-                    Verified email:{" "}
-                    {currentUser?.emailVerified ? "Yes." : "No."}
+                    Verified email: {currentUser?.emailVerified ? "Yes." : "No."}
                   </p>
                 </small>
               }

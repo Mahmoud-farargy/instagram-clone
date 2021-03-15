@@ -101,7 +101,10 @@ const AuthPage =(props)=>{
                                         });
                                     }                    
                                    localStorage.setItem("user", JSON.stringify({email: loginEmail, password: decipherPassword(loginPassword)}));
-                                    props.history.push("/");
+                                   setTimeout(() => {
+                                        props.history.push("/");
+                                   }, 150);
+                                   
                                 }).catch((err)=>{
                                         setLoading(false);
                                         notify(err.message, "error");
@@ -205,7 +208,7 @@ const AuthPage =(props)=>{
                                     <div>
                                         <span onClick={()=> setPasswordMode(false)} className="back__Btn">Back</span>
                                         <input required autoFocus value={loginEmail} onChange={(e)=> setLoginEmail(e.target.value)} type="text"  placeholder="Email" />
-                                        <input type="submit" onClick={(e)=> resetEmail(e)} className={(loading || !loginEmail) || inProgress ? "disabled resetPassBtn": "resetPassBtn"} disabled={loading || !loginEmail || inProgress} value="Resest password through email"/>
+                                        <input type="submit" onClick={(e)=> resetEmail(e)} className={loading || loginEmail === "" || inProgress ? "disabled resetPassBtn": "resetPassBtn"} disabled={loading || loginEmail === "" || inProgress} value="Resest password through email"/>
                                     </div>
                                     
                                 }
