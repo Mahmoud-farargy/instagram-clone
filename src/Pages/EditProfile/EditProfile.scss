@@ -5,9 +5,6 @@
     max-width:980px;
     margin:0 auto;
   }
-  .right--inner{
-    width: 80%;
-  }
   .right--side{
       align-items:center;
       padding:20px;
@@ -84,17 +81,17 @@
   }
   .change--photo {
      flex-wrap: wrap;
-    margin: 32px 0px 0px;
+    margin: 20px 0px 0px;
     width: 100%;
     align-items: center;
     padding: 4px 0;
   }
   .change--photo .MuiAvatar-circle{
-    width:60px;
-    height: 60px;
+    width:50px;
+    height: 50px;
   }
-  .user--pic--container .user__prof__name{
-    padding-bottom:0;
+  .user__prof__name{
+    padding:2px 2px 0;
     margin-bottom:3px;
     font-size:20px;
     color: #262626;
@@ -130,15 +127,16 @@
             margin-top:10px;
         }
   }
-  .prof--acc{
-    .prof--acc--inner{
-      width: 70%;
-      margin: 0 auto;
-      flex-wrap:wrap;
-      padding: 15px;
-      @media only screen and (max-width:670px) {
-          width:100%;
-      }
+  .option--container{
+    width: 80%;
+    display:flex;
+    flex-wrap: wrap;
+    margin:0 auto;
+    @media only screen and (max-width: 670px){
+      width:90%;
     }
+  }
+  .user--info--container{
+    background-color: green;
   }
 }

@@ -8,7 +8,7 @@ import fbimg from "../../Assets/f0e27bf15519.png";
 import MenuOption from "./MenuOption";
 import EditProfileOption from "./MenuOptions/EditProfileOption";
 import ProfessionalAccount from "./MenuOptions/ProfessionalAccount";
-
+import ChangePassNEmail from "./MenuOptions/ChangePassNEmail";
 class EditProfile extends PureComponent {
   state = {
       sideMenuOptions: ["Edit Profile","Professional Account", "Change Password or Email"],
@@ -47,13 +47,11 @@ class EditProfile extends PureComponent {
                 <div className="flex-column right--side" ref={this.autoScroll}>
                   {
                     this.state.activeIndex === 0 ?
-                    <EditProfileOption />
+                    <EditProfileOption changeIndex={(e) => this.onMenuChange(e)} />
                   : this.state.activeIndex === 1 ?
                     <ProfessionalAccount />
                   : this.state.activeIndex === 2 ?
-                  <div>
-                    <h1>change pass or email</h1>
-                  </div>
+                    <ChangePassNEmail />
                   : 
                    null
                   }

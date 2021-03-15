@@ -7,7 +7,7 @@
     -webkit-box-sizing:border-box;
 }
 html{
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth; */
     width:100%;
     -webkit-text-size-adjust: 100%;
 }
@@ -24,7 +24,7 @@ ul{
 /* ---------------Global classes-------------- */
 .disabled{
     opacity:0.5;
-    cursor:not-allowed;
+    cursor:not-allowed !important;
 }
 
 :root{
@@ -51,6 +51,13 @@ a:visited{
 }
 .liked__heart{
     color: rgb(237, 73, 86) !important;
+}
+.bottom--row--user-info span{
+    font-size: 16px;
+    line-height: 24px;
+    white-space: pre-line;
+    margin-bottom:8px;
+    width:100%;
 }
 .flex-row{
     display: -webkit-flex;
@@ -224,7 +231,28 @@ a:visited{
     width:100%;
     align-items:center;
     background-color: var(--light-gray);
-    min-height:100vh;
+    min-height:90vh;
+    
+}
+.auth--inner{
+    justify-content: center;
+    align-items:center;
+    gap: 0px;
+}
+#page {
+    min-height: 57vh;
+}
+.auth--review--pic{
+    padding:30px 0px 0px;
+    width: 30%;
+    min-width: 454px;
+}
+.auth--review--pic img{
+    max-width:100%;
+    min-height: 618px;
+    object-fit: contain;
+    display: block;
+    user-select: none;
 }
 .auth{
     color:var(--main-black);
@@ -251,7 +279,7 @@ a:visited{
     margin:0 auto;
     font-weight:100;
     font-size:14px;
-    white-space:nowrap;
+    flex-wrap: wrap;
     word-break: keep-all;
     display:flex;
     color:var(--light-black);
@@ -357,9 +385,9 @@ a:visited{
 }
 .auth--footer--container{
     width:100%;
-    align-self: flex-start;
+    align-self: center;
     flex-wrap:wrap;
-    margin:130px 3vw 35px 4vw;
+    margin:80px 3vw 35px 4vw;
     justify-content:space-between;
     max-width: 1150px;
 }
@@ -376,6 +404,7 @@ a:visited{
     flex-wrap:wrap;
     list-style:none;
     align-items:center;
+    /* width: 100%; */
 }
 .auth--footer--ul li{
     color:#00376b;
@@ -407,6 +436,10 @@ article, div, footer, header, main, nav, section{
     flex-shrink:0;
     padding:0;
     margin:0;
+}
+#main--footer {
+    background-color: var(--light-gray);
+    padding-bottom: 10px;
 }
 #userProfFooter.userProfile--footer .auth--footer--ul{
     justify-content:center;
@@ -468,6 +501,24 @@ button:active{
 .liked__double__click__layout, .liked__double__click{
     position:absolute;
     transition: all 0.4s ease;
+}
+.global__loading{
+    padding: 0;
+    margin:0;
+    position: fixed;
+    top:0;
+    left:0;
+    height:2px;
+    z-index:1000;
+    width: 100%;
+    background: #f09433; 
+    background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+    background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+    background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+    /* background-color: var(--secondary-clr); */
+    filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
+    animation: fakeLoading 0.6s ease-out ; 
+    animation-iteration-count:2;
 }
 .post--comment--row{
     padding:2px 0;
@@ -777,6 +828,9 @@ button:active{
     width:30px;
     height:30px;
 }   
+.mobile--users--sidedrawer .messages--chatbox--body{
+    height:85%;
+}
 #messages.messages--container .messages--chatbox--body{
     padding:44px 20px 0;
     height:70%;
@@ -895,6 +949,10 @@ button:active{
     text-overflow:ellipsis;
     cursor:pointer;
     text-transform: capitalize;
+    appearance:none;
+}
+.profile__btn:active{
+    outline: none !important;
 }
 .prof__btn__followed{
     border-radius:3px;
@@ -903,12 +961,28 @@ button:active{
     padding:0 24px;
     color:#fff;
 }
+.prof__btn__followed:active{
+    color:rgb(224, 224, 224);
+}
 .prof__btn__unfollowed{
     border-radius:4px;
     border:1px solid #dbdbdb;
     padding:0px 9px;
     background-color: transparent;
     color:#262626;
+}
+a.prof__btn__unfollowed{
+    color:#262626;
+}
+.prof__btn__unfollowed:hover{
+    text-decoration: none;
+}
+.prof__btn__unfollowed a {
+    color:#262626;
+    text-decoration: none;
+}
+.prof__btn__unfollowed:active{
+    color:#424242 !important;
 }
 #usersProfile.users--profile--container .users__profile__image{
     width:100%;
@@ -924,17 +998,22 @@ button:active{
     justify-content:space-between;
 }
 
+.user-top-inner{
+    margin:0 auto;
+    flex-wrap: wrap;
+    width:80%;
+}
 #usersProfile.users--profile--container .desktop--social--row p{
-    padding:2px 6px;
+    padding:2px 6px 2px 0px;
     margin-right:30px;
     font-weight:400;
 }
 #usersProfile.users--profile--container .desktop--social--row p span{
-    font-weight:700;
+    font-weight:800;
 }
 #usersProfile.users--profile--container .MuiAvatar-root{
-    width:72px !important;
-    height: 72px !important;
+    width:100px;
+    height: 100px;
 }
 #usersProfile.users--profile--container .users--profile--stripe{
     width:100%;
@@ -948,7 +1027,7 @@ button:active{
     -webkit-display: grid;
     display:grid;
     grid-template-columns: repeat(3, 1fr);
-    gap:14px;
+    gap:10px;
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
 }
@@ -974,6 +1053,7 @@ button:active{
 #usersProfile.users--profile--container .users--action--row{
     max-width:450px;
     flex-wrap:nowrap;
+    
 }
 #usersProfile.users--profile--container .profile__display__name{
     font-size:28px;
@@ -981,6 +1061,7 @@ button:active{
     margin: -5px 0 -6px;
     white-space:nowrap;
     word-break: keep-all;
+    text-align:left;
 }
 #usersProfile.users--profile--container .desktop--social--row p span{
     font-weight:600;
@@ -1167,6 +1248,15 @@ button:active{
 .empty--posts--container .plus--icon--container .plus__icon{
     font-size: 30px;
 }
+.prof--acc--category span {
+    color: #8e8e8e;
+    color: rgb(142, 142, 142);
+    line-height:20px;
+    font-size: 16px;
+    /* font-weight:400; */
+    margin-bottom: 5px;
+}
+
 /* -------x------------Empty page--------x-------- */
 /* -----------Query less than or equal 250px------------ */
 @media only screen and (max-width: 250px){
@@ -1187,7 +1277,9 @@ button:active{
     .auth--copyright{
         font-size:11px !important;
     }
-    
+    .user-top-inner{
+        flex-direction: column;
+    }
 }
 /* ------x-----Query less than or equal 250px-----x------- */
 /* -----------Query less than or equal 670px------------ */
@@ -1198,6 +1290,20 @@ button:active{
     }
     .auth{
         width:75%;
+    }
+    #usersProfile.users--profile--container .MuiAvatar-root{
+        width:77px;
+        height:77px;
+    }
+    #page {
+        min-height:95vh;
+        margin-bottom: 50px;
+    }
+    .prof--acc--category span {
+        font-size: 14px;
+    }
+    .user-top-inner{
+        width:100%;
     }
     .mobile-only{
         display:block;
@@ -1214,17 +1320,23 @@ button:active{
         margin-right:auto;
         margin-left:auto;
     }
+    #usersProfile.users--profile--container .users--action--row{
+        flex-direction: column !important;
+    }
     .auth--footer--container .auth--copyright{
-        margin-top:10px;
+        margin-top:30px;
     }
     #usersProfile.users--profile--container .profile--posts--container{
         padding:1px;
     }
+    .auth--input--form{
+        padding:0;
+    }
+    .auth--input--form input[type="text"], .auth--input--form input[type="password"],.auth--input--form input[type="email"], .auth--input--form input[type="submit"] {
+        width: 100%;
+    }
     #usersProfile.users--profile--container .users--profile--posts{
         gap:2px !important;
-    }
-    #usersProfile.users--profile--container .users--action--row{
-        flex-direction: column;
     }
     .desktop-only{
         display:none;
@@ -1391,5 +1503,39 @@ button:active{
         flex-direction: column;
         flex-wrap: wrap !important;
     }
+    .auth--review--pic{
+        display:none;
+    }
+    
+}
+@media only screen and (max-width:930px) and (min-width: 670px){
+    .auth--footer--container{
+        justify-content: center;
+    }
 }
 /* ---x------Query less than or equal 9300px---x--------- */
+
+/* ----x-- keyframes --x--- */
+@keyframes fakeLoading {
+    0% {
+        width:0;
+    }
+    10% {
+        width:10%;
+    }
+    30% {
+        width:30%;
+    }
+    50% {
+        width:50%;
+    }
+    70% {
+        width:70%;
+    }
+    80% {
+        width:80%;
+    }
+    100% {
+        width:100%;
+    }
+}

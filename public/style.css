@@ -841,6 +841,10 @@ button:active{
     width:90%;
     align-items:center;
 }
+.react-confirm-alert-button-group{
+    flex-direction: row;
+    margin-top: 10px;
+}
 #messages.messages--container .messages--user--info p{
     flex:1;
     margin-left: 9px;

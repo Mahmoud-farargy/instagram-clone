@@ -50,8 +50,8 @@ const ProfessionalAccount = (props) => {
     return (
         <Fragment>
             
-            <div className="prof--acc w-100">
-                    <form onSubmit={(s) => onSubmission(s)} className="prof--acc--inner flex-column">
+            <div className="option--container">
+                    <form onSubmit={(s) => onSubmission(s)} className="flex-column">
                 <Suspense fallback={<h1>Loading...</h1>}>
                       <InputForm
                           type="select"

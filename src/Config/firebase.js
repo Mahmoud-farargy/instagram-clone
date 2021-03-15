@@ -11,9 +11,10 @@ var firebaseConfig = config
   const auth = firebase.auth();
   const storage = firebase.storage();
   const storageRef = storage.ref();
+  const database = firebase.database();
   const googleProvider = new firebase.auth.GoogleAuthProvider();
   const phoneProvider = new firebase.auth.PhoneAuthProvider();
   const facebookProvider = new firebase.auth.FacebookAuthProvider();
   const twitterProvider = new firebase.auth.TwitterAuthProvider();
 
-  export {db , auth, storage, storageRef, googleProvider, phoneProvider, facebookProvider, twitterProvider};
+  export {db , auth, storage, storageRef, database, googleProvider, phoneProvider, facebookProvider, twitterProvider};

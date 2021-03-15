@@ -2,6 +2,7 @@ import React ,{PureComponent} from "react";
 import {db, auth, storageRef} from "./Config/firebase";
 import igVideoImg from "./Assets/instagram-video.png";
 import {toast} from "react-toastify";
+import { confirmAlert } from 'react-confirm-alert';
 const AppContext = React.createContext();
 
 class AppProvider extends PureComponent{ //For termporary memory
@@ -49,7 +50,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                           [stateBase]: newState,
                   }).then(()=>{
                       if(updateAbility === true || uid === this.state.receivedData?.uid){
-                        //   this.updatedReceivedData();
+                          this.updatedReceivedData();
                       }
                   }) 
                 }else{
@@ -58,7 +59,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                         notifications: withNotifications
                     }).then(()=>{
                         if(updateAbility === true || uid === this.state.receivedData?.uid){
-                            // this.updatedReceivedData();
+                            this.updatedReceivedData();
                         }
                     }) 
                 }
@@ -575,6 +576,13 @@ class AppProvider extends PureComponent{ //For termporary memory
         }
     }
 
+    confirmPrompt(title, buttons, msg){
+        confirmAlert({
+            title,
+            buttons,
+            message: msg,
+        })
+    }
     render(){
         return(
             <AppContext.Provider value={{//states
@@ -614,6 +622,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                 deletePost: this.deletePost.bind(this),
                 handleEditingProfile: this.handleEditingProfile.bind(this),
                 notify: this.notify.bind(this),
+                confirmPrompt: this.confirmPrompt.bind(this),
             }}>
                 {this.props.children}
             </AppContext.Provider>

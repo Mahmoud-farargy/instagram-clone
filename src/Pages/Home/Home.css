@@ -154,7 +154,7 @@
 @media only screen and (max-width: 930px){
     #home.main--home--container .main--home--inner{
         flex-direction: column ;
-        min-width: auto !important;
+        min-width: 90%;
     }
     #home.main--home--container .home--sider{
         position:static;

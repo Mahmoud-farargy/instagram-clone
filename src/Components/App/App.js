@@ -1,13 +1,15 @@
 import React ,{Fragment, useEffect, useContext, Suspense, lazy} from "react";
 import {Switch, Route} from "react-router-dom";
 import {AppContext} from "../../Context";
-import {db, auth} from "../../Config/firebase";
+import {db, auth, database} from "../../Config/firebase";
+import firebase from "firebase"; 
 import AppConfig from "../../Config/app-config.json";
 import {useAuthState} from "react-firebase-hooks/auth";
 import UsersModal from "../../Components/UsersModal/UsersModal";
 import CommentsModal from "../../Components/CommentsModal/CommentsModal";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import $ from "jquery";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
 
@@ -28,8 +30,50 @@ const EditProfile = lazy(() => import("../../Pages/EditProfile/EditProfile"));
 const App = (props)=>{
     
     const context = useContext(AppContext);
-    const {updatedReceivedData,updateUserState, updateUID, receivedData , updateSuggestionsList, currentPage, changeMainState} = context;   
+    const {updatedReceivedData,updateUserState, updateUID, receivedData , updateSuggestionsList, currentPage, changeMainState, uid} = context;   
     const [_, loading] = useAuthState(auth);
+    // experiment
+    useEffect(() => {
+
+        // var currUid =  u.currentUser;
+        var userDatabaseRef = database.ref("/status" + "RJRllL1KMje3HadGMCJUi5h6BmE2");
+        // console.log(database.ref().child("/users" + "RJRllL1KMje3HadGMCJUi5h6BmE2").onDisconnect().update({status: "offline"}));
+        var isOfflineForDatabase = {
+           state: 'offline',
+           last_changed: firebase.database.ServerValue.TIMESTAMP,
+       };
+       
+       var isOnlineForDatabase = {
+           state: 'online',
+           last_changed: firebase.database.ServerValue.TIMESTAMP,
+       };
+           // and `false` when disconnected.
+       database.ref('.info/connected').on('value', function(snapshot) {
+           // If we're not currently connected, don't do anything.
+           if (snapshot.val() == false) {
+               return;
+           };
+           console.log(snapshot);
+           db.collection("users").doc("RJRllL1KMje3HadGMCJUi5h6BmE2").update({
+        //            test: "online"
+        //        })
+               // If we are currently connected, then use the 'onDisconnect()' 
+               // method to add a set which will only trigger once this 
+               // client has disconnected by closing the app, 
+               // losing internet, or any other means.
+            //    userDatabaseRef.onDisconnect().set(isOfflineForDatabase).then(function() {
+                //    The promise returned from .onDisconnect().set() will
+                //    resolve as soon as the server acknowledges the onDisconnect() 
+                //    request, NOT once we've actually disconnected:
+                //    https://firebase.google.com/docs/reference/js/firebase.database.OnDisconnect
+   
+                //    We can now safely set ourselves as 'online' knowing that the
+                //    server will mark us as offline once we lose connection.
+                //    userDatabaseRef.set(isOnlineForDatabase);
+               });
+       });
+    }, [uid]);
+    //----
 
     useEffect(()=>{
       const unsubscribe =  auth.onAuthStateChanged(authUser =>{

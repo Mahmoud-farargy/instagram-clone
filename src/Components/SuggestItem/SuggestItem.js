@@ -14,7 +14,7 @@ const SuggestItem =(props)=>{
                         <Avatar src={userAvatarUrl} alt={userName}/>
                         <h5 className="flex-row">{userName}{isVerified ?  <span><GoVerified className="verified_icon"/></span> : null} </h5>                                    
                     </div>
-                    <button className={receivedData?.following?.some(item => item.receiverUid === userUid) ? "profile__btn prof__btn__unfollowed": "profile__btn prof__btn__followed"} color="primary" onClick={()=> handleFollowing(receivedData?.following.some(item => item?.receiverUid === userUid), userUid, userName, userAvatarUrl, receivedData?.uid, receivedData?.userName, receivedData?.userAvatarUrl)}>{!receivedData?.following.some(item => item?.receiverUid === userUid) ? "Follow": "Unfollow"}</button>
+                    <button className={receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.some(item => item.receiverUid === userUid) ? "profile__btn prof__btn__unfollowed": "profile__btn prof__btn__followed"} color="primary" onClick={()=> handleFollowing(receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.some(item => item?.receiverUid === userUid), userUid, userName, userAvatarUrl, receivedData?.uid, receivedData?.userName, receivedData?.userAvatarUrl)}>{receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.some(item => item?.receiverUid === userUid) ?  "Unfollow": "Follow"}</button>
                 </li> 
             </div>
         </Fragment>

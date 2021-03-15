@@ -55,12 +55,13 @@ const AuthPage =(props)=>{
                                                 stories: [],
                                                 notifications: {isNewMsg: false,isUpdate: false, list: []},
                                                 isVerified: false,
-                                                userAvatarUrl: "" //auth.currentUser
+                                                userAvatarUrl: ""
                                         }).then((res)=>{
                                             setSignUpEmail("");
                                             setSignUpPassword("");
                                             setSignUpUsername("");
                                             props.history.push("/");
+                                            notify("Welcome to Voxgram.");
                                             
                                         })
                                         setLoading(false);
@@ -197,14 +198,14 @@ const AuthPage =(props)=>{
                                     <div className="flex-column">
                                         <input required autoFocus value={loginEmail} onChange={(e)=> setLoginEmail(e.target.value)} type="text"  placeholder="Email" />
                                         <input required value={loginPassword} onChange={(e)=> setLoginPassword(e.target.value)} type="password"  placeholder="Password" /> 
-                                        <input className={loading || (!loginEmail || !loginPassword || inProgress) ? "disabled" : ""} disabled={loading || (!loginEmail || !loginPassword) || inProgress}  type="submit" value={loading ?"Loading...": "Log In"} />
+                                        <input className={loading || (!loginEmail || !loginPassword) || inProgress ? "disabled" : ""} disabled={loading || (!loginEmail || !loginPassword) || inProgress}  type="submit" value={loading ?"Loading...": "Log In"} />
                                         <span onClick={()=> setPasswordMode(true)} className="forgot__pass">Forgot password?</span>
                                     </div>
                                     : 
                                     <div>
                                         <span onClick={()=> setPasswordMode(false)} className="back__Btn">Back</span>
                                         <input required autoFocus value={loginEmail} onChange={(e)=> setLoginEmail(e.target.value)} type="text"  placeholder="Email" />
-                                        <input type="submit" onClick={(e)=> resetEmail(e)} className={(loading || !loginEmail || inProgress) ? "disabled resetPassBtn": "resetPassBtn"} disabled={(loading || !loginEmail || inProgress)} value="Resest password through email"/>
+                                        <input type="submit" onClick={(e)=> resetEmail(e)} className={(loading || !loginEmail) || inProgress ? "disabled resetPassBtn": "resetPassBtn"} disabled={loading || !loginEmail || inProgress} value="Resest password through email"/>
                                     </div>
                                     
                                 }
@@ -224,7 +225,7 @@ const AuthPage =(props)=>{
                                     <input required value={signUpUsername} onChange={(e)=> setSignUpUsername(e.target.value)} type="text"  placeholder="Username" />
                                     <input required value={signUpPassword} onChange={(e)=> setSignUpPassword(e.target.value)} type="password"  placeholder="Password" />
                                     <input required value={reTypedPassword} onChange={(e)=> setRePassword(e.target.value)} type="password"  placeholder="Re-type Password" />
-                                    <input className={loading || (!signUpEmail || !signUpPassword || !signUpUsername || !reTypedPassword || inProgress) ? "disabled" : ""}  disabled={loading || (!signUpEmail || !signUpPassword || !signUpUsername || !reTypedPassword || inProgress)} type="submit" value={loading ?"Loading...": "Sign Up"} />
+                                    <input className={loading || (!signUpEmail || !signUpPassword || !signUpUsername || !reTypedPassword) || inProgress ? "disabled" : ""}  disabled={loading || (!signUpEmail || !signUpPassword || !signUpUsername || !reTypedPassword) || inProgress} type="submit" value={loading ?"Loading...": "Sign Up"} />
                                 </form> 
                             </div>
                             
