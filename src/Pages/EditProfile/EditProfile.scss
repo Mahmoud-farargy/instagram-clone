@@ -128,7 +128,7 @@
         }
   }
   .option--container{
-    width: 80%;
+    width: 85%;
     display:flex;
     flex-wrap: wrap;
     margin:0 auto;
@@ -138,5 +138,8 @@
   }
   .user--info--container{
     background-color: green;
+  }
+  .modal--btns{
+    justify-content: flex-end;
   }
 }

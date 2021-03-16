@@ -90,7 +90,8 @@ const EditProfileOption = (props) => {
     if (Object.keys(formState).every((item) => formState[item])) {
       curr.updateProfile({
         displayName: formState.name,
-        // photoURL: ""
+        // photoURL: "",
+        phoneNumber: formState.phoneNumber,
       });
       // curr.updateEmail(this.);
       handleEditingProfile(formState, "editProfile");

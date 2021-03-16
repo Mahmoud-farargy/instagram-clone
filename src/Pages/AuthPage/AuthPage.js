@@ -78,7 +78,7 @@ const AuthPage =(props)=>{
                         setTimeout(()=>{
                             if(!isUserOnline){ //avoids data overlapping
                                 
-                                auth.signInWithEmailAndPassword(loginEmail, loginPassword).then(res =>{
+                                auth.signInWithEmailAndPassword(loginEmail, loginPassword).then(() =>{
                                     setLoading(false);
                                         setLoginEmail("");
                                         setLoginPassword("");
@@ -173,7 +173,7 @@ const AuthPage =(props)=>{
             notify("A password reset config has been send to your email", "success");
         }).catch(err=>{
             setLoading(false);
-            notify(`The email you entered is does not exist in our database" ${err}`, "error");
+            notify(`The email you entered does not exist in our database" ${err}`, "error");
         });
     }
     return(

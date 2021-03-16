@@ -15,9 +15,11 @@ const InputForm = (props) => {
             <label htmlFor={props.label}>{props.label}</label>
             <div className="form--input--side">
               <input
-                className={props.disabled && "disabled"}
+                className={`${props.disabled && "disabled" } ${!props.val && props.submitted && "test"}`}
                 id={props.label}
+                type={props.inputType}
                 value={props.val || ""}
+                disabled={props.disabled}
                 name={props.label}
                 onChange={(x) => props.changeInput(x.target.value, props.name)}
                 placeholder={props.label}
@@ -92,6 +94,7 @@ const InputForm = (props) => {
                 className={props.disabled && "disabled"}
                 id={props.label}
                 value={props.val || ""}
+                type={props.inputType}
                 name={props.label}
                 onChange={(x) => props.changeInput(x.target.value, props.name)}
                 placeholder={props.label}

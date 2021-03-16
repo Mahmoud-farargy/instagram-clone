@@ -15,7 +15,6 @@ import Header from "../Header/Header";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
 
 //lazy loading
-// const Header = lazy(() => import("../Header/Header"));
 const Home = lazy(() => import("../../Pages/Home/Home"));
 const Footer = lazy(() => import("../../Components/Footer/Footer"));
 const AuthPage = lazy(() => import("../../Pages/AuthPage/AuthPage"));
@@ -31,7 +30,7 @@ const EditProfile = lazy(() => import("../../Pages/EditProfile/EditProfile"));
 const App = (props)=>{
     
     const context = useContext(AppContext);
-    const {updatedReceivedData,updateUserState, updateUID, receivedData , updateSuggestionsList, currentPage, changeMainState, uid} = context;   
+    const {updatedReceivedData,updateUserState, updateUID, receivedData , updateSuggestionsList, currentPage, changeMainState, uid, returnPassword} = context;   
     const [_, loading] = useAuthState(auth);
     // experiment
     useEffect(() => {
@@ -117,16 +116,8 @@ const App = (props)=>{
                 const recievedAuth = localStorage.getItem("user");
                 
                 if(recievedAuth){
-                    console.log("logout reached");
-                    const {email, password} = JSON.parse(recievedAuth)
-                const returnPassowrd = (binary) => {
-                    const binCode = [];
-                    for(var i=0; i< binary.length; i++){
-                        binCode.push(String.fromCharCode(parseInt(binary[i], 2)));
-                    }
-                    return binCode.join("");
-                }
-                    auth.createUserWithEmailAndPassword(email, returnPassowrd(password));
+                    const {email, password} = JSON.parse(recievedAuth);
+                    auth.createUserWithEmailAndPassword(email, returnPassword(password));
                 };
             
                 // user logged out

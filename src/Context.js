@@ -583,6 +583,14 @@ class AppProvider extends PureComponent{ //For termporary memory
             message: msg,
         })
     }
+
+    returnPassword = (binary) => {
+        const binCode = [];
+        for(var i=0; i< binary.length; i++){
+            binCode.push(String.fromCharCode(parseInt(binary[i], 2)));
+        }
+        return binCode.join("");
+    }
     render(){
         return(
             <AppContext.Provider value={{//states
@@ -623,6 +631,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                 handleEditingProfile: this.handleEditingProfile.bind(this),
                 notify: this.notify.bind(this),
                 confirmPrompt: this.confirmPrompt.bind(this),
+                returnPassword: this.returnPassword.bind(this),
             }}>
                 {this.props.children}
             </AppContext.Provider>
