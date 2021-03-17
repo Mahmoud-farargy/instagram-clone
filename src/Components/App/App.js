@@ -10,6 +10,7 @@ import CommentsModal from "../../Components/CommentsModal/CommentsModal";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import $ from "jquery";
 import Header from "../Header/Header";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
@@ -33,8 +34,7 @@ const App = (props)=>{
     const {updatedReceivedData,updateUserState, updateUID, receivedData , updateSuggestionsList, currentPage, changeMainState, uid, returnPassword} = context;   
     const [_, loading] = useAuthState(auth);
     // experiment
-    useEffect(() => {
-        //---
+    // useEffect(() => {
 // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
 //   .then((res) => {
 //       console.log(res);
@@ -52,25 +52,25 @@ const App = (props)=>{
 //   });
 //  --------
         // var currUid =  u.currentUser;
-        var userDatabaseRef = database.ref("/status" + "RJRllL1KMje3HadGMCJUi5h6BmE2");
+        // var userDatabaseRef = database.ref("/status" + "RJRllL1KMje3HadGMCJUi5h6BmE2");
         // console.log(database.ref().child("/users" + "RJRllL1KMje3HadGMCJUi5h6BmE2").onDisconnect().update({status: "offline"}));
-        var isOfflineForDatabase = {
-           state: 'offline',
-           last_changed: firebase.database.ServerValue.TIMESTAMP,
-       };
+    //     var isOfflineForDatabase = {
+    //        state: 'offline',
+    //        last_changed: firebase.database.ServerValue.TIMESTAMP,
+    //    };
        
-       var isOnlineForDatabase = {
-           state: 'online',
-           last_changed: firebase.database.ServerValue.TIMESTAMP,
-       };
-           // and `false` when disconnected.
-       database.ref('.info/connected').on('value', function(snapshot) {
-           // If we're not currently connected, don't do anything.
-           if (snapshot.val() == false) {
-               return;
-           };
-           console.log(snapshot);
-           db.collection("users").doc("RJRllL1KMje3HadGMCJUi5h6BmE2").update({
+    //    var isOnlineForDatabase = {
+    //        state: 'online',
+    //        last_changed: firebase.database.ServerValue.TIMESTAMP,
+    //    };
+    //        // and `false` when disconnected.
+    //    database.ref('.info/connected').on('value', function(snapshot) {
+    //        // If we're not currently connected, don't do anything.
+    //        if (snapshot.val() == false) {
+    //            return;
+    //        };
+    //        console.log(snapshot);
+    //        db.collection("users").doc("RJRllL1KMje3HadGMCJUi5h6BmE2").update({
         //            test: "online"
         //        })
                // If we are currently connected, then use the 'onDisconnect()' 
@@ -86,9 +86,9 @@ const App = (props)=>{
                 //    We can now safely set ourselves as 'online' knowing that the
                 //    server will mark us as offline once we lose connection.
                 //    userDatabaseRef.set(isOnlineForDatabase);
-               });
-       });
-    }, [uid]);
+            //    });
+    //    });
+    // }, [uid]);
     //----
 
     useEffect(()=>{
@@ -104,7 +104,7 @@ const App = (props)=>{
 
             if(authUser){
                 
-                db.collection("users").get().then((query)=>{
+                db.collection("users").limit(10).get().then((query)=>{
                     query.forEach((user)=>{
                             updateSuggestionsList(user.data());
                     })

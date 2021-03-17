@@ -11,6 +11,7 @@ import {RiBookmarkLine} from "react-icons/ri";
 import {AppContext} from "../../Context";
 import Comment from "../../Components/Comment/Comment";
 import {GoVerified } from "react-icons/go";
+import {withRouter} from "react-router-dom";
 
 class PostPage extends PureComponent{
     static contextType = AppContext;
@@ -49,7 +50,11 @@ class PostPage extends PureComponent{
         })
         
     }
-    
+    browseUser=(specialUid, name)=>{
+        const {getUsersProfile} = this.context;
+        getUsersProfile(specialUid);
+        this.props.history.push(`/user-profile/${name}`);
+    }  
     likesCheck(){
         const {usersProfileData, currentPostIndex , uid} = this.context;
         if(usersProfileData?.posts){
@@ -130,7 +135,7 @@ class PostPage extends PureComponent{
         })
     }
     render(){
-    var {usersProfileData , currentPostIndex, uid, receivedData, handleLikingComments, currentPostIndex, handleUsersModal, handleCommentsModal} = this.context;
+    var {usersProfileData , currentPostIndex, uid, receivedData, handleLikingComments, currentPostIndex, handleUsersModal, handleCommentsModal, browseUser} = this.context;
     if(usersProfileData?.posts){
         var {userName,caption, contentType, contentURL, comments, likes, location, date, postOwnerId} = usersProfileData?.posts[currentPostIndex?.index];
         var isVerified = usersProfileData?.isVerified;
@@ -146,7 +151,7 @@ class PostPage extends PureComponent{
                             <div className="post--card--header flex-row">
                                 <header className="post--header--avatar flex-row">
                                     <Avatar className="post__header__avatar" src={usersProfileData?.userAvatarUrl} alt={userName} />
-                                    <div className="post--header--user--info flex-column">
+                                    <div className="post--header--user--info flex-column" onClick={()=> this.browseUser(usersProfileData?.uid, userName)}>
                                         <span tabIndex="0" aria-disabled="false" role="button" className="flex-row">
                                             <h5 className="flex-row w-100"><TruncateMarkup line={1} ellipsis="...">{userName}</TruncateMarkup>{ isVerified ?  <span><GoVerified className="verified_icon"/></span> : null} </h5>
                                         </span>
@@ -263,4 +268,4 @@ class PostPage extends PureComponent{
     }
     
 }
-export default PostPage;
+export default withRouter(PostPage);

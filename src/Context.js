@@ -22,6 +22,7 @@ class AppProvider extends PureComponent{ //For termporary memory
             igVideoImg: igVideoImg,
             openCommentsModal: false,
             currentPage: "",
+            searchInfo: {results: [], loading: false},
         }
     }
   
@@ -38,7 +39,7 @@ class AppProvider extends PureComponent{ //For termporary memory
     updateSuggestionsList(data){ 
         let sugs = this.state.initialSuggestions; 
         sugs.unshift(data);
-        let suggestList =  Array.from(new Set(sugs?.map(itemId => itemId.uid))).slice(0,5).map(ID => sugs?.find(el => el.uid === ID));
+        let suggestList =  Array.from(new Set(sugs?.map(itemId => itemId.uid))).map(ID => sugs?.find(el => el.uid === ID));
             this.setState({
                 ...this.state,
                 suggestionsList: suggestList
@@ -532,7 +533,6 @@ class AppProvider extends PureComponent{ //For termporary memory
     }
 
     deletePost(postId, postIndex, contentPath){
-       console.log("delete triggered");
 
     const buttons = [
         {
@@ -609,6 +609,31 @@ class AppProvider extends PureComponent{ //For termporary memory
     changeProfilePic = (url) => {
         this.updateParts(this.state.uid, "userAvatarUrl", url, true, "");
     }
+
+    searchUsers = (val, approach) => {
+        let madeApproach = approach === "strict" ? "==" : ">="; 
+        this.setState({
+            ...this.state,
+            searchInfo: {
+                ...this.state.searchInfo,
+                loading: true
+            }
+        });
+        db.collection("users").where("userName", madeApproach, val).limit(50).get().then((snapshot) => {
+            const users = snapshot.docs.map(user => {
+                return user.data();
+            });
+            this.setState({
+                ...this.state,
+                searchInfo: {
+                    ...this.state.searchInfo,
+                    results: users,
+                    loading: false,
+
+                }
+            });
+        });
+    }
     render(){
         return(
             <AppContext.Provider value={{//states
@@ -623,7 +648,8 @@ class AppProvider extends PureComponent{ //For termporary memory
                 openCommentsModal: this.state.openCommentsModal,
                 currentPage: this.state.currentPage,
                 currentUser: this.state.currentUser,
-                isUserOnline: this.state.isUserOnline,//functions
+                isUserOnline: this.state.isUserOnline,
+                searchInfo: this.state.searchInfo,//functions
                 updatedReceivedData: this.updatedReceivedData.bind(this),
                 updateUserState: this.updateUserState.bind(this),
                 updateUID: this.updateUID.bind(this),
@@ -651,6 +677,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                 confirmPrompt: this.confirmPrompt.bind(this),
                 returnPassword: this.returnPassword.bind(this),
                 changeProfilePic: this.changeProfilePic.bind(this),
+                searchUsers: this.searchUsers.bind(this),
             }}>
                 {this.props.children}
             </AppContext.Provider>

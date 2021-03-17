@@ -109,6 +109,9 @@
 #home.main--home--container .suggestions--list ul li{
     margin-bottom: 13px;
 }
+#home.main--home--container .loading--skeleton--home{
+    width:300px;
+}
 @media only screen and  (max-width:670px){
     #home.main--home--container .main--home--inner{
         flex-direction: column;

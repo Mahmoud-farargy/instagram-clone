@@ -5,7 +5,7 @@ import {AppContext} from "../../Context";
 import "./AddNewPost.css";
 import {withRouter} from "react-router-dom";
 import {Button, LinearProgress} from "@material-ui/core";
-// import Skeleton from '@material-ui/lab/Skeleton';  //npm install @material-ui/lab
+import Skeleton from "react-loading-skeleton";
 
 class AddNewPost extends PureComponent{
     constructor(props){
@@ -220,6 +220,7 @@ class AddNewPost extends PureComponent{
                                 // <Skeleton variant="rect" width={210} height={118} />
                                   <div className="uploading__in__progress flex-column">
                                     <h4>Uploading...</h4>
+                                    <Skeleton count={1} height={500} />
                                   </div>
                                 
                                 :

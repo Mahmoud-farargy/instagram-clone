@@ -10,7 +10,7 @@ import SuggestItem from "../../Components/SuggestItem/SuggestItem";
 import {GoVerified} from "react-icons/go";
 import {useAuthState} from "react-firebase-hooks/auth";  //firebase hook
 import {auth} from "../../Config/firebase"; 
-import {Skeleton} from "@material-ui/lab";
+import Skeleton from "react-loading-skeleton";
 // import InstagramEmbed from "react-instagram-embed";
 import {BsPlusSquare} from "react-icons/bs";
 
@@ -18,8 +18,10 @@ const Home =(props)=>{
     let {receivedData, handleMyLikes, handleSubmittingComments, suggestionsList, getUsersProfile, uid, handleFollowing, deletePost, handleSubComments, handleLikingComments, handleUsersModal, changeMainState} = useContext(AppContext);
     let posts = receivedData?.posts;
     const browseUser=(specialUid, name)=>{
-        getUsersProfile(specialUid);
-        props.history.push(`/user-profile/${name}`);
+        if(specialUid){
+            getUsersProfile(specialUid);
+            props.history.push(`/user-profile/${name}`);
+        }
     }  
     let [user, loading] = useAuthState(auth);
     useEffect(() => {
@@ -89,15 +91,7 @@ const Home =(props)=>{
                         : loading ?
                             (
                             <div className="w-100 flex-column">
-                            <Skeleton variant="rect" height="100px" width="100%">
-                                <div style={{ paddingTop: '40px' }} />
-                            </Skeleton>
-                            <Skeleton variant="rect" height="100px" width="100%">
-                                <div style={{ paddingTop: '20px' }} />
-                            </Skeleton>
-                            <Skeleton variant="rect" height="100px" width="100%">
-                                <div style={{ paddingTop: '20px' }} />
-                            </Skeleton>
+                            <Skeleton count={6} height={500} className="mb-5" />
                             </div>
                           )
                         : posts?.length <1 ?
@@ -116,6 +110,12 @@ const Home =(props)=>{
                     }
                     </div>
                     <aside className="home--sider">
+                    {
+                        loading && <div className="loading--skeleton--home flex-column">
+                            <Skeleton count={6} height={40} className="mt-3"/>
+                        </div>
+                    } 
+                    
                         {
                             receivedData?.userName ?
                                 <div className="side--user--info flex-row">
@@ -133,22 +133,15 @@ const Home =(props)=>{
                                     <button className="user__see__all__btn">See all</button>
                                 </div>
                                 <div className="suggestions--list flex-column">
-                                    <ul className="flex-column">
-                                        {
-                                            loading ?
-                                            <div className="flex-column">
-                                               <Skeleton variant="circle" width={40} height={40} />
-                                               <Skeleton variant="circle" width={40} height={40} />
-                                            </div>
-                                            :
-                                                suggestionsList && suggestionsList.length >0 && suggestionsList.filter(item => item?.uid !== receivedData?.uid ).map((user,i) =>{
+                                    <ul className="flex-column"> 
+                                           {
+                                               suggestionsList && suggestionsList.length >0 && suggestionsList.filter(item => item?.uid !== receivedData?.uid ).map((user,i) =>{
                                                     return(
                                                         <SuggestItem key={i} userName={user?.userName} isVerified={user?.isVerified} userUid={user?.uid} userAvatarUrl={user?.userAvatarUrl}   browseUser={browseUser} handleFollowing={handleFollowing} receivedData={receivedData} />
                                                     )
-                                                })                                            
-                                            
-                                        } 
-                                        
+                                                }) 
+                                           }                                                
+                
                                     </ul>
                                 </div> 
                             </div>

@@ -2,7 +2,7 @@ import React, {useContext, Fragment, useState,useEffect} from "react";
 import {AppContext} from "../../Context";
 import {Avatar} from "@material-ui/core";
 import {withRouter} from "react-router-dom";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import Skeleton from "react-loading-skeleton";
 import {auth} from '../../Config/firebase';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {GoVerified } from "react-icons/go";
@@ -170,13 +170,7 @@ const UsersProfile =(props)=>{
                                 })}
                             </div>
                             : loading ?
-                                (<CircularProgress
-                                    variant="determinate"
-                                    size={40}
-                                    thickness={4}
-                                    {...props}
-                                    value={100}
-                                  />)
+                             (<Skeleton count={10} height={250} width={250} className="mt-4 mr-4 mx-auto"  />)
                             :
                             (
                                 <div className="empty--posts--container flex-column">
