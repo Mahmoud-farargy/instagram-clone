@@ -6,7 +6,7 @@ import { auth, db } from "../../../Config/firebase";
 import { withRouter } from "react-router-dom";
 import OptionsModal from "../../../Components/Generic/OptionsModal/OptionsModal";
 import $ from "jquery";
-import {storage} from "../../../Config/firebase";
+import { storage } from "../../../Config/firebase";
 
 const InputForm = lazy(() =>
   import("../../../Components/Generic/InpuForm/InputForm")
@@ -31,7 +31,7 @@ const EditProfileOption = (props) => {
     handleEditingProfile,
     notify,
     confirmPrompt,
-    changeProfilePic
+    changeProfilePic,
   } = useContext(AppContext);
   // useEffct
   useEffect(() => {
@@ -50,7 +50,7 @@ const EditProfileOption = (props) => {
   //-x- end of useEffect -x-//
 
   const { userName } = receivedData;
-  let isFormValid = true;//makes sure all fields are filled and at least one of the fields does not match the already existing data
+  let isFormValid = true; //makes sure all fields are filled and at least one of the fields does not match the already existing data
   if (Object.keys(formState).length > 0) {
     isFormValid =
       Object.keys(formState).every((item) => formState[item]) &&
@@ -61,31 +61,37 @@ const EditProfileOption = (props) => {
   const onDeleteAccount = (x) => {
     x.stopPropagation(); //temporarily
     const buttons = [
-        {
-            label: "Cancel"
+      {
+        label: "Cancel",
+      },
+      {
+        label: "Confirm",
+        onClick: () => {
+          notify(
+            "Deletion request has been submitted. Your account will be deleted in 48 hours max."
+          );
+          // storageRef.child(`content/${receivedData?.uid}`).delete().then(()=>{
+          //make credentials first
+          // auth.currentUser.delete().then(() => {
+          //     db.collection("users")
+          //     .doc(receivedData?.uid)
+          //     .delete()
+          //     .then(() => {});
+          //     props.history.replace("/auth");
+          //     localStorage.clear();
+          //     notify("Your account has been deleted. We are sad to see you go.");
+          //     // }).catch(err=>{
+          //     //     notify(err, "error");
+          //     // });
+          // });
         },
-        {
-            label: "Confirm",
-            onClick: ()=> {
-              notify("Deletion request has been submitted. Your account will be deleted in 48 hours max.");
-            // storageRef.child(`content/${receivedData?.uid}`).delete().then(()=>{
-                //make credentials first
-                // auth.currentUser.delete().then(() => {
-                //     db.collection("users")
-                //     .doc(receivedData?.uid)
-                //     .delete()
-                //     .then(() => {});
-                //     props.history.replace("/auth");
-                //     localStorage.clear();
-                //     notify("Your account has been deleted. We are sad to see you go.");
-                //     // }).catch(err=>{
-                //     //     notify(err, "error");
-                //     // });
-                // });
-            } 
-        }
-    ]
-    confirmPrompt("Confirmation", buttons, "Are you sure you want to delete your account permanently?");
+      },
+    ];
+    confirmPrompt(
+      "Confirmation",
+      buttons,
+      "Are you sure you want to delete your account permanently?"
+    );
   };
   const submitForm = (e) => {
     e.preventDefault();
@@ -108,81 +114,122 @@ const EditProfileOption = (props) => {
       [name]: val,
     });
   };
-  const changePhoto = (process) =>{
+  const changePhoto = (process) => {
     setOptionsModal(false);
-    if(process === "update"){
-        $("#fileUploader").trigger("click");
-    }else if (process === "delete") {
+    if (process === "update") {
+      $("#fileUploader").trigger("click");
+    } else if (process === "delete") {
       changeProfilePic("");
-      notify("Profile picture removed.","success");
+      notify("Profile picture removed.", "success");
     }
-  }
-  const onPhotoChange =(e) => {
+  };
+  const onPhotoChange = (e) => {
     const uploadedPhoto = e.target.files[0];
-    if(uploadedPhoto){
+    if (uploadedPhoto) {
       const metadata = {
-        contentType: uploadedPhoto?.type
-      }
-      if(/(image)/g.test(metadata.contentType) && uploadedPhoto.size <= 12378523){
-        if(uploadedPhoto?.name.split("").length <= 50){
+        contentType: uploadedPhoto?.type,
+      };
+      if (
+        /(image)/g.test(metadata.contentType) &&
+        uploadedPhoto.size <= 12378523
+      ) {
+        if (uploadedPhoto?.name.split("").length <= 50) {
           notify("In progress");
-            const uploadContent = storage.ref(`avatars/${receivedData?.uid}`).put(uploadedPhoto, metadata);
-            uploadContent.on("state_changed", () =>{
-
-            },(error) =>{
+          const uploadContent = storage
+            .ref(`avatars/${receivedData?.uid}`)
+            .put(uploadedPhoto, metadata);
+          uploadContent.on(
+            "state_changed",
+            () => {},
+            (error) => {
               notify(error.message, "error");
-            },()=> {
+            },
+            () => {
               const curr = auth.currentUser;
-              storage.ref(`/avatars`).child(receivedData?.uid).getDownloadURL().then( url =>{
-                changeProfilePic(url);
-               
-                curr.updateProfile({
-                  photoURL: url
+              storage
+                .ref(`/avatars`)
+                .child(receivedData?.uid)
+                .getDownloadURL()
+                .then((url) => {
+                  changeProfilePic(url);
+
+                  curr.updateProfile({
+                    photoURL: url,
+                  });
+                  notify("Profile picture updated successfully.", "success");
                 });
-                notify("Profile picture updated successfully.","success");
-              });
-            });
-        }else{
-          notify(`The name of the photo is too long. it should not exceed 50 characters`, "error");
+            }
+          );
+        } else {
+          notify(
+            `The name of the photo is too long. it should not exceed 50 characters`,
+            "error"
+          );
         }
-        
-      }else{
-        notify("Please choose a photo that doesn't exceed the size of 12MB.", "error");
+      } else {
+        notify(
+          "Please choose a photo that doesn't exceed the size of 12MB.",
+          "error"
+        );
       }
     }
-  }
+  };
   return (
     <Auxiliary>
       {/* modals */}
-      <div style={{
-              opacity: openOptionsModal ? "1" : "0",
-              display: openOptionsModal ? "block" : "none",
-              transition:"all 0.5s ease",
-            }} className="backdrop " onClick={()=> setOptionsModal(false)}>    
-      </div>
-      {
-        openOptionsModal && 
-          <OptionsModal>
-            <span className="py-4 text-dark option__font">Change Profile Photo</span>
-            <span className="text-primary option__font" onClick={()=> changePhoto("update")}>upload photo</span>
-            <span className="text-danger option__font" onClick={()=> changePhoto("delete")}>Remove current Photo</span>
-            <span  onClick={()=> setOptionsModal(false)}>Cancel</span>
-          </OptionsModal>
-      }
-    <input type="file" id="fileUploader" accept="image/*" onChange={(e)=> onPhotoChange(e)} />
-        {/* --x-Modals-x-- */}
+      <div
+        style={{
+          opacity: openOptionsModal ? "1" : "0",
+          display: openOptionsModal ? "block" : "none",
+          transition: "all 0.5s ease",
+        }}
+        className="backdrop "
+        onClick={() => setOptionsModal(false)}
+      ></div>
+      {openOptionsModal && (
+        <OptionsModal>
+          <span className="py-4 text-dark option__font">
+            Change Profile Photo
+          </span>
+          <span
+            className="text-primary option__font"
+            onClick={() => changePhoto("update")}
+          >
+            upload photo
+          </span>
+          <span
+            className="text-danger option__font"
+            onClick={() => changePhoto("delete")}
+          >
+            Remove current Photo
+          </span>
+          <span onClick={() => setOptionsModal(false)}>Cancel</span>
+        </OptionsModal>
+      )}
+      <input
+        type="file"
+        id="fileUploader"
+        accept="image/*"
+        onChange={(e) => onPhotoChange(e)}
+      />
+      {/* --x-Modals-x-- */}
       <div className="option--container flex-column">
         <div className="flex-row change--photo">
-          <Avatar className="user__picture mr-3" src={receivedData?.userAvatarUrl} onClick={()=> setOptionsModal(true)} alt={userName} />
+          <Avatar
+            className="user__picture mr-3"
+            src={receivedData?.userAvatarUrl}
+            onClick={() => setOptionsModal(true)}
+            alt={userName}
+          />
           <div className="user--pic--container flex-column">
             <h1 className="user__prof__name">{userName}</h1>
-            
-              <button
-                onClick={() => setOptionsModal(true)}
-                className="change__prof__pic"
-              >
-                Change Profile Photo
-              </button>
+
+            <button
+              onClick={() => setOptionsModal(true)}
+              className="change__prof__pic"
+            >
+              Change Profile Photo
+            </button>
           </div>
         </div>
         <form
@@ -247,12 +294,18 @@ const EditProfileOption = (props) => {
               val={currentUser?.email}
               extraText={
                 <small>
-                  <span className="change__prof__pic" onClick={()=> props.changeIndex(2)}>Change Email?</span>
+                  <span
+                    className="change__prof__pic"
+                    onClick={() => props.changeIndex(2)}
+                  >
+                    Change Email?
+                  </span>
                   <p className="mt-2">
                     This email won't be shown to anyone except you.
                   </p>
                   <p className="mt-2">
-                    Verified email: {currentUser?.emailVerified ? "Yes." : "No."}
+                    Verified email:{" "}
+                    {currentUser?.emailVerified ? "Yes." : "No."}
                   </p>
                 </small>
               }
