@@ -89,7 +89,7 @@ const Header =(props)=>{
                                     </div>
                                 </div>
                             </li>
-                            <li><span onClick={()=> setProf(true)}><Avatar src="" alt={receivedData?.userName} className="header__user__avatar flex-column"/></span>
+                            <li><span onClick={()=> setProf(true)}><Avatar src={receivedData?.userAvatarUrl} alt={receivedData?.userName} className="header__user__avatar flex-column"/></span>
                             <div style={{
                                     display: openProf ? "flex" : "none",
                                     transition: "all 0.4s ease",

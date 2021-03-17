@@ -145,7 +145,7 @@ class PostPage extends PureComponent{
                     <article className="post--card--article">
                             <div className="post--card--header flex-row">
                                 <header className="post--header--avatar flex-row">
-                                    <Avatar className="post__header__avatar" src="" alt={userName} />
+                                    <Avatar className="post__header__avatar" src={usersProfileData?.userAvatarUrl} alt={userName} />
                                     <div className="post--header--user--info flex-column">
                                         <span tabIndex="0" aria-disabled="false" role="button" className="flex-row">
                                             <h5 className="flex-row w-100"><TruncateMarkup line={1} ellipsis="...">{userName}</TruncateMarkup>{ isVerified ?  <span><GoVerified className="verified_icon"/></span> : null} </h5>

@@ -532,26 +532,40 @@ class AppProvider extends PureComponent{ //For termporary memory
     }
 
     deletePost(postId, postIndex, contentPath){
-        const myPosts = this.state.receivedData?.posts;
-        let postsCopy = JSON.parse(JSON.stringify(myPosts));
-        // deletes post data from database
-       let extractedIndex = myPosts?.map(el =>{
-            return el.id
-        }).indexOf(postId);
-        if(extractedIndex === postIndex){ //makes sure to delete the right post
-            postsCopy.splice(postIndex,1);
-            // deletes content from storage
-            if(contentPath){
-                this.deleteContentFromFB(contentPath);
+       console.log("delete triggered");
+
+    const buttons = [
+        {
+            label: "Cancel"
+        },
+        {
+            label: "Delete",
+            onClick:() => {
+                const myPosts = this.state.receivedData?.posts;
+                    let postsCopy = JSON.parse(JSON.stringify(myPosts));
+                // deletes post data from database
+                        
+            let extractedIndex = myPosts?.map(el =>{
+                    return el.id
+                }).indexOf(postId);
+                if(extractedIndex === postIndex){ //makes sure to delete the right post
+                    postsCopy.splice(postIndex,1);
+                    // deletes content from storage
+                    if(contentPath){
+                        this.deleteContentFromFB(contentPath);
+                    }
+                    // updates data
+                    this.updateParts(this.state.uid,"posts", postsCopy, true,"");
+                    this.setState({
+                        ...this.state,
+                        openCommentsModal: false
+                    });
+                    this.notify("Post deleted");
+                }
             }
-            // updates data
-            this.updateParts(this.state.uid,"posts", postsCopy, true,"");
-            this.setState({
-                ...this.state,
-                openCommentsModal: false
-            });
-            this.notify("Post deleted");
         }
+    ]
+    this.confirmPrompt("Delete Confirmation", buttons, "Are you sure you want to delete this post?")
        
     }
 
@@ -590,6 +604,10 @@ class AppProvider extends PureComponent{ //For termporary memory
             binCode.push(String.fromCharCode(parseInt(binary[i], 2)));
         }
         return binCode.join("");
+    }
+
+    changeProfilePic = (url) => {
+        this.updateParts(this.state.uid, "userAvatarUrl", url, true, "");
     }
     render(){
         return(
@@ -632,6 +650,7 @@ class AppProvider extends PureComponent{ //For termporary memory
                 notify: this.notify.bind(this),
                 confirmPrompt: this.confirmPrompt.bind(this),
                 returnPassword: this.returnPassword.bind(this),
+                changeProfilePic: this.changeProfilePic.bind(this),
             }}>
                 {this.props.children}
             </AppContext.Provider>

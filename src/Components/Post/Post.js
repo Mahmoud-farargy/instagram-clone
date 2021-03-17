@@ -7,11 +7,11 @@ import {FiHeart, FiSend} from "react-icons/fi";
 import {FaHeart} from "react-icons/fa";
 import {FaRegComment} from "react-icons/fa";
 import {IoMdVideocam} from "react-icons/io";
-import {RiBookmarkLine} from "react-icons/ri";  //install react-instagram-embed And @material-ui/lab
+import {RiBookmarkLine} from "react-icons/ri";  //install react-instagram-embed
 import Comment from "../../Components/Comment/Comment";
 import {GoVerified} from "react-icons/go";
 import {Link} from "react-router-dom";
-
+import OptionsModal from "../Generic/OptionsModal/OptionsModal";
 class Post extends PureComponent{
     constructor(props){
         super(props);
@@ -124,7 +124,7 @@ class Post extends PureComponent{
                     <article className="post--card--article">
                             <div className="post--card--header flex-row">
                                 <header className="post--header--avatar flex-row">
-                                    <Avatar className="post__header__avatar" src="" alt="avatar" />
+                                    <Avatar className="post__header__avatar" src={userAvatar} alt={userName} />
                                     <div className="post--header--user--info flex-column">
                                         <span tabIndex="0" aria-disabled="false" role="button" >
                                             <h5 className="flex-row" ><Link to={`/profile`} style={{whiteSpace: "nowrap",wordBreak:"keep-all", display:"flex",flexWrap:"nowrap"}} ><TruncateMarkup line={1} ellipsis="...">{userName}</TruncateMarkup>{ isVerified ?  <GoVerified className="verified_icon"/> : null} </Link> </h5>
@@ -261,19 +261,16 @@ class Post extends PureComponent{
 
                     </article>
                     {
-                        this.state.openOptionsModal ?
-                            <div className="optionsM--container">
-                                <div className="optionsM--container--inner flex-column">
-                                    <div className="modal--option" onClick={()=> deletePost(postId, index, contentName)}> Delete</div>
-                                    <div className="modal--option" onClick={()=> this.setState({openOptionsModal: false})}> Cancel</div>
-                                </div>
-                            </div>
-                        : null
+                        this.state.openOptionsModal && 
+                        <OptionsModal >          
+                                    <span onClick={()=> {deletePost(postId, index, contentName); this.setState({openOptionsModal: false}) }}> Delete</span>
+                                    <span onClick={()=> this.setState({openOptionsModal: false})}> Cancel</span>
+                        </OptionsModal>
                     }
                     <div style={{
                         opacity: this.state.openOptionsModal ? "1" : "0",
                         display: this.state.openOptionsModal ? "block" : "none",
-                        transition:"all 0.4s ease",
+                        transition:"all 0.5s ease",
                             }} className="backdrop " onClick={()=> this.setState({openOptionsModal: false})}>    
                     </div>
                 </div>

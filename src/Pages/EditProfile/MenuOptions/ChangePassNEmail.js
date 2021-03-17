@@ -99,7 +99,7 @@ const ChangePassNEmail = (props) => {
         setSubmission({...isSubmitted,emailForm: false});
        if(type === "password"){
         setSubmission({...isSubmitted,modalForm: true});
-                const credentials = firebase.auth.EmailAuthProvider.credential(currentUser?.email, formState?.modalPassword.value); //re-make this credential option AND DONT FORGET TO APPLY CREDENTIALS ON DELETE USER
+                const credentials = firebase.auth.EmailAuthProvider.credential(currentUser?.email, formState?.modalPassword.value);
                 auth.currentUser.reauthenticateAndRetrieveDataWithCredential(credentials).then(()=>{
                     auth.currentUser.updateEmail(formState?.email.value).then(() =>{
                         notify("Email updated successfully", "success");
@@ -129,7 +129,7 @@ const ChangePassNEmail = (props) => {
         <Auxiliary>
     <div className="option--container">
          <div className="flex-row change--photo mb-3">
-          <Avatar className="user__picture mr-4" alt={receivedData?.userName} src="f" />
+          <Avatar className="user__picture mr-4" alt={receivedData?.userName} src={receivedData?.userAvatarUrl} />
           <h1 className="user__prof__name">{receivedData?.userName}</h1>
         </div>
 
@@ -185,7 +185,7 @@ const ChangePassNEmail = (props) => {
                     Close
                 </Button>
                 <Button variant="primary" onClick={()=> onConfirmation("email")}>
-                   Confirm
+                   Send login link
                 </Button> 
             </div>
            

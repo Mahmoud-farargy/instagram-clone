@@ -46,7 +46,7 @@ const MobileNav =(props)=>{
                                             : null
                                     } 
                                     </NavLink></li> : null}
-                                { user ? <li><NavLink  to="/profile" activeClassName="active-nav-link"><Avatar src="" alt="" className="header__user__avatar flex-column"/></NavLink></li> : null}                            
+                                { user ? <li><NavLink  to="/profile" activeClassName="active-nav-link"><Avatar src={receivedData?.userAvatarUrl} alt={receivedData?.userName} className="header__user__avatar flex-column"/></NavLink></li> : null}                            
                         </ul>
                     </nav>
             </header>

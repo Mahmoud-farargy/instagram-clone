@@ -225,7 +225,7 @@ class Messages extends Component{
                                     <div className="messages--chatlog--container">
                                         <div className="messages--chatbox--header flex-row">
                                         {/* -- header */}
-                                            <Avatar src={msg?.userAvatarUrl} />
+                                            <Avatar src={msg?.userAvatarUrl} alt={msg?.userName}/>
                                             <div className="messages--user--info space__between">
                                                             <p><TruncateMarkup line={1} ellipsis="..">{msg?.userName}</TruncateMarkup> </p>
                                                             <div className="desktop-only"><FiInfo /></div>

@@ -34,7 +34,23 @@ const App = (props)=>{
     const [_, loading] = useAuthState(auth);
     // experiment
     useEffect(() => {
-
+        //---
+// firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+//   .then((res) => {
+//       console.log(res);
+//     // Existing and future Auth states are now persisted in the current
+//     // session only. Closing the window would clear any existing state even
+//     // if a user forgets to sign out.
+//     // ...
+//     // New sign-in will be persisted with session persistence.
+//     // return firebase.auth().signInWithEmailAndPassword("user5@gmail.com", "123456Jb");
+//   })
+//   .catch((error) => {
+//     // Handle Errors here.
+//     console.log(error.code);
+//     console.log(error.message);
+//   });
+//  --------
         // var currUid =  u.currentUser;
         var userDatabaseRef = database.ref("/status" + "RJRllL1KMje3HadGMCJUi5h6BmE2");
         // console.log(database.ref().child("/users" + "RJRllL1KMje3HadGMCJUi5h6BmE2").onDisconnect().update({status: "offline"}));

@@ -9,7 +9,9 @@ import {GoVerified } from "react-icons/go";
 import {IoMdGrid} from "react-icons/io";
 import {RiLayoutRowLine} from "react-icons/ri";
 import {BsPlusSquare} from "react-icons/bs";
-
+import {IoMdArrowDropdown} from "react-icons/io";
+import {FaHeart} from "react-icons/fa";
+import {FaRegComment} from "react-icons/fa";
 
 const UsersProfile =(props)=>{
     const [_,loading] = useAuthState(auth);
@@ -17,7 +19,8 @@ const UsersProfile =(props)=>{
     const [isFollower, setFollowerState] = useState(false);
     const [grid, setGrid] = useState(true);
     const context = useContext(AppContext);
-    const {usersProfileData, changeMainState, initializeChatDialog, uid, handleFollowing, receivedData,handleUsersModal, igVideoImg} = context;
+    const [openSuggestionsBox, setSuggestionsBox] = useState(false);
+    const {usersProfileData, changeMainState, initializeChatDialog, uid, handleFollowing, receivedData,handleUsersModal, igVideoImg, suggestionsList, getUsersProfile} = context;
 
     const redirectToPost=(i, id)=>{
         changeMainState("currentPostIndex", {index: i, id: id});
@@ -34,8 +37,17 @@ const UsersProfile =(props)=>{
     
     useEffect(() => {
         changeMainState("currentPage", usersProfileData.userName || "User Profile");
+        console.log(usersProfileData);
+    }, [usersProfileData, changeMainState]);
+    useEffect(()=>{
         window.scrollTo(0,0);
-    }, [usersProfileData.userName, changeMainState]);
+    },[])
+
+    const browseUser=(specialUid, name)=>{
+        getUsersProfile(specialUid);
+        setSuggestionsBox(false);
+        props.history.push(`/user-profile/${name}`);
+    }  
      return(
         <Fragment>
             <section id="usersProfile" className="users--profile--container ">
@@ -43,14 +55,14 @@ const UsersProfile =(props)=>{
                 {/* upper row */}
                 
             <div className="desktop-comp">
-                <div className="user--top--info flex-row">
-                    <div className="user-top-inner flex-row">
+                <div className="user--top--info flex-column">
+                    <header className="user-top-inner flex-row">
                         <div className="user--pic--container flex-column">
-                                <Avatar className="user__picture" src={usersProfileData?.userAvatarUrl} alt={usersProfileData?.userName} />
+                                <Avatar className="user__picture" title={usersProfileData?.userName} src={usersProfileData?.userAvatarUrl} alt={usersProfileData?.userName} />
                             </div>
                             <div className="desktop--inner--info flex-column">
                                 <div className="users--action--row flex-row">
-                                    <h5 className="profile__display__name">{usersProfileData?.userName}
+                                    <h5 className="profile__display__name" title={usersProfileData?.userName}>{usersProfileData?.userName}
                                 {
                                     usersProfileData?.isVerified ?
                                     <GoVerified className="verified_icon"/>
@@ -64,6 +76,7 @@ const UsersProfile =(props)=>{
                                         }
                                         
                                         <button disabled={!usersProfileData?.uid} onClick={()=> handleFollowing(isFollowed, usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, uid, receivedData?.userName, receivedData?.userAvatarUrl)} className={ !isFollowed ? "profile__btn prof__btn__followed" : "profile__btn prof__btn__unfollowed" }> {!isFollowed && isFollower ? "follow back" : !isFollowed && !isFollower ? "follow" : "unfollow"}</button>
+                                        <button className="sugg__btn profile__btn prof__btn__followed" style={{backgroundColor: openSuggestionsBox ? "#63baf4" : "#0095f6", border: openSuggestionsBox ? "#63baf4" : "#0095f6"}} onClick={()=> setSuggestionsBox(!openSuggestionsBox)} ><IoMdArrowDropdown /></button>
                                     </div>
                                     
                                 </div>
@@ -72,6 +85,7 @@ const UsersProfile =(props)=>{
                                     <p className="acc-action" onClick={()=> handleUsersModal(true, usersProfileData?.followers, "followers")}><span>{usersProfileData?.followers?.length.toLocaleString()}</span> {usersProfileData?.followers?.length >1 ?"followers": "follower"}</p>
                                     <p className="acc-action"  onClick={()=> handleUsersModal(true, usersProfileData?.following, "following")}><span>{usersProfileData?.following?.length.toLocaleString()}</span> following</p>
                                 </div>
+                                
                                 {/* bottom row */}
                                 {
                                 usersProfileData?.profileInfo && usersProfileData?.profileInfo.professionalAcc && usersProfileData?.profileInfo.professionalAcc.show &&
@@ -79,12 +93,44 @@ const UsersProfile =(props)=>{
                                             <span>{usersProfileData.profileInfo?.professionalAcc?.category}</span>
                                         </div>
                                 } 
+                              
                                 <div className="bottom--row--user-info flex-column">
                                         <span>{usersProfileData?.profileInfo?.bio}</span>
                                 </div>
+                          
                         </div>  
-                    </div>
-                        
+                    </header>
+                        {
+                             openSuggestionsBox &&
+                                <div className="users--suggestions--container">
+                                        <div className="user--sugg--header flex-row">
+                                            <span className="user__sugg__title__title">Suggestions</span>
+                                            <span className="user__see__all__btn">see all</span>
+                                        </div>
+                                        <div className="suggestions--list--container flex-row">
+                                                        <ul className="suggestion--items flex-row">
+                                                       {
+                                                           suggestionsList?.filter(item => item?.uid !== receivedData?.uid && item?.uid !==  usersProfileData?.uid ).map((item, i) => {
+                                                            return(
+                                                                <li key={i} className="suggestion--item flex-column" >
+                                                                            <div className="suggestion--item-inner">
+                                                                                <Avatar onClick={()=> browseUser(item?.uid, item?.userName)} src={item?.userAvatarUrl} alt={item?.userName} className="mb-2" />
+                                                                                <span onClick={()=> browseUser(item?.uid, item?.userName)} title={item?.userName} className="acc__name">{item?.userName}</span>
+                                                                                <span className="user__name" title={item?.userName} >{item?.profileInfo?.name}</span>
+                                                                                <button className={receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.some(q => q.receiverUid === item?.uid) ? "profile__btn prof__btn__unfollowed": "profile__btn prof__btn__followed"} color="primary" onClick={()=> handleFollowing(receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.some(el => el?.receiverUid === item?.uid), item?.uid, item?.userName, item?.userAvatarUrl, receivedData?.uid, receivedData?.userName, receivedData?.userAvatarUrl)}>{receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.some(user => user?.receiverUid === item?.uid) ?  "Unfollow": "Follow"}</button>
+                                                                            </div>
+
+                                                                </li>
+                                                                )   
+                                                           })
+                                                       } 
+                                                                
+
+                                                        </ul>                                                
+                                        </div>
+                                            
+                                </div>
+                         }  
                 </div>
                
                 {/* body */}
@@ -106,8 +152,19 @@ const UsersProfile =(props)=>{
                             <div className={grid ? "users--profile--posts" : "users--profile--rowLine flex-column"}>
                                 {usersProfileData?.posts?.map((post, i)=>{
                                         return (
-                                            <div key={post?.id+i}  className="profile--posts--container">                                                    
-                                                    <img onClick={()=> redirectToPost(i, post?.id) } style={{width: grid ? "100%" : "auto"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
+                                            <div key={post?.id+i}  className="profile--posts--container "> 
+                                                    <div onClick={()=> redirectToPost(i, post?.id) } className="user--img--container flex-column">
+                                                        <img  style={{width:"100%" }} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
+                                                        <div className="user--img--cover">
+                                                            <div className="flex-row">
+                                                                <span className="mr-3"><FaHeart/> {post?.likes?.people?.length}</span>
+                                                                <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length } </span>
+                                                               
+                                                            </div>
+                                                       
+                                                        </div>
+                                                    </div>                                                   
+                                                   
                                             </div>
                                         )
                                 })}

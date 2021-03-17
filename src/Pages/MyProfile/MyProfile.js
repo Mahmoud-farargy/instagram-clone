@@ -11,6 +11,8 @@ import {RiLayoutRowLine} from "react-icons/ri";
 import {BsPlusSquare} from "react-icons/bs";
 // import TruncateMarkup from "react-truncate";
 import { Link } from "react-router-dom";
+import {FaHeart} from "react-icons/fa";
+import {FaRegComment} from "react-icons/fa";
 
 const MyProfile =(props)=>{
     const [_,loading] = useAuthState(auth);
@@ -86,8 +88,18 @@ const MyProfile =(props)=>{
                     <div className={grid ? "users--profile--posts" : "users--profile--rowLine flex-column"}>
                         {receivedData?.posts?.map((post, i)=>{
                                         return (
-                                            <div key={post?.id+i}  className="profile--posts--container">                                                    
-                                                    <img onClick={()=> redirectToPost(i, post?.id) } style={{width: grid ? "100%" : "auto"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
+                                            <div key={post?.id+i}  className="profile--posts--container">     
+                                                <div className="user--img--container flex-column">
+                                                        <img onClick={()=> redirectToPost(i, post?.id) } style={{width:"100%"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
+                                                                <div className="user--img--cover">
+                                                                        <div className="flex-row">
+                                                                            <span className="mr-3"><FaHeart/> {post?.likes?.people?.length}</span>
+                                                                            <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length } </span>
+                                                                        
+                                                                        </div>
+                                                                
+                                                                </div>
+                                                </div>                                                
                                             </div>
                                         )
                                 })}

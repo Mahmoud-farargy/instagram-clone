@@ -53,6 +53,7 @@ const AuthPage =(props)=>{
                                                 latestLikedPosts: [],
                                                 savedposts: [],
                                                 stories: [],
+                                                blockList: [],
                                                 notifications: {isNewMsg: false,isUpdate: false, list: []},
                                                 isVerified: false,
                                                 userAvatarUrl: ""

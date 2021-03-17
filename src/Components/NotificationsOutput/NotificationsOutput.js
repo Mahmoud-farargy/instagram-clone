@@ -25,7 +25,7 @@ const NotificationOutput =(props)=>{
         <Auxiliary >
             <li  key={notification?.notiId} className="space__between noti--popup-item">
                     <div className="flex-row noti--row">
-                        <div><Avatar className="noti__user__img" src={notification?.userAvatarUrl} /></div>
+                        <div><Avatar className="noti__user__img" src={notification?.userAvatarUrl} alt={notification?.userName} /></div>
                         <div className="flex-column noti--user--info" onClick={()=> browseUser()}>
                             <h6>{notification?.userName}</h6>
                         <p className="noti__text"><TruncateMarkup line={2} ellipsis="..">{notification?.notiText}</TruncateMarkup>  <time dateTime="date" style={{textOverflow: 'ellipsis'}}>{new Date(notification?.date?.seconds * 1000).toLocaleString()}</time></p>

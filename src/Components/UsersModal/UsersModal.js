@@ -1,22 +1,10 @@
 import React, {Fragment, useContext} from "react";
 import {AppContext} from "../../Context";
 import ModalListItem from "./ModalListItem/ModalListItem";
-// import $ from "jquery";
 
 const UsersModal =(props)=>{
     const {handleUsersModal,openUsersModal, usersModalList, receivedData, handleFollowing, getUsersProfile} = useContext(AppContext);
     let output;
-    // useEffect(()=>{
-    //     $(document).ready(()=>{
-    //         if(openUsersModal){
-    //             $("body").css("overflow","hidden");
-    //         }else{
-    //             $("body").css("overflow","auto");
-    //         }
-    //     });
-        
-        
-    // },[openUsersModal]);
     switch(usersModalList?.type){
         
         case "followers":

@@ -24,9 +24,10 @@ const Home =(props)=>{
     let [user, loading] = useAuthState(auth);
     useEffect(() => {
         changeMainState("currentPage","Home");
-        window.scrollTo(0,0);
-        
     },[changeMainState]);
+    useEffect(() => {
+            window.scrollTo(0,0);
+    },[]);
     const recievedAuth = localStorage.getItem("user");
     // useEffect(()=> {
         
@@ -50,7 +51,7 @@ const Home =(props)=>{
     return(
         <Auxiliary>
             {
-                user || recievedAuth ?
+               recievedAuth ?
             <section id="home" className="main--home--container ">
                  
                 <div className="main--home--inner desktop-comp">
@@ -118,8 +119,8 @@ const Home =(props)=>{
                         {
                             receivedData?.userName ?
                                 <div className="side--user--info flex-row">
-                                    <Avatar />
-                                    <h5 className="flex-row" onClick={()=> props.history.push(`/profile`)}>{receivedData?.userName} { receivedData?.isVerified ? <GoVerified className="verified_icon"/> : null}</h5>  
+                                    <Avatar src={receivedData?.userAvatarUrl} alt={receivedData?.userName} title={receivedData?.userName} />
+                                    <h5 title={receivedData?.userName} className="flex-row" onClick={()=> props.history.push(`/profile`)}>{receivedData?.userName} { receivedData?.isVerified ? <GoVerified className="verified_icon"/> : null}</h5>  
                                 </div>
                                 
                             : null
@@ -129,7 +130,7 @@ const Home =(props)=>{
                             <div className="suggestions--home--container">
                                 <div className="suggestions--header flex-row">
                                     <h6>Suggestions For you</h6>  
-                                    <button>See all</button>
+                                    <button className="user__see__all__btn">See all</button>
                                 </div>
                                 <div className="suggestions--list flex-column">
                                     <ul className="flex-column">

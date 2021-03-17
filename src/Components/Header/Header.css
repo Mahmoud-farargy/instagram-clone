@@ -40,6 +40,8 @@
     padding:8px 0;
     font-weight:400;
     width:100%;
+    text-align:center;
+    justify-content:center;
 }
 #profilePopup .prof--popup--ul a{
    
@@ -114,6 +116,7 @@
     align-items:center;
     position:relative;
     width:100%;
+    /* margin:0 auto; */
 }
 .noti--popup--inner .noti--popup--ul .noti--popup-item:after{
     content:"";
@@ -202,7 +205,7 @@
     cursor:pointer;
     display:flex;
     align-items:center;
-    justify-content: center;
+    /* justify-content: center; */
     
 }
 .header--nav .header--ul li a:visited,.header--nav .header--ul li a{
