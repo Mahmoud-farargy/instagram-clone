@@ -853,7 +853,7 @@ button:active{
 }
 #messages.messages--container .messages--chatbox--body{
     padding:44px 20px 0;
-    height:74%;
+    height:70%;
     overflow: auto;
 }
 
@@ -990,7 +990,7 @@ button:active{
     bottom:0;
     left:0;
     width:100%;
-    padding:15px;
+    padding:20px;
     align-items:center;
     background-color:#fff;
     z-index: 1100;
@@ -1259,6 +1259,7 @@ a.prof__btn__unfollowed{
     position: sticky;
     top:0;
     left:0;
+    z-index: 1000;
 }
 .mob--notifications--container .mob--noti--title h4{
     font-size:16px;
@@ -1512,6 +1513,7 @@ a.prof__btn__unfollowed{
         bottom: 50px;
         left:0;
         width:100%;
+        padding:10px 15px; 
     }
     #messages.messages--container .chat--emojis--box{
         position: fixed;
@@ -1532,6 +1534,7 @@ a.prof__btn__unfollowed{
         opacity: 1;
     }
     #messages.messages--container .messages--chatbox--body{
+        height:65%;
         overflow-y:auto;
     }
     #messages .messages--view--users ul li .messages--user--info{

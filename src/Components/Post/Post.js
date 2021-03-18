@@ -11,6 +11,7 @@ import { RiBookmarkLine } from "react-icons/ri"; //install react-instagram-embed
 import Comment from "../../Components/Comment/Comment";
 import { GoVerified } from "react-icons/go";
 import { Link } from "react-router-dom";
+import { updateObject } from "../../Utilities/Utility";
 import OptionsModal from "../Generic/OptionsModal/OptionsModal";
 class Post extends PureComponent {
   constructor(props) {
@@ -148,6 +149,19 @@ class Post extends PureComponent {
     }
   }
 
+  onCommentBtnClick() {
+    this.setState(
+      updateObject(this.state, { showInputForm: !this.state.showInputForm })
+    );
+
+    setTimeout(() => {
+      if (this.state.showInputForm) {
+        this.inputField &&
+          this.inputField.current &&
+          this.inputField.current.focus();
+      }
+    }, 150);
+  }
   render() {
     const {
       userName,
@@ -277,13 +291,7 @@ class Post extends PureComponent {
                       <FaHeart />
                     </span>
                   )}
-                  <span
-                    onClick={() =>
-                      this.setState({
-                        showInputForm: !this.state.showInputForm,
-                      })
-                    }
-                  >
+                  <span onClick={() => this.onCommentBtnClick()}>
                     <FaRegComment />
                   </span>
                   <span>

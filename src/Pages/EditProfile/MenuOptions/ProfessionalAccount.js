@@ -23,7 +23,7 @@ const ProfessionalAccount = (props) => {
     catOptions: CategoryList,
     submitted: false,
   });
-  // const [submitted, setSubmission] = useState(false);
+
   //--x-end of useState-x--//
   const onInputChange = (val, name) => {
     // setForm(updateObject(formState, {professionalAcc: updateObject(formState.professionalAcc, {[name]: val})}))

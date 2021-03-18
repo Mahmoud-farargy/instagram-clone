@@ -5,11 +5,18 @@
         left: 50%;
         margin:0;
         transform: translate(-50%,-50%);
+
+        @media only screen and (max-width: 670px){
+            width:80%;
+            margin:0 auto;
+        };
     .optionsM--container--inner{
         background-color:#fafafa;
         border-radius:12px;
-        width:400px;
         height:auto;
+        @media only screen and (min-width: 670px){
+            width:400px;
+        }
     }
     .optionsM--container--inner span{
         font-weight: 600;

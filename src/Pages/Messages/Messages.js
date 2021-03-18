@@ -223,7 +223,7 @@ class Messages extends Component {
                           messages?.map((user, index) => {
                             return (
                               <li
-                                className="messages--user  flex-row"
+                                className="messages--user flex-row"
                                 key={user.uid + index}
                                 onClick={() => {
                                   this.viewUsersMessages(user?.uid, index);

@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useContext, Suspense, lazy } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, withRouter } from "react-router-dom";
 import { AppContext } from "../../Context";
-import { db, auth, database } from "../../Config/firebase";
+import { db, auth } from "../../Config/firebase";
 import AppConfig from "../../Config/app-config.json";
 import { useAuthState } from "react-firebase-hooks/auth";
 import UsersModal from "../../Components/UsersModal/UsersModal";
@@ -107,13 +107,6 @@ const App = (props) => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       // User logged in
 
-      // db.collection("users").doc("ukfQUwmvUGRy7sezEmsISuadjEh2").collection("followers").get().then((query)=>{
-      //     query.forEach((user)=>{
-      //         console.log(user.data());
-      //     })
-
-      // });
-
       if (authUser) {
         db.collection("users")
           .limit(10)
@@ -127,32 +120,17 @@ const App = (props) => {
         updateUserState(true);
         updateUID(authUser?.uid);
         updatedReceivedData();
-
-        //   db.collection("users").doc(authUser?.uid).get().then(data=>{
-
-        //  console.log(data.data().messages[randomId].message);
-        // if(authUser.displayName){
-        //     //don't update username
-        // }else{
-        //     // update it
-        //     return authUser.updateProfile({
-        //         displayName: data.data().userName
-        //     });
-
-        // }
-        // })
       } else {
-        //attempting to log in again using local storage data
         const recievedAuth = localStorage.getItem("user");
-
         if (recievedAuth) {
+            //attempting to log in again using local storage data
           const { email, password } = JSON.parse(recievedAuth);
           auth.createUserWithEmailAndPassword(email, returnPassword(password));
+        }else{
+            // user logged out
+             props.history.push("/auth");
+             updateUserState(false);
         }
-
-        // user logged out
-
-        updateUserState(false);
       }
     });
     // ----------------------
@@ -242,4 +220,4 @@ const App = (props) => {
   );
 };
 
-export default App;
+export default withRouter(App);

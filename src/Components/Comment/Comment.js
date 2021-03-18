@@ -4,12 +4,11 @@ import {FiHeart} from "react-icons/fi";
 import {FaHeart} from "react-icons/fa";
 
 const Commment =(props)=>{
-    var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, handleUsersModal, date,contentURL, contentType} = props;
+    var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, handleUsersModal, contentURL, contentType} = props;
     const [viewSubComments, setSubComments] = useState(false); 
     const [postLiked, setPostLiked] = useState(false);
     useEffect(()=>{
-        // console.log(likes);
-        setPostLiked(comment?.likes.filter(el => el.id === uid ? true : false)[0]);
+        setPostLiked(comment?.likes.some(el => el.id === uid));
     },[comment?.likes])
     return(
         <Fragment>
@@ -31,7 +30,6 @@ const Commment =(props)=>{
                </div>
               
                <div className="post--comment--actions flex-row">
-                       {/* <span style={{whiteSpace:"nowrap"}}><TruncateMarkup line={1} ellipsis="..">{new Date(date.seconds * 1000).toLocaleDateString()}</TruncateMarkup> </span> */}
                       {
                           comment.likes?.length >=1 ?
                              <span className="acc-action" onClick={()=> handleUsersModal(true, comment?.likes, "likes")}>{comment.likes?.length.toLocaleString()} {comment.likes?.length > 1 ? "likes" : "like"}</span>
