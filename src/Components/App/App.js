@@ -41,8 +41,8 @@ const App = (props) => {
     updateSuggestionsList,
     currentPage,
     changeMainState,
-    uid,
     returnPassword,
+    notify
   } = context;
   const [_, loading] = useAuthState(auth);
   // experiment
@@ -105,8 +105,6 @@ const App = (props) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      // User logged in
-
       if (authUser) {
         db.collection("users")
           .limit(10)
@@ -153,6 +151,10 @@ const App = (props) => {
   useEffect(() => {
     //<<make cleanup work here
     document.title = `${currentPage} • ${AppConfig.title}`;
+    if(!navigator.onLine){
+      notify("You are Offline! Please reconnect and try again.", "error");
+      props.history.push("/auth");
+    }
   }, [currentPage]);
   return (
     <Fragment>

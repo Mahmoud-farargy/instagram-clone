@@ -10,6 +10,7 @@ html{
     /* scroll-behavior: smooth; */
     width:100%;
     -webkit-text-size-adjust: 100%;
+    scroll-snap-type: y mandatory;
 }
 body{
     width:100%;

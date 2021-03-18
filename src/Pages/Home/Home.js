@@ -27,12 +27,17 @@ const Home = (props) => {
     handleLikingComments,
     handleUsersModal,
     changeMainState,
+    notify
   } = useContext(AppContext);
   let posts = receivedData?.posts;
   const browseUser = (specialUid, name) => {
-    if (specialUid) {
-      getUsersProfile(specialUid);
-      props.history.push(`/user-profile/${name}`);
+    if (specialUid && name) {
+      getUsersProfile(specialUid).then((res)=>{
+        props.history.push(`/user-profile/${name}`);
+      }).catch((err) =>{
+        notify(err && err.message ||"error has occurred. please try again later!", "error");
+      });
+     
     }
   };
   let [user, loading] = useAuthState(auth);

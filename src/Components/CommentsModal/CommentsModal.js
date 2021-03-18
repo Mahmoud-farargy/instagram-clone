@@ -12,13 +12,13 @@ class CommentsModal extends PureComponent{
             replayData: {}
         }
     }
-    replayFunc(postOwnerName,commentIndex, postIndex, postId, postOwnerId){
+    replayFunc(postOwnerName,commentIndex, postIndex, postId, postOwnerId, senderUid){
         if(this.inputField.current){
              this.inputField.current.focus();
         }
         this.setState({
             ...this.state,
-            replayData: {postOwnerName,commentIndex, postIndex, postId, postOwnerId},
+            replayData: {postOwnerName,commentIndex, postIndex, postId, postOwnerId, senderUid},
             insertedComment: `@${postOwnerName} `
         })
     }

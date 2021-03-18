@@ -36,6 +36,7 @@ const Header = (props) => {
     changeMainState,
     searchUsers,
     searchInfo,
+    notify
   } = context;
   const reverseNotiState = (type) => {
     const notiUpdate = receivedData?.notifications?.isUpdate;
@@ -58,10 +59,15 @@ const Header = (props) => {
   }, [searchVal]);
 
   const browseUser = (specialUid, name) => {
-    if (specialUid) {
+    if (specialUid && name) {
       setSeachBox(false);
-      getUsersProfile(specialUid);
-      props.history.push(`/user-profile/${name}`);
+      setNoti(false);
+      getUsersProfile(specialUid).then(() => {
+         props.history.push(`/user-profile/${name}`);
+      }).catch((err)=>{
+        notify(err && err.message || "error has occurred. please try again later!", "error")
+      });
+     
     }
   };
   const clearSearchBox = () => {
@@ -207,13 +213,12 @@ const Header = (props) => {
                                 return (
                                   <div key={notification?.notiId}>
                                     <NotificationOutput
-                                      onClick={() => setNoti(false)}
                                       notification={notification}
                                       igVideoImg={igVideoImg}
                                       myData={receivedData}
                                       handleFollowing={handleFollowing}
-                                      getUsersProfile={getUsersProfile}
                                       changeMainState={changeMainState}
+                                      browseUser={browseUser}
                                       postIndex={i}
                                     />
                                   </div>

@@ -1,7 +1,9 @@
-import React, {useState, Fragment,  useEffect, useRef} from "react";
+import React, {useState, Fragment,  useEffect, useContext} from "react";
 import TruncateMarkup from "react-truncate";
 import {FiHeart} from "react-icons/fi";
 import {FaHeart} from "react-icons/fa";
+import { withRouter } from "react-router";
+import {AppContext} from "../../Context";
 
 const Commment =(props)=>{
     var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, handleUsersModal, contentURL, contentType} = props;
@@ -10,11 +12,23 @@ const Commment =(props)=>{
     useEffect(()=>{
         setPostLiked(comment?.likes.some(el => el.id === uid));
     },[comment?.likes])
+    const context = useContext(AppContext);
+    const browseUser = (specialUid, name) => {
+        const {getUsersProfile, notify} = context;
+        if (specialUid && name) {
+          getUsersProfile(specialUid).then((res)=>{
+            props.history.push(`/user-profile/${name}`);
+          }).catch((err) =>{
+            notify(err && err.message ||"error has occurred. please try again later!", "error");
+          });
+         
+        }
+      };
     return(
         <Fragment>
         <div className="post--comment--item">
                <div className="flex-row post--comment--row">
-                  <span  className="post__top__comment flex-row"><strong>{comment?.userName}</strong> <p className="comment__text w-100"><TruncateMarkup className="w-100" line={1} ellipsis="...">{comment?.comment}</TruncateMarkup></p></span>   
+                  <span onClick={()=> browseUser(comment?.uid, comment?.userName)} title={comment?.userName} className="post__top__comment flex-row"><strong>{comment?.userName}</strong> <p className="comment__text w-100"><TruncateMarkup className="w-100" line={1} ellipsis="...">{comment?.comment}</TruncateMarkup></p></span>   
 
                    {
                        !postLiked ?
@@ -35,7 +49,7 @@ const Commment =(props)=>{
                              <span className="acc-action" onClick={()=> handleUsersModal(true, comment?.likes, "likes")}>{comment.likes?.length.toLocaleString()} {comment.likes?.length > 1 ? "likes" : "like"}</span>
                           : null
                       } 
-                       <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId); setSubComments(true)}}> Replay</span>                                      
+                       <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid); setSubComments(true)}}> Replay</span>                                      
                </div>
                     {
                         comment.subComments?.length >=1 ? 
@@ -46,7 +60,7 @@ const Commment =(props)=>{
                                        <ul className="sub--comments--nav">
                                                {
                                                    comment.subComments?.map( (subComment, i )=>{
-                                                       return(<li key={i}><strong>{subComment?.senderName}</strong> <span> {subComment?.commentText}</span></li>)
+                                                       return(<li key={i} onClick={()=> browseUser(subComment?.senderUid,subComment?.senderName)} title={subComment?.senderName}><strong>{subComment?.senderName}</strong> <span> {subComment?.commentText}</span></li>)
                                                    })
                                                }
                                        </ul>
@@ -60,4 +74,4 @@ const Commment =(props)=>{
         </Fragment>
     )
 }
-export default Commment;
+export default withRouter(Commment);

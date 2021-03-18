@@ -41,6 +41,7 @@ const AuthPage =(props)=>{
                 if(!isUserOnline){  //avoids data overlapping
                     
                                 auth.createUserWithEmailAndPassword(signUpEmail, signUpPassword).then(cred=>{
+                                        setLoading(false);
                                         db.collection("users").doc(cred.user.uid).set({
                                                 uid: cred.user.uid,
                                                 userName: signUpUsername,
@@ -65,7 +66,7 @@ const AuthPage =(props)=>{
                                             notify("Welcome to Voxgram.");
                                             
                                         })
-                                        setLoading(false);
+                                       
                                     }).catch((err)=>{
                                         setLoading(false);
                                         notify(err.message, "error");
@@ -75,10 +76,10 @@ const AuthPage =(props)=>{
                             
             }else if(authType ===  "login"){
                         resetAllData(); 
-                        setLoading(true);
+                       
                         setTimeout(()=>{
                             if(!isUserOnline){ //avoids data overlapping
-                                
+                                setLoading(true);
                                 auth.signInWithEmailAndPassword(loginEmail, loginPassword).then(() =>{
                                     setLoading(false);
                                         setLoginEmail("");
@@ -169,7 +170,6 @@ const AuthPage =(props)=>{
         const {notify} = context;
         setLoading(true);
         auth.sendPasswordResetEmail(loginEmail).then(res =>{
-            console.log(res);
             setLoading(false);
             notify("A password reset config has been send to your email", "success");
         }).catch(err=>{

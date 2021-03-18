@@ -17,11 +17,13 @@ import {FaRegComment} from "react-icons/fa";
 const MyProfile =(props)=>{
     const [_,loading] = useAuthState(auth);
     const [grid, setGrid] = useState(true);
-    const {receivedData,handleUsersModal, igVideoImg, authLogout, changeMainState} = useContext(AppContext);
+    const {receivedData,handleUsersModal, igVideoImg, authLogout, changeMainState, uid, getUsersProfile} = useContext(AppContext);
     const redirectToPost=(i, id)=>{
-        // changeMainState("usersProfileData", receivedData);
-        // changeMainState("currentPostIndex", {index: i, id: id});
-        // props.history.push("/browse-post");
+        changeMainState("currentPostIndex", {index: i, id: id});
+        getUsersProfile(uid).then(() => {
+            props.history.push("/browse-post");
+        });
+        
     }
     useEffect(()=>{
         changeMainState("currentPage", "Profile");
@@ -88,9 +90,9 @@ const MyProfile =(props)=>{
                     <div className={grid ? "users--profile--posts" : "users--profile--rowLine flex-column"}>
                         {receivedData?.posts?.map((post, i)=>{
                                         return (
-                                            <div key={post?.id+i}  className="profile--posts--container">     
+                                            <div key={post?.id+i} onClick={()=> redirectToPost(i, post?.id) }  className="profile--posts--container">     
                                                 <div className="user--img--container flex-column">
-                                                        <img onClick={()=> redirectToPost(i, post?.id) } style={{width:"100%"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
+                                                        <img style={{width:"100%"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
                                                                 <div className="user--img--cover">
                                                                         <div className="flex-row">
                                                                             <span className="mr-3"><FaHeart/> {post?.likes?.people?.length}</span>

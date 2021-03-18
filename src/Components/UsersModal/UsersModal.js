@@ -1,37 +1,48 @@
 import React, {Fragment, useContext} from "react";
 import {AppContext} from "../../Context";
 import ModalListItem from "./ModalListItem/ModalListItem";
+import {withRouter} from "react-router-dom";
 
 const UsersModal =(props)=>{
-    const {handleUsersModal,openUsersModal, usersModalList, receivedData, handleFollowing, getUsersProfile} = useContext(AppContext);
+    const {handleUsersModal,openUsersModal, usersModalList, receivedData, handleFollowing, getUsersProfile, notify} = useContext(AppContext);
     let output;
+    const browseUser=(uid, name)=>{
+        if(uid && name){
+            handleUsersModal(false, "","");
+            getUsersProfile(uid).then(()=>{
+                props.history.push(`/user-profile/${name}`);
+            }).catch((err)=>{
+                notify(err && err.message || "error has occurred. please try again later!", "error");
+            }); 
+        }        
+    }
     switch(usersModalList?.type){
         
         case "followers":
            output =  usersModalList?.list.map((user, i) =>{
                     return(
-                        <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} date={user?.date} receivedData={receivedData} handleFollowing={handleFollowing} getUsersProfile={getUsersProfile} handleUsersModal={handleUsersModal}/>
+                        <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} date={user?.date} receivedData={receivedData} handleFollowing={handleFollowing} browseUser={browseUser}/>
                     )
                 })
         break;
         case "following":
             output = usersModalList?.list.map((user, i) =>{
                             return(
-                                <ModalListItem key={user?.receiverUid + i} uid={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} date={user?.date} receivedData={receivedData} handleFollowing={handleFollowing} getUsersProfile={getUsersProfile} handleUsersModal={handleUsersModal}/>
+                                <ModalListItem key={user?.receiverUid + i} uid={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} date={user?.date} receivedData={receivedData} handleFollowing={handleFollowing} browseUser={browseUser}/>
                             )
                 })
         break;
         case "likes":
               output = usersModalList?.list.map((user, i) =>{
                             return(
-                                <ModalListItem key={user?.id + i} uid ={user?.id} userName={user?.userName} avatarUrl={user?.userAvatarUrl} date={""}  receivedData={receivedData} handleFollowing={handleFollowing} getUsersProfile={getUsersProfile} handleUsersModal={handleUsersModal}/>
+                                <ModalListItem key={user?.id + i} uid ={user?.id} userName={user?.userName} avatarUrl={user?.userAvatarUrl} date={user?.date}  receivedData={receivedData} handleFollowing={handleFollowing} browseUser={browseUser}/>
                             )
                 })
         break;
         default: 
         output =  usersModalList?.list.map((user, i) =>{
             return(
-                <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} date={user?.date} receivedData={receivedData} handleFollowing={handleFollowing} getUsersProfile={getUsersProfile} handleUsersModal={handleUsersModal}/>
+                <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} date={user?.date} receivedData={receivedData} handleFollowing={handleFollowing} browseUser={browseUser}/>
             )
         });
     }
@@ -75,4 +86,4 @@ const UsersModal =(props)=>{
         </Fragment>
     )
 }
-export default UsersModal;
+export default withRouter(UsersModal);

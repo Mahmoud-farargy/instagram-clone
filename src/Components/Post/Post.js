@@ -131,7 +131,7 @@ class Post extends PureComponent {
     }
   }
 
-  replayFunc(postOwnerName, commentIndex, postIndex, postId, postOwnerId) {
+  replayFunc(postOwnerName, commentIndex, postIndex, postId, postOwnerId, senderUid) {
     this.setState({
       ...this.state,
       showInputForm: true,
@@ -141,6 +141,7 @@ class Post extends PureComponent {
         postIndex,
         postId,
         postOwnerId,
+        senderUid
       },
       insertedComment: `@${postOwnerName} `,
     });

@@ -272,14 +272,21 @@ class AppProvider extends PureComponent {
     path && storageRef.child(`content/${this.state.uid}/${path}`).delete();
   }
   getUsersProfile(uid) {
-    db.collection("users")
-      .doc(uid)
-      .onSnapshot((snapshot) => {
-        this.setState({
-          ...this.state,
-          usersProfileData: snapshot.data(),
+    
+    return new Promise((resolve, reject) => {
+        db.collection("users")
+        .doc(uid)
+        .onSnapshot((snapshot) => {
+          this.setState({
+            ...this.state,
+            usersProfileData: snapshot.data(),
+          });
+          resolve();
+        }, (error) =>{
+          reject(error);
         });
-      });
+    });
+  
   }
   updateUserState = (state) => {
     this.setState({
@@ -308,7 +315,7 @@ class AppProvider extends PureComponent {
     contentURL,
     contentType
   ) => {
-    const { commentIndex, postIndex, postId, postOwnerId } = commentInfo;
+    const { commentIndex, postIndex, postId, postOwnerId , senderUid } = commentInfo;
     db.collection("users")
       .doc(postOwnerId)
       .get()
@@ -333,6 +340,7 @@ class AppProvider extends PureComponent {
             userAvatarUrl: userAvatarUrl,
             notiId: notiId,
             date: new Date(),
+            senderUid,
           });
           if (postOwnerId !== this.state.uid) {
             notiCopy.isUpdate = true;
