@@ -277,7 +277,7 @@ const UsersProfile = (props) => {
                                     : "profile__btn prof__btn__followed"
                                 }
                                 color="primary"
-                                onClick={() =>
+                                onClick={(e) => {
                                   handleFollowing(
                                     receivedData?.following &&
                                       receivedData?.following?.length > 0 &&
@@ -290,7 +290,8 @@ const UsersProfile = (props) => {
                                     receivedData?.uid,
                                     receivedData?.userName,
                                     receivedData?.userAvatarUrl
-                                  )
+                                  ); e.stopPropagation()
+                                    }
                                 }
                               >
                                 {receivedData?.following &&

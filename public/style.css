@@ -892,7 +892,8 @@ button:active{
     gap:10px;
     flex-wrap: nowrap;
     padding:0 10px;
-    
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 #usersProfile .suggestion--items{
     width:100%;
@@ -901,7 +902,8 @@ button:active{
 }
 #usersProfile .suggestions--list--container ::-webkit-scrollbar, #usersProfile .suggestion--items ::-webkit-scrollbar{
     width:0px;
-    display:none;    
+    display:none;
+
 }
 #usersProfile .suggestion--item{
     padding:20px;
