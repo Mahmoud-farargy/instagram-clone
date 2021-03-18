@@ -591,6 +591,9 @@ button:active{
 }
 .post__card__content{
     cursor:pointer;
+    width:100%;
+    height:100%;
+    object-fit: fill;
 }
 /*-------------Messages-----------*/
 .messages--container{
@@ -603,6 +606,11 @@ button:active{
     min-height:85vh;
     height: 100%;
     position: relative;
+}
+#usersProfile.users--profile--container .profile--user--info{
+    padding: 0 16px 21px;
+    margin-top:14px;
+    width: 100%;
 }
 #messages.messages--container .messages--side, #messages.messages--container .messages--users--side{
         height:100%;
@@ -1159,7 +1167,7 @@ a.prof__btn__unfollowed{
     -webkit-display: grid;
     display:grid;
     grid-template-columns: repeat(3, 1fr);
-    gap:10px;
+    gap:25px;
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
 }

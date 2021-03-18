@@ -36,7 +36,8 @@ const MyProfile =(props)=>{
                 {/* upper row */}
                 
             <div className="desktop-comp">
-                <div className="user--top--info flex-row">
+                <div className="user--top--info flex-column">
+                <header className="user-top-inner flex-row">
                         <div className="user--pic--container flex-column">
                             <Avatar className="user__picture" src={receivedData?.userAvatarUrl} alt={receivedData?.userName} />
                         </div>
@@ -61,15 +62,31 @@ const MyProfile =(props)=>{
                                 <p className="acc-action"  onClick={()=> handleUsersModal(true, receivedData?.following, "following")}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
                             </div>
                             {/* bottom row */}
-                           {
-                               receivedData?.profileInfo && receivedData?.profileInfo.professionalAcc && receivedData?.profileInfo.professionalAcc.show &&
-                                <div className="prof--acc--category">
-                                     <span>{receivedData.profileInfo?.professionalAcc?.category}</span>
-                                </div>
-                           } 
-                            <div className="bottom--row--user-info flex-column">
-                                    <span>{receivedData?.profileInfo?.bio}</span>
+                            <div className="desktop-only flex-column">
+                                {
+                                receivedData?.profileInfo && receivedData?.profileInfo.professionalAcc && receivedData?.profileInfo.professionalAcc.show &&
+                                    <div className="prof--acc--category">
+                                        <span>{receivedData.profileInfo?.professionalAcc?.category}</span>
+                                    </div>
+                            } 
+                                <div className="bottom--row--user-info flex-column">
+                                        <span>{receivedData?.profileInfo?.bio}</span>
+                                </div> 
                             </div>
+                           
+                    </div>
+                    </header>
+                     {/* profile info */}
+                    <div className="profile--user--info mobile-only flex-column">
+                    {
+                                receivedData?.profileInfo && receivedData?.profileInfo.professionalAcc && receivedData?.profileInfo.professionalAcc.show &&
+                                    <div className="prof--acc--category">
+                                        <span>{receivedData.profileInfo?.professionalAcc?.category}</span>
+                                    </div>
+                            } 
+                                <div className="bottom--row--user-info flex-column">
+                                        <span>{receivedData?.profileInfo?.bio}</span>
+                                </div> 
                     </div>
                 </div>
                 

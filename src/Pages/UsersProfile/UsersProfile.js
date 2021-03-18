@@ -207,7 +207,29 @@ const UsersProfile = (props) => {
                 </div>
 
                 {/* bottom row */}
-                {usersProfileData?.profileInfo &&
+                <div className="desktop-only flex-column">
+                  {usersProfileData?.profileInfo &&
+                  usersProfileData?.profileInfo.professionalAcc &&
+                  usersProfileData?.profileInfo.professionalAcc.show && (
+                    <div className="prof--acc--category">
+                      <span>
+                        {
+                          usersProfileData.profileInfo?.professionalAcc
+                            ?.category
+                        }
+                      </span>
+                    </div>
+                  )}
+
+                <div className="bottom--row--user-info flex-column">
+                  <span>{usersProfileData?.profileInfo?.bio}</span>
+                </div>
+              </div>
+              
+              </div>
+              {/* profile info */}
+              <div className="profile--user--info mobile-only flex-column">
+                  {usersProfileData?.profileInfo &&
                   usersProfileData?.profileInfo.professionalAcc &&
                   usersProfileData?.profileInfo.professionalAcc.show && (
                     <div className="prof--acc--category">

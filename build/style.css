@@ -10,6 +10,7 @@ html{
     /* scroll-behavior: smooth; */
     width:100%;
     -webkit-text-size-adjust: 100%;
+    scroll-snap-type: y mandatory;
 }
 body{
     width:100%;
@@ -590,6 +591,9 @@ button:active{
 }
 .post__card__content{
     cursor:pointer;
+    width:100%;
+    height:100%;
+    object-fit: fill;
 }
 /*-------------Messages-----------*/
 .messages--container{
@@ -602,6 +606,11 @@ button:active{
     min-height:85vh;
     height: 100%;
     position: relative;
+}
+#usersProfile.users--profile--container .profile--user--info{
+    padding: 0 16px 21px;
+    margin-top:14px;
+    width: 100%;
 }
 #messages.messages--container .messages--side, #messages.messages--container .messages--users--side{
         height:100%;
@@ -891,7 +900,8 @@ button:active{
     gap:10px;
     flex-wrap: nowrap;
     padding:0 10px;
-    
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 #usersProfile .suggestion--items{
     width:100%;
@@ -900,7 +910,8 @@ button:active{
 }
 #usersProfile .suggestions--list--container ::-webkit-scrollbar, #usersProfile .suggestion--items ::-webkit-scrollbar{
     width:0px;
-    display:none;    
+    display:none;
+
 }
 #usersProfile .suggestion--item{
     padding:20px;
