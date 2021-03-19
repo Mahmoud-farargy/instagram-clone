@@ -117,7 +117,9 @@ class Messages extends Component {
                 <div className="messages--view--users">
                   <ul id="messagesUL">
                     {messages?.length >= 1 ? (
-                      messages?.map((user, index) => {
+                      messages?.sort((a, b) => {
+                        return new Date(b.chatLog && b.chatLog[b.chatLog?.length -1]?.date?.seconds * 1000) - new Date(a.chatLog && a.chatLog[a.chatLog?.length -1]?.date?.seconds * 1000) 
+                      }).map((user, index) => {
                         return (
                           //Desktop
                           <li
