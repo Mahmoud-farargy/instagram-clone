@@ -1,0 +1,202 @@
+#reels{
+    .reels--main--container{
+        width:100%;
+        height: 100vh;
+        background-color:#1a1a1a;
+        position: relative;
+        overflow: hidden;
+        -webkit-box-pack: center;
+        .reels--outer--header{
+            padding: 40px 40px 0;
+            justify-content:space-between;
+            color: #fff;
+            a, h1{
+                color: #fff;
+                text-decoration:none;
+                &:hover{
+                     color: rgb(225, 225, 225);
+                }                   
+            }
+            @media only screen and (max-width: 200px){
+                flex-wrap: wrap;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            .reels--close--btn{
+                padding-left: 30px;
+                font-size: 30px;
+                cursor: pointer;
+            }
+        }
+        .reel--video--inner{
+            margin:6px 0 35px 0;
+            padding:0 !important;
+            align-items:center;
+            overflow: hidden;
+            height:100vh;
+            .reel--video--box{
+                max-width:400px;
+                max-height:1200px;
+                width:70%;
+                height:100%;                    
+                border-radius: 8px;
+                position: relative;
+                overflow-y: scroll;
+                scroll-snap-type: y mandatory;
+                height: 80vh;
+                position: relative; 
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+                .reel--video--content{
+                   width: 100%;
+                   height: 100%;
+                    scroll-snap-align:center;
+                    position: relative;
+                    video{
+                        border-radius: 8px;
+                        object-fit: fill;
+                        width:100%;
+                        height:100%;
+                     
+                    }
+                    header.reel--header{
+                            position: absolute;
+                            top:0;
+                            left:0;
+                            z-index:1000;
+                            color: #fff;
+                            overflow: hidden;
+                            align-items: center;
+                            justify-content:space-between;
+                            width:100%;
+                            padding:20px 16px 32px;
+                            background: linear-gradient( 180deg,rgba(38,38,38,.8) 0%,rgba(38,38,38,0) 100%);
+                            background: -webkit-linear-gradient(top,rgba(38,38,38,.8) 0%,rgba(38,38,38,0) 100%);
+                            background: -webkit-gradient(linear,left top,left bottom,from(rgba(38,38,38,.8)),to(rgba(38,38,38,0)));
+                            .reel--header--left {
+                                align-items: center;
+                                .MuiAvatar-root{
+                                    width:32px;
+                                    height:32px;
+                                    margin-right:5px;
+                                }
+                            }
+                            .reel--header--right{
+                                div{
+                                    padding:4px 7px;
+                                }
+                            }
+                            .reel__user__name,.reel__date{
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                                line-height: 18px;
+                            }
+                            .reel__user__name{
+                                font-size: 14px;
+                                font-weight:600;
+                                margin-right:10px;
+                            }
+                            .reel__date{
+                                opacity: 0.6;
+                                font-weight: 400;
+                                font-size:15px;
+                            }
+                    }
+                    footer.reel--footer{
+                        position: absolute;
+                        top: 0;
+                        bottom: 0;
+                        width:100%;
+                        height:150px;
+                        padding: 0 16px 16px;
+                        z-index:999;
+                        background: -webkit-gradient(linear,left top,left bottom,from(rgba(38,38,38,0)),to(rgba(38,38,38,.6)));
+                        background: webkit-linear-gradient(top,rgba(38,38,38,0) 0%,rgba(38,38,38,.6) 100%);
+                        background: linear-gradient(180deg,rgba(38,38,38,0) 0%,rgba(38,38,38,.6) 100%);
+                        pointer-events:none;
+                        margin-top:auto;
+                                .reel--comment{
+                                position: relative;
+                                align-self: flex-end;
+                                justify-content:center;
+                                textarea{
+                                    border: 1px solid #dbdbdb;
+                                    border-radius:22px;
+                                    pointer-events:auto;
+                                    min-height:44px;
+                                    background: transparent;
+                                    flex: 1 auto;
+                                    // width:100%;
+                                    resize: none;
+                                    height:18px !important;
+                                    padding:10px 10px 10px 20px;
+                                    z-index:1400;
+                                    font-size:14px;
+                                    color: #fff;
+                                    &::placeholder{
+                                        color:#dbdbdb;
+                                    }
+                                    &:focus{
+                                        outline:none;
+                                    }
+                                }
+                                .send__reel__comment{
+                                    position: absolute;
+                                    right:13px;
+                                    top:11px;
+                                    font-size: 14px;
+                                    font-weight:600;
+                                    color: #fff;
+                                }
+                            }
+                            
+                            
+                        
+                    }
+                    .interaction--box{
+                        position: absolute;
+                        right:20px;
+                        bottom:15%;
+                        color: #fff;
+                        width:30px;
+                        align-items: center;
+                        justify-content: center;
+                        text-align:center;
+                        z-index:1000;
+                        svg{
+                           font-size: 20px;  
+                        }
+                       .reel--likes, .reel--comment{
+                            text-align: center;
+                            align-items: center;
+                            span{
+                                margin-top: 6px;
+                            }
+                        }
+                    }
+                    .reel--header--right{
+                        font-size: 18px;
+                    }
+                } 
+                @media only screen and (max-width: 670px){
+                    height: 100vh;
+                    width:100%;
+                }  
+                &::-webkit-scrollbar{
+                    display:none;
+                    width: 0;
+                }       
+            }
+        }
+       .reels-loading{
+           width:100%;
+           height:100%;
+           background-color: rgb(43, 42, 42);
+           align-items:center;
+           justify-content:center;
+           text-align:center;
+           border-radius: 8px;
+           border:1px solid #000;
+       }
+    }
+}

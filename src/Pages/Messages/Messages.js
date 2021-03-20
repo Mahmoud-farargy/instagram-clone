@@ -117,48 +117,60 @@ class Messages extends Component {
                 <div className="messages--view--users">
                   <ul id="messagesUL">
                     {messages?.length >= 1 ? (
-                      messages?.sort((a, b) => {
-                        return new Date(b.chatLog && b.chatLog[b.chatLog?.length -1]?.date?.seconds * 1000) - new Date(a.chatLog && a.chatLog[a.chatLog?.length -1]?.date?.seconds * 1000) 
-                      }).map((user, index) => {
-                        return (
-                          //Desktop
-                          <li
-                            className="messages--user  flex-row"
-                            key={user.uid + index}
-                            onClick={() => {
-                              this.viewUsersMessages(user?.uid, index);
-                              this.setState({ currentUserIndex: index });
-                            }}
-                          >
-                            <Avatar src={user?.receiversAvatarUrl} />
-                            <div className="messages--user--info space__between">
-                              <div style={{ flex: 1, width: "100%" }}>
-                                <p>
-                                  <TruncateMarkup line={1} ellipsis="..">
-                                    {user?.userName}
-                                  </TruncateMarkup>{" "}
+                      messages
+                        ?.sort(
+                          (a, b) =>
+                            new Date(
+                              b.chatLog &&
+                                b.chatLog[b.chatLog?.length - 1]?.date
+                                  ?.seconds * 1000
+                            ) -
+                            new Date(
+                              a.chatLog &&
+                                a.chatLog[a.chatLog?.length - 1]?.date
+                                  ?.seconds * 1000
+                            )
+                        )
+                        .map((user, index) => {
+                          return (
+                            //Desktop
+                            <li
+                              className="messages--user  flex-row"
+                              key={user.uid + index}
+                              onClick={() => {
+                                this.viewUsersMessages(user?.uid, index);
+                                this.setState({ currentUserIndex: index });
+                              }}
+                            >
+                              <Avatar src={user?.receiversAvatarUrl} />
+                              <div className="messages--user--info space__between">
+                                <div style={{ flex: 1, width: "100%" }}>
+                                  <p>
+                                    <TruncateMarkup line={1} ellipsis="..">
+                                      {user?.userName}
+                                    </TruncateMarkup>{" "}
+                                  </p>
+                                  <span className="last__message">
+                                    <TruncateMarkup line={1} ellipsis="..">
+                                      {user.chatLog.length >= 1
+                                        ? user.chatLog[user.chatLog?.length - 1]
+                                            .textMsg
+                                        : null}
+                                    </TruncateMarkup>
+                                  </span>
+                                </div>
+                                <p className="messages__user__date">
+                                  {user.chatLog.length >= 1
+                                    ? new Date(
+                                        user.chatLog[user.chatLog?.length - 1]
+                                          .date.seconds * 1000
+                                      ).toLocaleString()
+                                    : null}
                                 </p>
-                                <span className="last__message">
-                                  <TruncateMarkup line={1} ellipsis="..">
-                                    {user.chatLog.length >= 1
-                                      ? user.chatLog[user.chatLog?.length - 1]
-                                          .textMsg
-                                      : null}
-                                  </TruncateMarkup>
-                                </span>
                               </div>
-                              <p className="messages__user__date">
-                                {user.chatLog.length >= 1
-                                  ? new Date(
-                                      user.chatLog[user.chatLog?.length - 1]
-                                        .date.seconds * 1000
-                                    ).toLocaleString()
-                                  : null}
-                              </p>
-                            </div>
-                          </li>
-                        );
-                      })
+                            </li>
+                          );
+                        })
                     ) : (
                       <h4
                         style={{

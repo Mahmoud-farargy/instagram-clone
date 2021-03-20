@@ -3,6 +3,7 @@ import { db, auth, storageRef } from "./Config/firebase";
 import igVideoImg from "./Assets/instagram-video.png";
 import { toast } from "react-toastify";
 import { confirmAlert } from "react-confirm-alert";
+import * as Consts from "./Utilities/Consts";
 const AppContext = React.createContext();
 
 class AppProvider extends PureComponent {
@@ -24,6 +25,7 @@ class AppProvider extends PureComponent {
       openCommentsModal: false,
       currentPage: "",
       searchInfo: { results: [], loading: false },
+      reelsProfile: [],
     };
   }
 
@@ -58,28 +60,40 @@ class AppProvider extends PureComponent {
     withNotifications
   ) => {
     if (withNotifications === "") {
-      db.collection("users")
-        .doc(uid)
-        .update({
-          [stateBase]: newState,
-        })
-        .then(() => {
-          if (updateAbility === true || uid === this.state.receivedData?.uid) {
-            this.updatedReceivedData();
-          }
-        });
+    return new Promise((resolve, reject) => {
+        db.collection("users")
+          .doc(uid)
+          .update({
+            [stateBase]: newState,
+          })
+          .then(() => {
+            if (updateAbility === true || uid === this.state.receivedData?.uid) {
+              this.updatedReceivedData();
+            }
+            resolve();
+          }).catch((err) =>{
+            reject(err.message);
+          });
+     })
+      
     } else {
-      db.collection("users")
-        .doc(uid)
-        .update({
-          [stateBase]: newState,
-          notifications: withNotifications,
-        })
-        .then(() => {
-          if (updateAbility === true || uid === this.state.receivedData?.uid) {
-            this.updatedReceivedData();
-          }
-        });
+
+      return new Promise((resolve, reject) =>{
+          db.collection("users")
+          .doc(uid)
+          .update({
+            [stateBase]: newState,
+            notifications: withNotifications,
+          })
+          .then(() => {
+            if (updateAbility === true || uid === this.state.receivedData?.uid) {
+              this.updatedReceivedData();
+            }
+            resolve();
+          }).catch((err) => {
+            reject();
+          });
+      })
     }
   };
 
@@ -268,8 +282,8 @@ class AppProvider extends PureComponent {
     }
   }
 
-  deleteContentFromFB(path) {
-    path && storageRef.child(`content/${this.state.uid}/${path}`).delete();
+  deleteContentFromFB(path, root) {
+    path && storageRef.child(`${root}/${this.state.uid}/${path}`).delete();
   }
   getUsersProfile(uid) {
     
@@ -686,6 +700,7 @@ class AppProvider extends PureComponent {
 
     return numRandom();
   };
+
   initializeChatDialog(uid, receiverName, receiversAvatarUrl) {
     if (
       this.state.receivedData?.messages.filter((el) => el.uid === uid)[0]
@@ -796,7 +811,7 @@ class AppProvider extends PureComponent {
             postsCopy.splice(postIndex, 1);
             // deletes content from storage
             if (contentPath) {
-              this.deleteContentFromFB(contentPath);
+              this.deleteContentFromFB(contentPath, "content");
             }
             // updates data
             this.updateParts(this.state.uid, "posts", postsCopy, true, "");
@@ -884,6 +899,30 @@ class AppProvider extends PureComponent {
         });
       });
   };
+
+  addPost = (forwardedContent, type) =>{
+    if(type === Consts.Post){
+    let postsDeepCopy = JSON.parse(JSON.stringify(this.state.receivedData?.posts));
+        postsDeepCopy.unshift(forwardedContent);
+        return new Promise((resolve, reject) => {
+            this.updateParts(this.state.uid, "posts", postsDeepCopy, true, "").then(() => {
+              resolve();
+            }).catch(() => {
+              reject();
+            });
+        })  
+    }else if(type === Consts.Reel){
+      let reelsDeepCopy = JSON.parse(JSON.stringify(this.state.receivedData?.reels));
+        reelsDeepCopy.unshift(forwardedContent);
+        return new Promise((resolve, reject) => {
+            this.updateParts(this.state.uid, "reels", reelsDeepCopy, true, "").then(() => {
+              resolve();
+            }).catch(() => {
+              reject();
+            });
+        })  
+    }
+  }
   render() {
     return (
       <AppContext.Provider
@@ -901,7 +940,10 @@ class AppProvider extends PureComponent {
           currentPage: this.state.currentPage,
           currentUser: this.state.currentUser,
           isUserOnline: this.state.isUserOnline,
-          searchInfo: this.state.searchInfo, //functions
+          reelsProfile: this.state.reelsProfile,
+          searchInfo: this.state.searchInfo,
+          addPost: this.addPost.bind(this),//functions
+          generateNewId: this.generateNewId.bind(this),
           updatedReceivedData: this.updatedReceivedData.bind(this),
           updateUserState: this.updateUserState.bind(this),
           updateUID: this.updateUID.bind(this),

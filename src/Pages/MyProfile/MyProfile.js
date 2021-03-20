@@ -1,7 +1,7 @@
 import React, {useContext, Fragment, useState, useEffect} from "react";
 import {AppContext} from "../../Context";
 import {Avatar} from "@material-ui/core";
-import {withRouter} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import {auth} from '../../Config/firebase';
 import {useAuthState} from "react-firebase-hooks/auth";
@@ -10,9 +10,9 @@ import {IoMdGrid} from "react-icons/io";
 import {RiLayoutRowLine} from "react-icons/ri";
 import {BsPlusSquare} from "react-icons/bs";
 // import TruncateMarkup from "react-truncate";
-import { Link } from "react-router-dom";
 import {FaHeart} from "react-icons/fa";
 import {FaRegComment} from "react-icons/fa";
+import reelsIco from "../../Assets/reels.png";
 
 const MyProfile =(props)=>{
     const [_,loading] = useAuthState(auth);
@@ -27,8 +27,12 @@ const MyProfile =(props)=>{
     }
     useEffect(()=>{
         changeMainState("currentPage", "Profile");
-    },[changeMainState]);
-    
+    },[]);
+    useEffect(()=>{
+        if(receivedData?.reels && receivedData?.reels.length > 0){
+            changeMainState("reelsProfile", receivedData);
+        }
+    },[receivedData]);
      return(
         <Fragment>
             <section id="usersProfile" className="users--profile--container ">
@@ -72,8 +76,9 @@ const MyProfile =(props)=>{
                                 <div className="bottom--row--user-info flex-column">
                                         <span>{receivedData?.profileInfo?.bio}</span>
                                 </div> 
+
                             </div>
-                           
+
                     </div>
                     </header>
                      {/* profile info */}
@@ -86,10 +91,17 @@ const MyProfile =(props)=>{
                             } 
                                 <div className="bottom--row--user-info flex-column">
                                         <span>{receivedData?.profileInfo?.bio}</span>
-                                </div> 
+                                </div>
                     </div>
+                                         
                 </div>
-                
+                      {
+                                    receivedData?.reels && receivedData?.reels.length > 0 && (
+                                         <Link to="/reels" className="reel--bubble flex-column"><img className="reels__icon" src={reelsIco} />
+                                            <span className="mt-1">Reels</span>
+                                         </Link>
+                                    )
+                            }
                 {/* body */}
                 <div className="users--profile--stripe flex-row">
                   {

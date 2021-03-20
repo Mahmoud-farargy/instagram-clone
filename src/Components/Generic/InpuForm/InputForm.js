@@ -20,6 +20,7 @@ const InputForm = (props) => {
                 type={props.inputType}
                 value={props.val || ""}
                 disabled={props.disabled}
+                required={props.required}
                 name={props.label}
                 onChange={(x) => props.changeInput(x.target.value, props.name)}
                 placeholder={props.label}
