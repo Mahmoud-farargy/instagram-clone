@@ -34,9 +34,9 @@ const Messages = (props) => {
           });
         });
     changeMainState("currentPage", "Messages");
-    if(receivedData?.notifications?.isNewMsg){
-      changeMainState("currentChatIndex", 0);
-    }
+    // if(receivedData?.notifications?.isNewMsg){
+    //   changeMainState("currentChatIndex", 0);
+    // }
   },[]);
 
   useEffect(() =>{
@@ -134,19 +134,19 @@ const Messages = (props) => {
                   <ul id="messagesUL">
                     {messages?.length >= 1 ? (
                       messages
-                        ?.sort(
-                          (a, b) =>
-                            new Date(
-                              b.chatLog &&
-                                b.chatLog[b.chatLog?.length - 1]?.date
-                                  ?.seconds * 1000
-                            ) -
-                            new Date(
-                              a.chatLog &&
-                                a.chatLog[a.chatLog?.length - 1]?.date
-                                  ?.seconds * 1000
-                            )
-                        )
+                        // ?.sort(
+                        //   (a, b) =>
+                        //     new Date(
+                        //       b.chatLog &&
+                        //         b.chatLog[b.chatLog?.length - 1]?.date
+                        //           ?.seconds * 1000
+                        //     ) -
+                        //     new Date(
+                        //       a.chatLog &&
+                        //         a.chatLog[a.chatLog?.length - 1]?.date
+                        //           ?.seconds * 1000
+                        //     )
+                        // )
                         .map((user, index) => {
                           return (
                             //Desktop
@@ -248,19 +248,19 @@ const Messages = (props) => {
                       <ul id="messagesUL">
                         {messages?.length >= 1 ? (
                           messages
-                          ?.sort(
-                            (a, b) =>
-                              new Date(
-                                b.chatLog &&
-                                  b.chatLog[b.chatLog?.length - 1]?.date
-                                    ?.seconds * 1000
-                              ) -
-                              new Date(
-                                a.chatLog &&
-                                  a.chatLog[a.chatLog?.length - 1]?.date
-                                    ?.seconds * 1000
-                              )
-                          )
+                          // ?.sort(
+                          //   (a, b) =>
+                          //     new Date(
+                          //       b.chatLog &&
+                          //         b.chatLog[b.chatLog?.length - 1]?.date
+                          //           ?.seconds * 1000
+                          //     ) -
+                          //     new Date(
+                          //       a.chatLog &&
+                          //         a.chatLog[a.chatLog?.length - 1]?.date
+                          //           ?.seconds * 1000
+                          //     )
+                          // )
                           .map((user, index) => {
                             return (
                               <li
