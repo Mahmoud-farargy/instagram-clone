@@ -4,8 +4,6 @@ import { AppContext } from "../../Context";
 import { db, auth } from "../../Config/firebase";
 import AppConfig from "../../Config/app-config.json";
 import { useAuthState } from "react-firebase-hooks/auth";
-import UsersModal from "../../Components/UsersModal/UsersModal";
-import CommentsModal from "../../Components/CommentsModal/CommentsModal";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
@@ -15,6 +13,8 @@ import Header from "../Header/Header";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
 
 //lazy loading
+const UsersModal = lazy(()=> import( "../../Components/UsersModal/UsersModal"));
+const CommentsModal = lazy(( ) => import("../../Components/CommentsModal/CommentsModal"));
 const Home = lazy(() => import("../../Pages/Home/Home"));
 const Footer = lazy(() => import("../../Components/Footer/Footer"));
 const AuthPage = lazy(() => import("../../Pages/AuthPage/AuthPage"));
@@ -43,8 +43,15 @@ const App = (props) => {
     currentPage,
     changeMainState,
     returnPassword,
-    notify
+    modalsState,
+    notify,
+    changeModalState,
+    usersModalList,
+    usersProfileData,
+    reelsProfile,
+    currentPostIndex
   } = context;
+  const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
   const [_, loading] = useAuthState(auth);
   // experiment
   // useEffect(() => {
@@ -141,13 +148,14 @@ const App = (props) => {
   }, []);
   useEffect(() => {
     $(document).ready(() => {
-      if (context?.openUsersModal || context?.openCommentsModal) {
+      if (isAnyModalOpen) {
         $("body").css("overflow", "hidden");
+       
       } else {
         $("body").css("overflow", "auto");
       }
     });
-  }, [context?.openUsersModal, context?.openCommentsModal]);
+  }, [isAnyModalOpen]);
 
   useEffect(() => {
     //<<make cleanup work here
@@ -161,11 +169,23 @@ const App = (props) => {
     <Fragment>
       <main>
         {/* Modals */}
-        {context?.openUsersModal ? <UsersModal /> : null}
-        {context?.openCommentsModal ? (
-          <CommentsModal context={context} />
-        ) : null}
-        {loading && <div className="global__loading"></div>}
+        <Suspense fallback={<LoadingScreen />}>
+            {modalsState?.users && usersModalList && Object.keys(usersModalList).length > 0 ? <UsersModal /> : null}
+          {modalsState?.comments ? (
+            <CommentsModal context={context} />
+          ) : null}
+          <div
+              style={{
+                opacity: isAnyModalOpen ? "1" : "0",
+                display: isAnyModalOpen ? "block" : "none",
+                transition: "all 0.5s linear",
+              }}
+              className="backdrop "
+              onClick={() => changeModalState("users", false, "", "")}
+            ></div>
+          {loading && <div className="global__loading"></div>}
+        </Suspense>
+        
         {/* Notifications container */}
         <ToastContainer />
         {/* Routes */}
@@ -180,7 +200,15 @@ const App = (props) => {
             <Route exact path="/auth" component={AuthPage} />
             <Route exact path="/messages">
               <Header />
-              <Messages messages={receivedData?.messages} />
+              { //Guards
+                receivedData && Object.keys(receivedData).length > 0 && receivedData?.messages ?
+                 <Messages history={props.history} />
+                 : 
+                 <div>
+                    <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
+                </div>
+              }
+             
               <MobileNav />
             </Route>
             <Route exact path="/add-post">
@@ -190,34 +218,84 @@ const App = (props) => {
             </Route>
             <Route exact path="/notifications">
               <Header />
-              <MobileNotifications context={context} />
+              {
+                receivedData && receivedData?.notifications ?
+                 <MobileNotifications context={context} />
+                 :
+                 <div>
+                    <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
+                 </div>
+
+              }
+             
               <MobileNav />
             </Route>
             <Route exact path="/profile">
               <Header />
-              <MyProfile />
+              {
+                receivedData && Object.keys(receivedData).length > 0 ?
+                  <MyProfile />
+                 :
+                 <div>
+                    <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
+                 </div>
+
+              }
+              
               <MobileNav />
               <Footer />
             </Route>
             <Route path="/user-profile">
               <Header />
-              <UsersProfile />
+              {
+                usersProfileData && Object.keys(usersProfileData).length > 0 && usersProfileData?.posts ? 
+                <UsersProfile />
+                :
+                <div>
+                   <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
+                </div>
+              }
+              
               <MobileNav />
               <Footer />
             </Route>
             <Route exact path="/browse-post">
               <Header />
-              <PostPage />
+              {
+                Object.keys(usersProfileData).length > 0 && usersProfileData?.posts &&  usersProfileData?.posts[currentPostIndex?.index] ?
+                <PostPage />
+                : 
+                <div>
+                  <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
+                </div>
+              }
+              
               <MobileNav />
             </Route>
             <Route exact path="/edit-profile">
               <Header />
-              <EditProfile />
+              {
+                 receivedData && Object.keys(receivedData).length > 0 && receivedData?.profileInfo?
+                  <EditProfile />
+                  :
+                <div>
+                  <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
+                </div>
+              }
+             
               <MobileNav />
               <Footer />
             </Route>
             <Route exact path="/reels">
-              <Reels context={context} routeHistory={props.history} />
+              {  
+                reelsProfile ?
+                  <Reels context={context} routeHistory={props.history} />
+                :
+                <div>
+                  <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
+                </div>
+              }
+            
             </Route>
           </Suspense>
         </Switch>

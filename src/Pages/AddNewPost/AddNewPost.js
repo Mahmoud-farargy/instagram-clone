@@ -190,7 +190,6 @@ class AddNewPost extends PureComponent {
     }
   }
   handleFileChange = (w) => {
-    console.log("change triggered");
     const { receivedData, notify } = this.context;
     let uploadedItem = w[0];
     const fileName = `${Math.random()}${uploadedItem.name}`;

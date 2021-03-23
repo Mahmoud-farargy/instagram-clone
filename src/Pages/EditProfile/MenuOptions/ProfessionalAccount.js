@@ -26,7 +26,6 @@ const ProfessionalAccount = (props) => {
 
   //--x-end of useState-x--//
   const onInputChange = (val, name) => {
-    // setForm(updateObject(formState, {professionalAcc: updateObject(formState.professionalAcc, {[name]: val})}))
     setForm({
       ...formState,
       professionalAcc: { ...formState?.professionalAcc, [name]: val },
@@ -87,10 +86,6 @@ const ProfessionalAccount = (props) => {
               val={formState?.professionalAcc?.show}
             />
           </Suspense>
-          {/* <div className="flex-row form-group">
-                          <input onChange={onInputChange(el)} value={formState.professionalAcc?.show} type="checkbox" id="cat" className="mr-2 mt-1" />
-                          <label htmlFor="cat" >Show category on profile</label> 
-                        </div> */}
           <div className="form--btns flex-row">
             <input
               type="submit"

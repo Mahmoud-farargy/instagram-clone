@@ -5,30 +5,31 @@ import {FaHeart} from "react-icons/fa";
 import { withRouter } from "react-router";
 import {AppContext} from "../../Context";
 
+
 const Commment =(props)=>{
-    var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, handleUsersModal, contentURL, contentType} = props;
+    var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType} = props;
     const [viewSubComments, setSubComments] = useState(false); 
     const [postLiked, setPostLiked] = useState(false);
     useEffect(()=>{
         setPostLiked(comment?.likes.some(el => el.id === uid));
     },[comment?.likes])
     const context = useContext(AppContext);
-    const browseUser = (specialUid, name) => {
-        const {getUsersProfile, notify} = context;
-        if (specialUid && name) {
-          getUsersProfile(specialUid).then((res)=>{
-            props.history.push(`/user-profile/${name}`);
-          }).catch((err) =>{
-            notify(err && err.message ||"error has occurred. please try again later!", "error");
-          });
+    // const browseUser = (specialUid) => {
+    //     const {getUsersProfile, notify} = context;
+    //     if (specialUid) {
+    //       getUsersProfile(specialUid).then((res)=>{
+    //         props.history.push(`/user-profile`);
+    //       }).catch((err) =>{
+    //         notify(err && err.message ||"error has occurred. please try again later!", "error");
+    //       });
          
-        }
-      };
+    //     }
+    //   };
     return(
         <Fragment>
         <div className="post--comment--item">
                <div className="flex-row post--comment--row">
-                  <span onClick={()=> browseUser(comment?.uid, comment?.userName)} title={comment?.userName} className="post__top__comment flex-row"><strong>{comment?.userName}</strong> <p className="comment__text w-100"><TruncateMarkup className="w-100" line={1} ellipsis="...">{comment?.comment}</TruncateMarkup></p></span>   
+                  <span  title={comment?.userName} className="post__top__comment flex-row"><strong>{comment?.userName}</strong> <p className="comment__text w-100"><TruncateMarkup className="w-100" line={1} ellipsis="...">{comment?.comment}</TruncateMarkup></p></span>   
 
                    {
                        !postLiked ?
@@ -46,7 +47,7 @@ const Commment =(props)=>{
                <div className="post--comment--actions flex-row">
                       {
                           comment.likes?.length >=1 ?
-                             <span className="acc-action" onClick={()=> handleUsersModal(true, comment?.likes, "likes")}>{comment.likes?.length.toLocaleString()} {comment.likes?.length > 1 ? "likes" : "like"}</span>
+                             <span className="acc-action" onClick={()=> changeModalState("users",true, comment?.likes, "likes")}>{comment.likes?.length.toLocaleString()} {comment.likes?.length > 1 ? "likes" : "like"}</span>
                           : null
                       } 
                        <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid); setSubComments(true)}}> Replay</span>                                      
@@ -60,7 +61,7 @@ const Commment =(props)=>{
                                        <ul className="sub--comments--nav">
                                                {
                                                    comment.subComments?.map( (subComment, i )=>{
-                                                       return(<li key={i} onClick={()=> browseUser(subComment?.senderUid,subComment?.senderName)} title={subComment?.senderName}><strong>{subComment?.senderName}</strong> <span> {subComment?.commentText}</span></li>)
+                                                       return(<li key={i} title={subComment?.senderName}><strong>{subComment?.senderName}</strong> <span> {subComment?.commentText}</span></li>)
                                                    })
                                                }
                                        </ul>

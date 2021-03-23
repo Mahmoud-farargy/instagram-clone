@@ -17,7 +17,7 @@ import reelsIco from "../../Assets/reels.png";
 const MyProfile =(props)=>{
     const [_,loading] = useAuthState(auth);
     const [grid, setGrid] = useState(true);
-    const {receivedData,handleUsersModal, igVideoImg, authLogout, changeMainState, uid, getUsersProfile} = useContext(AppContext);
+    const {receivedData,changeModalState, igVideoImg, authLogout, changeMainState, uid, getUsersProfile} = useContext(AppContext);
     const redirectToPost=(i, id)=>{
         changeMainState("currentPostIndex", {index: i, id: id});
         getUsersProfile(uid).then(() => {
@@ -62,8 +62,8 @@ const MyProfile =(props)=>{
                             </div>
                             <div className="desktop--social--row flex-row">
                                 <p><span>{receivedData?.posts?.length.toLocaleString()}</span> {receivedData?.posts?.length >1 ?"posts": "post"}</p>
-                                <p className="acc-action" onClick={()=> handleUsersModal(true, receivedData?.followers, "followers")}><span>{receivedData?.followers?.length.toLocaleString()}</span> {receivedData?.followers?.length >1 ?"followers": "follower"}</p>
-                                <p className="acc-action"  onClick={()=> handleUsersModal(true, receivedData?.following, "following")}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
+                                <p className="acc-action" onClick={()=> changeModalState("users",true, receivedData?.followers, "followers")}><span>{receivedData?.followers?.length.toLocaleString()}</span> {receivedData?.followers?.length >1 ?"followers": "follower"}</p>
+                                <p className="acc-action"  onClick={()=> changeModalState("users",true, receivedData?.following, "following")}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
                             </div>
                             {/* bottom row */}
                             <div className="desktop-only flex-column">

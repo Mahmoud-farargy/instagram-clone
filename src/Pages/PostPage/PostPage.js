@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, useState, useContext , useEffect, useRef} from "react";
 import "../../Components/Post/Post.css";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Avatar } from "@material-ui/core";
@@ -12,21 +12,32 @@ import { AppContext } from "../../Context";
 import Comment from "../../Components/Comment/Comment";
 import { GoVerified } from "react-icons/go";
 import { withRouter } from "react-router-dom";
+import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 
-class PostPage extends PureComponent {
-  static contextType = AppContext;
-  constructor(props) {
-    super(props);
-    this.inputField = React.createRef();
-    this.state = {
-      postLiked: false,
-      insertedComment: "",
-      viewFullCaption: false,
-      btnClicks: 0,
-      doubleLikeClicked: false,
-      replayData: {},
-    };
-  }
+const PostPage  = (props) => {
+  const context = useContext(AppContext);
+  const {changeMainState, getUsersProfile, notify, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleUserBlocking, modalsState,handleLikingComments } = context;
+  const [compState, setCompState] = useState({
+        postLiked: false,
+        insertedComment: "",
+        viewFullCaption: false,
+        btnClicks: 0,
+        doubleLikeClicked: false,
+        replayData: {},
+  });
+  const inputField = useRef(null);
+  // constructor(props) {
+  //   super(props);
+  //   this.inputField = React.createRef();
+  //   this.state = {
+  //     postLiked: false,
+  //     insertedComment: "",
+  //     viewFullCaption: false,
+  //     btnClicks: 0,
+  //     doubleLikeClicked: false,
+  //     replayData: {},
+  //   };
+  // }
 
   // const convertSeconds=(s)=>{
   //         var sec = s % 60;
@@ -39,51 +50,37 @@ class PostPage extends PureComponent {
   //          return hr + "h" + " "+ min + "m" +" "+ sec + "s";
   // }
   // console.log(new Date(803980830.toDate()));
-  componentDidMount() {
-    // this.likesCheck();
-    const { usersProfileData, changeMainState} = this.context;
-   
+  useEffect(() => {
     changeMainState("currentPage", "Post");
-  }
-  browseUser = (specialUid, name) => {
-    const { getUsersProfile, notify} = this.context;
-    getUsersProfile(specialUid)
-      .then(() => {
-        this.props.history.push(`/user-profile/${name}`);
-      })
-      .catch((err) => {
-        notify(
-          (err && err.message) || "error has occurred. please try again later!",
-          "error"
-        );
+  }, []);
+
+ const browseUser = (specialUid) => {
+    if(specialUid){
+      getUsersProfile(specialUid)
+            .then(() => {
+             props.history.push(`/user-profile`);
+            })
+            .catch((err) => {
+              notify(
+                (err && err.message) || "error has occurred. please try again later!",
+                "error"
+              );
       });
+    }
+    
   };
-  likesCheck() {
-    const { usersProfileData, currentPostIndex, uid } = this.context;
-    if (usersProfileData?.posts) {
+
+  const likesCheck = () => {
+    if (usersProfileData?.posts) {//checks whether the user's post is liked or not
       var { likes } = usersProfileData?.posts[currentPostIndex?.index];
-      return likes.people?.map((el) => el.id).indexOf(uid) !== -1
-        ? true
-        : false;
-      // this.setState({ //checks whether the user's post is liked or not
-      //         ...this.state,
-      //         postLiked: likes.people?.map(el =>  el.id).indexOf(uid) !== -1 ? true : false
-      // })
+      return likes.people?.some(el => el.id === uid);
     }
   }
-  handleCurrLikes = (boolean) => {
-    const {
-      usersProfileData,
-      handlePeopleLikes,
-      currentPostIndex,
-      uid,
-      receivedData,
-    } = this.context;
+  const handleCurrLikes = (boolean) => {
+
     let postsData = usersProfileData?.posts;
     if (postsData) {
       const {
-        userName,
-        likes,
         postOwnerId,
         contentURL,
         contentType,
@@ -100,27 +97,28 @@ class PostPage extends PureComponent {
       );
     }
   };
-  doubleClickEvent = () => {
-    let currCount = this.state.btnClicks;
-    this.setState((prevState) => ({
-      btnClicks: prevState.btnClicks + 1,
-    }));
+  const doubleClickEvent = () => {
+    let currCount = compState.btnClicks;
+    setCompState({
+      ...compState,
+      btnClicks: compState.btnClicks + 1,
+    });
     const resetCounter = () => {
-      this.setState({
-        ...this.state,
+      setCompState({
+        ...compState,
         btnClicks: 0,
       });
     };
     if (currCount === 1) {
-      this.handleCurrLikes(true);
+     handleCurrLikes(true);
       resetCounter();
-      this.setState({
-        ...this.state,
+      setCompState({
+        ...compState,
         doubleLikeClicked: true,
       });
       setTimeout(() => {
-        this.setState({
-          ...this.state,
+        setCompState({
+          ...compState,
           doubleLikeClicked: false,
         });
       }, 1100);
@@ -129,31 +127,23 @@ class PostPage extends PureComponent {
       resetCounter();
     }, 1000);
   };
-  submitComment(v) {
+  const submitComment = (v) => {
     v.preventDefault();
 
-    const {
-      usersProfileData,
-      handleSubmittingComments,
-      handleSubComments,
-      currentPostIndex,
-      uid,
-      receivedData,
-    } = this.context;
     let postsData = usersProfileData?.posts;
     if (postsData) {
       const { id, postOwnerId, contentURL, contentType } = postsData[
         currentPostIndex?.index
       ];
-      if (this.state.insertedComment !== "") {
+      if (compState.insertedComment !== "") {
         //subcomment
         if (
-          this.state.replayData !== {} &&
-          /^[@]/.test(this.state.insertedComment)
+          compState.replayData !== {} &&
+          /^[@]/.test(compState.insertedComment)
         ) {
           handleSubComments(
-            this.state.replayData,
-            this.state.insertedComment,
+            compState.replayData,
+            compState.insertedComment,
             receivedData?.userAvatarUrl,
             false,
             contentURL,
@@ -166,7 +156,7 @@ class PostPage extends PureComponent {
             currentPostIndex?.index,
             uid,
             receivedData?.userName,
-            this.state.insertedComment,
+            compState.insertedComment,
             usersProfileData?.userAvatarUrl,
             new Date(),
             id,
@@ -175,17 +165,18 @@ class PostPage extends PureComponent {
             contentType
           );
         }
-        this.setState({
+        setCompState({
+          ...compState,
           insertedComment: "",
           replayData: {},
         });
       }
     }
   }
-  replayFunc(postOwnerName, commentIndex, postIndex, postId, postOwnerId, senderUid) {
-    this.inputField.current.focus();
-    this.setState({
-      ...this.state,
+  const replayFunc = (postOwnerName, commentIndex, postIndex, postId, postOwnerId, senderUid) => {
+    inputField.current.focus();
+    setCompState({
+      ...compState,
       replayData: {
         postOwnerName,
         commentIndex,
@@ -197,24 +188,47 @@ class PostPage extends PureComponent {
       insertedComment: `@${postOwnerName} `,
     });
   }
-  render() {
-    var {
-      usersProfileData,
-      currentPostIndex,
-      uid,
-      receivedData,
-      handleLikingComments,
-      currentPostIndex,
-      handleUsersModal,
-      handleCommentsModal,
-    } = this.context;
-    if (usersProfileData?.posts) {
-      var {userName,caption,contentType,contentURL,comments,likes,location,date,postOwnerId} = usersProfileData?.posts[currentPostIndex?.index];
-      var isVerified = usersProfileData?.isVerified;
-    }
-
+  const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
+    changeModalState("options", false);
+    handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() => props.history.push("/"));
+  }
+    // var {
+    //   usersProfileData,
+    //   currentPostIndex,
+    //   uid,
+    //   receivedData,
+    //   handleLikingComments,
+    //   currentPostIndex,
+    //   changeModalState,
+    //   modalsState,
+    // } = this.context;
+    // if (usersProfileData?.posts) {
+    //   var {caption = "",contentType = "",contentURL = "",comments = [],likes = [],location = "",date = "",postOwnerId = ""} = usersProfileData?.posts[currentPostIndex?.index];
+    //   var isVerified = usersProfileData?.isVerified;
+    // }
+    // useEffect(() => {
+        var {caption,contentType,contentURL,comments ,likes,location ,date,postOwnerId} = usersProfileData?.posts[currentPostIndex?.index];       
+        var isVerified = usersProfileData?.isVerified;
+    // },[usersProfileData]);
+    
+  
     return (
       <Fragment>
+        {
+          modalsState?.options &&
+          (<OptionsModal>
+              <span
+                onClick={() => blockUser(usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, usersProfileData?.profileInfo && usersProfileData.profileInfo?.name ? usersProfileData?.profileInfo?.name : "" )} >
+                {" "}
+                Block user
+              </span>
+              <span onClick={() => changeModalState("options",false)}>
+                {" "}
+                Cancel
+              </span>
+           
+          </OptionsModal>)
+        }
         {usersProfileData?.posts ? (
           <div id="post" className="post--card--container post--page">
             <article className="post--card--article">
@@ -223,12 +237,12 @@ class PostPage extends PureComponent {
                   <Avatar
                     className="post__header__avatar"
                     src={usersProfileData?.userAvatarUrl}
-                    alt={userName}
+                    alt={usersProfileData?.userName}
                   />
                   <div
                     className="post--header--user--info flex-column"
                     onClick={() =>
-                      this.browseUser(usersProfileData?.uid, userName)
+                      browseUser(usersProfileData?.uid)
                     }
                   >
                     <span
@@ -239,7 +253,7 @@ class PostPage extends PureComponent {
                     >
                       <h5 className="flex-row w-100">
                         <TruncateMarkup line={1} ellipsis="...">
-                          {userName}
+                          {usersProfileData?.userName}
                         </TruncateMarkup>
                         {isVerified ? (
                           <span>
@@ -257,7 +271,7 @@ class PostPage extends PureComponent {
                     </span>
                   </div>
                 </header>
-                <span className="post--header--options">
+                <span className="post--header--options" onClick={() => usersProfileData?.uid !== receivedData?.uid ? changeModalState("options", true) : null}>
                   <HiDotsHorizontal />
                 </span>
               </div>
@@ -265,19 +279,19 @@ class PostPage extends PureComponent {
                 {contentType === "image" ? (
                   <div>
                     <img
-                      onClick={() => this.doubleClickEvent()}
+                      onClick={() => doubleClickEvent()}
                       className="post__card__content"
                       src={contentURL}
                       alt="post"
                       draggable="false"
                     />
-                    {this.state.doubleLikeClicked ? (
+                    {compState.doubleLikeClicked ? (
                       <div>
                         <div className="liked__double__click__layout"></div>
                         <span
                           className="liked__double__click"
                           style={{
-                            animation: this.state.doubleLikeClicked
+                            animation: compState.doubleLikeClicked
                               ? "boundHeartOnDouble 0.9s forwards ease"
                               : null,
                           }}
@@ -302,15 +316,15 @@ class PostPage extends PureComponent {
               <div className="post--card--footer flex-column">
                 <div className="post--footer--upper--row flex-row">
                   <div className=" flex-row">
-                    {!this.likesCheck() ? (
-                      <span onClick={() => this.handleCurrLikes(true)}>
+                    {!likesCheck() ? (
+                      <span onClick={() => handleCurrLikes(true)}>
                         <FiHeart />
                       </span>
                     ) : (
                       <span
-                        onClick={() => this.handleCurrLikes(false)}
+                        onClick={() => handleCurrLikes(false)}
                         style={{
-                          animation: this.likesCheck()
+                          animation: likesCheck()
                             ? "boundHeart 0.5s forwards ease"
                             : null,
                         }}
@@ -334,22 +348,22 @@ class PostPage extends PureComponent {
                   <div
                     className="likes__count"
                     onClick={() =>
-                      handleUsersModal(true, likes?.people, "likes")
+                      changeModalState("users",true, likes?.people, "likes")
                     }
                   >
-                    {likes.people?.length.toLocaleString()}{" "}
-                    {likes.people?.length === 1 ? "like" : "likes"}
+                    {likes?.people?.length.toLocaleString()}{" "}
+                    {likes?.people?.length === 1 ? "like" : "likes"}
                   </div>
                 ) : null}
                 <span className="post__caption flex-row">
-                  <strong>{userName}</strong>{" "}
-                  {!this.state.viewFullCaption ? (
+                  <strong>{usersProfileData?.userName}</strong>{" "}
+                  {!compState.viewFullCaption ? (
                     <p>
                       <TruncateMarkup
                         line={4}
                         ellipsis="...more"
                         style={{ cursor: "pointer" }}
-                        onClick={() => this.setState({ viewFullCaption: true })}
+                        onClick={() => setCompState({...compState,viewFullCaption: true })}
                       >
                         {caption}
                       </TruncateMarkup>
@@ -363,7 +377,7 @@ class PostPage extends PureComponent {
                     {comments?.length > 1 ? (
                       <h5
                         className="post__comments__count"
-                        onClick={() => handleCommentsModal(true)}
+                        onClick={() => changeModalState("comments", true)}
                       >
                         View all {comments.length.toLocaleString()} comments
                       </h5>
@@ -379,7 +393,7 @@ class PostPage extends PureComponent {
                           postOwnerId={postOwnerId}
                           commentIndex={i}
                           date={comment?.date}
-                          replayFunc={this.replayFunc.bind(this)}
+                          replayFunc={replayFunc}
                           postIndex={currentPostIndex.index}
                           myName={receivedData?.userName}
                           likes={likes}
@@ -387,7 +401,7 @@ class PostPage extends PureComponent {
                           uid={uid}
                           contentType={contentType}
                           contentURL={contentURL}
-                          handleUsersModal={handleUsersModal}
+                          changeModalState={changeModalState}
                         />
                       );
                     })}
@@ -395,17 +409,17 @@ class PostPage extends PureComponent {
                 ) : null}
 
                 <small className="post__date">
-                  {new Date(date.seconds * 1000).toLocaleString()}
+                  {new Date(date?.seconds * 1000).toLocaleString()}
                 </small>
                 <form
-                  onSubmit={(e) => this.submitComment(e)}
+                  onSubmit={(e) => submitComment(e)}
                   className="post--bottom--comment--adding"
                 >
                   <input
-                    ref={this.inputField}
-                    value={this.state.insertedComment}
+                    ref={inputField}
+                    value={compState.insertedComment}
                     onChange={(event) =>
-                      this.setState({ insertedComment: event.target.value })
+                      setCompState({...compState, insertedComment: event.target.value })
                     }
                     className="post__bottom__input"
                     type="text"
@@ -413,9 +427,9 @@ class PostPage extends PureComponent {
                   />
                   <button
                     type="submit"
-                    disabled={this.state.insertedComment.length < 1}
+                    disabled={compState.insertedComment.length < 1}
                     className={
-                      this.state.insertedComment.length >= 1
+                      compState.insertedComment.length >= 1
                         ? "post__bottom__button"
                         : "disabled post__bottom__button"
                     }
@@ -431,6 +445,6 @@ class PostPage extends PureComponent {
         )}
       </Fragment>
     );
-  }
+  
 }
 export default withRouter(PostPage);

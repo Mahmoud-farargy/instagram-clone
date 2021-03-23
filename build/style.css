@@ -27,6 +27,13 @@ ul{
     opacity:0.5;
     cursor:not-allowed !important;
 }
+body, button, input, textarea {
+    color: #262626;
+    color: rgb(38, 38, 38);
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 18px;
+}
 input {
     -webkit-writing-mode: horizontal-tb !important;
     text-rendering: auto;
@@ -72,6 +79,42 @@ input {
 a:visited{
    color:#00376b;
 }
+#usersProfile  .reel--bubble{
+    align-items:center;
+    cursor:pointer;
+    width: 80px;
+    text-decoration: none;
+    color: #262626;
+    margin:0px 40px 20px;
+}
+#usersProfile  .reel--bubble .reels__icon{
+    width:77px;
+    height:77px;
+    border-radius: 50px;
+    position: relative;
+}
+
+#usersProfile .reel--bubble span{
+    font-weight:600;
+    font-size:14px;
+    white-space: nowrap;
+    width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    display:block;
+    text-align:center;
+}
+/* #usersProfile .reels__icon:after{
+    content:'';
+    width:15px;
+    height:3px;
+    background-color:rgb(108, 29, 29);
+    border-radius:50px;
+    display:inline-block;
+    position:absolute;
+    top:0;
+    left:0;
+} */
 .liked__heart{
     color: rgb(237, 73, 86) !important;
 }
@@ -1154,8 +1197,8 @@ a.prof__btn__unfollowed{
     font-weight:800;
 }
 #usersProfile.users--profile--container .MuiAvatar-root{
-    width:100px;
-    height: 100px;
+    width:120px;
+    height: 120px;
 }
 #usersProfile.users--profile--container .users--profile--stripe{
     width:100%;
@@ -1432,9 +1475,16 @@ a.prof__btn__unfollowed{
     .auth{
         width:75%;
     }
+    #usersProfile  .reel--bubble{
+        margin:-10px 20px 10px;
+    }
     #usersProfile.users--profile--container .MuiAvatar-root{
         width:77px;
         height:77px;
+    }
+    #usersProfile .reels__icon{
+        width: 56px;
+        height:56px;
     }
     #page {
         min-height:95vh;

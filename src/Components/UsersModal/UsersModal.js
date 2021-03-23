@@ -4,11 +4,11 @@ import ModalListItem from "./ModalListItem/ModalListItem";
 import {withRouter} from "react-router-dom";
 
 const UsersModal =(props)=>{
-    const {handleUsersModal,openUsersModal, usersModalList, receivedData, handleFollowing, getUsersProfile, notify} = useContext(AppContext);
+    const {changeModalState,modalsState, usersModalList, receivedData, handleFollowing, getUsersProfile, notify} = useContext(AppContext);
     let output;
     const browseUser=(uid, name)=>{
         if(uid && name){
-            handleUsersModal(false, "","");
+            changeModalState("users", false, "","");
             getUsersProfile(uid).then(()=>{
                 props.history.push(`/user-profile/${name}`);
             }).catch((err)=>{
@@ -50,16 +50,16 @@ const UsersModal =(props)=>{
         <Fragment>
             <section>
           {
-              openUsersModal ?
+              modalsState?.users ?
                 <div
                 className="usersModal--container flex-column">
                     <div className="usersModal--inner flex-column">
                         <div style={{
-                                transform: openUsersModal ? "translate(0)" : "translate(-150%)"
+                                transform: modalsState?.users ? "translate(0)" : "translate(-150%)"
                             }} className="usersModal--card">
                             <div className="userModal--card--header flex-row">
                                     <h1>{usersModalList?.type}</h1>
-                                    <h4 className="userModal__close" onClick={()=> handleUsersModal(false,"", "")}>&times;</h4>
+                                    <h4 className="userModal__close" onClick={()=> changeModalState("users",false,"", "")}>&times;</h4>
                             </div>
                             <div className="userModal--card--body">
                                     {
@@ -76,12 +76,6 @@ const UsersModal =(props)=>{
                 </div>
                 : null
         }
-            <div style={{
-                        opacity: openUsersModal ? "1" : "0",
-                        display: openUsersModal ? "block" : "none",
-                        transition:"all 0.4s ease",
-                    }} className="backdrop " onClick={()=> handleUsersModal(false,"")}>    
-            </div>
             </section>
         </Fragment>
     )

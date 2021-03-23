@@ -26,6 +26,7 @@ const Header = (props) => {
   const [openSearchBox, setSeachBox] = useState(false);
   const [user] = useAuthState(auth);
   const [searchVal, setSearchVal] = useState("");
+  const [capitalizeWord, setCapitalizedWord] = useState("");
   const {
     receivedData,
     closeNotificationAlert,
@@ -83,8 +84,8 @@ const Header = (props) => {
 
           <div className="search--bar--container">
             <input
-              value={searchVal}
-              onChange={(e) => setSearchVal(e.target.value)}
+              value={capitalizeWord.charAt(0).toUpperCase() + searchVal.slice(1)}
+              onChange={(e) => {setSearchVal(e.target.value); setCapitalizedWord(e.target.value)}}
               type="text"
               className="search__input"
               aria-label="search bar"

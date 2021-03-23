@@ -23,7 +23,6 @@ const EditProfileOption = (props) => {
     status: "Single",
   });
   const [submitted, setSubmission] = useState(false);
-  const [openOptionsModal, setOptionsModal] = useState(false);
   // --x--end of state-x--//
   const {
     receivedData,
@@ -32,6 +31,8 @@ const EditProfileOption = (props) => {
     notify,
     confirmPrompt,
     changeProfilePic,
+    modalsState,
+    changeModalState,
   } = useContext(AppContext);
   // useEffct
   useEffect(() => {
@@ -115,7 +116,7 @@ const EditProfileOption = (props) => {
     });
   };
   const changePhoto = (process) => {
-    setOptionsModal(false);
+    changeModalState("options",false);
     if (process === "update") {
       $("#fileUploader").trigger("click");
     } else if (process === "delete") {
@@ -177,16 +178,7 @@ const EditProfileOption = (props) => {
   return (
     <Auxiliary>
       {/* modals */}
-      <div
-        style={{
-          opacity: openOptionsModal ? "1" : "0",
-          display: openOptionsModal ? "block" : "none",
-          transition: "all 0.5s ease",
-        }}
-        className="backdrop "
-        onClick={() => setOptionsModal(false)}
-      ></div>
-      {openOptionsModal && (
+      {modalsState?.options && (
         <OptionsModal>
           <span className="py-4 text-dark option__font">
             Change Profile Photo
@@ -203,7 +195,7 @@ const EditProfileOption = (props) => {
           >
             Remove current Photo
           </span>
-          <span onClick={() => setOptionsModal(false)}>Cancel</span>
+          <span onClick={() => changeModalState("options",false)}>Cancel</span>
         </OptionsModal>
       )}
       <input
@@ -218,14 +210,14 @@ const EditProfileOption = (props) => {
           <Avatar
             className="user__picture mr-3"
             src={receivedData?.userAvatarUrl}
-            onClick={() => setOptionsModal(true)}
+            onClick={() => changeModalState("options", true)}
             alt={userName}
           />
           <div className="user--pic--container flex-column">
             <h1 className="user__prof__name">{userName}</h1>
 
             <button
-              onClick={() => setOptionsModal(true)}
+              onClick={() => changeModalState("options", true)}
               className="change__prof__pic"
             >
               Change Profile Photo

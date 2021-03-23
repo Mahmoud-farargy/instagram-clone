@@ -10,7 +10,6 @@ function Reels(props) {
     const {reelsProfile, changeMainState} = props.context;
     useEffect(()=>{
         changeMainState("currentPage", "Reels");
-        console.log(reelsProfile);
     },[]);
     const [_,loading] = useAuthState(auth);
     return (

@@ -25,9 +25,10 @@ const Home = (props) => {
     deletePost,
     handleSubComments,
     handleLikingComments,
-    handleUsersModal,
+    changeModalState,
     changeMainState,
-    notify
+    notify,
+    modalsState
   } = useContext(AppContext);
   let posts = receivedData?.posts;
   const browseUser = (specialUid, name) => {
@@ -80,7 +81,8 @@ const Home = (props) => {
                       handleSubComments={handleSubComments}
                       handleLikingComments={handleLikingComments}
                       isVerified={receivedData?.isVerified}
-                      handleUsersModal={handleUsersModal}
+                      changeModalState={changeModalState}
+                      modalsState= {modalsState}
                       deletePost={deletePost}
                     />
                   );
@@ -142,7 +144,7 @@ const Home = (props) => {
                     <ul className="flex-column">
                       {suggestionsList &&
                         suggestionsList.length > 0 &&
-                        suggestionsList
+                       Array.from(new Set(suggestionsList.map((item) => item.uid))).map((id) => suggestionsList.find((el) => el.uid === id))
                           .filter((item) => item?.uid !== receivedData?.uid)
                           .map((user, i) => {
                             return (

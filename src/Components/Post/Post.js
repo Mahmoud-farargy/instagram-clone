@@ -24,7 +24,6 @@ class Post extends PureComponent {
       viewFullCaption: false,
       doubleLikeClicked: false,
       showFullComments: false,
-      openOptionsModal: false,
       showInputForm: false,
       replayData: {},
     };
@@ -180,7 +179,8 @@ class Post extends PureComponent {
       myName,
       userAvatar,
       id,
-      handleUsersModal,
+      changeModalState,
+      modalsState,
       deletePost,
       index,
       postId,
@@ -228,7 +228,7 @@ class Post extends PureComponent {
               </header>
               <span
                 className="post--header--options"
-                onClick={() => this.setState({ openOptionsModal: true })}
+                onClick={() => changeModalState("options", true)}
               >
                 <HiDotsHorizontal />
               </span>
@@ -306,7 +306,7 @@ class Post extends PureComponent {
               {likes.people?.length >= 1 ? (
                 <div
                   className="likes__count"
-                  onClick={() => handleUsersModal(true, likes.people, "likes")}
+                  onClick={() => changeModalState("users", true, likes.people, "likes")}
                 >
                   {likes.people?.length.toLocaleString()}{" "}
                   {likes.people?.length === 1 ? "like" : "likes"}
@@ -366,7 +366,7 @@ class Post extends PureComponent {
                             userAvatar={userAvatar}
                             contentType={contentType}
                             contentURL={contentURL}
-                            handleUsersModal={handleUsersModal}
+                            changeModalState={changeModalState}
                             uid={id}
                           />
                         );
@@ -387,7 +387,7 @@ class Post extends PureComponent {
                             userAvatar={userAvatar}
                             contentType={contentType}
                             contentURL={contentURL}
-                            handleUsersModal={handleUsersModal}
+                            changeModalState={changeModalState}
                             uid={id}
                           />
                         );
@@ -432,32 +432,23 @@ class Post extends PureComponent {
               ) : null}
             </div>
           </article>
-          {this.state.openOptionsModal && (
+          {modalsState?.options && (
             <OptionsModal>
               <span
                 onClick={() => {
                   deletePost(postId, index, contentName);
-                  this.setState({ openOptionsModal: false });
+                  changeModalState("options", false)
                 }}
               >
                 {" "}
                 Delete
               </span>
-              <span onClick={() => this.setState({ openOptionsModal: false })}>
+              <span onClick={() => changeModalState("options",false)}>
                 {" "}
                 Cancel
               </span>
             </OptionsModal>
           )}
-          <div
-            style={{
-              opacity: this.state.openOptionsModal ? "1" : "0",
-              display: this.state.openOptionsModal ? "block" : "none",
-              transition: "all 0.5s ease",
-            }}
-            className="backdrop "
-            onClick={() => this.setState({ openOptionsModal: false })}
-          ></div>
         </div>
       </Fragment>
     );

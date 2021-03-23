@@ -153,4 +153,32 @@
   .modal--btns{
     justify-content: flex-end;
   }
+    .block--list--inner{
+      padding:20px;
+      .block__list__ul{
+        padding:0;
+        list-style: none;
+        overflow: auto;
+          .block__li{
+            justify-content:space-between;
+            align-items:center;
+            .blocked__name{
+              font-size: 14px;
+              font-weight: 600;
+            }
+            .blocked__profile__name{
+              font-size: 14px;
+              font-weight: 400;
+            }
+          }
+      }   
+      .empty--block--list{
+        h1 {
+          font-size:17px;
+          text-align:center;
+          margin-top:20px;
+        }
+      }
+  }
+  
 }

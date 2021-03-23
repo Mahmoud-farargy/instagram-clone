@@ -1,17 +1,22 @@
 import React, { useContext, Fragment, useState, useEffect } from "react";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { auth } from "../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { GoVerified } from "react-icons/go";
 import { IoMdGrid } from "react-icons/io";
 import { RiLayoutRowLine } from "react-icons/ri";
-import { BsPlusSquare } from "react-icons/bs";
+import { CgProfile } from "react-icons/cg";
+import { ImBlocked } from "react-icons/im";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
+import {HiOutlineDotsHorizontal} from "react-icons/hi";
+import reelsIco from "../../Assets/reels.png";
+import PostModal from "../../Components/DesktopPost/DesktopPost";
+import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 
 const UsersProfile = (props) => {
   const [_, loading] = useAuthState(auth);
@@ -27,11 +32,14 @@ const UsersProfile = (props) => {
     uid,
     handleFollowing,
     receivedData,
-    handleUsersModal,
+    changeModalState,
     igVideoImg,
+    modalsState,
     suggestionsList,
     getUsersProfile,
     notify,
+    handleUserBlocking,
+    currentPostIndex
   } = context;
 
   const redirectToPost = (i, id) => {
@@ -39,8 +47,12 @@ const UsersProfile = (props) => {
     props.history.push("/browse-post");
   };
   const message = (uid, username, avatarUrl) => {
+    const newIndex = receivedData && receivedData.messages?.map(d => d.uid).indexOf(uid);
+    if(newIndex !== -1){
+      changeMainState("currentChatIndex", newIndex);
+    }
     initializeChatDialog(uid, username, avatarUrl);
-    props.history.push("/messages");
+      props.history.push("/messages");
   };
   useEffect(() => {
     receivedData?.following &&
@@ -80,12 +92,41 @@ const UsersProfile = (props) => {
       }
     
   };
+  const openPostModal = (postId, index) =>{
+    changeMainState("currentPostIndex", { index: index, id: postId });
+    changeModalState("post", true);
+  }
+
+  const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
+    changeModalState("options", false);
+    handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() => props.history.push("/"));
+  }
   return (
-    <Fragment>
+    <Fragment> 
+       {/* Modals */}
+      {
+        modalsState?.post && usersProfileData?.posts[currentPostIndex?.index] &&
+          <PostModal history={props.history} />
+      }
+      {
+         modalsState?.options &&
+         (<OptionsModal>
+             <span
+               onClick={() => blockUser(usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, usersProfileData?.profileInfo && usersProfileData.profileInfo?.name ? usersProfileData?.profileInfo?.name : "" )} >
+               {" "}
+               Block user
+             </span>
+             <span onClick={() => changeModalState("options",false)}>
+               {" "}
+               Cancel
+             </span>
+          
+         </OptionsModal>)
+      }
       <section id="usersProfile" className="users--profile--container ">
         {/* Header */}
         {/* upper row */}
-
+ 
         <div className="desktop-comp">
           <div className="user--top--info flex-column">
             <header className="user-top-inner flex-row">
@@ -125,10 +166,13 @@ const UsersProfile = (props) => {
                       </button>
                     )}
 
+                 {
+                   usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) ?
+                   receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) ?
                     <button
                       disabled={!usersProfileData?.uid}
-                      onClick={() =>
-                        handleFollowing(
+                      onClick={(k) =>
+                        {handleFollowing(
                           isFollowed,
                           usersProfileData?.uid,
                           usersProfileData?.userName,
@@ -136,7 +180,7 @@ const UsersProfile = (props) => {
                           uid,
                           receivedData?.userName,
                           receivedData?.userAvatarUrl
-                        )
+                        ); k.stopPropagation()}
                       }
                       className={
                         !isFollowed
@@ -151,6 +195,13 @@ const UsersProfile = (props) => {
                         ? "follow"
                         : "unfollow"}
                     </button>
+                    :
+                    <button onClick={(p) => {handleUserBlocking(false, usersProfileData?.uid, usersProfileData?.userName ); p.stopPropagation()}} className="profile__btn prof__btn__followed">
+                      Unblock
+                    </button>
+                    : null
+                    
+                    }
                     <button
                       className="sugg__btn profile__btn prof__btn__followed"
                       style={{
@@ -165,46 +216,64 @@ const UsersProfile = (props) => {
                     </button>
                   </div>
                 </div>
-                <div className="desktop--social--row flex-row">
-                  <p>
-                    <span>
-                      {usersProfileData?.posts?.length.toLocaleString()}
-                    </span>{" "}
-                    {usersProfileData?.posts?.length > 1 ? "posts" : "post"}
-                  </p>
-                  <p
-                    className="acc-action"
-                    onClick={() =>
-                      handleUsersModal(
-                        true,
-                        usersProfileData?.followers,
-                        "followers"
-                      )
-                    }
-                  >
-                    <span>
-                      {usersProfileData?.followers?.length.toLocaleString()}
-                    </span>{" "}
-                    {usersProfileData?.followers?.length > 1
-                      ? "followers"
-                      : "follower"}
-                  </p>
-                  <p
-                    className="acc-action"
-                    onClick={() =>
-                      handleUsersModal(
-                        true,
-                        usersProfileData?.following,
-                        "following"
-                      )
-                    }
-                  >
-                    <span>
-                      {usersProfileData?.following?.length.toLocaleString()}
-                    </span>{" "}
-                    following
-                  </p>
-                </div>
+               {
+                  usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) ?
+                  <div className="desktop--social--row flex-row">
+                    <p>
+                      <span>
+                        {usersProfileData?.posts?.length.toLocaleString()}
+                      </span>{" "}
+                      {usersProfileData?.posts?.length > 1 ? "posts" : "post"}
+                    </p>
+                    <p
+                      className="acc-action"
+                      onClick={() =>
+                        changeModalState(
+                          "users",
+                          true,
+                          usersProfileData?.followers,
+                          "followers"
+                        )
+                      }
+                    >
+                      <span>
+                        {usersProfileData?.followers?.length.toLocaleString()}
+                      </span>{" "}
+                      {usersProfileData?.followers?.length > 1
+                        ? "followers"
+                        : "follower"}
+                    </p>
+                    <p
+                      className="acc-action"
+                      onClick={() =>
+                        changeModalState(
+                          "users",
+                          true,
+                          usersProfileData?.following,
+                          "following"
+                        )
+                      }
+                    >
+                      <span>
+                        {usersProfileData?.following?.length.toLocaleString()}
+                      </span>{" "}
+                      following
+                    </p>
+                  {
+                      usersProfileData?.uid !== receivedData?.uid && receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) && usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) &&
+                    <p>
+                      <span className="profile--more--btn" onClick={() => changeModalState("options", true)}>
+                         <HiOutlineDotsHorizontal />
+                      </span>
+                    </p>
+
+                  }  
+                  </div>
+                  :
+                  <div>
+                    <h5>User not found</h5>
+                  </div>
+               } 
 
                 {/* bottom row */}
                 <div className="desktop-only flex-column">
@@ -333,104 +402,188 @@ const UsersProfile = (props) => {
               </div>
             )}
           </div>
-
+          {
+                                 usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) &&  usersProfileData?.reels && usersProfileData?.reels.length > 0 && receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) &&( //find an alternative to make data always updating
+                                         <Link to="/reels" onClick={()=> changeMainState("reelsProfile", usersProfileData)} className="reel--bubble flex-column"><img className="reels__icon" src={reelsIco} />
+                                            <span className="mt-1">Reels</span>
+                                         </Link>
+                                    )
+                            }
           {/* body */}
+      {
+       usersProfileData?.blockList && !receivedData?.blockList.some(x => x.blockedUid === usersProfileData?.uid) ?
+        usersProfileData?.blockList && !usersProfileData?.blockList?.some(f => f.blockedUid === receivedData?.uid) ? 
+        <div>
           <div className="users--profile--stripe flex-row">
-            {usersProfileData?.posts?.length >= 1 ? (
-              <div className="profile--stripe--inner flex-row">
-                <span
-                  onClick={() => setGrid(true)}
-                  style={{
-                    color: grid ? "#1d8cd6" : "#8e8e8e",
-                    borderTop: grid ? "2px solid #363636" : "none",
-                  }}
-                >
-                  <IoMdGrid />
-                </span>
-                <span
-                  onClick={() => setGrid(false)}
-                  style={{
-                    color: !grid ? "#1d8cd6" : "#8e8e8e",
-                    borderTop: !grid ? "2px solid #363636" : "none",
-                  }}
-                >
-                  <RiLayoutRowLine />
-                </span>
-              </div>
-            ) : null}
-          </div>
-
-          {usersProfileData?.posts?.length >= 1 && !loading ? (
-            <div
-              className={
-                grid
-                  ? "users--profile--posts"
-                  : "users--profile--rowLine flex-column"
-              }
-            >
-              {usersProfileData?.posts?.map((post, i) => {
-                return (
-                  <div
-                    key={post?.id + i}
-                    className="profile--posts--container "
-                  >
-                    <div
-                      onClick={() => redirectToPost(i, post?.id)}
-                      className="user--img--container flex-column"
-                    >
-                      <img
-                        style={{ width: "100%" }}
-                        className="users__profile__image"
-                        src={
-                          post?.contentType === "image"
-                            ? post?.contentURL
-                            : post?.contentType === "video"
-                            ? igVideoImg
-                            : null
-                        }
-                        alt={`post #${i}`}
-                      />
-                      <div className="user--img--cover">
-                        <div className="flex-row">
-                          <span className="mr-3">
-                            <FaHeart /> {post?.likes?.people?.length}
+                      {usersProfileData?.posts?.length >= 1 ? (
+                        <div className="profile--stripe--inner flex-row">
+                          <span
+                            onClick={() => setGrid(true)}
+                            style={{
+                              color: grid ? "#1d8cd6" : "#8e8e8e",
+                              borderTop: grid ? "2px solid #363636" : "none",
+                            }}
+                          >
+                            <IoMdGrid />
                           </span>
-                          <span>
-                            <FaRegComment />{" "}
-                            {post?.comments.length > 0
-                              ? post?.comments.length
-                              : post?.comments.length}{" "}
+                          <span
+                            onClick={() => setGrid(false)}
+                            style={{
+                              color: !grid ? "#1d8cd6" : "#8e8e8e",
+                              borderTop: !grid ? "2px solid #363636" : "none",
+                            }}
+                          >
+                            <RiLayoutRowLine />
                           </span>
                         </div>
-                      </div>
+                      ) : null}
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : loading ? (
-            <Skeleton
-              count={10}
-              height={250}
-              width={250}
-              className="mt-4 mr-4 mx-auto"
-            />
-          ) : (
-            <div className="empty--posts--container flex-column">
-              <div className="empty--posts--inner mx-auto flex-column">
-                <div className="plus--icon--container flex-column">
-                  <BsPlusSquare className="plus__icon" />
-                </div>
-                <h3>Profile</h3>
-                <p>
-                  When you share photos and videos, they'll <br /> be appear on
-                  your profile page
-                </p>
+                {
+                    usersProfileData?.posts?.length >= 1 && !loading ? (
+                                    <div
+                            className={
+                              grid
+                                ? "users--profile--posts"
+                                : "users--profile--rowLine flex-column"
+                            }
+                          >
+                            {usersProfileData?.posts?.map((post, i) => {
+                              return (
+                                <div
+                                  key={post?.id + i}
+                                  className="profile--posts--container "
+                                >
+                                  {/* desktop only */}
+                                  <div
+                                    onClick={() => openPostModal(post?.id,i)}
+                                    className="user--img--container desktop-only flex-column"
+                                  >
+                                    <img
+                                      style={{ width: "100%" }}
+                                      className="users__profile__image"
+                                      src={
+                                        post?.contentType === "image"
+                                          ? post?.contentURL
+                                          : post?.contentType === "video"
+                                          ? igVideoImg
+                                          : null
+                                      }
+                                      alt={`post #${i}`}
+                                    />
+                                    <div className="user--img--cover">
+                                      <div className="flex-row">
+                                        <span className="mr-3">
+                                          <FaHeart /> {post?.likes?.people?.length}
+                                        </span>
+                                        <span>
+                                          <FaRegComment />{" "}
+                                          {post?.comments.length > 0
+                                            ? post?.comments.length
+                                            : post?.comments.length}{" "}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  {/* mobile */}
+                                  <div
+                                    onClick={() => redirectToPost(i, post?.id)}
+                                    className="user--img--container mobile-only flex-column"
+                                  >
+                                    <img
+                                      style={{ width: "100%" }}
+                                      className="users__profile__image"
+                                      src={
+                                        post?.contentType === "image"
+                                          ? post?.contentURL
+                                          : post?.contentType === "video"
+                                          ? igVideoImg
+                                          : null
+                                      }
+                                      alt={`post #${i}`}
+                                    />
+                                    <div className="user--img--cover">
+                                      <div className="flex-row">
+                                        <span className="mr-3">
+                                          <FaHeart /> {post?.likes?.people?.length}
+                                        </span>
+                                        <span>
+                                          <FaRegComment />{" "}
+                                          {post?.comments.length > 0
+                                            ? post?.comments.length
+                                            : post?.comments.length}{" "}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : loading ? (
+                          <Skeleton
+                            count={10}
+                            height={250}
+                            width={250}
+                            className="mt-4 mr-4 mx-auto"
+                          />
+                        ) : (
+                          <div className="empty--posts--container flex-column">
+                            <div className="empty--posts--inner mx-auto flex-column">
+                              <div className="plus--icon--container flex-column">
+                                <CgProfile className="plus__icon" />
+                              </div>
+                              <h3>No posts yet</h3>
+                              <p>
+                                When you share photos and videos, they'll <br /> be appear on
+                                your profile page
+                              </p>
 
-                <span>Share your first photo or video</span>
-              </div>
+                              <span>Share your first photo or video</span>
+                            </div>
+                          </div>
+                        )
+                    
+       }
+        </div>
+        : 
+         <div>
+          <div className="users--profile--stripe flex-row"></div>
+          
+          <div className="empty--posts--container flex-column">
+                            <div className="empty--posts--inner mx-auto flex-column">
+                              <div className="plus--icon--container flex-column">
+                                <ImBlocked className="plus__icon" />
+                              </div>
+                              <h3>Cannot acess this page</h3>
+                              <p>
+                                You are blocked by {usersProfileData?.userName}.
+                              </p>
+                              <span>Learn more</span>
+
+                            </div>
             </div>
-          )}
+        </div> 
+        :
+      <div>
+          <div className="users--profile--stripe flex-row"></div>
+          <div className="empty--posts--container flex-column">
+                            <div className="empty--posts--inner mx-auto flex-column">
+                              <div className="plus--icon--container flex-column">
+                                <ImBlocked className="plus__icon" />
+                              </div>
+                              <h3>Cannot acess this page</h3>
+                              <p>
+                                You have blocked {usersProfileData?.userName}. Unblock them to see their posts again.
+                              </p>
+                              <span>Learn more</span>
+
+                            </div>
+            </div>
+          
+        </div>
+      }
+         
+         
         </div>
       </section>
     </Fragment>

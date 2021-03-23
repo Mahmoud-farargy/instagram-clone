@@ -47,7 +47,7 @@ class CommentsModal extends PureComponent{
     }
     render(){
         const {context} = this.props;
-        const {handleLikingComments, receivedData, uid, handleUsersModal , openCommentsModal,usersProfileData,currentPostIndex, handleCommentsModal} = context;
+        const {handleLikingComments, receivedData, uid, changeModalState , modalsState,usersProfileData,currentPostIndex} = context;
         if(usersProfileData?.posts){
             var {contentType, contentURL, comments, likes, postOwnerId} = usersProfileData?.posts[currentPostIndex?.index];
         }
@@ -56,16 +56,16 @@ class CommentsModal extends PureComponent{
             <Auxiliary>
                 <section>            
             {
-                context?.openCommentsModal ?
+                modalsState?.comments ?
                 <div id="commentsModal" className="comments--modal--container flex-column">
                     
                     <div className="comments--modal--header">
                             <h4>Comments</h4>
-                            <span className="comments__close__modal" onClick={()=> handleCommentsModal(false)}>&times;</span>
+                            <span className="comments__close__modal" onClick={()=> changeModalState("comments", false)}>&times;</span>
                     </div>  
                     <div className="comments--modal--card">
                         <div  className="comments--modal--inner" style={{
-                                        transform: openCommentsModal ? "translate(0)" : "translate(-150vw)"
+                                        transform: modalsState?.comments ? "translate(0)" : "translate(-150vw)"
                                     }} >
                             {
                                 comments?.map((comment, i) =>{
@@ -84,7 +84,7 @@ class CommentsModal extends PureComponent{
                                         uid={uid}
                                         contentType= {contentType}
                                         contentURL= {contentURL}
-                                        handleUsersModal={handleUsersModal}/>
+                                        changeModalState={changeModalState}/>
                                     )
                                 })
                             }
@@ -98,14 +98,7 @@ class CommentsModal extends PureComponent{
                     </div>
                 </div>
                 : null
-            }   
-            <div style={{
-                    opacity: openCommentsModal ? "1" : "0",
-                    display: openCommentsModal ? "block" : "none",
-                    transition:"all 0.4s ease",
-                }} className="backdrop " onClick={()=> handleCommentsModal(false)}>    
-            </div>
-            
+            }               
             </section>
             </Auxiliary>
         )

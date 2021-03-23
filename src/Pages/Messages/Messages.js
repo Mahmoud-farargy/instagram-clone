@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState, useContext, useRef} from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
@@ -8,93 +8,109 @@ import { FiSend, FiInfo } from "react-icons/fi";
 import { VscSmiley } from "react-icons/vsc";
 import { RiMenu4Fill } from "react-icons/ri";
 import { MdClose } from "react-icons/md";
-import { updateObject } from "../../Utilities/Utility";
+// import { updateObject } from "../../Utilities/Utility";
 
 import $ from "jquery";
 
-class Messages extends Component {
-  constructor(props) {
-    super(props);
-    this.autoScroll = React.createRef();
-    this.state = {
-      inputValue: "",
-      loadedChatLog: [],
-      currentUserIndex: 0,
+const Messages = (props) => {
+    const autoScroll = useRef(null)
+    const context = useContext(AppContext);
+    const [compState, setCompState] = useState({
+        inputValue: "",
+        loadedChatLog: [],
+        openSidedrawer: false,
+        showEmojis: false,
+    })
+  const { handleSendingMessage, receivedData, currentChatIndex, changeMainState, getUsersProfile, notify } = context;
+  const {messages} = receivedData;
+
+  useEffect(() =>{
+    $(document).ready(() => {
+          $("#messagesUL li").on("click", function () {
+            $("#messagesUL li").each((i, item) => {
+              $(item).removeClass("active-msg");
+            });
+            $(this).addClass("active-msg");
+          });
+        });
+    changeMainState("currentPage", "Messages");
+    if(receivedData?.notifications?.isNewMsg){
+      changeMainState("currentChatIndex", 0);
+    }
+  },[]);
+
+  useEffect(() =>{
+    // setCompState(updateObject(compState, { showEmojis: false }));
+    autoScroll && autoScroll.current && autoScroll.current?.scrollIntoView && autoScroll.current.scrollIntoView();
+    setCompState({
+      ...compState,
+      loadedChatLog: messages[ currentChatIndex],
       openSidedrawer: false,
       showEmojis: false,
-    };
-  }
-
-  static contextType = AppContext;
-
-  componentDidMount = () => {
-    $(document).ready(() => {
-      $("#messagesUL li").on("click", function () {
-        $("#messagesUL li").each((i, item) => {
-          $(item).removeClass("active-msg");
-        });
-        $(this).addClass("active-msg");
-      });
     });
-    this.context.changeMainState("currentPage", "Messages");
-  };
-  componentDidUpdate = (prevProps, prevState) => {
-    if (prevProps.messages !== this.props.messages) {
-      if (this.autoScroll.scrollIntoView) {
-        this.autoScroll.scrollIntoView({ behavior: "smooth" });
-        this.setState(updateObject(this.state, { showEmojis: false }));
-      }
-    }
-    if (
-      prevState.currentUserIndex !== this.state.currentUserIndex &&
-      this.autoScroll &&
-      this.autoScroll.scrollIntoViewIfNeeded
-    ) {
-      this.autoScroll.scrollIntoViewIfNeeded();
-    }
-  };
-  submitMessage(v) {
+    // if(
+    //   prevState.currentUserIndex !== compState.currentUserIndex &&
+    //   this.autoScroll &&
+    //   this.autoScroll.scrollIntoViewIfNeeded
+    // ) {
+    //   this.autoScroll.scrollIntoViewIfNeeded();
+    // }
+  },[messages, currentChatIndex]);
+  // componentDidUpdate = (prevProps, prevState) => {
+  //   if (prevProps.messages !== this.props.messages) {
+  //     if (this.autoScroll.scrollIntoView) {
+  //       this.autoScroll.scrollIntoView({ behavior: "smooth" });
+  //       this.setState(updateObject(this.state, { showEmojis: false }));
+  //     }
+  //   }
+  //   if (
+  //     prevState.currentUserIndex !== compState.currentUserIndex &&
+  //     this.autoScroll &&
+  //     this.autoScroll.scrollIntoViewIfNeeded
+  //   ) {
+  //     this.autoScroll.scrollIntoViewIfNeeded();
+  //   }
+  // };
+  const submitMessage = (v) => {
     v.preventDefault();
+    const currUser = receivedData?.messages[currentChatIndex];
 
-    const { handleSendingMessage, receivedData } = this.context;
-    const currUser = receivedData?.messages[this.state.currentUserIndex];
+    handleSendingMessage(compState.inputValue, currUser?.uid, "text");
 
-    handleSendingMessage(this.state.inputValue, currUser?.uid, "text");
-
-    this.setState({
-      ...this.state,
+    setCompState({
+      ...compState,
       inputValue: "",
     });
   }
-  viewUsersMessages(_, loadedIndex) {
-    const { receivedData } = this.context;
-    const { messages } = receivedData;
-    // const getUserById=()=>{
-    //     let currIndex;
-    //     messages.filter((item,i)=>{
-    //         currIndex = i;
-    //         console.log(item);
-    //         return item.uid === currentUID;
-    //     });
-    //     return currIndex;
-    // }
 
-    this.setState({
-      ...this.state,
-      loadedChatLog: messages[loadedIndex],
-      currentUserIndex: loadedIndex,
-    });
+ const browseUser = (specialUid) => {
+        if (specialUid) {
+          getUsersProfile(specialUid).then((res)=>{
+            props.history.push(`/user-profile`);
+          }).catch((err) =>{
+            notify(err && err.message ||"error has occurred. please try again later!", "error");
+          });
+         
+        }
+  };
+ const viewUsersMessages = (_, loadedIndex) => {
+    changeMainState("currentChatIndex", loadedIndex);
+    // setCompState({
+    //   ...compState,
+    //   loadedChatLog: messages[loadedIndex],
+    //   currentUserIndex: loadedIndex,
+    //   openSidedrawer: false,
+    // });
   }
-  selectEmoji = (emojiText) => {
-    this.setState({
-      ...this.state,
-      inputValue: this.state.inputValue + emojiText,
+
+  const selectEmoji = (emojiText) => {
+    setCompState({
+      ...compState,
+      inputValue: compState.inputValue + emojiText,
     });
   };
-  render() {
-    const { receivedData } = this.context;
-    const { messages } = receivedData;
-    const msg = messages ? messages[this.state.currentUserIndex] : "";
+
+    const msg = messages ? messages[currentChatIndex] : [];
     return (
       <Auxiliary>
         <section id="messages" className="messages--container">
@@ -137,10 +153,7 @@ class Messages extends Component {
                             <li
                               className="messages--user  flex-row"
                               key={user.uid + index}
-                              onClick={() => {
-                                this.viewUsersMessages(user?.uid, index);
-                                this.setState({ currentUserIndex: index });
-                              }}
+                              onClick={() => viewUsersMessages(user?.uid, index)}
                             >
                               <Avatar src={user?.receiversAvatarUrl} />
                               <div className="messages--user--info space__between">
@@ -189,30 +202,30 @@ class Messages extends Component {
               {/* messages side */}
               <div className="messages--side">
                 <div className="mobile--msgs--menu mobile-only">
-                  {!this.state.openSidedrawer ? (
+                  {!compState.openSidedrawer ? (
                     <RiMenu4Fill
-                      onClick={() => this.setState({ openSidedrawer: true })}
+                      onClick={() => setCompState({...compState, openSidedrawer: true })}
                     />
                   ) : (
                     <MdClose
-                      onClick={() => this.setState({ openSidedrawer: false })}
+                      onClick={() => setCompState({...compState, openSidedrawer: false })}
                     />
                   )}
                 </div>
-                {this.state.openSidedrawer ? (
+                {compState.openSidedrawer ? (
                   <div
                     className="backdrop mobile-only"
-                    onClick={() => this.setState({ openSidedrawer: false })}
+                    onClick={() => setCompState({...compState, openSidedrawer: false })}
                   ></div>
                 ) : null}
 
                 <div
                   style={{
-                    transform: this.state.openSidedrawer
+                    transform: compState.openSidedrawer
                       ? "translate(0)"
                       : "translate(200vw)",
                     transition: "all 0.5s linear",
-                    opacity: this.state.openSidedrawer ? "1" : "0",
+                    opacity: compState.openSidedrawer ? "1" : "0",
                   }}
                   id="mobileChat"
                   className="mobile--users--sidedrawer"
@@ -234,19 +247,26 @@ class Messages extends Component {
                     <div className="messages--view--users">
                       <ul id="messagesUL">
                         {messages?.length >= 1 ? (
-                          messages?.map((user, index) => {
+                          messages
+                          ?.sort(
+                            (a, b) =>
+                              new Date(
+                                b.chatLog &&
+                                  b.chatLog[b.chatLog?.length - 1]?.date
+                                    ?.seconds * 1000
+                              ) -
+                              new Date(
+                                a.chatLog &&
+                                  a.chatLog[a.chatLog?.length - 1]?.date
+                                    ?.seconds * 1000
+                              )
+                          )
+                          .map((user, index) => {
                             return (
                               <li
                                 className="messages--user flex-row"
                                 key={user.uid + index}
-                                onClick={() => {
-                                  this.viewUsersMessages(user?.uid, index);
-                                  this.setState({
-                                    currentUserIndex: index,
-                                    openSidedrawer: false,
-                                  });
-                                }}
-                              >
+                                onClick={() => viewUsersMessages(user?.uid, index)} >
                                 <Avatar src={user?.receiversAvatarUrl} />
                                 <div className="messages--user--info space__between">
                                   <div style={{ flex: 1, width: "100%" }}>
@@ -294,7 +314,7 @@ class Messages extends Component {
                   </div>
                 </div>
 
-                {this.state.loadedChatLog < 1 ? (
+                {compState.loadedChatLog < 1 ? (
                   <div className="messages--empty--container flex-column">
                     {/* if there is no messages */}{" "}
                     {/* when loading messages */}
@@ -315,7 +335,7 @@ class Messages extends Component {
                       {/* -- header */}
                       <Avatar src={msg?.userAvatarUrl} alt={msg?.userName} />
                       <div className="messages--user--info space__between">
-                        <p>
+                        <p style={{cursor:"pointer"}} onClick={() => browseUser(msg?.uid)}>
                           <TruncateMarkup line={1} ellipsis="..">
                             {msg?.userName}
                           </TruncateMarkup>{" "}
@@ -333,7 +353,7 @@ class Messages extends Component {
                             key={message?.uid + index}
                             className="message--outer"
                           >
-                            <span ref={(el) => (this.autoScroll = el)}></span>
+                            <span ref={autoScroll}></span>
                             <div
                               className={
                                 message?.uid === receivedData?.uid
@@ -349,10 +369,10 @@ class Messages extends Component {
                         );
                       })}
                     </div>
-                    {this.state.showEmojis ? (
+                    {compState.showEmojis ? (
                       <div
                         style={{
-                          opacity: this.state.showEmojis ? "1" : "0",
+                          opacity: compState.showEmojis ? "1" : "0",
                           transition: "all 0.5s ease",
                         }}
                         className="chat--emojis--box flex-row"
@@ -360,77 +380,77 @@ class Messages extends Component {
                         <span
                           role="img"
                           aria-label="emoji"
-                          onClick={() => this.selectEmoji("😍 ")}
+                          onClick={() => selectEmoji("😍 ")}
                         >
                           😍
                         </span>
                         <span
                           role="img"
                           aria-label="emoji"
-                          onClick={() => this.selectEmoji("😂 ")}
+                          onClick={() => selectEmoji("😂 ")}
                         >
                           😂
                         </span>
                         <span
                           role="img"
                           aria-label="emoji"
-                          onClick={() => this.selectEmoji("� ")}
+                          onClick={() => selectEmoji("😄")}
                         >
                           😄
                         </span>
                         <span
                           role="img"
                           aria-label="emoji"
-                          onClick={() => this.selectEmoji("� ")}
+                          onClick={() => selectEmoji("😊 ")}
                         >
                           😊
                         </span>
                         <span
                           role="img"
                           aria-label="emoji"
-                          onClick={() => this.selectEmoji("😘 ")}
+                          onClick={() => selectEmoji("😘 ")}
                         >
                           😘
                         </span>
                         <span
                           role="img"
                           aria-label="emoji"
-                          onClick={() => this.selectEmoji("😁 ")}
+                          onClick={() => selectEmoji("😁 ")}
                         >
                           😁
                         </span>
                         <span
                           role="img"
                           aria-label="emoji"
-                          onClick={() => this.selectEmoji("😢 ")}
+                          onClick={() => selectEmoji("😢 ")}
                         >
                           😢
                         </span>
                         <span
                           role="img"
                           aria-label="emoji"
-                          onClick={() => this.selectEmoji("😎 ")}
+                          onClick={() => selectEmoji("😎 ")}
                         >
                           😎
                         </span>
                         <span
                           role="img"
                           aria-label="emoji"
-                          onClick={() => this.selectEmoji("😋 ")}
+                          onClick={() => selectEmoji("😋 ")}
                         >
                           😋
                         </span>
                         <span
                           role="img"
                           aria-label="emoji"
-                          onClick={() => this.selectEmoji("😜 ")}
+                          onClick={() => selectEmoji("😜 ")}
                         >
                           😜
                         </span>
                         <span
                           role="img"
                           aria-label="emoji"
-                          onClick={() => this.selectEmoji("😫 ")}
+                          onClick={() => selectEmoji("😫 ")}
                         >
                           😫
                         </span>
@@ -438,26 +458,28 @@ class Messages extends Component {
                     ) : null}
                     <div className="messages--bottom--form flex-row">
                       <form
-                        onSubmit={(v) => this.submitMessage(v)}
+                        onSubmit={(v) => submitMessage(v)}
                         className="flex-row"
                       >
                         <VscSmiley
                           onClick={() =>
-                            this.setState({
-                              showEmojis: !this.state.showEmojis,
+                            setCompState({
+                              ...compState,
+                              showEmojis: !compState.showEmojis,
                             })
                           }
                           className="smiley__icon"
                         />
                         <input
                           onChange={(e) =>
-                            this.setState({ inputValue: e.target.value })
+                            
+                            setCompState({...compState, inputValue: e.target.value })
                           }
-                          value={this.state.inputValue}
+                          value={compState.inputValue}
                           className="message__input"
                           placeholder="Message..."
                         />
-                        {this.state.inputValue ? (
+                        {compState.inputValue ? (
                           <input type="submit" value="Send" />
                         ) : null}
                       </form>
@@ -470,7 +492,6 @@ class Messages extends Component {
         </section>
       </Auxiliary>
     );
-  }
 }
 
 export default Messages;
