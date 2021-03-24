@@ -4,7 +4,7 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { Avatar } from "@material-ui/core";
 import TruncateMarkup from "react-truncate";
 import { FiHeart, FiSend } from "react-icons/fi";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaLess } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import { IoMdVideocam } from "react-icons/io";
 import { RiBookmarkLine } from "react-icons/ri"; //install react-instagram-embed
@@ -26,6 +26,7 @@ class Post extends PureComponent {
       showFullComments: false,
       showInputForm: false,
       replayData: {},
+      openOptionsModal: false,
     };
   }
   // const convertSeconds=(s)=>{
@@ -228,7 +229,7 @@ class Post extends PureComponent {
               </header>
               <span
                 className="post--header--options"
-                onClick={() => changeModalState("options", true)}
+                onClick={() => this.setState({openOptionsModal: true})}
               >
                 <HiDotsHorizontal />
               </span>
@@ -432,23 +433,32 @@ class Post extends PureComponent {
               ) : null}
             </div>
           </article>
-          {modalsState?.options && (
+          {this.state.openOptionsModal && (
             <OptionsModal>
               <span
                 onClick={() => {
                   deletePost(postId, index, contentName);
-                  changeModalState("options", false)
+                  this.setState({openOptionsModal:false})
                 }}
               >
                 {" "}
                 Delete
               </span>
-              <span onClick={() => changeModalState("options",false)}>
+              <span onClick={() => this.setState({openOptionsModal:false})}>
                 {" "}
                 Cancel
               </span>
             </OptionsModal>
           )}
+          <div
+            style={{
+              opacity: this.state.openOptionsModal ? "1" : "0",
+              display: this.state.openOptionsModal ? "block" : "none",
+              transition: "all 0.5s ease",
+            }}
+            className="backdrop "
+            onClick={() => this.setState({ openOptionsModal: false })}
+          ></div>
         </div>
       </Fragment>
     );
