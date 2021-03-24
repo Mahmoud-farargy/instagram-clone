@@ -453,7 +453,7 @@ const UsersProfile = (props) => {
                                   key={post?.id + i}
                                   className="profile--posts--container "
                                 >
-                                  {/* desktop only */}
+                                  {/* desktop */}
                                   <div
                                     onClick={() => openPostModal(post?.id,i)}
                                     className="user--img--container desktop-only flex-column"
@@ -484,7 +484,7 @@ const UsersProfile = (props) => {
                                       </div>
                                     </div>
                                   </div>
-                                  {/* mobile */}
+                                  {/* Mobile */}
                                   <div
                                     onClick={() => redirectToPost(i, post?.id)}
                                     className="user--img--container mobile-only flex-column"

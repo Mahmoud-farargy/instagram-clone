@@ -24,6 +24,7 @@
     justify-content:space-between;
     padding:6px 16px 6px 16px;
     align-items:center;
+    position: relative;
 }
 #post.post--card--container .post--card--article .post--card--header .post--header--user--info {
     position: relative;
@@ -230,15 +231,16 @@
     #post.post--card--container .post--card--article .post--card--footer .post--footer--upper--row span:active, .bookmark__icon:active{
         background-color:inherit !important;
     }
-    /* #post.post--card--container .post--card--article .post--card--footer .post--bottom--comment--adding{
+    #post.post--card--container.mobile--post .post--card--article .post--card--footer .post--bottom--comment--adding{
         position: fixed;
         bottom:50px;
         left:0;
         width:100%;
-        padding-left:9px;
+        padding-left:10px;
+        padding-left:10px;
         background-color: #fff;
         z-index:1500;
-    } */
+    }
 }
 @keyframes boundHeart {
     0%{

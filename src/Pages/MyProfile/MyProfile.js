@@ -9,15 +9,15 @@ import {GoVerified } from "react-icons/go";
 import {IoMdGrid} from "react-icons/io";
 import {RiLayoutRowLine} from "react-icons/ri";
 import {BsPlusSquare} from "react-icons/bs";
-// import TruncateMarkup from "react-truncate";
 import {FaHeart} from "react-icons/fa";
 import {FaRegComment} from "react-icons/fa";
 import reelsIco from "../../Assets/reels.png";
+import PostModal from "../../Components/DesktopPost/DesktopPost";
 
 const MyProfile =(props)=>{
     const [_,loading] = useAuthState(auth);
     const [grid, setGrid] = useState(true);
-    const {receivedData,changeModalState, igVideoImg, authLogout, changeMainState, uid, getUsersProfile} = useContext(AppContext);
+    const {receivedData,changeModalState, igVideoImg, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, usersProfileData, modalsState} = useContext(AppContext);
     const redirectToPost=(i, id)=>{
         changeMainState("currentPostIndex", {index: i, id: id});
         getUsersProfile(uid).then(() => {
@@ -33,8 +33,18 @@ const MyProfile =(props)=>{
             changeMainState("reelsProfile", receivedData);
         }
     },[receivedData]);
+    const openPostModal = (postId,index) =>{
+        changeMainState("currentPostIndex", { index: index, id: postId });
+        getUsersProfile(uid).then(() => {
+              changeModalState("post", true);
+        })
+    }
      return(
         <Fragment>
+            {/* Modals */}
+            {modalsState?.post && receivedData?.posts[currentPostIndex?.index] &&
+                <PostModal history={props.history} />
+            }
             <section id="usersProfile" className="users--profile--container ">
                 {/* Header */}
                 {/* upper row */}
@@ -119,8 +129,9 @@ const MyProfile =(props)=>{
                     <div className={grid ? "users--profile--posts" : "users--profile--rowLine flex-column"}>
                         {receivedData?.posts?.map((post, i)=>{
                                         return (
-                                            <div key={post?.id+i} onClick={()=> redirectToPost(i, post?.id) }  className="profile--posts--container">     
-                                                <div className="user--img--container flex-column">
+                                            <div key={post?.id+i} className="profile--posts--container">   
+                                              {/* Desktop */}
+                                                <div className="user--img--container desktop-only flex-column" onClick={() => openPostModal(post?.id,i)}>
                                                         <img style={{width:"100%"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
                                                                 <div className="user--img--cover">
                                                                         <div className="flex-row">
@@ -131,6 +142,18 @@ const MyProfile =(props)=>{
                                                                 
                                                                 </div>
                                                 </div>                                                
+                                                {/* Mobile */}
+                                                <div className="user--img--container mobile-only flex-column"  onClick={()=> redirectToPost(i, post?.id) } >
+                                                        <img style={{width:"100%"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
+                                                                <div className="user--img--cover">
+                                                                        <div className="flex-row">
+                                                                            <span className="mr-3"><FaHeart/> {post?.likes?.people?.length}</span>
+                                                                            <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length } </span>
+                                                                        
+                                                                        </div>
+                                                                
+                                                                </div>
+                                                </div>  
                                             </div>
                                         )
                                 })}

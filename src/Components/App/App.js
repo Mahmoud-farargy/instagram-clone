@@ -31,6 +31,7 @@ const MobileNotifications = lazy(() =>
 const MyProfile = lazy(() => import("../../Pages/MyProfile/MyProfile"));
 const EditProfile = lazy(() => import("../../Pages/EditProfile/EditProfile"));
 const Reels = lazy(() => import("../../Pages/Reels/Reels"));
+const About = lazy(() => import("../../Pages/About/About"));
 //--xx---//
 const App = (props) => {
   const context = useContext(AppContext);
@@ -296,6 +297,12 @@ const App = (props) => {
                 </div>
               }
             
+            </Route>
+            <Route exact path="/about">
+                <Header />
+                <About history={props.history} />
+                <MobileNav />
+                <Footer />
             </Route>
           </Suspense>
         </Switch>

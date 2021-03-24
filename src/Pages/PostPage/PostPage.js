@@ -26,6 +26,7 @@ const PostPage  = (props) => {
         replayData: {},
   });
   const inputField = useRef(null);
+  const autoScroll = useRef(null);
   // constructor(props) {
   //   super(props);
   //   this.inputField = React.createRef();
@@ -171,6 +172,9 @@ const PostPage  = (props) => {
           replayData: {},
         });
       }
+      if(autoScroll?.current &&  autoScroll.current.scrollIntoView()){
+        autoScroll.current.scrollIntoView();
+      }
     }
   }
   const replayFunc = (postOwnerName, commentIndex, postIndex, postId, postOwnerId, senderUid) => {
@@ -230,7 +234,7 @@ const PostPage  = (props) => {
           </OptionsModal>)
         }
         {usersProfileData?.posts ? (
-          <div id="post" className="post--card--container post--page">
+          <div id="post" className="post--card--container mobile--post post--page">
             <article className="post--card--article">
               <div className="post--card--header flex-row">
                 <header className="post--header--avatar flex-row">
@@ -373,7 +377,7 @@ const PostPage  = (props) => {
                   )}
                 </span>
                 {comments?.length >= 1 ? (
-                  <div className="post--comments--layout">
+                  <div className="post--comments--layout" ref={autoScroll}>
                     {comments?.length > 1 ? (
                       <h5
                         className="post__comments__count"

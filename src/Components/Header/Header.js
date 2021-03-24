@@ -10,7 +10,7 @@ import { Avatar } from "@material-ui/core";
 import { AppContext } from "../../Context";
 import { auth } from "../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { BiPowerOff, BiCog } from "react-icons/bi";
+import { BiPowerOff, BiCog, BiInfoCircle } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 import { RiSearchLine } from "react-icons/ri";
 import { TiDelete } from "react-icons/ti";
@@ -266,6 +266,14 @@ const Header = (props) => {
                           >
                             <li>
                               <BiCog className="prof__popup" /> Settings
+                            </li>
+                          </Link>
+                          <Link
+                            onClick={() => setProf(false)}
+                            to="/about"
+                          >
+                            <li>
+                              <BiInfoCircle className="prof__popup" /> About
                             </li>
                           </Link>
                           <li

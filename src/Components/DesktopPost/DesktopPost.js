@@ -1,18 +1,19 @@
 import React, { Fragment, useState, useContext , useEffect, useRef} from "react";
 import "./DesktopPost.scss";
+import "../../Components/Post/Post.css";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Avatar } from "@material-ui/core";
 import TruncateMarkup from "react-truncate";
 import { FiHeart, FiSend } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
-import { IoMdVideocam } from "react-icons/io";
+import { IoMdVideocam , IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { RiBookmarkLine } from "react-icons/ri";
 import { AppContext } from "../../Context";
 import Comment from "../../Components/Comment/Comment";
 import { GoVerified } from "react-icons/go";
-import { withRouter } from "react-router-dom";
-import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
+// import { withRouter } from "react-router-dom";
+// import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 
 const DesktopPost = (props) => {
     const context = useContext(AppContext);
@@ -173,15 +174,66 @@ const DesktopPost = (props) => {
           var {caption,contentType,contentURL,comments ,likes,location ,date,postOwnerId} = usersProfileData?.posts[currentPostIndex?.index];
           var isVerified = usersProfileData?.isVerified;
       
-    
+    const onPostMovement = (direction) =>{
+      const finalIndex = usersProfileData?.posts.length -1;
+      const currentIndex = currentPostIndex?.index;
+      let currentDirection;
+      if(direction === "left"){
+          currentIndex > 0 ? ( currentDirection = currentIndex -1 ) :  ( currentDirection = finalIndex);
+      }else if(direction === "right"){
+          currentIndex < finalIndex ? ( currentDirection = currentIndex +1 ) : ( currentDirection = 0 );
+      }
+      changeMainState("currentPostIndex", {...currentPostIndex, index: currentDirection});
+    }
     return (
         <Fragment>
             <section className="desktopPost flex-column">
                 <div className="d--post--container flex-column">
+                  <span className={usersProfileData?.posts.length > 1 ? "desktop__left__arrow" : "desktop__left__arrow disabled"} onClick={() => onPostMovement("left")}><IoIosArrowBack /></span>
+                  <span className={usersProfileData?.posts.length > 1 ? "desktop__right__arrow" : "desktop__right__arrow disabled"} onClick={() => onPostMovement("right")}><IoIosArrowForward /></span>
                     <article className="d--post--box flex-column">
                         {/* post start */}
                                 <div id="post" className="post--card--container post--page">
                                     <article className="post--card--article">
+                                    <div className="post--card--body desktop--left">
+                                        {contentType === "image" ? (
+                                        <div>
+                                            <img
+                                            onClick={() => doubleClickEvent()}
+                                            className="post__card__content"
+                                            src={contentURL}
+                                            alt="post"
+                                            draggable="false"
+                                            />
+                                            {compState.doubleLikeClicked ? (
+                                            <div>
+                                                <div className="liked__double__click__layout"></div>
+                                                <span
+                                                className="liked__double__click"
+                                                style={{
+                                                    animation: compState.doubleLikeClicked
+                                                    ? "boundHeartOnDouble 0.9s forwards ease"
+                                                    : null,
+                                                }}
+                                                >
+                                                <FaHeart />
+                                                </span>
+                                            </div>
+                                            ) : null}
+                                        </div>
+                                        ) : contentType === "video" ? (
+                                        <div>
+                                            <video
+                                            className="post__card__content"
+                                            src={contentURL}
+                                            draggable="false"
+                                            controls
+                                            />
+                                            <IoMdVideocam className="video__top__icon" />
+                                        </div>
+                                        ) : null}
+                                    </div>
+                                    <div className="desktop--right">
                                     <div className="post--card--header flex-row">
                                         <header className="post--header--avatar flex-row">
                                         <Avatar
@@ -225,45 +277,34 @@ const DesktopPost = (props) => {
                                         <HiDotsHorizontal />
                                         </span>
                                     </div>
-                                    <div className="post--card--body">
-                                        {contentType === "image" ? (
-                                        <div>
-                                            <img
-                                            onClick={() => doubleClickEvent()}
-                                            className="post__card__content"
-                                            src={contentURL}
-                                            alt="post"
-                                            draggable="false"
-                                            />
-                                            {compState.doubleLikeClicked ? (
-                                            <div>
-                                                <div className="liked__double__click__layout"></div>
-                                                <span
-                                                className="liked__double__click"
-                                                style={{
-                                                    animation: compState.doubleLikeClicked
-                                                    ? "boundHeartOnDouble 0.9s forwards ease"
-                                                    : null,
-                                                }}
-                                                >
-                                                <FaHeart />
-                                                </span>
-                                            </div>
-                                            ) : null}
-                                        </div>
-                                        ) : contentType === "video" ? (
-                                        <div>
-                                            <video
-                                            className="post__card__content"
-                                            src={contentURL}
-                                            draggable="false"
-                                            controls
-                                            />
-                                            <IoMdVideocam className="video__top__icon" />
-                                        </div>
-                                        ) : null}
-                                    </div>
-                                    <div className="post--card--footer flex-column">
+                                    
+                                        {comments?.length >= 1 ? (
+                                          <div className="post--comments--layout">
+                                              {comments?.slice(0, 3).map((comment, i) => {
+                                              return (
+                                                  <Comment
+                                                  key={i}
+                                                  comment={comment}
+                                                  handleLikingComments={handleLikingComments}
+                                                  postOwnerId={postOwnerId}
+                                                  commentIndex={i}
+                                                  date={comment?.date}
+                                                  replayFunc={replayFunc}
+                                                  postIndex={currentPostIndex.index}
+                                                  myName={receivedData?.userName}
+                                                  likes={likes}
+                                                  userAvatar={receivedData?.userAvatarUrl}
+                                                  uid={uid}
+                                                  contentType={contentType}
+                                                  contentURL={contentURL}
+                                                  changeModalState={changeModalState}
+                                                  />
+                                              );
+                                              })}
+                                          </div>
+                                          ) : null}
+                                        
+                                        <div className="post--card--footer flex-column">
                                         <div className="post--footer--upper--row flex-row">
                                         <div className=" flex-row">
                                             {!likesCheck() ? (
@@ -322,41 +363,7 @@ const DesktopPost = (props) => {
                                             <p className="article__post">{caption}</p>
                                         )}
                                         </span>
-                                        {comments?.length >= 1 ? (
-                                        <div className="post--comments--layout">
-                                            {comments?.length > 1 ? (
-                                            <h5
-                                                className="post__comments__count"
-                                                onClick={() => changeModalState("comments", true)}
-                                            >
-                                                View all {comments.length.toLocaleString()} comments
-                                            </h5>
-                                            ) : (
-                                            <h5 className="post__comments__count">Comments</h5>
-                                            )}
-                                            {comments?.slice(0, 3).map((comment, i) => {
-                                            return (
-                                                <Comment
-                                                key={i}
-                                                comment={comment}
-                                                handleLikingComments={handleLikingComments}
-                                                postOwnerId={postOwnerId}
-                                                commentIndex={i}
-                                                date={comment?.date}
-                                                replayFunc={replayFunc}
-                                                postIndex={currentPostIndex.index}
-                                                myName={receivedData?.userName}
-                                                likes={likes}
-                                                userAvatar={receivedData?.userAvatarUrl}
-                                                uid={uid}
-                                                contentType={contentType}
-                                                contentURL={contentURL}
-                                                changeModalState={changeModalState}
-                                                />
-                                            );
-                                            })}
-                                        </div>
-                                        ) : null}
+                                       
 
                                         <small className="post__date">
                                         {new Date(date?.seconds * 1000).toLocaleString()}
@@ -388,6 +395,11 @@ const DesktopPost = (props) => {
                                         </button>
                                         </form>
                                     </div>
+                                    </div>
+                                    
+
+                                   
+                               
                                     </article>
                                 </div>    
                         {/* post end */}
