@@ -300,7 +300,7 @@ const App = (props) => {
             </Route>
             <Route exact path="/about">
                 <Header />
-                <About history={props.history} />
+                <About changeMainState={changeMainState} />
                 <MobileNav />
                 <Footer />
             </Route>

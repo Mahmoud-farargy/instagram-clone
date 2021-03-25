@@ -407,6 +407,9 @@ a:visited{
     text-align:center;
     cursor:pointer;
 }
+.auth--input--form input[type="submit"]:focus, .resetPassBtn:focus{
+    border:none;
+}
 .auth--input--form input[type="submit"]:hover{
     background-color:#1d8cd6;
 }   
