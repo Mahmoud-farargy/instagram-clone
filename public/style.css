@@ -168,13 +168,15 @@ a:visited{
 .useModal--empty--users{
     justify-content:center;
     align-items:center;
-    
-}
-.useModal--empty--users{
     text-align:center;
-    font-size:17px;
-    font-weight:600;
+    overflow: hidden;
 }
+.useModal--empty--users h3{
+    font-size:14px;
+    font-weight:600;
+    margin: 15px 5px;
+}
+
 .article__post{
     white-space:pre-line;
     word-break: break-word;
@@ -396,7 +398,7 @@ a:visited{
     cursor:pointer;
     margin-bottom: 6px;
 }
-.auth--input--form input[type="submit"], .resetPassBtn{
+.auth--input--form input[type="submit"], .resetPassBtn,.auth--input--form button{
     background-color: var(--secondary-clr);
     color:#fff;
     font-weight:600;
@@ -407,7 +409,12 @@ a:visited{
     text-align:center;
     cursor:pointer;
 }
-.auth--input--form input[type="submit"]:focus, .resetPassBtn:focus{
+.loading__btn{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.auth--input--form input[type="submit"]:focus, .resetPassBtn:focus, .auth--input--form button{
     border:none;
 }
 .auth--input--form input[type="submit"]:hover{
@@ -610,7 +617,7 @@ button:active{
 }
 .post__view__replies__btn,
 .post--comment--actions span{
-    font-size:12px;
+    font-size:12px !important;
     color:#8e8e8e;
     line-height:14px;
     font-weight:600;
@@ -1381,7 +1388,7 @@ a.prof__btn__unfollowed{
     padding:4px 10px;
     background-color: rgb(252, 252, 252);
     border-bottom: 1px solid rgb(228, 228, 228);
-    border-radius:12px 0 12px 0;
+    border-radius:12px;
 }
 #commentsModal.comments--modal--container .comments__close__modal{
     position: absolute;
@@ -1398,7 +1405,7 @@ a.prof__btn__unfollowed{
 }
 #commentsModal.comments--modal--container .comments--modal--card .post--bottom--comment--adding{
     position: fixed;
-    bottom:45px;
+    bottom:0px;
     left:0;
     width:99%;
     margin:0;

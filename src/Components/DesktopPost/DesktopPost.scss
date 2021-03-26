@@ -59,7 +59,10 @@
                         }
                     }
                     .post--comments--layout{
-                        overflow-y:scroll;
+                        min-height:150px;
+                        max-height:340px;
+                        // height:150px;
+                        overflow-y:auto !important;
                     }
                     .desktop--right{
                         position: relative;

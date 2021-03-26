@@ -4,6 +4,7 @@ import appleStore from "../../Assets/get-app-apple.png";
 import gpStore from "../../Assets/get-app-gp.png";
 import instaReview from "../../Assets/iphone-with-profile.jpg";
 import { GrInstagram } from "react-icons/gr";
+import Loader from "react-loader-spinner";
 import {
   auth,
   db,
@@ -36,7 +37,7 @@ const AuthPage = (props) => {
     return () => {
       context.changeMainState(
         "currentPage",
-        signUpState ? "Sign up" : "Log in"
+        signUpState ? "Log in" : "Sign up"
       );
     };
   }, [signUpState]);
@@ -49,6 +50,7 @@ const AuthPage = (props) => {
     );
   };
   const submitForm = async (event, authType) => {
+    
     event.preventDefault();
     var {
       resetAllData,
@@ -58,11 +60,12 @@ const AuthPage = (props) => {
       updateUserState,
       notify,
     } = context;
+    setLoading(true);
     if (authType === "signUp") {
       resetAllData(); //clears data before adding new one
-      setLoading(true);
+      
       setTimeout(() => {
-        setLoading(false);
+
         if (!isUserOnline) {
           //avoids data overlapping
           if (
@@ -80,8 +83,9 @@ const AuthPage = (props) => {
                   )
                 ) {
                   auth
-                    .createUserWithEmailAndPassword(signUpEmail, signUpPassword)
+                    .createUserWithEmailAndPassword(signUpEmail.toLowerCase(), signUpPassword)
                     .then((cred) => {
+                      setLoading(false);
                       db.collection("users")
                         .doc(cred.user.uid)
                         .set({
@@ -118,57 +122,66 @@ const AuthPage = (props) => {
                           userAvatarUrl: "",
                         })
                         .then((res) => {
+                          setLoading(false);
                           setSignUpEmail("");
                           setSignUpPassword("");
                           setSignUpUsername("");
                           localStorage.setItem(
                             "user",
                             JSON.stringify({
-                              email: signUpEmail,
+                              email: signUpEmail.toLowerCase(),
                               password: decipherPassword(signUpPassword),
                             })
                           );
                           setTimeout(() => {
                             props.history.push("/");
-                            notify("Welcome to Voxgram.");
+                            notify("Welcome to Voxgram. Start by adding posts to your account.");
                           }, 150);
                         });
                     })
                     .catch((err) => {
+                      setLoading(false);
                       notify(err.message, "error");
                     });
                 } else {
+                  setLoading(false);
                   notify(
                     "Username should be between 6 and 18 characters with no spaces.",
                     "error"
                   );
                 }
               } else {
+                setLoading(false);
                 notify(
                   "The confirmation password does not match the one above it.",
                   "error"
                 );
               }
             } else {
+              setLoading(false);
               notify(
                 "Password should be between 8 to 20 characters and contains at least one number, one lowecase letter and one uppercase letter.",
                 "error"
               );
             }
           } else {
+            setLoading(false);
             notify("Please type a valid email", "error");
           }
+        } else{
+          setLoading(false);
         }
       }, 1000);
     } else if (authType === "login") {
       resetAllData();
-
+      
       setTimeout(() => {
+
         if (!isUserOnline) {
+         
           //avoids data overlapping
-          setLoading(true);
           auth
-            .signInWithEmailAndPassword(loginEmail, loginPassword)
+            .signInWithEmailAndPassword(loginEmail.toLowerCase(), loginPassword)
             .then(() => {
               setLoading(false);
               setLoginEmail("");
@@ -183,13 +196,15 @@ const AuthPage = (props) => {
                     });
                     updateUserState(true);
                     updateUID(authUser?.uid);
+
                     // updatedReceivedData();
                   });
+                   setLoading(false);
               });
               localStorage.setItem(
                 "user",
                 JSON.stringify({
-                  email: loginEmail,
+                  email: loginEmail.toLowerCase(),
                   password: decipherPassword(loginPassword),
                 })
               );
@@ -201,8 +216,10 @@ const AuthPage = (props) => {
               setLoading(false);
               notify(err.message, "error");
             });
+        }else{
+          setLoading(false);
         }
-      }, 2000);
+      }, 1800);
     }
   };
   const signInMethods = (method) => {
@@ -314,7 +331,22 @@ const AuthPage = (props) => {
                           type="password"
                           placeholder="Password"
                         />
-                        <input
+                    {
+                      loading || inProgress ?
+                      <button
+                        className={"disabled loading__btn flex-row"}
+                        disabled={true}
+                      >
+                        <Loader
+                        type="ThreeDots"
+                        color="#fff"
+                        height={15}
+                        width={20}
+                        timeout={5000}
+                      />
+                    </button>
+                      : 
+                      <input
                           className={
                             loading ||
                             !loginEmail ||
@@ -330,8 +362,9 @@ const AuthPage = (props) => {
                             inProgress
                           }
                           type="submit"
-                          value={loading ? "Loading..." : "Log In"}
+                          value="Log In"
                         />
+                    }   
                         <span
                           onClick={() => setPasswordMode(true)}
                           className="forgot__pass"
@@ -378,7 +411,7 @@ const AuthPage = (props) => {
                 ) : (
                   // sign up state
                   <div>
-                    <h4 className="auth--signup--msg">
+                    <h4 className="auth--signup--msg mt-2">
                       Sign up to see photos and videos from your friends.
                     </h4>
                     <form
@@ -420,14 +453,27 @@ const AuthPage = (props) => {
                         type="password"
                         placeholder="Re-type Password"
                       />
-                      <input
+                   {
+                       loading || inProgress ?
+                       <button
+                         className={"disabled loading__btn flex-row"}
+                         disabled={true}
+                       >
+                         <Loader
+                         type="ThreeDots"
+                         color="#fff"
+                         height={15}
+                         width={20}
+                         timeout={5000}
+                       />
+                     </button>
+                     :
+                     <input
                         className={
-                          loading ||
                           !signUpEmail ||
                           !signUpPassword ||
                           !signUpUsername ||
-                          !reTypedPassword ||
-                          inProgress
+                          !reTypedPassword
                             ? "disabled"
                             : ""
                         }
@@ -436,12 +482,12 @@ const AuthPage = (props) => {
                           !signUpEmail ||
                           !signUpPassword ||
                           !signUpUsername ||
-                          !reTypedPassword ||
-                          inProgress
+                          !reTypedPassword
                         }
                         type="submit"
-                        value={loading ? "Loading..." : "Sign Up"}
+                        value="Sign Up"
                       />
+                   }   
                     </form>
                   </div>
                 )

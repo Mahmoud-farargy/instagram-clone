@@ -28,7 +28,8 @@ const Home = (props) => {
     changeModalState,
     changeMainState,
     notify,
-    modalsState
+    modalsState,
+    onCommentDeletion
   } = useContext(AppContext);
   let posts = receivedData?.posts;
   const browseUser = (specialUid, name) => {
@@ -84,6 +85,7 @@ const Home = (props) => {
                       changeModalState={changeModalState}
                       modalsState= {modalsState}
                       deletePost={deletePost}
+                      onCommentDeletion={onCommentDeletion}
                     />
                   );
                 })

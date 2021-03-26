@@ -80,7 +80,7 @@ const ChangePassNEmail = (props) => {
                     })
                     .catch((error) => {
                       notify(
-                        error || "An error has occurred. Try again later!",
+                        error || "An error occurred. Try again later!",
                         "error"
                       );
                     });
@@ -129,7 +129,7 @@ const ChangePassNEmail = (props) => {
               );
             })
             .catch((err) => {
-              notify(err || "An error has occurred. Try again later!", "error");
+              notify(err || "An error occurred. Try again later!", "error");
             });
         },
       },

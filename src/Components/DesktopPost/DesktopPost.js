@@ -12,12 +12,11 @@ import { RiBookmarkLine } from "react-icons/ri";
 import { AppContext } from "../../Context";
 import Comment from "../../Components/Comment/Comment";
 import { GoVerified } from "react-icons/go";
-// import { withRouter } from "react-router-dom";
 // import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 
 const DesktopPost = (props) => {
     const context = useContext(AppContext);
-    const {changeMainState, getUsersProfile, notify, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleUserBlocking, modalsState,handleLikingComments } = context;
+    const {changeMainState, getUsersProfile, notify, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleUserBlocking,handleLikingComments , onCommentDeletion} = context;
     const [compState, setCompState] = useState({
           postLiked: false,
           insertedComment: "",
@@ -178,6 +177,7 @@ const DesktopPost = (props) => {
       const finalIndex = usersProfileData?.posts.length -1;
       const currentIndex = currentPostIndex?.index;
       let currentDirection;
+
       if(direction === "left"){
           currentIndex > 0 ? ( currentDirection = currentIndex -1 ) :  ( currentDirection = finalIndex);
       }else if(direction === "right"){
@@ -185,13 +185,20 @@ const DesktopPost = (props) => {
       }
       changeMainState("currentPostIndex", {...currentPostIndex, index: currentDirection});
     }
+    const navigate = (event) =>{
+      if(event.keyCode === 37){
+        onPostMovement("left");
+      }else if(event.keyCode === 39){
+        onPostMovement("right");
+      }
+    }
     return (
         <Fragment>
-            <section className="desktopPost flex-column">
-                <div className="d--post--container flex-column">
+            <section className="desktopPost flex-column"  >
+                <div className="d--post--container flex-column" >
                   <span className={usersProfileData?.posts.length > 1 ? "desktop__left__arrow" : "desktop__left__arrow disabled"} onClick={() => onPostMovement("left")}><IoIosArrowBack /></span>
                   <span className={usersProfileData?.posts.length > 1 ? "desktop__right__arrow" : "desktop__right__arrow disabled"} onClick={() => onPostMovement("right")}><IoIosArrowForward /></span>
-                    <article className="d--post--box flex-column">
+                    <article className="d--post--box flex-column" tabIndex="0" onKeyDown={navigate} >
                         {/* post start */}
                                 <div id="post" className="post--card--container post--page">
                                     <article className="post--card--article">
@@ -280,7 +287,7 @@ const DesktopPost = (props) => {
                                     
                                         {comments?.length >= 1 ? (
                                           <div className="post--comments--layout">
-                                              {comments?.slice(0, 3).map((comment, i) => {
+                                              {comments?.map((comment, i) => {
                                               return (
                                                   <Comment
                                                   key={i}
@@ -298,6 +305,7 @@ const DesktopPost = (props) => {
                                                   contentType={contentType}
                                                   contentURL={contentURL}
                                                   changeModalState={changeModalState}
+                                                  deleteComment={onCommentDeletion}
                                                   />
                                               );
                                               })}
@@ -370,7 +378,7 @@ const DesktopPost = (props) => {
                                         </small>
                                         <form
                                         onSubmit={(e) => submitComment(e)}
-                                        className="post--bottom--comment--adding"
+                                        className="post--bottom--comment--adding flex-row"
                                         >
                                         <input
                                             ref={inputField}

@@ -168,13 +168,15 @@ a:visited{
 .useModal--empty--users{
     justify-content:center;
     align-items:center;
-    
-}
-.useModal--empty--users{
     text-align:center;
-    font-size:17px;
-    font-weight:600;
+    overflow: hidden;
 }
+.useModal--empty--users h3{
+    font-size:14px;
+    font-weight:600;
+    margin: 15px 5px;
+}
+
 .article__post{
     white-space:pre-line;
     word-break: break-word;
@@ -406,6 +408,9 @@ a:visited{
     border-radius:5px;
     text-align:center;
     cursor:pointer;
+}
+.auth--input--form input[type="submit"]:focus, .resetPassBtn:focus{
+    border:none;
 }
 .auth--input--form input[type="submit"]:hover{
     background-color:#1d8cd6;
@@ -1011,6 +1016,19 @@ button:active{
     font-weight:600;
     text-transform: capitalize;
 }
+#usersProfile .profile--more--btn{
+    padding: 9px 7px;
+    border-radius:50px;
+    cursor: pointer;
+    text-align:center;
+}
+#usersProfile .profile--more--btn svg{
+    font-size:24px;
+    fill:rgb(38, 38, 38);
+}
+#usersProfile .profile--more--btn:active{
+    background-color: rgba(0,0,0,0.05);
+}
 #messages.messages--container .chat--emojis--box{
     width:100%;
     position: absolute;
@@ -1365,7 +1383,7 @@ a.prof__btn__unfollowed{
     padding:4px 10px;
     background-color: rgb(252, 252, 252);
     border-bottom: 1px solid rgb(228, 228, 228);
-    border-radius:12px 0 12px 0;
+    border-radius:12px;
 }
 #commentsModal.comments--modal--container .comments__close__modal{
     position: absolute;
@@ -1382,7 +1400,7 @@ a.prof__btn__unfollowed{
 }
 #commentsModal.comments--modal--container .comments--modal--card .post--bottom--comment--adding{
     position: fixed;
-    bottom:45px;
+    bottom:0px;
     left:0;
     width:99%;
     margin:0;

@@ -232,6 +232,7 @@ class AppProvider extends PureComponent {
     contentType
   ) {
     //create an index checker here to make sure this is the correct post to edit
+    const generatedCommentId = this.generateNewId();
     if (ownership === "mine") {
       let myPostsCopy = JSON.parse(
         JSON.stringify(this.state.receivedData.posts)
@@ -246,6 +247,7 @@ class AppProvider extends PureComponent {
         ownerId,
         likes: [],
         subComments: [],
+        commentId: generatedCommentId
       });
 
       this.updateParts(myId, "posts", myPostsCopy, true, "");
@@ -260,6 +262,7 @@ class AppProvider extends PureComponent {
           let theirPostsCopy = JSON.parse(JSON.stringify(oldPosts));
           let notiCopy = JSON.parse(JSON.stringify(noti));
           const generatedID = this.generateNewId();
+          
           const isBlocked = blockList.some(d => d.blockedUid === this.state.uid);
           if(!isBlocked){
               theirPostsCopy[index].comments.push({
@@ -273,6 +276,7 @@ class AppProvider extends PureComponent {
               likes: [],
               subComments: [],
               notiId: generatedID,
+              commentId: generatedCommentId
             });
             notiCopy.isUpdate = true;
             notiCopy.list.push({
@@ -285,6 +289,7 @@ class AppProvider extends PureComponent {
               contentType,
               notiText: `commented on your ${contentType} post: ${comment} `,
               type: "comment",
+              commentId: generatedCommentId
             });
 
             this.updateParts(ownerId, "posts", theirPostsCopy, false, notiCopy);
@@ -369,6 +374,7 @@ class AppProvider extends PureComponent {
         if (postIndex === matchedIndex && matchedIndex !== -1) {
           if(!isBlocked){
               var notiId = this.generateNewId();
+              var generateSubId = this.generateNewId();
               const subComments = postsCopy[postIndex].comments[commentIndex].subComments;
               subComments.push({
               commentText: commentText,
@@ -378,7 +384,9 @@ class AppProvider extends PureComponent {
               userAvatarUrl: userAvatarUrl,
               notiId: notiId,
               date: new Date(),
+              likes: [],
               senderUid,
+              subCommentId: generateSubId
             });
             if (postOwnerId !== this.state.uid) {
               notiCopy.isUpdate = true;
@@ -391,10 +399,12 @@ class AppProvider extends PureComponent {
                 notiId,
                 contentURL,
                 contentType,
+                likes: [],
                 userAvatarUrl: this.state.receivedData?.userAvatarUrl,
                 date: new Date(),
                 notiText: `mentioned you in a comment: ${commentText}`,
                 type: "sub-comment",
+                subCommentId: generateSubId
               });
             }
             this.updateParts(
@@ -423,6 +433,7 @@ class AppProvider extends PureComponent {
   };
 
   handleLikingComments = (
+    type,
     boolean,
     postIndex,
     postOwnerId,
@@ -432,8 +443,11 @@ class AppProvider extends PureComponent {
     commentIndex,
     commentText,
     contentURL,
-    contentType
+    contentType,
+    subCommentIndex,
+    subCommentId,
   ) => {
+   //needs more organization
     db.collection("users")
       .doc(postOwnerId)
       .get()
@@ -445,63 +459,120 @@ class AppProvider extends PureComponent {
         let notiCopy = JSON.parse(JSON.stringify(noti));
         const isBlocked = blockList.some(d => d.blockedUid === this.state.uid);
 
-        var likesArr = dataCopy[postIndex].comments[commentIndex];
+        var likesArr = dataCopy && dataCopy[postIndex].comments[commentIndex];
+        var subCommentsCopy = dataCopy[postIndex].comments && dataCopy[postIndex].comments.length > 0 && likesArr.subComments;
+        let savedSubIndex = subCommentsCopy && subCommentsCopy.length >0 && subCommentsCopy?.map((el) => el.subCommentId).indexOf(subCommentId);
         if (unupdatedPosts && likesArr) {
           if (boolean) {
             if(!isBlocked){
-                //like
               let generatedID = this.generateNewId();
-              likesArr.likes.unshift({
-                id: myId,
-                userName: userName,
-                userAvatarUrl: userAvatarUrl,
-                notiId: generatedID,
-                date: new Date(),
-              });
-              notiCopy.isUpdate = true;
-              notiCopy.list.unshift({
-                uid: myId,
-                notiId: generatedID,
-                userName: postOwnerId === myId ? "You" : userName,
-                date: new Date(),
-                userAvatarUrl: this.state.receivedData?.userAvatarUrl,
-                notiText: `liked your comment: ${commentText}`,
-                type: "like-comment",
-                contentURL,
-                contentType,
-              });
+              if(type === "comment"){
+                  //like
+                  likesArr.likes && likesArr.likes.unshift({
+                    id: myId,
+                    userName: userName,
+                    userAvatarUrl: userAvatarUrl,
+                    notiId: generatedID,
+                    date: new Date(),
+                    likeId: this.generateNewId(),
+                  });
+                 
+              }else if(type === "subComment"){ 
+                if(subCommentIndex === savedSubIndex && savedSubIndex !== -1){
+                    subCommentsCopy[savedSubIndex].likes && subCommentsCopy[savedSubIndex].likes.unshift({
+                      id: myId,
+                      userName: userName,
+                      userAvatarUrl: userAvatarUrl,
+                      notiId: generatedID,
+                      date: new Date(),
+                      likeId: this.generateNewId(),
+                  });
+                
+                  notiCopy.isUpdate = true;
+                  notiCopy.list && notiCopy.list.unshift({
+                        uid: myId,
+                        notiId: generatedID,
+                        userName: postOwnerId === myId ? "You" : userName,
+                        date: new Date(),
+                        userAvatarUrl: this.state.receivedData?.userAvatarUrl,
+                        notiText: `liked your comment: ${commentText}`,
+                        type: "like-comment",
+                        contentURL,
+                        contentType,
+                  });
+                }else{
+                  this.notify("An error occurred","error");
+                }
+              }
+              
             }else{
               this.notify("Liking this user is not allowed","error");
             }
            
           } else if(!boolean){
-            //unlike
-            let index = likesArr.likes
-              ?.map((el) => {
-                return el.id;
-              })
-              .indexOf(myId);
-            if (index !== -1) {
-              let notiIndex = notiCopy.list
-                ?.map((el) => {
-                  console.log(el.notiId, likesArr.likes);
-                  return el.notiId;
-                })
-                .indexOf(likesArr.likes?.notiId);
-              if (notiIndex !== -1) {
-                notiCopy.list.splice(notiIndex, 1); //<<< FIX THIS
-              } else {
-                // this.notify("error likes 304", "error");
+            const savedPosts = this.state.receivedData && this.state.receivedData?.posts && this.state.receivedData?.posts.length > 0 && this.state.receivedData?.posts[postIndex]?.comments;
+            //dislike
+            if(type === "comment"){
+                let index = likesArr.likes
+                  ?.map((el) => {
+                    return el.id; //<<find a better way (don't use uid here)
+                  })
+                  .indexOf(myId);
+                if (index !== -1) {
+                  let notiIndex = notiCopy.list
+                    ?.map((el) => { 
+                      return el.notiId;
+                    })
+                    .indexOf(savedPosts[commentIndex]?.likes[index]?.notiId);
+                  if (notiIndex !== -1) {
+                    notiCopy.list.splice(notiIndex, 1); //<<< FIX THIS
+                  } else {
+                    // this.notify("error likes 304", "error");
+                  }
+                  likesArr.likes.splice(index, 1);
+                } else {
+                  this.notify("context 524 err", "error");
+                }
+            }else if(type === "subComment"){
+              if(subCommentsCopy[savedSubIndex] && subCommentsCopy.length > 0){
+                      let indexToDelete = subCommentsCopy[savedSubIndex].likes
+                      ?.map((el) => { //<<find a better way (don't use uid here)
+                        return el.id;
+                      })
+                      .indexOf(myId);
+                    if (subCommentIndex === savedSubIndex && savedSubIndex !== -1 && indexToDelete !== -1) {
+                      let notiIndex = notiCopy.list
+                        ?.map((el) => {
+                          return el.notiId;
+                        })
+                        .indexOf(savedPosts[commentIndex]?.subComments[savedSubIndex]?.likes[indexToDelete]?.notiId);
+                      if (notiIndex !== -1) {
+                        notiCopy.list.splice(notiIndex, 1); //<<< FIX THIS
+                      } else {
+                        // this.notify("error likes 304", "error");
+                      }
+
+                      subCommentsCopy[savedSubIndex] && subCommentsCopy[savedSubIndex].likes.length > 0 && subCommentsCopy[savedSubIndex].likes.splice(indexToDelete, 1);
+                    } else {
+                      this.notify("context 545 err", "error");
+                    }
               }
-              likesArr.likes.splice(index, 1);
-            } else {
-              this.notify("context 310 err", "error");
+              
             }
+            
+          }
+          if(likesArr && likesArr.likes.length > 0){
+            likesArr.likes = Array.from(
+              new Set(likesArr.likes.map((itemId) => itemId.id))
+            ).map((ID) => likesArr.likes.find((el) => el.id === ID));
           }
 
-          likesArr.likes = Array.from(
-            new Set(likesArr.likes.map((itemId) => itemId.id))
-          ).map((ID) => likesArr.likes.find((el) => el.id === ID));
+          if(subCommentsCopy && subCommentsCopy[savedSubIndex] && subCommentId && subCommentsCopy[savedSubIndex].likes){
+             subCommentsCopy[savedSubIndex].likes = Array.from(
+              new Set(subCommentsCopy[savedSubIndex].likes.map((itemId) => itemId.id))
+            ).map((ID) => subCommentsCopy[savedSubIndex].likes.find((el) => el.id === ID));
+          }
+         
 
           this.updateParts(postOwnerId, "posts", dataCopy, false, notiCopy);
         }
@@ -1151,6 +1222,51 @@ class AppProvider extends PureComponent {
     
   }
 
+  onCommentDeletion = (type,commenUid, postId, commentId,postIndex, commentIndex, subCommentId, subCommentIndex) => {
+    const getPostIndex = this.state.receivedData?.posts && this.state.receivedData?.posts.map(post => post?.id).indexOf(postId);
+    const postsCopy = JSON.parse(JSON.stringify(this.state.receivedData?.posts));
+    if(commenUid === this.state.uid){
+      if(getPostIndex === postIndex && getPostIndex !== -1){
+        
+        const getCommentIndex = postsCopy[postIndex].comments && postsCopy[postIndex].comments.map(comment => comment?.commentId).indexOf(commentId);
+        if(getCommentIndex === commentIndex && getCommentIndex !== -1 ){
+          if(type === "comment"){
+
+             postsCopy && postsCopy[postIndex].comments.splice(getCommentIndex, 1);
+          }else if(type === "subComment"){
+            const getSubCommentIndex = postsCopy[postIndex].comments && postsCopy[postIndex].comments[getCommentIndex].subComments && postsCopy[postIndex].comments[getCommentIndex].subComments.map(subComment => subComment?.subCommentId).indexOf(subCommentId);
+            if(getSubCommentIndex === subCommentIndex && getSubCommentIndex !== -1){
+              postsCopy && postsCopy[postIndex].comments[getCommentIndex].subComments.splice(getSubCommentIndex, 1);
+            }
+          }
+          const buttons = [
+              {
+                label: "No",
+              },
+              {
+                label: "Yes",
+                onClick: () => {
+                      this.updateParts(this.state.uid, "posts", postsCopy, true, "").then(() => {
+                        this.notify(`${type  === "comment" ? "Comment" : "Sub-Comment"} deleted`);
+                      }).catch((err) => {
+                        this.notify(err || "An error occurred");
+                      });
+                },
+              },
+            ];
+            this.confirmPrompt("Confirmation", buttons, "Comment will be deleted. Proceed?");
+
+        }else{
+          this.notify("An error occurred. Please try to delete comment later.","error");
+        }
+      }else{
+        this.notify("An error occurred. Please try to delete comment later.","error");
+      }
+    }else{
+      this.notify("Comment deletion of other users is prohibited.","error");
+    }    
+  }
+
   render() {
     return (
       <AppContext.Provider
@@ -1200,6 +1316,7 @@ class AppProvider extends PureComponent {
           searchUsers: this.searchUsers.bind(this),
           changeModalState: this.changeModalState.bind(this),
           handleUserBlocking: this.handleUserBlocking.bind(this),
+          onCommentDeletion: this.onCommentDeletion.bind(this),
         }}
       >
         {this.props.children}

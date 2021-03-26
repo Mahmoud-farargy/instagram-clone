@@ -181,7 +181,7 @@ class Post extends PureComponent {
       userAvatar,
       id,
       changeModalState,
-      modalsState,
+      onCommentDeletion,
       deletePost,
       index,
       postId,
@@ -344,7 +344,7 @@ class Post extends PureComponent {
                       {" "}
                       {!this.state.showFullComments
                         ? "View all"
-                        : "Hide most"}{" "}
+                        : "Hide most of the "}{" "}
                       {comments.length.toLocaleString()} comments
                     </h5>
                   ) : (
@@ -369,6 +369,7 @@ class Post extends PureComponent {
                             contentURL={contentURL}
                             changeModalState={changeModalState}
                             uid={id}
+                            deleteComment={onCommentDeletion}
                           />
                         );
                       })
@@ -390,6 +391,7 @@ class Post extends PureComponent {
                             contentURL={contentURL}
                             changeModalState={changeModalState}
                             uid={id}
+                            deleteComment={onCommentDeletion}
                           />
                         );
                       })}
@@ -402,7 +404,7 @@ class Post extends PureComponent {
               {this.state.showInputForm ? (
                 <form
                   onSubmit={(e) => this.submitComment(e)}
-                  className="post--bottom--comment--adding"
+                  className="post--bottom--comment--adding flex-row"
                   method="post"
                 >
                   <input

@@ -16,7 +16,7 @@ import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 
 const PostPage  = (props) => {
   const context = useContext(AppContext);
-  const {changeMainState, getUsersProfile, notify, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleUserBlocking, modalsState,handleLikingComments } = context;
+  const {changeMainState, getUsersProfile, notify, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleUserBlocking, modalsState,handleLikingComments, onCommentDeletion } = context;
   const [compState, setCompState] = useState({
         postLiked: false,
         insertedComment: "",
@@ -406,6 +406,7 @@ const PostPage  = (props) => {
                           contentType={contentType}
                           contentURL={contentURL}
                           changeModalState={changeModalState}
+                          deleteComment={onCommentDeletion}
                         />
                       );
                     })}

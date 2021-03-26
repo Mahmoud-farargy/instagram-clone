@@ -47,7 +47,7 @@ class CommentsModal extends PureComponent{
     }
     render(){
         const {context} = this.props;
-        const {handleLikingComments, receivedData, uid, changeModalState , modalsState,usersProfileData,currentPostIndex} = context;
+        const {handleLikingComments, receivedData, uid, changeModalState , modalsState,usersProfileData,currentPostIndex, onCommentDeletion} = context;
         if(usersProfileData?.posts){
             var {contentType, contentURL, comments, likes, postOwnerId} = usersProfileData?.posts[currentPostIndex?.index];
         }
@@ -84,13 +84,15 @@ class CommentsModal extends PureComponent{
                                         uid={uid}
                                         contentType= {contentType}
                                         contentURL= {contentURL}
-                                        changeModalState={changeModalState}/>
+                                        changeModalState={changeModalState}
+                                        deleteComment={onCommentDeletion}
+                                        />
                                     )
                                 })
                             }
 
                         </div>
-                        <form onSubmit={(e)=> this.submitComment(e)} className="post--bottom--comment--adding">
+                        <form onSubmit={(e)=> this.submitComment(e)} className="post--bottom--comment--adding flex-row">
                                 <input ref={this.inputField} value={this.state.insertedComment} onChange={(event)=> this.setState({insertedComment: event.target.value})} className="post__bottom__input" type="text" placeholder="Add a commment.." />
                                 <button type="submit" disabled={this.state.insertedComment.length <  1} className={this.state.insertedComment.length >=1 ? "post__bottom__button" :"disabled post__bottom__button" }>Post</button>
                         </form>

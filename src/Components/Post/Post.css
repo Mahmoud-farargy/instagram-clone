@@ -160,12 +160,21 @@
     width:100%;
 }
 
-#post.post--card--container .post--card--article .post--card--footer .post--bottom--comment--adding{
+.post--bottom--comment--adding{
     position:relative;
-    height:45px;
     width:100%;
     margin-top:10px;
     border-top: 1px solid rgb(233, 233, 233);
+    height:45px;
+    align-items:center;
+    justify-content: space-between;
+}
+.post--bottom--comment--adding input, .post--bottom--comment--adding .post__bottom__input{
+    height:100%;
+    width:85%;
+    border:none;
+    background-color: transparent;
+    padding:3px 10px;
 }
 #post.post--card--container .post--card--article .post--card--body .video__top__icon{
     position: absolute;
@@ -174,15 +183,7 @@
     color:#fff;
     font-size:19px;
 }
-.post--bottom--comment--adding .post__bottom__input {
-    position:absolute;
-    left:0;
-    top:8px;
-    width:80%;
-    border:none;
-    background-color: transparent;
-    padding:1px 10px;
-}
+
 .post--bottom--comment--adding .post__bottom__input:focus {
     outline:none;
 }
@@ -216,7 +217,7 @@
         border:none !important;
     }
     #post.post--page .post--card--article{
-        padding-bottom: 90px;
+        padding-bottom: 120px;
     }
     #post.post--card--container .post--card--article .post--card--header .post--header--user--info span{
          max-width:180px;
@@ -236,10 +237,11 @@
         bottom:50px;
         left:0;
         width:100%;
-        padding-left:10px;
-        padding-left:10px;
         background-color: #fff;
         z-index:1500;
+        padding:0;
+        margin:0;
+        height:55px;
     }
 }
 @keyframes boundHeart {
