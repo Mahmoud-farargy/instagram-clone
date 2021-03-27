@@ -407,6 +407,7 @@ const PostPage  = (props) => {
                           contentURL={contentURL}
                           changeModalState={changeModalState}
                           deleteComment={onCommentDeletion}
+                          posts={usersProfileData?.posts}
                         />
                       );
                     })}

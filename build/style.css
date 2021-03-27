@@ -398,7 +398,7 @@ a:visited{
     cursor:pointer;
     margin-bottom: 6px;
 }
-.auth--input--form input[type="submit"], .resetPassBtn{
+.auth--input--form input[type="submit"], .resetPassBtn,.auth--input--form button{
     background-color: var(--secondary-clr);
     color:#fff;
     font-weight:600;
@@ -409,7 +409,12 @@ a:visited{
     text-align:center;
     cursor:pointer;
 }
-.auth--input--form input[type="submit"]:focus, .resetPassBtn:focus{
+.loading__btn{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.auth--input--form input[type="submit"]:focus, .resetPassBtn:focus, .auth--input--form button{
     border:none;
 }
 .auth--input--form input[type="submit"]:hover{
@@ -612,7 +617,7 @@ button:active{
 }
 .post__view__replies__btn,
 .post--comment--actions span{
-    font-size:12px;
+    font-size:12px !important;
     color:#8e8e8e;
     line-height:14px;
     font-weight:600;

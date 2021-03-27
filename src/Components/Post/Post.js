@@ -185,6 +185,7 @@ class Post extends PureComponent {
       deletePost,
       index,
       postId,
+      posts
     } = this.props;
     return (
       <Fragment>
@@ -370,6 +371,7 @@ class Post extends PureComponent {
                             changeModalState={changeModalState}
                             uid={id}
                             deleteComment={onCommentDeletion}
+                            posts={posts}
                           />
                         );
                       })
@@ -392,6 +394,7 @@ class Post extends PureComponent {
                             changeModalState={changeModalState}
                             uid={id}
                             deleteComment={onCommentDeletion}
+                            posts={posts}
                           />
                         );
                       })}

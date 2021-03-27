@@ -510,9 +510,11 @@ class AppProvider extends PureComponent {
             }
            
           } else if(!boolean){
-            const savedPosts = this.state.receivedData && this.state.receivedData?.posts && this.state.receivedData?.posts.length > 0 && this.state.receivedData?.posts[postIndex]?.comments;
+            // console.log(Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 20));
+            const savedPosts = this.state.usersProfileData && this.state.usersProfileData?.posts && this.state.usersProfileData?.posts.length > 0 && this.state.usersProfileData?.posts[postIndex]?.comments;
             //dislike
             if(type === "comment"){
+              console.log(this.generateNewId());
                 let index = likesArr.likes
                   ?.map((el) => {
                     return el.id; //<<find a better way (don't use uid here)
@@ -523,7 +525,7 @@ class AppProvider extends PureComponent {
                     ?.map((el) => { 
                       return el.notiId;
                     })
-                    .indexOf(savedPosts[commentIndex]?.likes[index]?.notiId);
+                    .indexOf(savedPosts && savedPosts[commentIndex]?.likes[index]?.notiId);
                   if (notiIndex !== -1) {
                     notiCopy.list.splice(notiIndex, 1); //<<< FIX THIS
                   } else {
@@ -534,6 +536,7 @@ class AppProvider extends PureComponent {
                   this.notify("context 524 err", "error");
                 }
             }else if(type === "subComment"){
+              console.log("triggered 2");
               if(subCommentsCopy[savedSubIndex] && subCommentsCopy.length > 0){
                       let indexToDelete = subCommentsCopy[savedSubIndex].likes
                       ?.map((el) => { //<<find a better way (don't use uid here)
@@ -545,7 +548,7 @@ class AppProvider extends PureComponent {
                         ?.map((el) => {
                           return el.notiId;
                         })
-                        .indexOf(savedPosts[commentIndex]?.subComments[savedSubIndex]?.likes[indexToDelete]?.notiId);
+                        .indexOf(savedPosts && savedPosts[commentIndex].subComments && savedPosts[commentIndex]?.subComments[savedSubIndex]?.likes[indexToDelete]?.notiId);
                       if (notiIndex !== -1) {
                         notiCopy.list.splice(notiIndex, 1); //<<< FIX THIS
                       } else {
@@ -734,8 +737,6 @@ class AppProvider extends PureComponent {
 
   handleSendingMessage(textMsg, uid, type) {
     const myUid = this.state.uid;
-
-
     if (uid !== myUid) {     
       // Edit receiver's data
       db.collection("users")
@@ -817,47 +818,7 @@ class AppProvider extends PureComponent {
   }
 
   generateNewId = () => {
-    let char1 = "G";
-    let char2 = "j";
-    let char3 = "k";
-    let char4 = "M";
-    let char5 = "N";
-    let char6 = "Z";
-    var charRandom = () => {
-      return Math.floor(Math.random() * 6 + 1);
-    };
-    for (let i = 0; i < 5; i++) {
-      charRandom(); //calls the "charRandom" function repeatedly 6 time, each time a new character will be created.
-      switch (
-        charRandom() //determines which new char will be created for each variable
-      ) {
-        case 1:
-          char1 = "A";
-          break;
-        case 2:
-          char2 = "B";
-          break;
-        case 3:
-          char3 = "C";
-          break;
-        case 4:
-          char4 = "D";
-          break;
-        case 5:
-          char5 = "E";
-          break;
-        default:
-          char6 = "F";
-      }
-    }
-
-    const numRandom = () => {
-      return (
-        char1 + char2 + char3 + Math.random() * 9999 + 1 + char4 + char5 + char6
-      );
-    };
-
-    return numRandom();
+    return `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 20)}_${Math.random() * 10}`;
   };
 
   initializeChatDialog(uid, receiverName, receiversAvatarUrl) {
@@ -1222,16 +1183,15 @@ class AppProvider extends PureComponent {
     
   }
 
-  onCommentDeletion = (type,commenUid, postId, commentId,postIndex, commentIndex, subCommentId, subCommentIndex) => {
-    const getPostIndex = this.state.receivedData?.posts && this.state.receivedData?.posts.map(post => post?.id).indexOf(postId);
-    const postsCopy = JSON.parse(JSON.stringify(this.state.receivedData?.posts));
-    if(commenUid === this.state.uid){
+  onCommentDeletion = (type,commentUid, postId, commentId,postIndex, commentIndex, subCommentId, subCommentIndex, postOwnerId, postsArray) => {
+
+    if(commentUid === this.state.uid && postsArray && postsArray.length >0){
+      const getPostIndex = postsArray && postsArray.map(post => post?.id).indexOf(postId);
+      const postsCopy = JSON.parse(JSON.stringify(postsArray));
       if(getPostIndex === postIndex && getPostIndex !== -1){
-        
         const getCommentIndex = postsCopy[postIndex].comments && postsCopy[postIndex].comments.map(comment => comment?.commentId).indexOf(commentId);
         if(getCommentIndex === commentIndex && getCommentIndex !== -1 ){
           if(type === "comment"){
-
              postsCopy && postsCopy[postIndex].comments.splice(getCommentIndex, 1);
           }else if(type === "subComment"){
             const getSubCommentIndex = postsCopy[postIndex].comments && postsCopy[postIndex].comments[getCommentIndex].subComments && postsCopy[postIndex].comments[getCommentIndex].subComments.map(subComment => subComment?.subCommentId).indexOf(subCommentId);
@@ -1246,8 +1206,8 @@ class AppProvider extends PureComponent {
               {
                 label: "Yes",
                 onClick: () => {
-                      this.updateParts(this.state.uid, "posts", postsCopy, true, "").then(() => {
-                        this.notify(`${type  === "comment" ? "Comment" : "Sub-Comment"} deleted`);
+                      this.updateParts(postOwnerId, "posts", postsCopy, true, "").then(() => {
+                        this.notify(`${type  === "comment" ? "Comment" : "Reply"} deleted`);
                       }).catch((err) => {
                         this.notify(err || "An error occurred");
                       });
@@ -1257,10 +1217,10 @@ class AppProvider extends PureComponent {
             this.confirmPrompt("Confirmation", buttons, "Comment will be deleted. Proceed?");
 
         }else{
-          this.notify("An error occurred. Please try to delete comment later.","error");
+          this.notify("An error occurred. Please try to delete comment later1.","error");
         }
       }else{
-        this.notify("An error occurred. Please try to delete comment later.","error");
+        this.notify("An error occurred. Please try to delete comment later2.","error");
       }
     }else{
       this.notify("Comment deletion of other users is prohibited.","error");

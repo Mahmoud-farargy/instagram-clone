@@ -7,7 +7,7 @@ import { withRouter } from "react-router";
 
 
 const Commment =(props)=>{
-    var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment} = props;
+    var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, posts} = props;
     const [viewSubComments, setSubComments] = useState(false); 
     const [postLiked, setPostLiked] = useState(false);
     useEffect(()=>{
@@ -56,7 +56,7 @@ const Commment =(props)=>{
                       } 
                        <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid); setSubComments(true)}}> Replay</span>      
                     {
-                        comment?.uid === uid && (<span style={{cursor:"pointer"}} className="ml-1" onClick={() => deleteComment("comment", comment?.uid, comment?.postId, comment?.commentId ,postIndex,commentIndex)}>Delete</span>)
+                        comment?.uid === uid && (<span style={{cursor:"pointer"}} className="ml-1" onClick={() => deleteComment("comment", comment?.uid, comment?.postId, comment?.commentId ,postIndex,commentIndex,null, null, postOwnerId, posts)}>Delete</span>)
                     }                             
                </div>
                     {
@@ -96,7 +96,7 @@ const Commment =(props)=>{
                                                                     } 
                                                                     <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid); setSubComments(true)}}> Replay</span>      
                                                                     {
-                                                                        subComment?.senderUid === uid && (<span style={{cursor:"pointer"}} className="ml-1" onClick={() => deleteComment("subComment", subComment?.senderUid, comment?.postId, comment?.commentId ,postIndex,commentIndex, subComment?.subCommentId, i )}>Delete</span>)
+                                                                        subComment?.senderUid === uid && (<span style={{cursor:"pointer"}} className="ml-1" onClick={() => deleteComment("subComment", subComment?.senderUid, comment?.postId, comment?.commentId ,postIndex,commentIndex, subComment?.subCommentId, i, postOwnerId, posts)}>Delete</span>)
                                                                     }                             
                                                             </div>
                                                         </li>

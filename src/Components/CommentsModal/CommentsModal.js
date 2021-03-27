@@ -86,6 +86,7 @@ class CommentsModal extends PureComponent{
                                         contentURL= {contentURL}
                                         changeModalState={changeModalState}
                                         deleteComment={onCommentDeletion}
+                                        posts={usersProfileData?.posts}
                                         />
                                     )
                                 })

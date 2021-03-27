@@ -86,6 +86,7 @@ const Home = (props) => {
                       modalsState= {modalsState}
                       deletePost={deletePost}
                       onCommentDeletion={onCommentDeletion}
+                      posts={receivedData?.posts}
                     />
                   );
                 })
