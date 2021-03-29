@@ -35,7 +35,6 @@ class AppProvider extends PureComponent {
       .doc(this.state.uid)
       .onSnapshot((data) => {
         //any fetching overflow? change onSnapshot to get
-
         this.setState({
           ...this.state,
           receivedData: data.data(),
@@ -510,11 +509,9 @@ class AppProvider extends PureComponent {
             }
            
           } else if(!boolean){
-            // console.log(Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 20));
             const savedPosts = this.state.usersProfileData && this.state.usersProfileData?.posts && this.state.usersProfileData?.posts.length > 0 && this.state.usersProfileData?.posts[postIndex]?.comments;
             //dislike
             if(type === "comment"){
-              console.log(this.generateNewId());
                 let index = likesArr.likes
                   ?.map((el) => {
                     return el.id; //<<find a better way (don't use uid here)
@@ -536,7 +533,6 @@ class AppProvider extends PureComponent {
                   this.notify("context 524 err", "error");
                 }
             }else if(type === "subComment"){
-              console.log("triggered 2");
               if(subCommentsCopy[savedSubIndex] && subCommentsCopy.length > 0){
                       let indexToDelete = subCommentsCopy[savedSubIndex].likes
                       ?.map((el) => { //<<find a better way (don't use uid here)

@@ -132,7 +132,7 @@ const App = (props) => {
         if (recievedAuth) {
             //attempting to log in again using local storage data
           const { email, password } = JSON.parse(recievedAuth);
-          auth.createUserWithEmailAndPassword(email, returnPassword(password));
+          auth.signInWithEmailAndPassword(email, returnPassword(password));
         }else{
             // user logged out
              props.history.push("/auth");
