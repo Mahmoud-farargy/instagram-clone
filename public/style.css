@@ -532,6 +532,7 @@ a:visited{
 }
 .auth--footer--container  .auth--copyright{
     text-align:center;
+    overflow: hidden;
 }
 .auth--footer--ul li:hover{
     text-decoration:underline;

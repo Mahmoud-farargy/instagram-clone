@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, lazy, Suspense } from "react";
 import Auxiliary from "../HOC/Auxiliary";
 import { NavLink, Link } from "react-router-dom";
 import "./Header.css";
@@ -18,8 +18,11 @@ import NotificationOutput from "../NotificationsOutput/NotificationsOutput";
 import { withRouter } from "react-router-dom";
 import SearchItem from "../SearchItem/SearchItem.js";
 import Loader from "react-loader-spinner";
+import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen";
+const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
 const Header = (props) => {
+  // state
   const context = useContext(AppContext);
   const [openNoti, setNoti] = useState(false);
   const [openProf, setProf] = useState(false);
@@ -27,6 +30,8 @@ const Header = (props) => {
   const [user] = useAuthState(auth);
   const [searchVal, setSearchVal] = useState("");
   const [capitalizeWord, setCapitalizedWord] = useState("");
+  const [openLogoutModal, setLogoutModal] = useState(false);
+   // --xx--//
   const {
     receivedData,
     closeNotificationAlert,
@@ -73,8 +78,55 @@ const Header = (props) => {
   const clearSearchBox = () => {
     setSearchVal("");
   };
+  const onLoggingOut = () => {
+   setLogoutModal(true);
+   
+    setTimeout(() => {
+      console.log();
+      authLogout(props.history);
+      setProf(false);
+      setLogoutModal(false);
+      props.history.replace("/");
+      window.location.reload();
+    },1500);
+  }
   return (
     <Auxiliary>
+      {/* modals */}
+      <Suspense fallback={<LoadingScreen />}>
+          {openLogoutModal && (
+              <OptionsModal>
+                <div id="logoutModal">
+                    <div className="logout--modal flex-column">
+                  <h2>Logging Out</h2>
+                  <p>You need to log back in.</p>
+                  <Loader
+                    type="Oval"
+                            color="#0095f6"
+                            height={18}
+                            width={18}
+                            timeout={5000}
+                    />
+                  </div>
+                  <span onClick={() => props.history.replace("/auth")}>
+                    Log In
+                  </span>
+                </div>
+              
+              </OptionsModal>
+            )}
+      </Suspense>
+          <div
+            style={{
+              opacity: openLogoutModal ? "1" : "0",
+              display: openLogoutModal ? "block" : "none",
+              transition: "all 0.5s ease",
+            }}
+            className="backdrop "
+            onClick={() => setLogoutModal(false)}
+          ></div>
+        {/* --xx-- */}
+
       <header id="header" className="main--header flex-row">
         <div className="header--inner flex-row">
           <Link to="/">
@@ -277,11 +329,7 @@ const Header = (props) => {
                             </li>
                           </Link>
                           <li
-                            onClick={() => {
-                              authLogout(props.history);
-                              setProf(false);
-                              window.location.reload();
-                            }}
+                            onClick={() => onLoggingOut()}
                           >
                             <BiPowerOff className="prof__popup" /> Log Out
                           </li>

@@ -388,7 +388,7 @@ class AddNewPost extends PureComponent {
                           maxFiles={1}
                           onError={(error)=> notify(error.message, "error")}
                           dragActiveClassName="files-dropzone-active"
-                        >  Drop files here or click to upload</Files>
+                        >  {`${this.state.method.toLowerCase() === Consts.Post ? "Drop an image or video here to upload " : this.state.method.toLowerCase() === Consts.Reel ?  "Drop a video here to upload" : "Drop a file here or click to upload"}`}</Files>
                       <InputForm
                           type="select"
                           options={["Post", "Reel"]}

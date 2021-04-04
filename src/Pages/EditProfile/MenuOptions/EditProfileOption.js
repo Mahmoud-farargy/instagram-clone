@@ -19,7 +19,7 @@ const EditProfileOption = (props) => {
     website: "",
     bio: "",
     phoneNumber: "",
-    gender: "",
+    gender: "Male",
     status: "Single",
   });
   const [submitted, setSubmission] = useState(false);

@@ -70,8 +70,7 @@
     font-weight: 400;
     color: #8e8e8e;
     line-height: 14px;
-    margin-left: 9px;
-    margin-top:2px;
+    margin: 2px 5px 2px 9px;
 }
 .instagram__embed{
     max-width: 80%;
@@ -79,7 +78,6 @@
 #home.main--home--container .suggestions--home--container{
     margin:20px 0;
     padding:0px 10px;
-    width:70%;
 }
 #home.main--home--container .suggestions--header{
     justify-content:space-between;
@@ -170,6 +168,7 @@
         width:100%;
         top:0;
         z-index:400;
+        padding:0;
     }
     .instagram--embed--container{
         padding:10px;
@@ -205,11 +204,22 @@
     #home.main--home--container .home--posts--side{
         margin:0 auto 20px auto;
         padding-right:0;
-        /* max-width:400px; */
         align-items:center;
     }
     #home.main--home--container .suggestions--home--container{
         width:100%;
-        max-width: 300px;
+        max-width: 100%;
     }
+    #home.main--home--container .home--sider{
+        position:static;
+        width:80%;
+        top:0;
+        z-index:400;
+    }
+}
+@media only screen and (min-width: 740px){
+    #home.main--home--container .suggestions--home--container{
+        width:70%;
+    }
+
 }

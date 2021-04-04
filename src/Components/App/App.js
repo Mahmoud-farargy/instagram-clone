@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useContext, Suspense, lazy } from "react";
+import React, { Fragment, useEffect, useContext, Suspense, lazy, useState} from "react";
 import { Switch, Route, withRouter } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { db, auth } from "../../Config/firebase";
@@ -32,6 +32,8 @@ const MyProfile = lazy(() => import("../../Pages/MyProfile/MyProfile"));
 const EditProfile = lazy(() => import("../../Pages/EditProfile/EditProfile"));
 const Reels = lazy(() => import("../../Pages/Reels/Reels"));
 const About = lazy(() => import("../../Pages/About/About"));
+
+
 //--xx---//
 const App = (props) => {
   const context = useContext(AppContext);
@@ -54,6 +56,7 @@ const App = (props) => {
   } = context;
   const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
   const [_, loading] = useAuthState(auth);
+
   // experiment
   // useEffect(() => {
   // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
@@ -170,6 +173,7 @@ const App = (props) => {
     <Fragment>
       <main>
         {/* Modals */}
+        {/*  comments modal */}
         <Suspense fallback={<LoadingScreen />}>
             {modalsState?.users && usersModalList && Object.keys(usersModalList).length > 0 ? <UsersModal /> : null}
           {modalsState?.comments ? (
@@ -184,7 +188,7 @@ const App = (props) => {
               className="backdrop "
               onClick={() => changeModalState("users", false, "", "")}
             ></div>
-          {loading && <div className="global__loading"></div>}
+          {loading && <div className="global__loading"></div>}          
         </Suspense>
         
         {/* Notifications container */}
@@ -193,7 +197,7 @@ const App = (props) => {
         <Switch>
           <Suspense fallback={<LoadingScreen />}>
             <Route exact path="/">
-              <Header />
+              <Header/>
               <Home />
               <MobileNav />
               <Footer />

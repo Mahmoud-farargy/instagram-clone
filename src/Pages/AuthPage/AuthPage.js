@@ -306,7 +306,7 @@ const AuthPage = (props) => {
           })
           .catch((err) => {
             setLoading(false);
-            alert(err.message);
+            context.notify(err.message, "error");
           });
         break;
       case "facebookProvider":
@@ -377,7 +377,7 @@ const AuthPage = (props) => {
         })
         .catch((err) => {
           setLoading(false);
-          alert(err.message);
+          context.notify(err.message, "error");
         });
         break;
       case "githubProvider":
@@ -446,14 +446,14 @@ const AuthPage = (props) => {
                     })
                   );
                   setTimeout(() => {
-                    context.notify(`Welcome back, ${username || "user"}.`);
+                    context.notify(`Welcome back, ${(username || login || "User")}.`);
                     props.history.push("/");
                   }, 150);
               }
                
           })
           .catch((err) => {
-            alert(err.message);
+            context.notify(err.message, "error");
           });
       break;
       default:
@@ -728,8 +728,8 @@ const AuthPage = (props) => {
             <li>HASHTAGS</li>
             <li>LANGUAGE</li>
           </ul>
-          <div className="auth--copyright">
-            <span>This app was made for personal use</span>
+          <div className="auth--copyright flex-column flex-wrap">
+            <span >This app was made for personal use</span>
             <span>
               @2020 - {new Date().getFullYear()} Instagram clone made by Mahmoud
               Farargy
