@@ -4,8 +4,8 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { Avatar } from "@material-ui/core";
 import TruncateMarkup from "react-truncate";
 import { FiHeart, FiSend } from "react-icons/fi";
-import { FaHeart, FaLess } from "react-icons/fa";
-import { FaRegComment } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
+import { FaRegComment , FaRegCommentDots} from "react-icons/fa";
 import { IoMdVideocam } from "react-icons/io";
 import { RiBookmarkLine } from "react-icons/ri"; //install react-instagram-embed
 import Comment from "../../Components/Comment/Comment";
@@ -239,6 +239,7 @@ class Post extends PureComponent {
               {contentType === "image" ? (
                 <div>
                   <img
+                    loading="lazy"
                     onClick={() => this.doubleClickEvent()}
                     className="post__card__content"
                     src={contentURL}
@@ -295,7 +296,12 @@ class Post extends PureComponent {
                     </span>
                   )}
                   <span onClick={() => this.onCommentBtnClick()}>
-                    <FaRegComment />
+                   {
+                     this.state.showInputForm ?
+                     <FaRegCommentDots />
+                     :
+                     <FaRegComment />
+                   } 
                   </span>
                   <span>
                     <FiSend />
@@ -404,7 +410,7 @@ class Post extends PureComponent {
               <small className="post__date pb-2">
                 {new Date(postDate?.seconds * 1000).toLocaleString()}
               </small>
-              {this.state.showInputForm ? (
+              {this.state.showInputForm && (
                 <form
                   onSubmit={(e) => this.submitComment(e)}
                   className="post--bottom--comment--adding flex-row"
@@ -435,7 +441,7 @@ class Post extends PureComponent {
                     Post
                   </button>
                 </form>
-              ) : null}
+              )}
             </div>
           </article>
           {this.state.openOptionsModal && (

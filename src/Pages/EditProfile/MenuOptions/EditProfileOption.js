@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useContext, useState, useEffect } from "react";
 import Auxiliary from "../../../Components/HOC/Auxiliary";
 import { Avatar } from "@material-ui/core";
 import { AppContext } from "../../../Context";
-import { auth, db } from "../../../Config/firebase";
+import { auth } from "../../../Config/firebase";
 import { withRouter } from "react-router-dom";
 import OptionsModal from "../../../Components/Generic/OptionsModal/OptionsModal";
 import $ from "jquery";
@@ -74,7 +74,7 @@ const EditProfileOption = (props) => {
           // storageRef.child(`content/${receivedData?.uid}`).delete().then(()=>{
           //make credentials first
           // auth.currentUser.delete().then(() => {
-          //     db.collection("users")
+          //  .collection("users")
           //     .doc(receivedData?.uid)
           //     .delete()
           //     .then(() => {});

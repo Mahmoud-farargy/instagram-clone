@@ -1,6 +1,6 @@
-import React, { useContext, useState, lazy, Suspense, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Auxiliary from "../HOC/Auxiliary";
-import { NavLink, Link, BrowserRouter } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import "./Header.css";
 import { HiHome } from "react-icons/hi";
 import { RiSendPlaneFill } from "react-icons/ri";
@@ -42,7 +42,6 @@ const Header = (props) => {
   const reverseNotiState = (type) => {
     const notiUpdate = receivedData?.notifications?.isUpdate;
     const notiMsg = receivedData?.notifications?.isNewMsg;
-
     if (type === "isUpdate" && notiUpdate) {
       closeNotificationAlert(type);
     } else if (type === "isNewMsg" && notiMsg) {
@@ -66,7 +65,7 @@ const Header = (props) => {
       getUsersProfile(specialUid).then(() => {
          props.history.push(`/user-profile/${name}`);
       }).catch((err)=>{
-        notify(err && err.message || "error has occurred. please try again later!", "error")
+        notify((err && err.message) || "error has occurred. please try again later!", "error")
       });
      
     }
@@ -209,11 +208,13 @@ const Header = (props) => {
                         {receivedData?.notifications?.list.length >= 1 ? (
                           <ul className="noti--popup--ul flex-column">
                             {receivedData?.notifications?.list
-                              ?.slice(0, 30)
+                              ?.slice(0, 30).sort((a,b) =>{
+                                return b.date.seconds - a.date.seconds
+                              })
                               .map((notification, i) => {
                                 return (
-                                  <div key={notification?.notiId}>
                                     <NotificationOutput
+                                    key={notification?.notiId}
                                       notification={notification}
                                       igVideoImg={igVideoImg}
                                       myData={receivedData}
@@ -222,7 +223,6 @@ const Header = (props) => {
                                       browseUser={browseUser}
                                       postIndex={i}
                                     />
-                                  </div>
                                 );
                               })}
                           </ul>

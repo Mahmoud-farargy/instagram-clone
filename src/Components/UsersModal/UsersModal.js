@@ -12,7 +12,7 @@ const UsersModal =(props)=>{
             getUsersProfile(uid).then(()=>{
                 props.history.push(`/user-profile/${name}`);
             }).catch((err)=>{
-                notify(err && err.message || "error has occurred. please try again later!", "error");
+                notify((err && err.message) || "error has occurred. please try again later!", "error");
             }); 
         }        
     }

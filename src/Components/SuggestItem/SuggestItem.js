@@ -12,7 +12,11 @@ const SuggestItem =(props)=>{
                 <li className="suggestion--item flex-row">
                     <div onClick={()=> browseUser(userUid, userName )} title={userName} className="side--user--info flex-row">
                         <Avatar src={userAvatarUrl} alt={userName} title={userName}/>
-                        <h5 className="flex-row">{userName}{isVerified ?  <span><GoVerified className="verified_icon"/></span> : null} </h5>                                    
+                        <span className="flex-column">
+                              <h5 className="flex-row">{userName}{isVerified ?  <span><GoVerified className="verified_icon"/></span> : null} </h5>  
+                              <small>Suggested for you</small>  
+                        </span>
+                                                      
                     </div>
                     <button className={receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.some(item => item.receiverUid === userUid) ? "profile__btn prof__btn__unfollowed mt-2": "profile__btn prof__btn__followed mt-2"} color="primary" onClick={()=> handleFollowing(receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.some(item => item?.receiverUid === userUid), userUid, userName, userAvatarUrl, receivedData?.uid, receivedData?.userName, receivedData?.userAvatarUrl)}>{receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.some(item => item?.receiverUid === userUid) ?  "Unfollow": "Follow"}</button>
                 </li> 

@@ -41,9 +41,15 @@
     right:0;
     top: 88px;
     left:60%;
-    height:100%;
+    height:80%;
     z-index:90;
     width:40%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+#home.main--home--container .home--sider::-webkit-scrollbar{
+    display: none;
+    width: 0;
 }
 .side--user--info{
     align-items: center;
@@ -56,7 +62,16 @@
     margin-bottom:0;
     text-transform :none;
     align-items:center;
+    text-overflow: ellipsis;
     color: var(--main-black);
+}
+.side--user--info small{
+    font-size: 12px;
+    font-weight: 400;
+    color: #8e8e8e;
+    line-height: 14px;
+    margin-left: 9px;
+    margin-top:2px;
 }
 .instagram__embed{
     max-width: 80%;
@@ -71,10 +86,13 @@
     align-items:center;
     margin-bottom:5px;
 }
-#home.main--home--container .suggestions--header h5{
-    color: var(--light-gray);
-    font-size:17px;
-    font-weight:400;
+#home.main--home--container .suggestions--header h6{
+    color: #8e8e8e;
+    color: rgb(142, 142, 142);
+    font-size:14px;
+    font-weight:600;
+    line-height: 18px;
+    display:block;
 }
 #home.main--home--container .suggestions--header button{
     border:none;

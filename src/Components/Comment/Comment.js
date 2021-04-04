@@ -1,7 +1,7 @@
-import React, {useState, Fragment,  useEffect, useContext} from "react";
+import React, { useState, Fragment,  useEffect } from "react";
 import TruncateMarkup from "react-truncate";
-import {FiHeart} from "react-icons/fi";
-import {FaHeart} from "react-icons/fa";
+import { FiHeart } from "react-icons/fi";
+import { FaHeart } from "react-icons/fa";
 import { withRouter } from "react-router";
 // import {AppContext} from "../../Context";
 

@@ -88,7 +88,7 @@ const Messages = (props) => {
           getUsersProfile(specialUid).then((res)=>{
             props.history.push(`/user-profile`);
           }).catch((err) =>{
-            notify(err && err.message ||"error has occurred. please try again later!", "error");
+            notify((err && err.message) ||"error has occurred. please try again later!", "error");
           });
          
         }
@@ -155,7 +155,7 @@ const Messages = (props) => {
                               key={user.uid + index}
                               onClick={() => viewUsersMessages(user?.uid, index)}
                             >
-                              <Avatar src={user?.receiversAvatarUrl} />
+                             <Avatar src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
                               <div className="messages--user--info space__between">
                                 <div style={{ flex: 1, width: "100%" }}>
                                   <p>
@@ -267,7 +267,7 @@ const Messages = (props) => {
                                 className="messages--user flex-row"
                                 key={user.uid + index}
                                 onClick={() => viewUsersMessages(user?.uid, index)} >
-                                <Avatar src={user?.receiversAvatarUrl} />
+                                <Avatar src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
                                 <div className="messages--user--info space__between">
                                   <div style={{ flex: 1, width: "100%" }}>
                                     <p>

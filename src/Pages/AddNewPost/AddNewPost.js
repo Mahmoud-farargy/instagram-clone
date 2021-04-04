@@ -1,5 +1,5 @@
 import React, { PureComponent, Fragment } from "react";
-import { db, auth, storage } from "../../Config/firebase";
+import { storage } from "../../Config/firebase";
 import { AppContext } from "../../Context";
 import "./AddNewPost.css";
 import { withRouter } from "react-router-dom";

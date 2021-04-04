@@ -37,7 +37,7 @@ const MyProfile =(props)=>{
         changeMainState("currentPostIndex", { index: index, id: postId });
         getUsersProfile(uid).then(() => {
               changeModalState("post", true);
-        })
+        });
     }
      return(
         <Fragment>
@@ -107,7 +107,7 @@ const MyProfile =(props)=>{
                 </div>
                       {
                                     receivedData?.reels && receivedData?.reels.length > 0 && (
-                                         <Link to="/reels" className="reel--bubble flex-column"><img className="reels__icon" src={reelsIco} />
+                                         <Link to="/reels" className="reel--bubble flex-column"><img className="reels__icon" src={reelsIco} alt="icon"/>
                                             <span className="mt-1">Reels</span>
                                          </Link>
                                     )
@@ -132,7 +132,7 @@ const MyProfile =(props)=>{
                                             <div key={post?.id+i} className="profile--posts--container">   
                                               {/* Desktop */}
                                                 <div className="user--img--container desktop-only flex-column" onClick={() => openPostModal(post?.id,i)}>
-                                                        <img style={{width:"100%"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
+                                                        <img style={{width:"100%"}} loading="lazy"  className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
                                                                 <div className="user--img--cover">
                                                                         <div className="flex-row">
                                                                             <span className="mr-3"><FaHeart/> {post?.likes?.people?.length}</span>
@@ -144,7 +144,7 @@ const MyProfile =(props)=>{
                                                 </div>                                                
                                                 {/* Mobile */}
                                                 <div className="user--img--container mobile-only flex-column"  onClick={()=> redirectToPost(i, post?.id) } >
-                                                        <img style={{width:"100%"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
+                                                        <img style={{width:"100%"}}  loading="lazy" className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
                                                                 <div className="user--img--cover">
                                                                         <div className="flex-row">
                                                                             <span className="mr-3"><FaHeart/> {post?.likes?.people?.length}</span>

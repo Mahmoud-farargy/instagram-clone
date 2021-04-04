@@ -16,7 +16,7 @@ class EditProfile extends PureComponent {
       "Edit Profile",
       "Professional Account",
       "Change Password or Email",
-      "Blocked Accounts"
+      "Blocked Users"
     ],
     activeIndex: 0,
   };
@@ -54,7 +54,7 @@ class EditProfile extends PureComponent {
                       />
                     ))}
                   <div className="left--bottom--side flex-column">
-                    <img src={fbimg} alt="fb" />
+                    <img src={fbimg} alt="fb" loading="lazy" />
                     <span className="change__prof__pic mt-3">
                       Accounts Center
                     </span>

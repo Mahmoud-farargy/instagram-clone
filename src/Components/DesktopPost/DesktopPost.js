@@ -206,6 +206,7 @@ const DesktopPost = (props) => {
                                         {contentType === "image" ? (
                                         <div>
                                             <img
+                                            loading="lazy"
                                             onClick={() => doubleClickEvent()}
                                             className="post__card__content"
                                             src={contentURL}

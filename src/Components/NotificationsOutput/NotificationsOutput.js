@@ -12,10 +12,14 @@ const NotificationOutput =(props)=>{
         }
     },[myData?.following]);
 
-    // const redirectMeToPost=()=>{
-    //     getUsersProfile(notification.uid);
-    //     changeMainState("currentPostIndex", {index: postIndex, id: notification?.uid});
-    // }
+    const redirectMeToPost=(e)=>{
+        e.stopPropagation();
+        // getUsersProfile(notification.uid);
+        // changeMainState("currentPostIndex", {index: i, id: id});
+        // getUsersProfile(uid).then(() => {
+        //     props.history.push("/browse-post");
+        // });
+    }
     return(
         <Auxiliary >
             <li  key={notification?.notiId} className="space__between noti--popup-item">
@@ -37,7 +41,8 @@ const NotificationOutput =(props)=>{
                         } 
                         {
                              notification?.type !== "follow"?
-                                <img className="noti__bar__img" src={notification?.contentType ==="image" ? notification?.contentURL : notification?.contentType ==="video" ? igVideoImg : null } />
+                             <div onClick={(e)=> redirectMeToPost(e)}><img className="noti__bar__img" src={notification?.contentType ==="image" ? notification?.contentURL : notification?.contentType ==="video" ? igVideoImg : null } /></div>
+                                
                              : null
                         }
 

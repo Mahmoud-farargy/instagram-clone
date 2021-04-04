@@ -697,9 +697,9 @@ class AppProvider extends PureComponent {
                     // this.notify("Failed", "error");
                   }
                   //experimental
-                  // notiCopy.list = Array.from(new Set(notiCopy.list.map((item) => item.uid))).map((id) => notiCopy.list.find((el) =>  el.type === "follow" ? el.uid === id : el));
-                  // notiCopy.list = Array.from(new Set(notiCopy.list.map((item) => item.notiId))).map((id) => notiCopy.list.find((el) =>  el.notiId === id));
-                  //
+                  notiCopy.list = Array.from(new Set(notiCopy.list.map((item) => item.uid))).map((id) => notiCopy.list.find((el) =>  el.type === "follow" ? el.uid === id : el));
+                  notiCopy.list = Array.from(new Set(notiCopy.list.map((item) => item.notiId))).map((id) => notiCopy.list.find((el) =>  el.notiId === id));
+                  
                   
                       this.updateParts( receiverUid, "followers", receiversCopy, false, notiCopy);
                 

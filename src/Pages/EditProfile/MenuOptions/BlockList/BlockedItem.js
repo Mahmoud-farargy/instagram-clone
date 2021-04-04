@@ -2,7 +2,7 @@ import React, {Fragment} from 'react';
 import {Avatar} from "@material-ui/core";
 
 function BlockedItem(props) {
-    const {item, userblockingFunc, notify } = props;
+    const {item, userblockingFunc } = props;
     const onUnblock = (uid, userName) => {
         userblockingFunc( false, uid, userName )
     }

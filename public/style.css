@@ -79,6 +79,10 @@ input {
 a:visited{
    color:#00376b;
 }
+.MuiAvatar-img{
+    background-color: rgb(98, 98, 98);
+    min-height: 14px;
+}
 #usersProfile  .reel--bubble{
     align-items:center;
     cursor:pointer;
@@ -210,7 +214,7 @@ a:visited{
     top:50%;
     left:50%;
     transform: translate(-50%,-50%);
-    z-index: 1500;
+    z-index: 2500;
     -webkit-box-flex: 1;
     width:400px;
     max-height:400px;
@@ -333,7 +337,7 @@ a:visited{
     border-radius:4px;
 }
 .auth .auth--upper--card{
-     padding:10px 20px;
+     padding:15px 20px 18px;
      margin-bottom:15px;
 }
 .auth .auth--bottom--card{
@@ -344,12 +348,12 @@ a:visited{
 }
 .auth .auth--bottom--card span {
     margin:0 auto;
-    font-weight:100;
+    font-weight:400;
     font-size:14px;
     flex-wrap: wrap;
     word-break: keep-all;
     display:flex;
-    color:var(--light-black);
+    color:var(--font-black);
 }
 .MuiAvatar-root{
     object-fit: contain;
@@ -408,11 +412,43 @@ a:visited{
     border-radius:5px;
     text-align:center;
     cursor:pointer;
+    min-height: 35px;
 }
 .loading__btn{
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+.auth--main .signIn--options--box{
+    margin-top:9px;
+}
+.auth--main .divider--or{
+    padding:8px;
+    margin:10px 0 0;
+    flex-wrap: nowrap;
+}
+.auth--main .divider--or .div__or__start, .auth--main .divider--or .div__or__end{
+    background-color: #dbdbdb;
+    background-color: rgb(219, 219, 219);
+    height:1px;
+    flex-grow: 1;
+    -webkit-box-flex:1;
+    -webkit-flex-grow:1;
+    position: relative;
+    top: .50em
+}
+.auth--main .divider--or .div__or__middle{
+    margin: 0 17px;
+    font-size: 13px;
+    font-weight:600;
+    line-height: 18px;
+    text-transform: uppercase;
+    color:#8e8e8e;
+    color:rgb(142, 142, 142);
+    flex-shrink:0;
+    -webkit-box-flex: 0;
+    -webkit-flex-grow:0;
+    -webkit-flex-shrink: 0;
 }
 .auth--input--form input[type="submit"]:focus, .resetPassBtn:focus, .auth--input--form button{
     border:none;
@@ -425,12 +461,13 @@ a:visited{
     border: 1px solid rgb(92, 92, 92);
 }
 .auth .auth--bottom--card span h6{
-    font-weight:400;
+    font-weight:600;
     padding:0;
     color: var(--secondary-clr);
     margin-left:8px;
     cursor:pointer;
     transition: color 0.2s ease;
+    font-size: 14px;
 }
 .auth .auth--bottom--card span h6:active{
    color:#0e60ad; 
@@ -1264,10 +1301,11 @@ a.prof__btn__unfollowed{
 #usersProfile.users--profile--container .profile__display__name{
     font-size:28px;
     line-height:32px;
-    margin: -5px 0 -6px;
+    margin: -5px 7px 0 -6px;
     white-space:nowrap;
     word-break: keep-all;
     text-align:left;
+    text-overflow: ellipsis;
 }
 #usersProfile.users--profile--container .desktop--social--row p span{
     font-weight:600;

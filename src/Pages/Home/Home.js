@@ -37,7 +37,7 @@ const Home = (props) => {
       getUsersProfile(specialUid).then((res)=>{
         props.history.push(`/user-profile/${name}`);
       }).catch((err) =>{
-        notify(err && err.message ||"error has occurred. please try again later!", "error");
+        notify((err && err.message) ||"error has occurred. please try again later!", "error");
       });
      
     }
@@ -148,7 +148,7 @@ const Home = (props) => {
                       {suggestionsList &&
                         suggestionsList.length > 0 &&
                        Array.from(new Set(suggestionsList.map((item) => item.uid))).map((id) => suggestionsList.find((el) => el.uid === id))
-                          .filter((item) => item?.uid !== receivedData?.uid)
+                          .filter((item) => item?.uid !== receivedData?.uid).slice(0,5)
                           .map((user, i) => {
                             return (
                               <SuggestItem

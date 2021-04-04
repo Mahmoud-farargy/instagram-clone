@@ -236,6 +236,7 @@
     position:relative;
     width:100%;
 }
+
 .noti--popup--inner .noti--popup--ul .noti--popup-item:after{
     content:"";
     position:absolute;

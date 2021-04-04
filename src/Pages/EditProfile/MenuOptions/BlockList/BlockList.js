@@ -18,7 +18,7 @@ const BlockList = (props) => {
                         </ul>
                         :
                         <div className="empty--block--list">
-                            <h1>No blocked accounts yet.</h1>
+                            <h1>You haven't blocked any users.</h1>
                         </div>
                     }
                 </div>

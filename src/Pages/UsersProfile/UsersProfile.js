@@ -329,7 +329,7 @@ const UsersProfile = (props) => {
                         (item) =>
                           item?.uid !== receivedData?.uid &&
                           item?.uid !== usersProfileData?.uid
-                      )
+                      ).slice(0,10)
                       .map((item, i) => {
                         return (
                           <li key={i} className="suggestion--item flex-column">
@@ -459,6 +459,7 @@ const UsersProfile = (props) => {
                                     className="user--img--container desktop-only flex-column"
                                   >
                                     <img
+                                    loading="lazy"
                                       style={{ width: "100%" }}
                                       className="users__profile__image"
                                       src={
@@ -490,6 +491,7 @@ const UsersProfile = (props) => {
                                     className="user--img--container mobile-only flex-column"
                                   >
                                     <img
+                                      loading="lazy"
                                       style={{ width: "100%" }}
                                       className="users__profile__image"
                                       src={

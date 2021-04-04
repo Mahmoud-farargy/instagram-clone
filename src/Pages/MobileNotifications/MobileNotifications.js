@@ -3,7 +3,7 @@ import Auxiliary from "../../Components/HOC/Auxiliary";
 import NotificationOutput from "../../Components/NotificationsOutput/NotificationsOutput";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../Config/firebase";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 const MobileNotifications = (props) => {
   const { _, loading } = useAuthState(auth);
@@ -20,12 +20,17 @@ const MobileNotifications = (props) => {
   }, []);
   const browseUser = (specialUid, name) => {
     if (specialUid && name) {
-      getUsersProfile(specialUid).then(() => {
-         props.history.push(`/user-profile/${name}`);
-      }).catch((err)=>{
-        notify(err && err.message || "error has occurred. please try again later!", "error")
-      });
-     
+      getUsersProfile(specialUid)
+        .then(() => {
+          props.history.push(`/user-profile/${name}`);
+        })
+        .catch((err) => {
+          notify(
+            (err && err.message) ||
+              "error has occurred. please try again later!",
+            "error"
+          );
+        });
     }
   };
   return (
@@ -40,21 +45,26 @@ const MobileNotifications = (props) => {
               id="mobNotifications"
               className="noti--popup--ul mob--notifications flex-column"
             >
-              {receivedData?.notifications?.list?.map((notification, i) => {
-                return (
-                  <div key={notification?.notiId}>
-                    <NotificationOutput
-                      notification={notification}
-                      igVideoImg={igVideoImg}
-                      myData={receivedData}
-                      handleFollowing={handleFollowing}
-                      changeMainState={changeMainState}
-                      postIndex={i}
-                      browseUser={browseUser}
-                    />
-                  </div>
-                );
-              })}
+              {receivedData?.notifications?.list
+                ?.slice(0, 30)
+                .sort((a, b) => {
+                  return b.date.seconds - a.date.seconds;
+                })
+                .map((notification, i) => {
+                  return (
+                    <div key={notification?.notiId}>
+                      <NotificationOutput
+                        notification={notification}
+                        igVideoImg={igVideoImg}
+                        myData={receivedData}
+                        handleFollowing={handleFollowing}
+                        changeMainState={changeMainState}
+                        postIndex={i}
+                        browseUser={browseUser}
+                      />
+                    </div>
+                  );
+                })}
             </ul>
           ) : (
             <div>
