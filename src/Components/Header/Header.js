@@ -82,7 +82,6 @@ const Header = (props) => {
    setLogoutModal(true);
    
     setTimeout(() => {
-      console.log();
       authLogout(props.history);
       setProf(false);
       setLogoutModal(false);

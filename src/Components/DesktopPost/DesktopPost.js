@@ -29,7 +29,6 @@ const DesktopPost = (props) => {
 
     useEffect(() => {
       changeMainState("currentPage", "Post");
-      console.log(usersProfileData);
     }, []);
   
    const browseUser = (specialUid) => {

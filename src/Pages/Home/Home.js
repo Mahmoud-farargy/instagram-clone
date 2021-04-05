@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import "./Home.css";
 import Post from "../../Components/Post/Post";
@@ -43,12 +43,15 @@ const Home = (props) => {
     }
   };
   let [user, loading] = useAuthState(auth);
+  const [randNum, setRandNum] = useState(0);
   useEffect(() => {
     changeMainState("currentPage", "Home");
-  }, [changeMainState]);
-  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  useEffect(()=> {
+        setRandNum(Math.floor(Math.random() * suggestionsList?.length -6));
+  },[suggestionsList]);
+
   const recievedAuth = localStorage.getItem("user");
 
   return (
@@ -148,7 +151,7 @@ const Home = (props) => {
                       {suggestionsList &&
                         suggestionsList.length > 0 &&
                        Array.from(new Set(suggestionsList.map((item) => item.uid))).map((id) => suggestionsList.find((el) => el.uid === id))
-                          .filter((item) => item?.uid !== receivedData?.uid).slice(0,5)
+                          .filter((item) => item?.uid !== receivedData?.uid).slice(randNum, suggestionsList?.length -1).slice(0,5)
                           .map((user, i) => {
                             return (
                               <SuggestItem
@@ -159,7 +162,7 @@ const Home = (props) => {
                                 userAvatarUrl={user?.userAvatarUrl}
                                 browseUser={browseUser}
                                 handleFollowing={handleFollowing}
-                                receivedData={receivedData}
+                                receivedData={receivedData ? receivedData : []}
                               />
                             );
                           })}

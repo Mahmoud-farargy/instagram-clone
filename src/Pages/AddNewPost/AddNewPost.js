@@ -432,7 +432,7 @@ class AddNewPost extends PureComponent {
                             </Button>
                           ) : null}
                           <Button disabled={!isValid} type="submit" value="Post" variant="contained" color="primary">
-                            Post
+                            Share
                           </Button>
                         </div>
                       ) : null}

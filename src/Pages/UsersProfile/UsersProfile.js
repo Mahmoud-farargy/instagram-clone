@@ -17,6 +17,7 @@ import {HiOutlineDotsHorizontal} from "react-icons/hi";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
+import SuggList from "./SuggList/SuggList";
 
 const UsersProfile = (props) => {
   const [_, loading] = useAuthState(auth);
@@ -25,6 +26,8 @@ const UsersProfile = (props) => {
   const [grid, setGrid] = useState(true);
   const context = useContext(AppContext);
   const [openSuggestionsBox, setSuggestionsBox] = useState(false);
+  const [randNum, setRandNum] = useState(0);
+
   const {
     usersProfileData,
     changeMainState,
@@ -75,23 +78,10 @@ const UsersProfile = (props) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  useEffect(()=> {
+    suggestionsList?.length > 0 ? setRandNum(Math.floor(Math.random() * suggestionsList?.length -6)) : setRandNum(0);
+  },[suggestionsList, usersProfileData]);
 
-  const browseUser = (specialUid, name) => {
-      if(specialUid, name){
-            getUsersProfile(specialUid)
-        .then(() => {
-            setSuggestionsBox(false);
-            props.history.push(`/user-profile/${name}`);
-        })
-        .catch((err) => {
-            notify(
-            (err && err.message) || "error has occurred. please try again later!",
-            "error"
-            );
-        }); 
-      }
-    
-  };
   const openPostModal = (postId, index) =>{
     changeMainState("currentPostIndex", { index: index, id: postId });
     changeModalState("post", true);
@@ -324,79 +314,13 @@ const UsersProfile = (props) => {
                 </div>
                 <div className="suggestions--list--container flex-row">
                   <ul className="suggestion--items flex-row">
-                    {suggestionsList
-                      ?.filter(
+                    {suggestionsList && suggestionsList.length > 0 &&
+                      suggestionsList.filter(
                         (item) =>
                           item?.uid !== receivedData?.uid &&
                           item?.uid !== usersProfileData?.uid
-                      ).slice(0,10)
-                      .map((item, i) => {
-                        return (
-                          <li key={i} className="suggestion--item flex-column">
-                            <div className="suggestion--item-inner">
-                              <Avatar
-                                onClick={() =>
-                                  browseUser(item?.uid, item?.userName)
-                                }
-                                src={item?.userAvatarUrl}
-                                alt={item?.userName}
-                                className="mb-2"
-                              />
-                              <span
-                                onClick={() =>
-                                  browseUser(item?.uid, item?.userName)
-                                }
-                                title={item?.userName}
-                                className="acc__name"
-                              >
-                                {item?.userName}
-                              </span>
-                              <span
-                                className="user__name"
-                                title={item?.userName}
-                              >
-                                {item?.profileInfo?.name}
-                              </span>
-                              <button
-                                className={
-                                  receivedData?.following &&
-                                  receivedData?.following?.length > 0 &&
-                                  receivedData?.following?.some(
-                                    (q) => q.receiverUid === item?.uid
-                                  )
-                                    ? "profile__btn prof__btn__unfollowed"
-                                    : "profile__btn prof__btn__followed"
-                                }
-                                color="primary"
-                                onClick={(e) => {
-                                  handleFollowing(
-                                    receivedData?.following &&
-                                      receivedData?.following?.length > 0 &&
-                                      receivedData?.following?.some(
-                                        (el) => el?.receiverUid === item?.uid
-                                      ),
-                                    item?.uid,
-                                    item?.userName,
-                                    item?.userAvatarUrl,
-                                    receivedData?.uid,
-                                    receivedData?.userName,
-                                    receivedData?.userAvatarUrl
-                                  ); e.stopPropagation()
-                                    }
-                                }
-                              >
-                                {receivedData?.following &&
-                                receivedData?.following?.length > 0 &&
-                                receivedData?.following?.some(
-                                  (user) => user?.receiverUid === item?.uid
-                                )
-                                  ? "Unfollow"
-                                  : "Follow"}
-                              </button>
-                            </div>
-                          </li>
-                        );
-                      })}
+                      ).slice(randNum, suggestionsList?.length -1).slice(0,10)
+                      .map((item, i) => <SuggList key={(item?.uid || i)} item={item} receivedData={receivedData} setSuggestionsBox={setSuggestionsBox} notify={notify} getUsersProfile={getUsersProfile} history={props.history} handleFollowing={handleFollowing}/>)}
                   </ul>
                 </div>
               </div>

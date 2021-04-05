@@ -201,7 +201,6 @@ const AuthPage = (props) => {
               setLoginPassword("");
 
               auth.onAuthStateChanged((authUser) => {
-                console.log(authUser);
                 db.collection("users")
                   .get()
                   .then((query) => {
@@ -260,7 +259,7 @@ const AuthPage = (props) => {
                         website: "",
                         gender: "",
                         status: "",
-                        name: "",
+                        name: (given_name || ""),
                         phoneNumber: "",
                         professionalAcc: {
                           show: true,
@@ -315,13 +314,14 @@ const AuthPage = (props) => {
         });
         break;
       case "twitterProvider":
+        setLoading(true);
         auth.signInWithPopup(twitterProvider).then((cred) => {
           setLoading(false);
-          const {profile:{email,name,picture}, isNewUser} = cred?.additionalUserInfo;
+          const {profile:{name,profile_image_url, profile_image_url_https, screen_name, userName}, isNewUser} = cred?.additionalUserInfo;
             if(isNewUser){
                 db.collection("users").doc(cred.user.uid).set({
                     uid: cred.user.uid,
-                    userName: trimUserName(name),
+                    userName: trimUserName((userName || name || screen_name || "")),
                     posts: [],
                     followers: [],
                     following: [],
@@ -353,7 +353,7 @@ const AuthPage = (props) => {
                       list: [],
                     },
                     isVerified: false,
-                    userAvatarUrl: picture,
+                    userAvatarUrl: (profile_image_url || profile_image_url_https || ""),
                     
               }).then(() => {
                 setTimeout(() => {
@@ -366,7 +366,7 @@ const AuthPage = (props) => {
                 localStorage.setItem(
                   "user",
                   JSON.stringify({
-                    email: email.toLowerCase(),
+                    email: "",
                     password: decipherPassword(signUpPassword),
                   })
                 );
@@ -453,6 +453,7 @@ const AuthPage = (props) => {
                
           })
           .catch((err) => {
+            setLoading(false);
             context.notify(err.message, "error");
           });
       break;
@@ -599,10 +600,10 @@ const AuthPage = (props) => {
                     )}
                     <div className="divider--or flex-row"><span className="div__or__start"></span><span className="div__or__middle">or</span><span className="div__or__end"></span></div>
                     <div className="signIn--options--box">
-                            <SignInOption method="google" signInFunc={(x)=> signInMethods(x)} />
+                            <SignInOption method="google"  isLoading={inProgress} signInFunc={(x)=> signInMethods(x)} />
                             {/* <SignInOption method="facebook" signInFunc={(x)=> signInMethods(x)} /> */}
-                            <SignInOption method="twitter" signInFunc={(x)=> signInMethods(x)} />
-                            <SignInOption method="github" signInFunc={(x)=> signInMethods(x)} />
+                            <SignInOption method="twitter" isLoading={inProgress} signInFunc={(x)=> signInMethods(x)} />
+                            <SignInOption method="github"  isLoading={inProgress} signInFunc={(x)=> signInMethods(x)} />
                     </div>
                   </form>
                 ) : (
