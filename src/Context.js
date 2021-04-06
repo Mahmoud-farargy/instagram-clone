@@ -207,13 +207,21 @@ class AppProvider extends PureComponent {
 
   resetAllData() {
     this.setState({
-      ...this.state,
       receivedData: {},
       uid: "",
+      currentUser: {},
       suggestionsList: [],
+      initialSuggestions: [],
       isUserOnline: false,
       usersProfileData: [],
-      currentPostIndex: {},
+      currentPostIndex: 0,
+      currentChatIndex: 0,
+      usersModalList: [],
+      igVideoImg: igVideoImg,
+      modalsState: {comments: false, users: false, options: false, post: false},
+      currentPage: "",
+      searchInfo: { results: [], loading: false },
+      reelsProfile: [],
     });
   }
 
@@ -583,6 +591,7 @@ class AppProvider extends PureComponent {
         localStorage.clear();
         this.resetAllData();
         history.replace("/auth");
+        // window.location.reload();
         resolve();
       }).catch((err) => {
         this.notify(err.message,"error");

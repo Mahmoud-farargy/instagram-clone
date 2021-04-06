@@ -66,7 +66,7 @@ const MyProfile =(props)=>{
                                 </h5>
                                 <div className="flex-row">
                                 <Link role="button" className="profile__btn prof__btn__unfollowed mr-2" to="/edit-profile" >Edit profile</Link>
-                                <button className="mobile-only" onClick={()=> {authLogout(props.history); window.location.reload()}}>Log out</button>
+                                <button className="mobile-only" onClick={()=> authLogout(props.history)}>Log out</button>
                                 </div>
                                 
                             </div>

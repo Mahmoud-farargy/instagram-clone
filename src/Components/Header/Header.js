@@ -84,8 +84,7 @@ const Header = (props) => {
     setTimeout(() => {
       authLogout(props.history).then(() => {
         setLogoutModal(false);
-        props.history.replace("/");
-        window.location.reload();
+        // props.history.replace("/");
       }).catch(() => {
         setLogoutModal(false);
       });      
