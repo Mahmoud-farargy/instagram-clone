@@ -15,7 +15,7 @@ import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 
 const MyProfile =(props)=>{
-    const [_,loading] = useAuthState(auth);
+    const [,loading] = useAuthState(auth);
     const [grid, setGrid] = useState(true);
     const {receivedData,changeModalState, igVideoImg, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, usersProfileData, modalsState} = useContext(AppContext);
     const redirectToPost=(i, id)=>{

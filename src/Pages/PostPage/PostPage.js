@@ -25,8 +25,13 @@ const PostPage  = (props) => {
         doubleLikeClicked: false,
         replayData: {},
   });
+  //====================== 
+  // REFS
   const inputField = useRef(null);
   const autoScroll = useRef(null);
+  //----------------------
+
+  
   // constructor(props) {
   //   super(props);
   //   this.inputField = React.createRef();

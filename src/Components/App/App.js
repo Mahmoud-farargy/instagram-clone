@@ -55,7 +55,7 @@ const App = (props) => {
     currentPostIndex
   } = context;
   const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
-  const [_, loading] = useAuthState(auth);
+  const [,loading] = useAuthState(auth);
 
   // experiment
   // useEffect(() => {

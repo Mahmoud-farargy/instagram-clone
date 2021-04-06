@@ -578,11 +578,19 @@ class AppProvider extends PureComponent {
       });
   };
   authLogout(history) {
-    auth.signOut().then(() => {
-      localStorage.clear();
-      this.resetAllData();
-    });
-    history.replace("/auth");
+    return new Promise((resolve, reject) => {
+        auth.signOut().then(() => {
+        localStorage.clear();
+        this.resetAllData();
+        history.replace("/auth");
+        resolve();
+      }).catch((err) => {
+        this.notify(err.message,"error");
+        reject();
+      });
+     
+    })
+    
   }
   handleFollowing(
     state,
@@ -818,11 +826,7 @@ class AppProvider extends PureComponent {
   };
 
   initializeChatDialog(uid, receiverName, receiversAvatarUrl) {
-    if (
-      this.state.receivedData?.messages.filter((el) => el.uid === uid)[0]
-        ? false
-        : true
-    ) {
+    if (!this.state.receivedData?.messages.some(el => el.uid === uid)) {
       // sender
       const unupdatedSendersData = this.state.receivedData?.messages;
       let sendersCopy = JSON.parse(JSON.stringify(unupdatedSendersData));
@@ -852,7 +856,7 @@ class AppProvider extends PureComponent {
           .doc(uid)
           .get()
           .then((items) => {
-            resolve();
+            
             const {messages = [], blockList = []} = items?.data();
             const unupdatedreceiversData = messages;
             let receiversCopy = JSON.parse(
@@ -877,7 +881,7 @@ class AppProvider extends PureComponent {
             }else{
               this.notify("Not allowed.", "error");
             }
-           
+           resolve();
           }).catch(() => {
             reject();
           });
@@ -1068,7 +1072,7 @@ class AppProvider extends PureComponent {
     let myBlockListCopy = JSON.parse(JSON.stringify(this.state.receivedData?.blockList));
     let myFollowersCopy = JSON.parse(JSON.stringify(this.state.receivedData?.followers));
     let myFollowingCopy = JSON.parse(JSON.stringify(this.state.receivedData?.following));
-    const blockedThem = myBlockListCopy && myBlockListCopy.some(f => f.blockedUid === blockedUid);
+    // const blockedThem = myBlockListCopy && myBlockListCopy.some(f => f.blockedUid === blockedUid);
     //blocked
     if(myBlockListCopy && blockedUid){
           if(blockingState){

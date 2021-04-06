@@ -6,7 +6,7 @@ import { auth } from "../../Config/firebase";
 import { withRouter } from "react-router-dom";
 
 const MobileNotifications = (props) => {
-  const { _, loading } = useAuthState(auth);
+  const  [, loading ] = useAuthState(auth);
   const {
     igVideoImg,
     handleFollowing,

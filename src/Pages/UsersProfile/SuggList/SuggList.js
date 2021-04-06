@@ -5,7 +5,7 @@ import { Avatar } from "@material-ui/core";
 const SuggList = (props) => {
     const {item, receivedData, setSuggestionsBox,  getUsersProfile ,notify, history, handleFollowing} = props;
     const browseUser = (specialUid, name) => {
-        if(specialUid, name){
+        if(specialUid && name){
               getUsersProfile(specialUid)
           .then(() => {
               setSuggestionsBox(false);

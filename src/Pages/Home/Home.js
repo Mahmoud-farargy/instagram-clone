@@ -42,7 +42,7 @@ const Home = (props) => {
      
     }
   };
-  let [user, loading] = useAuthState(auth);
+  let [, loading] = useAuthState(auth);
   const [randNum, setRandNum] = useState(0);
   useEffect(() => {
     changeMainState("currentPage", "Home");

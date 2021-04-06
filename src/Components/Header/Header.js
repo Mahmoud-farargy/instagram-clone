@@ -80,13 +80,15 @@ const Header = (props) => {
   };
   const onLoggingOut = () => {
    setLogoutModal(true);
-   
+   setProf(false);
     setTimeout(() => {
-      authLogout(props.history);
-      setProf(false);
-      setLogoutModal(false);
-      props.history.replace("/");
-      window.location.reload();
+      authLogout(props.history).then(() => {
+        setLogoutModal(false);
+        props.history.replace("/");
+        window.location.reload();
+      }).catch(() => {
+        setLogoutModal(false);
+      });      
     },1500);
   }
   return (

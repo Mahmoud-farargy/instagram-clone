@@ -165,10 +165,9 @@
     }
     #home.main--home--container .home--sider{
         position:static;
-        width:100%;
-        top:0;
+        width:100% !important;
         z-index:400;
-        padding:0;
+        padding:0 !important;
     }
     .instagram--embed--container{
         padding:10px;
@@ -213,7 +212,6 @@
     #home.main--home--container .home--sider{
         position:static;
         width:80%;
-        top:0;
         z-index:400;
     }
 }

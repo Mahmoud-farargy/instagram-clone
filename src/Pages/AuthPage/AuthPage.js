@@ -22,7 +22,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 const AuthPage = (props) => {
   var context = useContext(AppContext);
-  const [_, loading] = useAuthState(auth);
+  const [,loading] = useAuthState(auth);
   //----------- states----------------------
   const [signUpState, switchToSignUp] = useState(false);
   const [signUpEmail, setSignUpEmail] = useState("");

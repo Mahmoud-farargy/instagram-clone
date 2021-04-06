@@ -20,7 +20,7 @@ import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import SuggList from "./SuggList/SuggList";
 
 const UsersProfile = (props) => {
-  const [_, loading] = useAuthState(auth);
+  const [, loading] = useAuthState(auth);
   const [isFollowed, setFollowingState] = useState(false);
   const [isFollower, setFollowerState] = useState(false);
   const [grid, setGrid] = useState(true);
@@ -328,7 +328,7 @@ const UsersProfile = (props) => {
           </div>
           {
                                  usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) &&  usersProfileData?.reels && usersProfileData?.reels.length > 0 && receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) &&( //find an alternative to make data always updating
-                                         <Link to="/reels" onClick={()=> changeMainState("reelsProfile", usersProfileData)} className="reel--bubble flex-column"><img className="reels__icon" src={reelsIco} />
+                                         <Link to="/reels" onClick={()=> changeMainState("reelsProfile", usersProfileData)} className="reel--bubble flex-column"><img className="reels__icon" alt="Reel" src={reelsIco} />
                                             <span className="mt-1">Reels</span>
                                          </Link>
                                     )

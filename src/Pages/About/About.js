@@ -2,10 +2,10 @@ import React, {Fragment, useEffect} from "react";
 import "./About.scss";
 
 const About = (props) => {
-    
+    const {changeMainState} = props
     useEffect(() => {
-        props.changeMainState("currentPage", "About");
-    }, []);
+        changeMainState("currentPage", "About");
+    }, [changeMainState]);
     return (
         <Fragment>
             <div id="about--container" className="flex-column">
