@@ -11,6 +11,7 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import $ from "jquery";
 import Header from "../Header/Header";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
+import * as Consts from "../../Utilities/Consts";
 
 //lazy loading
 const UsersModal = lazy(()=> import( "../../Components/UsersModal/UsersModal"));
@@ -94,7 +95,7 @@ const App = (props) => {
   //            return;
   //        };
   //        console.log(snapshot);
-  //        db.collection("users").doc("RJRllL1KMje3HadGMCJUi5h6BmE2").update({
+  //        db.collection(Consts.USERS).doc("RJRllL1KMje3HadGMCJUi5h6BmE2").update({
   //            test: "online"
   //        })
   // If we are currently connected, then use the 'onDisconnect()'
@@ -118,8 +119,8 @@ const App = (props) => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        db.collection("users")
-          .limit(10)
+        db.collection(Consts.USERS)
+          .limit(100)
           .get()
           .then((query) => {
             query.forEach((user) => {
@@ -163,7 +164,7 @@ const App = (props) => {
 
   useEffect(() => {
     //<<make cleanup work here
-    document.title = `${currentPage} • ${AppConfig.title}`;
+    document.title = `${currentPage && currentPage + " • "}${AppConfig.title}`;
     if(!navigator.onLine){
       notify("You are Offline! Please reconnect and try again.", "error");
       props.history.push("/auth");

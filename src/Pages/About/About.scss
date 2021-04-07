@@ -37,6 +37,30 @@
             text-align:center;
             margin:15px auto;
         }
+        .socials--links{
+            padding:0;
+            margin: 10px 0 0;
+            width:100%;
+            flex-wrap: wrap;
+            justify-content:center;
+            align-items: center;
+            list-style: none;
+            li{
+                a{
+                    padding: 13px;
+                    text-align:center;
+                    svg{
+                        color: #111;
+                        transition: color 0.3s linear;
+                        &:hover{
+                            color: var(--secondary-clr);
+                            }
+                        }
+                }
+            }
+            
+        }
+
     }
     
 }

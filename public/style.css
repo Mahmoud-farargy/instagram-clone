@@ -305,6 +305,11 @@ a:visited{
     min-height:90vh;
     
 }
+.auth--main .insta--warning{
+    margin-top:8px;
+    color: #737171;
+    text-align:center;
+}
 .auth--inner{
     justify-content: center;
     align-items:center;

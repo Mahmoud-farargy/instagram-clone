@@ -6,6 +6,7 @@ import instaReview from "../../Assets/iphone-with-profile.jpg";
 import { GrInstagram } from "react-icons/gr";
 import Loader from "react-loader-spinner";
 import SignInOption from "./SignInOption/SignInOption";
+import * as Consts from "../../Utilities/Consts";
 
 
 import {
@@ -92,7 +93,7 @@ const AuthPage = (props) => {
                     .createUserWithEmailAndPassword(signUpEmail.toLowerCase(), signUpPassword)
                     .then((cred) => {
                       setLoading(false);
-                      db.collection("users")
+                      db.collection(Consts.USERS)
                         .doc(cred.user.uid)
                         .set({
                           uid: cred.user.uid,
@@ -201,7 +202,7 @@ const AuthPage = (props) => {
               setLoginPassword("");
 
               auth.onAuthStateChanged((authUser) => {
-                db.collection("users")
+                db.collection(Consts.USERS)
                   .get()
                   .then((query) => {
                     query.forEach((user) => {
@@ -247,7 +248,7 @@ const AuthPage = (props) => {
             setLoading(false);
             const {profile:{email,name,picture, given_name}, isNewUser} = cred?.additionalUserInfo;
               if(isNewUser){
-                  db.collection("users").doc(cred.user.uid).set({
+                  db.collection(Consts.USERS).doc(cred.user.uid).set({
                       uid: cred.user.uid,
                       userName: trimUserName(name),
                       posts: [],
@@ -319,7 +320,7 @@ const AuthPage = (props) => {
           setLoading(false);
           const {profile:{name,profile_image_url, profile_image_url_https, screen_name, userName}, isNewUser} = cred?.additionalUserInfo;
             if(isNewUser){
-                db.collection("users").doc(cred.user.uid).set({
+                db.collection(Consts.USERS).doc(cred.user.uid).set({
                     uid: cred.user.uid,
                     userName: trimUserName((userName || name || screen_name || "")),
                     posts: [],
@@ -386,7 +387,7 @@ const AuthPage = (props) => {
             setLoading(false);
             const {profile:{email,username,avatar_url, bio, login}, isNewUser} = cred?.additionalUserInfo;
               if(isNewUser){
-                  db.collection("users").doc(cred.user.uid).set({
+                  db.collection(Consts.USERS).doc(cred.user.uid).set({
                       uid: cred.user.uid,
                       userName: trimUserName(username || login),
                       posts: [],
@@ -502,6 +503,7 @@ const AuthPage = (props) => {
                 </span>
                 <h1 className="logoText">Voxgram</h1>
               </div>
+              <small className="insta--warning">Note: this is not the official Instagram website.</small>
 
               {
                 // log in state

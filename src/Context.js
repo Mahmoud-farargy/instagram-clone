@@ -31,7 +31,7 @@ class AppProvider extends PureComponent {
   }
 
   updatedReceivedData = () => {
-    db.collection("users")
+    db.collection(Consts.USERS)
       .doc(this.state.uid)
       .onSnapshot((data) => {
         //any fetching overflow? change onSnapshot to get
@@ -61,7 +61,7 @@ class AppProvider extends PureComponent {
   ) => {
     if (withNotifications === "") {
     return new Promise((resolve, reject) => {
-        db.collection("users")
+        db.collection(Consts.USERS)
           .doc(uid)
           .update({
             [stateBase]: newState,
@@ -78,7 +78,7 @@ class AppProvider extends PureComponent {
       
     } else {
       return new Promise((resolve, reject) =>{
-          db.collection("users")
+          db.collection(Consts.USERS)
           .doc(uid)
           .update({
             [stateBase]: newState,
@@ -132,7 +132,7 @@ class AppProvider extends PureComponent {
     contentURL,
     contentType
   ) => {
-    db.collection("users")
+    db.collection(Consts.USERS)
       .doc(postOwnerId)
       .get()
       .then((items) => {
@@ -259,7 +259,7 @@ class AppProvider extends PureComponent {
 
       this.updateParts(myId, "posts", myPostsCopy, true, "");
     } else if (ownership === "others") {
-      db.collection("users")
+      db.collection(Consts.USERS)
         .doc(ownerId)
         .get()
         .then((items) => {
@@ -320,7 +320,7 @@ class AppProvider extends PureComponent {
   getUsersProfile(uid) {
     
     return new Promise((resolve, reject) => {
-        db.collection("users")
+        db.collection(Consts.USERS)
         .doc(uid)
         .onSnapshot((snapshot) => {
           this.setState({
@@ -362,7 +362,7 @@ class AppProvider extends PureComponent {
     contentType
   ) => {
     const { commentIndex, postIndex, postId, postOwnerId , senderUid } = commentInfo;
-    db.collection("users")
+    db.collection(Consts.USERS)
       .doc(postOwnerId)
       .get()
       .then((items) => {
@@ -455,7 +455,7 @@ class AppProvider extends PureComponent {
     subCommentId,
   ) => {
    //needs more organization
-    db.collection("users")
+    db.collection(Consts.USERS)
       .doc(postOwnerId)
       .get()
       .then((items) => {
@@ -611,7 +611,7 @@ class AppProvider extends PureComponent {
     senderAvatarUrl
   ) {
     if(receiverUid){
-    db.collection("users")
+    db.collection(Consts.USERS)
       .doc(receiverUid)
       .get()
       .then((items) => {
@@ -752,7 +752,7 @@ class AppProvider extends PureComponent {
     const myUid = this.state.uid;
     if (uid !== myUid) {     
       // Edit receiver's data
-      db.collection("users")
+      db.collection(Consts.USERS)
         .doc(uid)
         .get()
         .then((items) => {
@@ -861,7 +861,7 @@ class AppProvider extends PureComponent {
 
       // receiver
      return new Promise((resolve, reject) => {
-        db.collection("users")
+        db.collection(Consts.USERS)
           .doc(uid)
           .get()
           .then((items) => {
@@ -1017,7 +1017,7 @@ class AppProvider extends PureComponent {
         loading: true,
       },
     });
-    db.collection("users")
+    db.collection(Consts.USERS)
       .where("userName", madeApproach, val)
       .limit(50)
       .get()
@@ -1085,7 +1085,7 @@ class AppProvider extends PureComponent {
     //blocked
     if(myBlockListCopy && blockedUid){
           if(blockingState){
-          db.collection("users").doc(blockedUid).get().then((items) => {
+          db.collection(Consts.USERS).doc(blockedUid).get().then((items) => {
             const {followers = [], following = []} = items?.data();
             let theirFollowingCopy = JSON.parse(JSON.stringify(following));
             let theirFollowersCopy = JSON.parse(JSON.stringify(followers));
@@ -1112,7 +1112,7 @@ class AppProvider extends PureComponent {
                   
                 }
                   new Promise((resolve, reject) => {
-                    db.collection("users")
+                    db.collection(Consts.USERS)
                           .doc(blockedUid)
                           .update({
                           followers: theirFollowersCopy,
@@ -1173,7 +1173,7 @@ class AppProvider extends PureComponent {
         ).map((ID) => myBlockListCopy.find((el) => el.blockedUid === ID));
         //update my data
     return new Promise((resolve, reject) => {
-            db.collection("users")
+            db.collection(Consts.USERS)
                         .doc(this.state.uid)
                         .update({
                           blockList: newBlockedArray,
