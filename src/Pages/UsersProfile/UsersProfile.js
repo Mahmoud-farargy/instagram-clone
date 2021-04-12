@@ -73,7 +73,7 @@ const UsersProfile = (props) => {
   }, [receivedData, usersProfileData]);
 
   useEffect(() => {
-    changeMainState("currentPage", `@${usersProfileData.userName}` || "User Profile");
+    changeMainState("currentPage", `${usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name ? usersProfileData?.profileInfo?.name+" (" : ""}@${usersProfileData.userName}${usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name ? ")" : ""}` || "User Profile");
   }, [usersProfileData, changeMainState]);
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -93,7 +93,7 @@ const UsersProfile = (props) => {
   }
 
   // put this in a modal
-  const similarFollowers = (usersProfileData?.uid !== receivedData?.uid) && (receivedData?.blockList?.length > 0 && receivedData?.blockList?.filter(w => w.blockedUid !== usersProfileData?.uid)) ? receivedData?.following.filter(el => el.receiverUid !== receivedData?.uid && usersProfileData?.followers.some(item => item.senderUid === el.receiverUid)) : [];
+  const similarFollowers = (usersProfileData?.uid !== receivedData?.uid) && (receivedData?.blockList?.filter(w => w.blockedUid !== usersProfileData?.uid)) ? receivedData?.following.filter(el => el.receiverUid !== receivedData?.uid && usersProfileData?.followers.some(item => item.senderUid === el.receiverUid)) : [];
 
   console.log(similarFollowers);
   const websiteToView = usersProfileData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?(?:http:\/\/)?/i, "").split("/")[0];
