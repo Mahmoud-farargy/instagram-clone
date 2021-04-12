@@ -18,13 +18,8 @@
                 top:50%;
                 
                 svg{
-                    color: rgb(232, 231, 231);
-                    opacity: 0.9;
                     width:40px;
                     height:40px;
-                    &:hover{
-                        color: #fff;
-                    }
                     transition: all 0.2s linear;
                 }
                 cursor:pointer;
@@ -90,5 +85,23 @@
                     
                 }
             }
+    }
+    .post--modal--close{
+        position: absolute;
+        top: 0px;
+        right:0px;
+        font-size: 30px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index:1500;
+        padding: 1px 8px;
+    }
+    .d--post--container .desktop__left__arrow svg, .d--post--container .desktop__right__arrow svg, .post--modal--close{
+        color: rgb(232, 231, 231);
+        opacity: 0.9;
+        transition: color 0.2s linear;
+        &:hover{
+            color: #fff;
+        }
     }
 }

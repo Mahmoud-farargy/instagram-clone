@@ -39,6 +39,7 @@ const MyProfile =(props)=>{
               changeModalState("post", true);
         });
     }
+    const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0];
      return(
         <Fragment>
             {/* Modals */}
@@ -76,16 +77,35 @@ const MyProfile =(props)=>{
                                 <p className="acc-action"  onClick={()=> changeModalState("users",true, receivedData?.following, "following")}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
                             </div>
                             {/* bottom row */}
+                            {/* TODO: refactor this to be only one piece of code */}
                             <div className="desktop-only flex-column">
+                                {receivedData?.profileInfo && receivedData?.profileInfo?.name &&
+                                    <div className="prof--acc--name">
+                                        <h1>
+                                        {receivedData?.profileInfo?.name}
+                                        </h1>
+                                        <br />
+                                    </div>
+                                }
                                 {
                                 receivedData?.profileInfo && receivedData?.profileInfo.professionalAcc && receivedData?.profileInfo.professionalAcc.show &&
                                     <div className="prof--acc--category">
                                         <span>{receivedData.profileInfo?.professionalAcc?.category}</span>
+                                        <br />
                                     </div>
-                            } 
-                                <div className="bottom--row--user-info flex-column">
+                                } 
+                                {
+                                    receivedData?.profileInfo && receivedData?.profileInfo?.bio &&
+                                    <div className="bottom--row--user-info flex-column">
                                         <span>{receivedData?.profileInfo?.bio}</span>
-                                </div> 
+                                    </div>
+                                }
+                                {
+                                     receivedData?.profileInfo && receivedData?.profileInfo?.website &&
+                                    <div className="prof--acc--website">
+                                        <a rel="noopener noreferrer" target="_blank" href={receivedData?.profileInfo?.website}>{websiteToView}</a>
+                                    </div>
+                                }
 
                             </div>
 
@@ -93,15 +113,34 @@ const MyProfile =(props)=>{
                     </header>
                      {/* profile info */}
                     <div className="profile--user--info mobile-only flex-column">
-                    {
+                            {receivedData?.profileInfo && receivedData?.profileInfo?.name &&
+                                <div className="prof--acc--name">
+                                    <h1>
+                                    {receivedData?.profileInfo?.name}
+                                    </h1>
+                                    <br />
+                                </div>
+                            }
+                            {
                                 receivedData?.profileInfo && receivedData?.profileInfo.professionalAcc && receivedData?.profileInfo.professionalAcc.show &&
                                     <div className="prof--acc--category">
                                         <span>{receivedData.profileInfo?.professionalAcc?.category}</span>
+                                        <br />
                                     </div>
                             } 
+                            {
+                                receivedData?.profileInfo && receivedData?.profileInfo?.bio &&
                                 <div className="bottom--row--user-info flex-column">
-                                        <span>{receivedData?.profileInfo?.bio}</span>
+                                    <span>{receivedData?.profileInfo?.bio}</span>
                                 </div>
+                            }
+                               
+                            {
+                                receivedData?.profileInfo && receivedData?.profileInfo?.website &&
+                                <div className="prof--acc--website">
+                                    <a rel="noopener noreferrer" target="_blank" href={receivedData?.profileInfo?.website}>{websiteToView}</a>
+                                </div>
+                            }
                     </div>
                                          
                 </div>
@@ -130,13 +169,14 @@ const MyProfile =(props)=>{
                         {receivedData?.posts?.map((post, i)=>{
                                         return (
                                             <div key={post?.id+i} className="profile--posts--container">   
+                                            {/* TODO: refactor this to be only one piece of code */}
                                               {/* Desktop */}
                                                 <div className="user--img--container desktop-only flex-column" onClick={() => openPostModal(post?.id,i)}>
                                                         <img style={{width:"100%"}} loading="lazy"  className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
                                                                 <div className="user--img--cover">
                                                                         <div className="flex-row">
-                                                                            <span className="mr-3"><FaHeart/> {post?.likes?.people?.length}</span>
-                                                                            <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length } </span>
+                                                                            <span className="mr-3"><FaHeart/> {post?.likes?.people?.length.toLocaleString()}</span>
+                                                                            <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length.toLocaleString() } </span>
                                                                         
                                                                         </div>
                                                                 
@@ -147,8 +187,8 @@ const MyProfile =(props)=>{
                                                         <img style={{width:"100%"}}  loading="lazy" className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
                                                                 <div className="user--img--cover">
                                                                         <div className="flex-row">
-                                                                            <span className="mr-3"><FaHeart/> {post?.likes?.people?.length}</span>
-                                                                            <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length } </span>
+                                                                            <span className="mr-3"><FaHeart/> {post?.likes?.people?.length.toLocaleString()}</span>
+                                                                            <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length.toLocaleString() } </span>
                                                                         
                                                                         </div>
                                                                 

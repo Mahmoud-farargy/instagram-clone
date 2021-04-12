@@ -17,7 +17,7 @@ const InputForm = (props) => {
               <input
                 className={`${props.disabled && "disabled" } ${!props.val && props.submitted && "test"}`}
                 id={props.label}
-                type={props.inputType}
+                type={props.inputType ? props.inputType : "text"}
                 value={props.val || ""}
                 disabled={props.disabled}
                 required={props.required}

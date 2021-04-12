@@ -159,6 +159,8 @@
     padding:15px;
     color:#8e8e8e;
     color:rgb(142, 142, 142);
+    height: 100%;
+    width: 100%;
 }
 #header .empty--box h4{
     font-size:14px;
@@ -227,6 +229,8 @@
 }
 .noti--popup--ul{
     padding:1px 0;
+    margin-bottom: 0;
+    min-height: 100px;
 }
 .noti--popup--inner .noti--popup--ul .noti--popup-item{
     min-height:40px;

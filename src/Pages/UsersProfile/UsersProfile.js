@@ -73,7 +73,7 @@ const UsersProfile = (props) => {
   }, [receivedData, usersProfileData]);
 
   useEffect(() => {
-    changeMainState("currentPage", usersProfileData.userName || "User Profile");
+    changeMainState("currentPage", `@${usersProfileData.userName}` || "User Profile");
   }, [usersProfileData, changeMainState]);
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -91,6 +91,59 @@ const UsersProfile = (props) => {
     changeModalState("options", false);
     handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() => props.history.push("/"));
   }
+
+  // put this in a modal
+  const similarFollowers = (usersProfileData?.uid !== receivedData?.uid) && (receivedData?.blockList?.length > 0 && receivedData?.blockList?.filter(w => w.blockedUid !== usersProfileData?.uid)) ? receivedData?.following.filter(el => el.receiverUid !== receivedData?.uid && usersProfileData?.followers.some(item => item.senderUid === el.receiverUid)) : [];
+
+  console.log(similarFollowers);
+  const websiteToView = usersProfileData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?(?:http:\/\/)?/i, "").split("/")[0];
+  const userProfileInfo = (
+    <div>
+      {usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name &&
+                  <div className="prof--acc--name">
+                    <h1>
+                      {usersProfileData?.profileInfo?.name}
+                    </h1>
+                    <br />
+                  </div>
+                }
+                  {usersProfileData?.profileInfo &&
+                  usersProfileData?.profileInfo.professionalAcc &&
+                  usersProfileData?.profileInfo.professionalAcc.show && (
+                    <div className="prof--acc--category">
+                      <span>
+                        {
+                          usersProfileData.profileInfo?.professionalAcc
+                            ?.category
+                        }
+                      </span>
+                      <br />
+                    </div>
+                  )}
+
+                <div className="bottom--row--user-info flex-column">
+                  <span>{usersProfileData?.profileInfo?.bio}</span>
+                </div>
+                {
+                    usersProfileData?.profileInfo && usersProfileData?.profileInfo?.website &&
+                    <div className="prof--acc--website">
+                           <a rel="noopener noreferrer" target="_blank" href={usersProfileData?.profileInfo?.website}>{websiteToView}</a>
+                    </div>
+                }
+                {
+                  similarFollowers && similarFollowers.length > 0 &&
+                  <p className="similar__followers">Followed by <span>
+                    {
+                    similarFollowers.slice(0,3).map(q => <small className="similar__followers__item" key={q?.receiverUid}> {q?.receiverName}</small>)
+                  }
+                  {
+                    similarFollowers.length > 3 && 
+                    <span className="similar__followers__more pl-1">+{ `${similarFollowers.length - 3}`} more</span>
+                  }
+                    </span></p>
+                }
+    </div>
+  )
   return (
     <Fragment> 
        {/* Modals */}
@@ -267,43 +320,13 @@ const UsersProfile = (props) => {
 
                 {/* bottom row */}
                 <div className="desktop-only flex-column">
-                  {usersProfileData?.profileInfo &&
-                  usersProfileData?.profileInfo.professionalAcc &&
-                  usersProfileData?.profileInfo.professionalAcc.show && (
-                    <div className="prof--acc--category">
-                      <span>
-                        {
-                          usersProfileData.profileInfo?.professionalAcc
-                            ?.category
-                        }
-                      </span>
-                    </div>
-                  )}
-
-                <div className="bottom--row--user-info flex-column">
-                  <span>{usersProfileData?.profileInfo?.bio}</span>
-                </div>
+                {userProfileInfo}
               </div>
               
               </div>
               {/* profile info */}
               <div className="profile--user--info mobile-only flex-column">
-                  {usersProfileData?.profileInfo &&
-                  usersProfileData?.profileInfo.professionalAcc &&
-                  usersProfileData?.profileInfo.professionalAcc.show && (
-                    <div className="prof--acc--category">
-                      <span>
-                        {
-                          usersProfileData.profileInfo?.professionalAcc
-                            ?.category
-                        }
-                      </span>
-                    </div>
-                  )}
-
-                <div className="bottom--row--user-info flex-column">
-                  <span>{usersProfileData?.profileInfo?.bio}</span>
-                </div>
+                {userProfileInfo}
               </div>
             </header>
             {openSuggestionsBox && (
@@ -398,13 +421,13 @@ const UsersProfile = (props) => {
                                     <div className="user--img--cover">
                                       <div className="flex-row">
                                         <span className="mr-3">
-                                          <FaHeart /> {post?.likes?.people?.length}
+                                          <FaHeart /> {post?.likes?.people?.length.toLocaleString()}
                                         </span>
                                         <span>
                                           <FaRegComment />{" "}
                                           {post?.comments.length > 0
                                             ? post?.comments.length
-                                            : post?.comments.length}{" "}
+                                            : post?.comments.length.toLocaleString()}{" "}
                                         </span>
                                       </div>
                                     </div>

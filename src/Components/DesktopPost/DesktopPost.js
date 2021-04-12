@@ -12,11 +12,11 @@ import { RiBookmarkLine } from "react-icons/ri";
 import { AppContext } from "../../Context";
 import Comment from "../../Components/Comment/Comment";
 import { GoVerified } from "react-icons/go";
-// import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
+import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 
 const DesktopPost = (props) => {
     const context = useContext(AppContext);
-    const {changeMainState, getUsersProfile, notify, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleUserBlocking,handleLikingComments , onCommentDeletion} = context;
+    const {changeMainState, getUsersProfile, notify, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleUserBlocking,handleLikingComments , onCommentDeletion, modalsState} = context;
     const [compState, setCompState] = useState({
           postLiked: false,
           insertedComment: "",
@@ -194,6 +194,22 @@ const DesktopPost = (props) => {
     return (
         <Fragment>
             <section className="desktopPost flex-column"  >
+            {
+                modalsState?.options &&
+                (<OptionsModal>
+                    <span
+                      onClick={() => blockUser(usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, usersProfileData?.profileInfo && usersProfileData.profileInfo?.name ? usersProfileData?.profileInfo?.name : "" )} >
+                      {" "}
+                      Block user
+                    </span>
+                    <span onClick={() => changeModalState("options",false)}>
+                      {" "}
+                      Cancel
+                    </span>
+                
+                </OptionsModal>)
+              }
+              <span className="post--modal--close"onClick={() => changeModalState("users", false, "", "")}>&times;</span>
                 <div className="d--post--container flex-column" >
                   <span className={usersProfileData?.posts.length > 1 ? "desktop__left__arrow" : "desktop__left__arrow disabled"} onClick={() => onPostMovement("left")}><IoIosArrowBack /></span>
                   <span className={usersProfileData?.posts.length > 1 ? "desktop__right__arrow" : "desktop__right__arrow disabled"} onClick={() => onPostMovement("right")}><IoIosArrowForward /></span>

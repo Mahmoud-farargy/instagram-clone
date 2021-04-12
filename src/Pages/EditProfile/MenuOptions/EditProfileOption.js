@@ -278,6 +278,7 @@ const EditProfileOption = (props) => {
 
             <InputForm
               type="text"
+              inputType="email"
               changeInput={onInputChange}
               label="email"
               name="email"
@@ -305,6 +306,7 @@ const EditProfileOption = (props) => {
 
             <InputForm
               type="text"
+              inputType="url"
               changeInput={onInputChange}
               label="website"
               name="website"
@@ -330,6 +332,7 @@ const EditProfileOption = (props) => {
 
             <InputForm
               type="text"
+              inputType="tel"
               changeInput={onInputChange}
               label="phone number"
               name="phoneNumber"

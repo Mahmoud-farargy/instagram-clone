@@ -705,7 +705,7 @@ button:active{
 }
 #usersProfile.users--profile--container .profile--user--info{
     padding: 0 16px 21px;
-    margin-top:14px;
+    margin-top:5px;
     width: 100%;
 }
 #messages.messages--container .messages--side, #messages.messages--container .messages--users--side{
@@ -1216,9 +1216,11 @@ a.prof__btn__unfollowed{
     width:100%;
     object-fit:cover;
     cursor:pointer;
-    max-height: 250px;
+    max-height: 300px;
     margin:0 auto;
     padding:0;
+    min-height:100%;
+    background-color: #efefef;
 }
 #usersProfile .user--img--container{
     position: relative;
@@ -1244,11 +1246,34 @@ a.prof__btn__unfollowed{
 }
 #usersProfile.users--profile--container .user--top--info{
     width:100%;
-    padding:20px 0;
+    padding:10px 0 44px;
     align-items:center;
     justify-content:space-between;
 }
-
+#usersProfile .similar__followers{
+ padding-left: 3px;
+ color: #8e8e8e;
+ color: rgb(142, 142, 142);
+ font-size: 12px;
+ display: block;
+ line-height: 14px;
+ margin-top: 14px;
+ font-weight: 500;
+}
+#usersProfile .similar__followers__item{
+    margin:0 0 5px 0;
+    font-size: inherit; 
+    font-weight: inherit;
+    color:#262626;   
+}
+#usersProfile .similar__followers__item::after{
+    content: ",";
+    color: rgb(142, 142, 142);
+}
+#usersProfile .similar__followers__item:last-of-type::after{
+    content: "";
+    display: none;
+}
 .user-top-inner{
     margin:0 auto;
     flex-wrap: wrap;
@@ -1499,13 +1524,37 @@ a.prof__btn__unfollowed{
 .empty--posts--container .plus--icon--container .plus__icon{
     font-size: 30px;
 }
+.prof--acc--website a{
+    font-size: 16px; 
+    font-weight: 600;
+    color:#00376B;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-decoration:none;
+}
+.prof--acc--name h1{
+    display: inline;
+    color: #262626;
+    color: rgb(17, 17, 17);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    word-break: break-word;
+    margin-bottom: 0px;
+}
+.prof--acc--name br, .prof--acc--category br{
+    content: "";
+    word-break: break-word;
+    font-size: 16px;
+}
 .prof--acc--category span {
     color: #8e8e8e;
     color: rgb(142, 142, 142);
     line-height:20px;
     font-size: 16px;
     /* font-weight:400; */
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 /* -------x------------Empty page--------x-------- */
@@ -1634,7 +1683,7 @@ a.prof__btn__unfollowed{
         background-color:#fff;
     }
     #usersProfile.users--profile--container .user--top--info{
-        padding: 8px 0;
+        padding: 22px 0 10px ;
     }
     #messages.messages--container .messages--bottom--form{
         position: fixed;
@@ -1729,6 +1778,9 @@ a.prof__btn__unfollowed{
     }
     #usersProfile.users--profile--container, .post--comments--layout{
         padding-bottom:40px;
+    }
+    #usersProfile.users--profile--container .users__profile__image{
+        max-height: 250px;
     }
     /* #commentsModal.comments--modal--container{
         position:static !important;

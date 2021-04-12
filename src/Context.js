@@ -46,7 +46,8 @@ class AppProvider extends PureComponent {
     sugs.unshift(data);
     let suggestList = Array.from(
       new Set(sugs?.map((itemId) => itemId.uid))
-    ).map((ID) => sugs?.find((el) => el.uid === ID));
+    ).map((ID) => sugs?.find((el) => el.uid === ID)).filter(p => this.state.receivedData?.blockList.length > 0 ? this.state.receivedData?.blockList.some(k => k?.blockedUid !== p.uid) : p);
+    
     this.setState({
       ...this.state,
       suggestionsList: suggestList,
