@@ -1260,12 +1260,17 @@ a.prof__btn__unfollowed{
  line-height: 14px;
  margin-top: 14px;
  font-weight: 500;
+ cursor: pointer;
 }
 #usersProfile .similar__followers__item{
     margin:0 0 5px 0;
     font-size: inherit; 
     font-weight: inherit;
     color:#262626;   
+    cursor: pointer;
+}
+#usersProfile .similar__followers__item:hover{
+    text-decoration: underline;
 }
 #usersProfile .similar__followers__item::after{
     content: ",";
@@ -1645,6 +1650,10 @@ a.prof__btn__unfollowed{
     }
     #usersProfile.users--profile--container .users--profile--posts{
         gap:2px !important;
+    }
+    #usersProfile .similar__followers{
+        font-size: 13px;
+        font-weight: 600;
     }
     .desktop-only{
         display:none;

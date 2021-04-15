@@ -18,6 +18,8 @@ import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import SuggList from "./SuggList/SuggList";
+import MightKnowLI from "./MutualFriendsList/MutualFriendsItem";
+import * as Consts from "../../Utilities/Consts";
 
 const UsersProfile = (props) => {
   const [, loading] = useAuthState(auth);
@@ -134,9 +136,9 @@ const UsersProfile = (props) => {
                     }
                     {
                       similarFollowers && similarFollowers.length > 0 &&
-                      <p className="similar__followers">Followed by <span>
+                      <p onClick={()=> changeModalState("users",true, similarFollowers, Consts.MUTUALFRIENDS)}  className="similar__followers">Followed by <span>
                         {
-                        similarFollowers.slice(0,3).map(q => <small className="similar__followers__item" key={q?.receiverUid}> {q?.receiverName}</small>)
+                        similarFollowers.slice(0,3).map(q => <MightKnowLI key={q?.receiverUid} item={q} />)
                       }
                       {
                         similarFollowers.length > 3 && 

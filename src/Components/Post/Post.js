@@ -13,6 +13,7 @@ import { GoVerified } from "react-icons/go";
 import { Link } from "react-router-dom";
 import { updateObject } from "../../Utilities/Utility";
 import OptionsModal from "../Generic/OptionsModal/OptionsModal";
+import * as Consts from "../../Utilities/Consts";
 class Post extends PureComponent {
   constructor(props) {
     super(props);
@@ -314,7 +315,7 @@ class Post extends PureComponent {
               {likes.people?.length >= 1 ? (
                 <div
                   className="likes__count"
-                  onClick={() => changeModalState("users", true, likes.people, "likes")}
+                  onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes.people : []), Consts.LIKES)}
                 >
                   {likes.people?.length.toLocaleString()}{" "}
                   {likes.people?.length === 1 ? "like" : "likes"}

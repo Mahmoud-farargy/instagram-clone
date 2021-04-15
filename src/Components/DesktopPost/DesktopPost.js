@@ -328,6 +328,7 @@ const DesktopPost = (props) => {
                         src={contentURL}
                         draggable="false"
                         controls
+                        autoPlay
                       />
                       <IoMdVideocam className="video__top__icon" />
                     </div>

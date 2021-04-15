@@ -3,7 +3,7 @@ import TruncateMarkup from "react-truncate";
 import { FiHeart } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { withRouter } from "react-router";
-// import {AppContext} from "../../Context";
+import * as Consts from "../../Utilities/Consts";
 
 
 const Commment =(props)=>{
@@ -39,7 +39,7 @@ const Commment =(props)=>{
                <div className="post--comment--actions flex-row">
                       {
                           comment.likes?.length >=1 ?
-                             <span className="acc-action" onClick={()=> changeModalState("users",true, comment?.likes, "likes")}>{comment.likes?.length.toLocaleString()} {comment.likes?.length > 1 ? "likes" : "like"}</span>
+                             <span className="acc-action" onClick={()=> changeModalState("users",true, comment?.likes, Consts.LIKES)}>{comment.likes?.length.toLocaleString()} {comment.likes?.length > 1 ? "likes" : "like"}</span>
                           : null
                       } 
                        <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid); setSubComments(true)}}> Replay</span>      
@@ -79,7 +79,7 @@ const Commment =(props)=>{
                                                             <div className="post--comment--actions flex-row">
                                                                     {
                                                                         subComment?.likes?.length >=1 ?
-                                                                            <span className="acc-action" onClick={()=> changeModalState("users",true, subComment?.likes, "likes")}>{subComment?.likes?.length.toLocaleString()} {subComment?.likes?.length > 1 ? "likes" : "like"}</span>
+                                                                            <span className="acc-action" onClick={()=> changeModalState("users",true, subComment?.likes, Consts.LIKES)}>{subComment?.likes?.length.toLocaleString()} {subComment?.likes?.length > 1 ? "likes" : "like"}</span>
                                                                         : null
                                                                     } 
                                                                     <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid); setSubComments(true)}}> Replay</span>      

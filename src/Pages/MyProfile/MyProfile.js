@@ -13,6 +13,7 @@ import {FaHeart} from "react-icons/fa";
 import {FaRegComment} from "react-icons/fa";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
+import * as Consts from "../../Utilities/Consts";
 
 const MyProfile =(props)=>{
     const [,loading] = useAuthState(auth);
@@ -71,9 +72,9 @@ const MyProfile =(props)=>{
                                 
                             </div>
                             <div className="desktop--social--row flex-row">
-                                <p><span>{receivedData?.posts?.length.toLocaleString()}</span> {receivedData?.posts?.length >1 ?"posts": "post"}</p>
-                                <p className="acc-action" onClick={()=> changeModalState("users",true, receivedData?.followers, "followers")}><span>{receivedData?.followers?.length.toLocaleString()}</span> {receivedData?.followers?.length >1 ?"followers": "follower"}</p>
-                                <p className="acc-action"  onClick={()=> changeModalState("users",true, receivedData?.following, "following")}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
+                                <p><span>{receivedData?.posts?.length.toLocaleString()}</span> {receivedData?.posts?.length >1 ? "posts": "post"}</p>
+                                <p className="acc-action" onClick={()=> changeModalState("users",true, receivedData?.followers, Consts.FOLLOWERS)}><span>{receivedData?.followers?.length.toLocaleString()}</span> {receivedData?.followers?.length >1 ?"followers": "follower"}</p>
+                                <p className="acc-action"  onClick={()=> changeModalState("users",true, receivedData?.following, Consts.FOLLOWING)}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
                             </div>
                             {/* bottom row */}
                             {/* TODO: refactor this to be only one piece of code */}
