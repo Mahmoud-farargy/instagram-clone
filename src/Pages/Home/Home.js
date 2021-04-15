@@ -19,7 +19,6 @@ const Home = (props) => {
     handleMyLikes,
     handleSubmittingComments,
     suggestionsList,
-    getUsersProfile,
     uid,
     handleFollowing,
     deletePost,
@@ -27,21 +26,10 @@ const Home = (props) => {
     handleLikingComments,
     changeModalState,
     changeMainState,
-    notify,
     modalsState,
     onCommentDeletion
   } = useContext(AppContext);
   let posts = receivedData?.posts;
-  const browseUser = (specialUid, name) => {
-    if (specialUid && name) {
-      getUsersProfile(specialUid).then((res)=>{
-        props.history.push(`/user-profile/${name}`);
-      }).catch((err) =>{
-        notify((err && err.message) ||"error has occurred. please try again later!", "error");
-      });
-     
-    }
-  };
   let [, loading] = useAuthState(auth);
   const [randNum, setRandNum] = useState(0);
   useEffect(() => {
@@ -151,7 +139,7 @@ const Home = (props) => {
                       {suggestionsList &&
                         suggestionsList.length > 0 &&
                        Array.from(new Set(suggestionsList.map((item) => item.uid))).map((id) => suggestionsList.find((el) => el.uid === id))
-                          .filter((item) => item?.uid !== receivedData?.uid).slice(randNum, suggestionsList?.length -1).slice(0,5)
+                          .filter((item) => (item?.uid !== receivedData?.uid) ).slice(randNum, suggestionsList?.length -1).slice(0,5)
                           .map((user, i) => {
                             return (
                               <SuggestItem
@@ -160,7 +148,6 @@ const Home = (props) => {
                                 isVerified={user?.isVerified}
                                 userUid={user?.uid}
                                 userAvatarUrl={user?.userAvatarUrl}
-                                browseUser={browseUser}
                                 handleFollowing={handleFollowing}
                                 receivedData={receivedData ? receivedData : []}
                               />

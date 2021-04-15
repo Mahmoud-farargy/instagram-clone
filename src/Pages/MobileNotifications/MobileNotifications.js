@@ -3,36 +3,19 @@ import Auxiliary from "../../Components/HOC/Auxiliary";
 import NotificationOutput from "../../Components/NotificationsOutput/NotificationsOutput";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../Config/firebase";
-import { withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const MobileNotifications = (props) => {
   const  [, loading ] = useAuthState(auth);
   const {
     igVideoImg,
     handleFollowing,
-    getUsersProfile,
     changeMainState,
     receivedData,
-    notify,
   } = props.context;
   useEffect(() => {
     changeMainState("currentPage", "Notifications");
   }, []);
-  const browseUser = (specialUid, name) => {
-    if (specialUid && name) {
-      getUsersProfile(specialUid)
-        .then(() => {
-          props.history.push(`/user-profile/${name}`);
-        })
-        .catch((err) => {
-          notify(
-            (err && err.message) ||
-              "error has occurred. please try again later!",
-            "error"
-          );
-        });
-    }
-  };
   return (
     <Auxiliary>
       {!loading ? (
@@ -60,7 +43,6 @@ const MobileNotifications = (props) => {
                         handleFollowing={handleFollowing}
                         changeMainState={changeMainState}
                         postIndex={i}
-                        browseUser={browseUser}
                       />
                     </div>
                   );
@@ -80,4 +62,8 @@ const MobileNotifications = (props) => {
     </Auxiliary>
   );
 };
-export default withRouter(MobileNotifications);
+
+MobileNotifications.propTypes = {
+  context: PropTypes.object.isRequired
+}
+export default MobileNotifications;

@@ -17,13 +17,12 @@ import PostModal from "../../Components/DesktopPost/DesktopPost";
 const MyProfile =(props)=>{
     const [,loading] = useAuthState(auth);
     const [grid, setGrid] = useState(true);
-    const {receivedData,changeModalState, igVideoImg, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, usersProfileData, modalsState} = useContext(AppContext);
+    const {receivedData,changeModalState, igVideoImg, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState} = useContext(AppContext);
     const redirectToPost=(i, id)=>{
         changeMainState("currentPostIndex", {index: i, id: id});
         getUsersProfile(uid).then(() => {
             props.history.push("/browse-post");
         });
-        
     }
     useEffect(()=>{
         changeMainState("currentPage", "Profile");
@@ -44,7 +43,7 @@ const MyProfile =(props)=>{
         <Fragment>
             {/* Modals */}
             {modalsState?.post && receivedData?.posts[currentPostIndex?.index] &&
-                <PostModal history={props.history} />
+                <PostModal/>
             }
             <section id="usersProfile" className="users--profile--container ">
                 {/* Header */}

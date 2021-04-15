@@ -1,0 +1,278 @@
+#reels .reels--main--container {
+  width: 100%;
+  height: 100vh;
+  background-color: #1a1a1a;
+  position: relative;
+  overflow: hidden;
+  -webkit-box-pack: center;
+}
+
+#reels .reels--main--container .reels--outer--header {
+  padding: 40px 40px 0;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  color: #fff;
+}
+
+#reels .reels--main--container .reels--outer--header a, #reels .reels--main--container .reels--outer--header h1 {
+  color: #fff;
+  text-decoration: none;
+}
+
+#reels .reels--main--container .reels--outer--header a:hover, #reels .reels--main--container .reels--outer--header h1:hover {
+  color: #e1e1e1;
+}
+
+@media only screen and (max-width: 200px) {
+  #reels .reels--main--container .reels--outer--header {
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    overflow: hidden;
+  }
+}
+
+#reels .reels--main--container .reels--outer--header .reels--close--btn {
+  padding-left: 30px;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+#reels .reels--main--container .reel--video--inner {
+  margin: 6px 0 35px 0;
+  padding: 0 !important;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  overflow: hidden;
+  height: 100vh;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box {
+  max-width: 400px;
+  max-height: 1200px;
+  width: 70%;
+  height: 100%;
+  border-radius: 8px;
+  position: relative;
+  overflow-y: scroll;
+  -ms-scroll-snap-type: y mandatory;
+      scroll-snap-type: y mandatory;
+  height: 80vh;
+  position: relative;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content {
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: center;
+  position: relative;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content video {
+  border-radius: 8px;
+  -o-object-fit: fill;
+     object-fit: fill;
+  width: 100%;
+  height: 100%;
+}
+
+@media only screen and (max-width: 670px) {
+  #reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content video {
+    border-radius: 0px;
+  }
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content header.reel--header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  color: #fff;
+  overflow: hidden;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%;
+  padding: 20px 16px 32px;
+  background: linear-gradient(180deg, rgba(38, 38, 38, 0.8) 0%, rgba(38, 38, 38, 0) 100%);
+  background: -webkit-linear-gradient(top, rgba(38, 38, 38, 0.8) 0%, rgba(38, 38, 38, 0) 100%);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(38, 38, 38, 0.8)), to(rgba(38, 38, 38, 0)));
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content header.reel--header .reel--header--left {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content header.reel--header .reel--header--left .MuiAvatar-root {
+  width: 32px;
+  height: 32px;
+  margin-right: 5px;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content header.reel--header .reel--header--right div {
+  padding: 4px 7px;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content header.reel--header .reel__user__name, #reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content header.reel--header .reel__date {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 18px;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content header.reel--header .reel__user__name {
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content header.reel--header .reel__date {
+  opacity: 0.6;
+  font-weight: 400;
+  font-size: 15px;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content footer.reel--footer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 150px;
+  padding: 0 16px 16px;
+  z-index: 999;
+  background: webkit-linear-gradient(top, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.6) 100%);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(38, 38, 38, 0)), to(rgba(38, 38, 38, 0.6)));
+  background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.6) 100%);
+  pointer-events: none;
+  margin-top: auto;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content footer.reel--footer .reel--comment {
+  position: relative;
+  -ms-flex-item-align: end;
+      align-self: flex-end;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content footer.reel--footer .reel--comment textarea {
+  border: 1px solid #dbdbdb;
+  border-radius: 22px;
+  pointer-events: auto;
+  min-height: 44px;
+  background: transparent;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 auto;
+          flex: 1 auto;
+  resize: none;
+  height: 18px !important;
+  padding: 10px 10px 10px 20px;
+  z-index: 1400;
+  font-size: 14px;
+  color: #fff;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content footer.reel--footer .reel--comment textarea::-webkit-input-placeholder {
+  color: #dbdbdb;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content footer.reel--footer .reel--comment textarea:-ms-input-placeholder {
+  color: #dbdbdb;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content footer.reel--footer .reel--comment textarea::-ms-input-placeholder {
+  color: #dbdbdb;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content footer.reel--footer .reel--comment textarea::placeholder {
+  color: #dbdbdb;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content footer.reel--footer .reel--comment textarea:focus {
+  outline: none;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content footer.reel--footer .reel--comment .send__reel__comment {
+  position: absolute;
+  right: 13px;
+  top: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content .interaction--box {
+  position: absolute;
+  right: 20px;
+  bottom: 15%;
+  color: #fff;
+  width: 30px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  text-align: center;
+  z-index: 1000;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content .interaction--box svg {
+  font-size: 20px;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content .interaction--box .reel--likes, #reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content .interaction--box .reel--comment {
+  text-align: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content .interaction--box .reel--likes span, #reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content .interaction--box .reel--comment span {
+  margin-top: 6px;
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box .reel--video--content .reel--header--right {
+  font-size: 18px;
+}
+
+@media only screen and (max-width: 670px) {
+  #reels .reels--main--container .reel--video--inner .reel--video--box {
+    height: 100vh;
+    width: 100%;
+    border-radius: 0px;
+  }
+}
+
+#reels .reels--main--container .reel--video--inner .reel--video--box::-webkit-scrollbar {
+  display: none;
+  width: 0;
+}
+
+#reels .reels--main--container .reels-loading {
+  width: 100%;
+  height: 100%;
+  background-color: #2b2a2a;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  text-align: center;
+  border-radius: 8px;
+  border: 1px solid #000;
+}
+/*# sourceMappingURL=Reels.css.map */

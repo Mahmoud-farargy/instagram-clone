@@ -2,14 +2,17 @@ import React from "react";
 import Auxiliary from "../HOC/Auxiliary";
 import { GoVerified } from "react-icons/go";
 import { Avatar } from "@material-ui/core";
+import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
+import PropTypes from "prop-types";
+
 const SearchItem = (props) => {
-  const { user, browseUser } = props;
+  const { user, browseUser, closeSearchBox } = props;
   return (
     <Auxiliary>
       <li
         className="search--result--item flex-row"
         role="none"
-        onClick={() => browseUser(user?.uid,user?.userName)}
+        onClick={() => {browseUser(user?.uid,user?.userName); closeSearchBox(false)}}
       >
         <div className="search--item--inner flex-row">
           <Avatar
@@ -32,4 +35,10 @@ const SearchItem = (props) => {
     </Auxiliary>
   );
 };
-export default SearchItem;
+
+SearchItem.propTypes = {
+  user: PropTypes.object.isRequired,
+  browseUser: PropTypes.func.isRequired,
+  closeSearchBox: PropTypes.func.isRequired,
+}
+export default withBrowseUser(SearchItem);

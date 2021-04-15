@@ -39,8 +39,6 @@ const UsersProfile = (props) => {
     igVideoImg,
     modalsState,
     suggestionsList,
-    getUsersProfile,
-    notify,
     handleUserBlocking,
     currentPostIndex
   } = context;
@@ -97,59 +95,67 @@ const UsersProfile = (props) => {
 
   console.log(similarFollowers);
   const websiteToView = usersProfileData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?(?:http:\/\/)?/i, "").split("/")[0];
+  const notBlockedOrBlockingUser = receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) && usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid);
   const userProfileInfo = (
     <div>
-      {usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name &&
-                  <div className="prof--acc--name">
-                    <h1>
-                      {usersProfileData?.profileInfo?.name}
-                    </h1>
-                    <br />
-                  </div>
-                }
-                  {usersProfileData?.profileInfo &&
-                  usersProfileData?.profileInfo.professionalAcc &&
-                  usersProfileData?.profileInfo.professionalAcc.show && (
-                    <div className="prof--acc--category">
-                      <span>
-                        {
-                          usersProfileData.profileInfo?.professionalAcc
-                            ?.category
-                        }
-                      </span>
-                      <br />
-                    </div>
-                  )}
+       {
+        notBlockedOrBlockingUser ?
+        <div>
+          {usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name &&
+                      <div className="prof--acc--name">
+                        <h1>
+                          {usersProfileData?.profileInfo?.name}
+                        </h1>
+                        <br />
+                      </div>
+                    }
+                      {usersProfileData?.profileInfo &&
+                      usersProfileData?.profileInfo.professionalAcc &&
+                      usersProfileData?.profileInfo.professionalAcc.show && (
+                        <div className="prof--acc--category">
+                          <span>
+                            {
+                              usersProfileData.profileInfo?.professionalAcc
+                                ?.category
+                            }
+                          </span>
+                          <br />
+                        </div>
+                      )}
 
-                <div className="bottom--row--user-info flex-column">
-                  <span>{usersProfileData?.profileInfo?.bio}</span>
-                </div>
-                {
-                    usersProfileData?.profileInfo && usersProfileData?.profileInfo?.website &&
-                    <div className="prof--acc--website">
-                           <a rel="noopener noreferrer" target="_blank" href={usersProfileData?.profileInfo?.website}>{websiteToView}</a>
+                    <div className="bottom--row--user-info flex-column">
+                      <span>{usersProfileData?.profileInfo?.bio}</span>
                     </div>
-                }
-                {
-                  similarFollowers && similarFollowers.length > 0 &&
-                  <p className="similar__followers">Followed by <span>
                     {
-                    similarFollowers.slice(0,3).map(q => <small className="similar__followers__item" key={q?.receiverUid}> {q?.receiverName}</small>)
-                  }
-                  {
-                    similarFollowers.length > 3 && 
-                    <span className="similar__followers__more pl-1">+{ `${similarFollowers.length - 3}`} more</span>
-                  }
-                    </span></p>
-                }
+                        usersProfileData?.profileInfo && usersProfileData?.profileInfo?.website &&
+                        <div className="prof--acc--website">
+                              <a rel="noopener noreferrer" target="_blank" href={usersProfileData?.profileInfo?.website}>{websiteToView}</a>
+                        </div>
+                    }
+                    {
+                      similarFollowers && similarFollowers.length > 0 &&
+                      <p className="similar__followers">Followed by <span>
+                        {
+                        similarFollowers.slice(0,3).map(q => <small className="similar__followers__item" key={q?.receiverUid}> {q?.receiverName}</small>)
+                      }
+                      {
+                        similarFollowers.length > 3 && 
+                        <span className="similar__followers__more pl-1">+{ `${similarFollowers.length - 3}`} more</span>
+                      }
+                        </span></p>
+                    }
+        </div>
+        : null
+      }
     </div>
+   
   )
   return (
     <Fragment> 
        {/* Modals */}
       {
         modalsState?.post && usersProfileData?.posts[currentPostIndex?.index] &&
-          <PostModal history={props.history} />
+          <PostModal />
       }
       {
          modalsState?.options &&
@@ -303,7 +309,7 @@ const UsersProfile = (props) => {
                       following
                     </p>
                   {
-                      usersProfileData?.uid !== receivedData?.uid && receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) && usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) &&
+                      usersProfileData?.uid !== receivedData?.uid && notBlockedOrBlockingUser &&
                     <p>
                       <span className="profile--more--btn" onClick={() => changeModalState("options", true)}>
                          <HiOutlineDotsHorizontal />
@@ -343,7 +349,7 @@ const UsersProfile = (props) => {
                           item?.uid !== receivedData?.uid &&
                           item?.uid !== usersProfileData?.uid
                       ).slice(randNum, suggestionsList?.length -1).slice(0,10)
-                      .map((item, i) => <SuggList key={(item?.uid || i)} item={item} receivedData={receivedData} setSuggestionsBox={setSuggestionsBox} notify={notify} getUsersProfile={getUsersProfile} history={props.history} handleFollowing={handleFollowing}/>)}
+                      .map((item, i) => <SuggList key={(item?.uid || i)} item={item} receivedData={receivedData} setSuggestionsBox={setSuggestionsBox} handleFollowing={handleFollowing}/>)}
                   </ul>
                 </div>
               </div>
@@ -538,4 +544,4 @@ const UsersProfile = (props) => {
     </Fragment>
   );
 };
-export default withRouter(UsersProfile);
+export default withRouter(React.memo(UsersProfile));

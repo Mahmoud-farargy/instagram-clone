@@ -13,18 +13,6 @@ const Commment =(props)=>{
     useEffect(()=>{
         setPostLiked(comment?.likes.some(el => el.id === uid));
     },[comment?.likes])
-    // const context = useContext(AppContext);
-    // const browseUser = (specialUid) => {
-    //     const {getUsersProfile, notify} = context;
-    //     if (specialUid) {
-    //       getUsersProfile(specialUid).then((res)=>{
-    //         props.history.push(`/user-profile`);
-    //       }).catch((err) =>{
-    //         notify(err && err.message ||"error has occurred. please try again later!", "error");
-    //       });
-         
-    //     }
-    //   };
     return(
         <Fragment>
         <div className="post--comment--item">

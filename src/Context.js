@@ -23,13 +23,17 @@ class AppProvider extends PureComponent {
       currentChatIndex: 0,
       usersModalList: [],
       igVideoImg: igVideoImg,
-      modalsState: {comments: false, users: false, options: false, post: false},
+      modalsState: {
+        comments: false,
+        users: false,
+        options: false,
+        post: false,
+      },
       currentPage: "",
       searchInfo: { results: [], loading: false },
       reelsProfile: [],
     };
   }
-
   updatedReceivedData = () => {
     db.collection(Consts.USERS)
       .doc(this.state.uid)
@@ -44,10 +48,22 @@ class AppProvider extends PureComponent {
   updateSuggestionsList(data) {
     let sugs = this.state.initialSuggestions;
     sugs.unshift(data);
-    let suggestList = Array.from(
-      new Set(sugs?.map((itemId) => itemId.uid))
-    ).map((ID) => sugs?.find((el) => el.uid === ID)).filter(p => this.state.receivedData?.blockList.length > 0 ? this.state.receivedData?.blockList.some(k => k?.blockedUid !== p.uid) : p);
-    
+    let suggestList = Array.from(new Set(sugs?.map((itemId) => itemId.uid)))
+      .map((ID) => sugs?.find((el) => el.uid === ID))
+      .filter(
+        (p) =>
+          (this.state.receivedData?.blockList?.length > 0
+            ? !this.state.receivedData?.blockList?.some((k) =>
+                k?.blockedUid.includes(p?.uid)
+              )
+            : p) &&
+          (p?.blockList?.length > 0
+            ? p?.blockList.some(
+                (k) => !k?.blockedUid === this.state.receivedData?.uid
+              )
+            : p)
+      );
+
     this.setState({
       ...this.state,
       suggestionsList: suggestList,
@@ -61,39 +77,46 @@ class AppProvider extends PureComponent {
     withNotifications
   ) => {
     if (withNotifications === "") {
-    return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         db.collection(Consts.USERS)
           .doc(uid)
           .update({
             [stateBase]: newState,
           })
           .then(() => {
-            if (updateAbility === true || uid === this.state.receivedData?.uid) {
+            if (
+              updateAbility === true ||
+              uid === this.state.receivedData?.uid
+            ) {
               this.updatedReceivedData();
             }
             resolve();
-          }).catch((err) =>{
+          })
+          .catch((err) => {
             reject(err.message);
           });
-     })
-      
+      });
     } else {
-      return new Promise((resolve, reject) =>{
-          db.collection(Consts.USERS)
+      return new Promise((resolve, reject) => {
+        db.collection(Consts.USERS)
           .doc(uid)
           .update({
             [stateBase]: newState,
             notifications: withNotifications,
           })
           .then(() => {
-            if (updateAbility === true || uid === this.state.receivedData?.uid) {
+            if (
+              updateAbility === true ||
+              uid === this.state.receivedData?.uid
+            ) {
               this.updatedReceivedData();
             }
             resolve();
-          }).catch((err) => {
+          })
+          .catch((err) => {
             reject(err.message);
           });
-      })
+      });
     }
   };
 
@@ -137,13 +160,19 @@ class AppProvider extends PureComponent {
       .doc(postOwnerId)
       .get()
       .then((items) => {
-        const { posts = [], notifications = [], blockList = []} = items?.data();
+        const {
+          posts = [],
+          notifications = [],
+          blockList = [],
+        } = items?.data();
         let unupdatedPosts = posts;
         let unupdatedNoti = notifications;
 
         let dataCopy = JSON.parse(JSON.stringify(unupdatedPosts));
         let notiCopy = JSON.parse(JSON.stringify(unupdatedNoti));
-        const isBlocked = blockList.some(d => d.blockedUid === this.state.uid);
+        const isBlocked = blockList.some(
+          (d) => d.blockedUid === this.state.uid
+        );
         var likesArr = dataCopy[postIndex].likes;
         function getPeopleIndex() {
           var currIndex;
@@ -153,8 +182,8 @@ class AppProvider extends PureComponent {
           });
           return currIndex;
         }
-        if(!isBlocked){
-            if (boolean) {
+        if (!isBlocked) {
+          if (boolean) {
             //handles notifications
             notiCopy.isUpdate = true;
             const generatedID = this.generateNewId();
@@ -189,10 +218,9 @@ class AppProvider extends PureComponent {
               // this.notify("abort 151 error", "error");
             }
           }
-        }else{
-          this.notify("Liking this user is not allowed","error");
+        } else {
+          this.notify("Liking this user is not allowed", "error");
         }
-        
 
         likesArr.people = Array.from(
           new Set(likesArr.people.map((itemId) => itemId.id))
@@ -219,7 +247,12 @@ class AppProvider extends PureComponent {
       currentChatIndex: 0,
       usersModalList: [],
       igVideoImg: igVideoImg,
-      modalsState: {comments: false, users: false, options: false, post: false},
+      modalsState: {
+        comments: false,
+        users: false,
+        options: false,
+        post: false,
+      },
       currentPage: "",
       searchInfo: { results: [], loading: false },
       reelsProfile: [],
@@ -255,7 +288,7 @@ class AppProvider extends PureComponent {
         ownerId,
         likes: [],
         subComments: [],
-        commentId: generatedCommentId
+        commentId: generatedCommentId,
       });
 
       this.updateParts(myId, "posts", myPostsCopy, true, "");
@@ -264,16 +297,22 @@ class AppProvider extends PureComponent {
         .doc(ownerId)
         .get()
         .then((items) => {
-          const {posts = [], notifications = [], blockList = []} = items?.data();
+          const {
+            posts = [],
+            notifications = [],
+            blockList = [],
+          } = items?.data();
           let oldPosts = posts;
           let noti = notifications;
           let theirPostsCopy = JSON.parse(JSON.stringify(oldPosts));
           let notiCopy = JSON.parse(JSON.stringify(noti));
           const generatedID = this.generateNewId();
-          
-          const isBlocked = blockList.some(d => d.blockedUid === this.state.uid);
-          if(!isBlocked){
-              theirPostsCopy[index].comments.push({
+
+          const isBlocked = blockList.some(
+            (d) => d.blockedUid === this.state.uid
+          );
+          if (!isBlocked) {
+            theirPostsCopy[index].comments.push({
               comment: comment,
               uid: myId,
               userAvatarUrl: userAvatarUrl,
@@ -284,7 +323,7 @@ class AppProvider extends PureComponent {
               likes: [],
               subComments: [],
               notiId: generatedID,
-              commentId: generatedCommentId
+              commentId: generatedCommentId,
             });
             notiCopy.isUpdate = true;
             notiCopy.list.push({
@@ -297,43 +336,58 @@ class AppProvider extends PureComponent {
               contentType,
               notiText: `commented on your ${contentType} post: ${comment} `,
               type: "comment",
-              commentId: generatedCommentId
+              commentId: generatedCommentId,
             });
 
             this.updateParts(ownerId, "posts", theirPostsCopy, false, notiCopy);
-          }else {
-            this.notify("Submitting a comment to this user is not allowed", "error");
+          } else {
+            this.notify(
+              "Submitting a comment to this user is not allowed",
+              "error"
+            );
           }
-          
         });
     }
   }
 
   deleteContentFromFB(path, root) {
     return new Promise((resolve, reject) => {
-        path && storageRef.child(`${root}/${this.state.uid}/${path}`).delete().then(()=>{
-          resolve();
-        }).catch((err) =>{
-          reject(err.message);
-        });
-    })
+      path &&
+        storageRef
+          .child(`${root}/${this.state.uid}/${path}`)
+          .delete()
+          .then(() => {
+            resolve();
+          })
+          .catch((err) => {
+            reject(err.message);
+          });
+    });
   }
   getUsersProfile(uid) {
-    
-    return new Promise((resolve, reject) => {
-        db.collection(Consts.USERS)
-        .doc(uid)
-        .onSnapshot((snapshot) => {
-          this.setState({
-            ...this.state,
-            usersProfileData: snapshot.data(),
-          });
-          resolve();
-        }, (error) =>{
-          reject(error);
-        });
-    });
-  
+    const currentUid = uid;
+    // Note: A BUG IS CAUSED FROM HERE WHICH CAUSES UNEXPECTED ACCOUNT SWITCHING. PLEASE FIX!
+    if(currentUid){
+        return new Promise((resolve, reject) => {
+        db.collection(Consts.USERS).doc(currentUid).onSnapshot(
+            (snapshot) => {
+              const data = snapshot?.data();
+              if(data?.uid === uid){
+                this.setState({
+                  ...this.state,
+                  usersProfileData: data,
+                });
+              }
+              
+              resolve();
+            },
+            (error) => {
+              reject(error);
+            }
+          );
+      });
+    }
+   
   }
   updateUserState = (state) => {
     this.setState({
@@ -362,17 +416,29 @@ class AppProvider extends PureComponent {
     contentURL,
     contentType
   ) => {
-    const { commentIndex, postIndex, postId, postOwnerId , senderUid } = commentInfo;
+    const {
+      commentIndex,
+      postIndex,
+      postId,
+      postOwnerId,
+      senderUid,
+    } = commentInfo;
     db.collection(Consts.USERS)
       .doc(postOwnerId)
       .get()
       .then((items) => {
-        const {posts= [],notifications = [], blockList = [] } = items?.data();
+        const {
+          posts = [],
+          notifications = [],
+          blockList = [],
+        } = items?.data();
         let unupdatedPosts = posts;
         let noti = notifications;
         const postsCopy = JSON.parse(JSON.stringify(unupdatedPosts));
         const notiCopy = JSON.parse(JSON.stringify(noti));
-        const isBlocked = blockList.some(g => g.blockedUid ===  this.state.uid);
+        const isBlocked = blockList.some(
+          (g) => g.blockedUid === this.state.uid
+        );
 
         let matchedIndex = postsCopy
           .map((el) => {
@@ -380,11 +446,12 @@ class AppProvider extends PureComponent {
           })
           .indexOf(postId);
         if (postIndex === matchedIndex && matchedIndex !== -1) {
-          if(!isBlocked){
-              var notiId = this.generateNewId();
-              var generateSubId = this.generateNewId();
-              const subComments = postsCopy[postIndex].comments[commentIndex].subComments;
-              subComments.push({
+          if (!isBlocked) {
+            var notiId = this.generateNewId();
+            var generateSubId = this.generateNewId();
+            const subComments =
+              postsCopy[postIndex].comments[commentIndex].subComments;
+            subComments.push({
               commentText: commentText,
               postId: postId,
               postOwnerId: postOwnerId,
@@ -394,7 +461,7 @@ class AppProvider extends PureComponent {
               date: new Date(),
               likes: [],
               senderUid,
-              subCommentId: generateSubId
+              subCommentId: generateSubId,
             });
             if (postOwnerId !== this.state.uid) {
               notiCopy.isUpdate = true;
@@ -412,7 +479,7 @@ class AppProvider extends PureComponent {
                 date: new Date(),
                 notiText: `mentioned you in a comment: ${commentText}`,
                 type: "sub-comment",
-                subCommentId: generateSubId
+                subCommentId: generateSubId,
               });
             }
             this.updateParts(
@@ -422,10 +489,12 @@ class AppProvider extends PureComponent {
               updatingAbility,
               notiCopy
             );
-          }else{
-            this.notify("Submitting a comment to this user is not allowed","error");
+          } else {
+            this.notify(
+              "Submitting a comment to this user is not allowed",
+              "error"
+            );
           }
-          
         } else {
           this.notify("Error has occurred. Please try again later.", "error");
         }
@@ -453,30 +522,43 @@ class AppProvider extends PureComponent {
     contentURL,
     contentType,
     subCommentIndex,
-    subCommentId,
+    subCommentId
   ) => {
-   //needs more organization
+    //needs more organization
     db.collection(Consts.USERS)
       .doc(postOwnerId)
       .get()
       .then((items) => {
-        const {posts = [], notifications = [], blockList = []} = items?.data();
+        const {
+          posts = [],
+          notifications = [],
+          blockList = [],
+        } = items?.data();
         let unupdatedPosts = posts;
         let noti = notifications;
         let dataCopy = JSON.parse(JSON.stringify(unupdatedPosts));
         let notiCopy = JSON.parse(JSON.stringify(noti));
-        const isBlocked = blockList.some(d => d.blockedUid === this.state.uid);
+        const isBlocked = blockList.some(
+          (d) => d.blockedUid === this.state.uid
+        );
 
         var likesArr = dataCopy && dataCopy[postIndex].comments[commentIndex];
-        var subCommentsCopy = dataCopy[postIndex].comments && dataCopy[postIndex].comments.length > 0 && likesArr.subComments;
-        let savedSubIndex = subCommentsCopy && subCommentsCopy.length >0 && subCommentsCopy?.map((el) => el.subCommentId).indexOf(subCommentId);
+        var subCommentsCopy =
+          dataCopy[postIndex].comments &&
+          dataCopy[postIndex].comments.length > 0 &&
+          likesArr.subComments;
+        let savedSubIndex =
+          subCommentsCopy &&
+          subCommentsCopy.length > 0 &&
+          subCommentsCopy?.map((el) => el.subCommentId).indexOf(subCommentId);
         if (unupdatedPosts && likesArr) {
           if (boolean) {
-            if(!isBlocked){
+            if (!isBlocked) {
               let generatedID = this.generateNewId();
-              if(type === "comment"){
-                  //like
-                  likesArr.likes && likesArr.likes.unshift({
+              if (type === "comment") {
+                //like
+                likesArr.likes &&
+                  likesArr.likes.unshift({
                     id: myId,
                     userName: userName,
                     userAvatarUrl: userAvatarUrl,
@@ -484,103 +566,132 @@ class AppProvider extends PureComponent {
                     date: new Date(),
                     likeId: this.generateNewId(),
                   });
-                 
-              }else if(type === "subComment"){ 
-                if(subCommentIndex === savedSubIndex && savedSubIndex !== -1){
-                    subCommentsCopy[savedSubIndex].likes && subCommentsCopy[savedSubIndex].likes.unshift({
+              } else if (type === "subComment") {
+                if (subCommentIndex === savedSubIndex && savedSubIndex !== -1) {
+                  subCommentsCopy[savedSubIndex].likes &&
+                    subCommentsCopy[savedSubIndex].likes.unshift({
                       id: myId,
                       userName: userName,
                       userAvatarUrl: userAvatarUrl,
                       notiId: generatedID,
                       date: new Date(),
                       likeId: this.generateNewId(),
-                  });
-                
+                    });
+
                   notiCopy.isUpdate = true;
-                  notiCopy.list && notiCopy.list.unshift({
-                        uid: myId,
-                        notiId: generatedID,
-                        userName: postOwnerId === myId ? "You" : userName,
-                        date: new Date(),
-                        userAvatarUrl: this.state.receivedData?.userAvatarUrl,
-                        notiText: `liked your comment: ${commentText}`,
-                        type: "like-comment",
-                        contentURL,
-                        contentType,
-                  });
-                }else{
-                  this.notify("An error occurred","error");
+                  notiCopy.list &&
+                    notiCopy.list.unshift({
+                      uid: myId,
+                      notiId: generatedID,
+                      userName: postOwnerId === myId ? "You" : userName,
+                      date: new Date(),
+                      userAvatarUrl: this.state.receivedData?.userAvatarUrl,
+                      notiText: `liked your comment: ${commentText}`,
+                      type: "like-comment",
+                      contentURL,
+                      contentType,
+                    });
+                } else {
+                  this.notify("An error occurred", "error");
                 }
               }
-              
-            }else{
-              this.notify("Liking this user is not allowed","error");
+            } else {
+              this.notify("Liking this user is not allowed", "error");
             }
-           
-          } else if(!boolean){
-            const savedPosts = this.state.usersProfileData && this.state.usersProfileData?.posts && this.state.usersProfileData?.posts.length > 0 && this.state.usersProfileData?.posts[postIndex]?.comments;
+          } else if (!boolean) {
+            const savedPosts =
+              this.state.usersProfileData &&
+              this.state.usersProfileData?.posts &&
+              this.state.usersProfileData?.posts.length > 0 &&
+              this.state.usersProfileData?.posts[postIndex]?.comments;
             //dislike
-            if(type === "comment"){
-                let index = likesArr.likes
+            if (type === "comment") {
+              let index = likesArr.likes
+                ?.map((el) => {
+                  return el.id; //<<find a better way (don't use uid here)
+                })
+                .indexOf(myId);
+              if (index !== -1) {
+                let notiIndex = notiCopy.list
                   ?.map((el) => {
-                    return el.id; //<<find a better way (don't use uid here)
+                    return el.notiId;
+                  })
+                  .indexOf(
+                    savedPosts && savedPosts[commentIndex]?.likes[index]?.notiId
+                  );
+                if (notiIndex !== -1) {
+                  notiCopy.list.splice(notiIndex, 1); //<<< FIX THIS
+                } else {
+                  // this.notify("error likes 304", "error");
+                }
+                likesArr.likes.splice(index, 1);
+              } else {
+                this.notify("context 524 err", "error");
+              }
+            } else if (type === "subComment") {
+              if (
+                subCommentsCopy[savedSubIndex] &&
+                subCommentsCopy.length > 0
+              ) {
+                let indexToDelete = subCommentsCopy[savedSubIndex].likes
+                  ?.map((el) => {
+                    //<<find a better way (don't use uid here)
+                    return el.id;
                   })
                   .indexOf(myId);
-                if (index !== -1) {
+                if (
+                  subCommentIndex === savedSubIndex &&
+                  savedSubIndex !== -1 &&
+                  indexToDelete !== -1
+                ) {
                   let notiIndex = notiCopy.list
-                    ?.map((el) => { 
+                    ?.map((el) => {
                       return el.notiId;
                     })
-                    .indexOf(savedPosts && savedPosts[commentIndex]?.likes[index]?.notiId);
+                    .indexOf(
+                      savedPosts &&
+                        savedPosts[commentIndex].subComments &&
+                        savedPosts[commentIndex]?.subComments[savedSubIndex]
+                          ?.likes[indexToDelete]?.notiId
+                    );
                   if (notiIndex !== -1) {
                     notiCopy.list.splice(notiIndex, 1); //<<< FIX THIS
                   } else {
                     // this.notify("error likes 304", "error");
                   }
-                  likesArr.likes.splice(index, 1);
-                } else {
-                  this.notify("context 524 err", "error");
-                }
-            }else if(type === "subComment"){
-              if(subCommentsCopy[savedSubIndex] && subCommentsCopy.length > 0){
-                      let indexToDelete = subCommentsCopy[savedSubIndex].likes
-                      ?.map((el) => { //<<find a better way (don't use uid here)
-                        return el.id;
-                      })
-                      .indexOf(myId);
-                    if (subCommentIndex === savedSubIndex && savedSubIndex !== -1 && indexToDelete !== -1) {
-                      let notiIndex = notiCopy.list
-                        ?.map((el) => {
-                          return el.notiId;
-                        })
-                        .indexOf(savedPosts && savedPosts[commentIndex].subComments && savedPosts[commentIndex]?.subComments[savedSubIndex]?.likes[indexToDelete]?.notiId);
-                      if (notiIndex !== -1) {
-                        notiCopy.list.splice(notiIndex, 1); //<<< FIX THIS
-                      } else {
-                        // this.notify("error likes 304", "error");
-                      }
 
-                      subCommentsCopy[savedSubIndex] && subCommentsCopy[savedSubIndex].likes.length > 0 && subCommentsCopy[savedSubIndex].likes.splice(indexToDelete, 1);
-                    } else {
-                      this.notify("context 545 err", "error");
-                    }
+                  subCommentsCopy[savedSubIndex] &&
+                    subCommentsCopy[savedSubIndex].likes.length > 0 &&
+                    subCommentsCopy[savedSubIndex].likes.splice(
+                      indexToDelete,
+                      1
+                    );
+                } else {
+                  this.notify("context 545 err", "error");
+                }
               }
-              
             }
-            
           }
-          if(likesArr && likesArr.likes.length > 0){
+          if (likesArr && likesArr.likes.length > 0) {
             likesArr.likes = Array.from(
               new Set(likesArr.likes.map((itemId) => itemId.id))
             ).map((ID) => likesArr.likes.find((el) => el.id === ID));
           }
 
-          if(subCommentsCopy && subCommentsCopy[savedSubIndex] && subCommentId && subCommentsCopy[savedSubIndex].likes){
-             subCommentsCopy[savedSubIndex].likes = Array.from(
-              new Set(subCommentsCopy[savedSubIndex].likes.map((itemId) => itemId.id))
-            ).map((ID) => subCommentsCopy[savedSubIndex].likes.find((el) => el.id === ID));
+          if (
+            subCommentsCopy &&
+            subCommentsCopy[savedSubIndex] &&
+            subCommentId &&
+            subCommentsCopy[savedSubIndex].likes
+          ) {
+            subCommentsCopy[savedSubIndex].likes = Array.from(
+              new Set(
+                subCommentsCopy[savedSubIndex].likes.map((itemId) => itemId.id)
+              )
+            ).map((ID) =>
+              subCommentsCopy[savedSubIndex].likes.find((el) => el.id === ID)
+            );
           }
-         
 
           this.updateParts(postOwnerId, "posts", dataCopy, false, notiCopy);
         }
@@ -588,19 +699,20 @@ class AppProvider extends PureComponent {
   };
   authLogout(history) {
     return new Promise((resolve, reject) => {
-        auth.signOut().then(() => {
-        localStorage.clear();
-        this.resetAllData();
-        history.replace("/auth");
-        // window.location.reload();
-        resolve();
-      }).catch((err) => {
-        this.notify(err.message,"error");
-        reject();
-      });
-     
-    })
-    
+      auth
+        .signOut()
+        .then(() => {
+          localStorage.clear();
+          this.resetAllData();
+          history.replace("/auth");
+          // window.location.reload();
+          resolve();
+        })
+        .catch((err) => {
+          this.notify(err.message, "error");
+          reject();
+        });
+    });
   }
   handleFollowing(
     state,
@@ -611,79 +723,94 @@ class AppProvider extends PureComponent {
     senderName,
     senderAvatarUrl
   ) {
-    if(receiverUid){
-    db.collection(Consts.USERS)
-      .doc(receiverUid)
-      .get()
-      .then((items) => {
-        if(items){
-          const {notifications = [], blockList = []} = items?.data();
+    if (receiverUid) {
+      db.collection(Consts.USERS)
+        .doc(receiverUid)
+        .get()
+        .then((items) => {
+          if (items) {
+            const { notifications = [], blockList = [] } = items?.data();
             var unupdatedReceiversData = items.data()?.followers; //receiver's data
             var unupdatedSendersData = this.state.receivedData?.following; //sender's data
             var noti = notifications;
-            let receiversCopy = JSON.parse(JSON.stringify(unupdatedReceiversData)); //creates a copy for each user's data
+            let receiversCopy = JSON.parse(
+              JSON.stringify(unupdatedReceiversData)
+            ); //creates a copy for each user's data
             let sendersCopy = JSON.parse(JSON.stringify(unupdatedSendersData));
             let notiCopy = JSON.parse(JSON.stringify(noti));
             // const follow = this.state.receivedData?.following.some(m => m.receiverUid === receiverUid);
-            const isBlocked = blockList.some(g => g.blockedUid ===  this.state.uid);
-            const blockedThem = this.state.receivedData?.blockList.some(g => g.blockedUid ===  receiverUid);
-            if(!blockedThem){
-                if (!state) {
+            const isBlocked = blockList.some(
+              (g) => g.blockedUid === this.state.uid
+            );
+            const blockedThem = this.state.receivedData?.blockList.some(
+              (g) => g.blockedUid === receiverUid
+            );
+            if (!blockedThem) {
+              if (!state) {
                 //follow
                 // pushes sender's data into followers receiver's array
 
-                if (receiverUid !== senderUid ) {
-                  if(!isBlocked){
-                        //makes sure the user somehow doesn't follow themselves
-                      const generatedID = this.generateNewId();
+                if (receiverUid !== senderUid) {
+                  if (!isBlocked) {
+                    //makes sure the user somehow doesn't follow themselves
+                    const generatedID = this.generateNewId();
 
-                      receiversCopy.unshift({
-                        senderUid,
-                        senderName,
-                        senderAvatarUrl,
+                    receiversCopy.unshift({
+                      senderUid,
+                      senderName,
+                      senderAvatarUrl,
+                      notiId: generatedID,
+                      date: new Date(),
+                    });
+                    let newReceiversCopy = Array.from(
+                      new Set(receiversCopy.map((item) => item.senderUid))
+                    ).map((id) => {
+                      return receiversCopy.find((el) => el.senderUid === id);
+                    }); //removes duplicates
+                    notiCopy.isUpdate = true; //adds a notification
+                    if (notiCopy.list) {
+                      notiCopy.list.unshift({
                         notiId: generatedID,
+                        userName: senderName,
+                        uid: senderUid,
                         date: new Date(),
+                        type: "follow",
+                        userAvatarUrl: senderAvatarUrl,
+                        notiText: `started following you`,
                       });
-                      let newReceiversCopy = Array.from(
-                        new Set(receiversCopy.map((item) => item.senderUid))
-                      ).map((id) => {
-                        return receiversCopy.find((el) => el.senderUid === id);
-                      }); //removes duplicates
-                      notiCopy.isUpdate = true; //adds a notification
-                      if(notiCopy.list){
-                        notiCopy.list.unshift({
-                          notiId: generatedID,
-                          userName: senderName,
-                          uid: senderUid,
-                          date: new Date(),
-                          type: "follow",
-                          userAvatarUrl: senderAvatarUrl,
-                          notiText: `started following you`,
-                        });
-                        
-                          this.updateParts( receiverUid, "followers", newReceiversCopy, false, notiCopy);
-                      }
-                    
 
-                      // pushes receiver's data into following sender's array
-                      sendersCopy.unshift({
+                      this.updateParts(
                         receiverUid,
-                        receiverName,
-                        receiverAvatarUrl,
-                        date: new Date(),
-                      });
-                      let newSendersCopy = Array.from(
-                        new Set(sendersCopy.map((item) => item.receiverUid))
-                      ).map((id) => {
-                        return sendersCopy.find((el) => el.receiverUid === id);
-                      }); //removes duplicates
+                        "followers",
+                        newReceiversCopy,
+                        false,
+                        notiCopy
+                      );
+                    }
 
-                    
-                        this.updateParts(senderUid, "following", newSendersCopy, true, "");
+                    // pushes receiver's data into following sender's array
+                    sendersCopy.unshift({
+                      receiverUid,
+                      receiverName,
+                      receiverAvatarUrl,
+                      date: new Date(),
+                    });
+                    let newSendersCopy = Array.from(
+                      new Set(sendersCopy.map((item) => item.receiverUid))
+                    ).map((id) => {
+                      return sendersCopy.find((el) => el.receiverUid === id);
+                    }); //removes duplicates
+
+                    this.updateParts(
+                      senderUid,
+                      "following",
+                      newSendersCopy,
+                      true,
+                      ""
+                    );
                   } else {
                     this.notify("Following this user is not allowed.", "error");
                   }
-                  
                 } else {
                   this.notify("Following yourself is not allowed", "warning");
                 }
@@ -715,12 +842,24 @@ class AppProvider extends PureComponent {
                     // this.notify("Failed", "error");
                   }
                   //experimental
-                  notiCopy.list = Array.from(new Set(notiCopy.list.map((item) => item.uid))).map((id) => notiCopy.list.find((el) =>  el.type === "follow" ? el.uid === id : el));
-                  notiCopy.list = Array.from(new Set(notiCopy.list.map((item) => item.notiId))).map((id) => notiCopy.list.find((el) =>  el.notiId === id));
-                  
-                  
-                      this.updateParts( receiverUid, "followers", receiversCopy, false, notiCopy);
-                
+                  notiCopy.list = Array.from(
+                    new Set(notiCopy.list.map((item) => item.uid))
+                  ).map((id) =>
+                    notiCopy.list.find((el) =>
+                      el.type === "follow" ? el.uid === id : el
+                    )
+                  );
+                  notiCopy.list = Array.from(
+                    new Set(notiCopy.list.map((item) => item.notiId))
+                  ).map((id) => notiCopy.list.find((el) => el.notiId === id));
+
+                  this.updateParts(
+                    receiverUid,
+                    "followers",
+                    receiversCopy,
+                    false,
+                    notiCopy
+                  );
                 } else {
                   this.notify("Failed", "error");
                 }
@@ -730,101 +869,117 @@ class AppProvider extends PureComponent {
                     return item.receiverUid;
                   })
                   .indexOf(receiverUid);
-                  if(currIndex2 !== -1){
-                    // removes receiver from sender's following array
-                    sendersCopy.splice(currIndex2, 1);
-                    this.updateParts(senderUid, "following", sendersCopy, true, "");
-                  }else{
-                    this.notify("Failed", "error");
-                  }
-              
-                
+                if (currIndex2 !== -1) {
+                  // removes receiver from sender's following array
+                  sendersCopy.splice(currIndex2, 1);
+                  this.updateParts(
+                    senderUid,
+                    "following",
+                    sendersCopy,
+                    true,
+                    ""
+                  );
+                } else {
+                  this.notify("Failed", "error");
+                }
               }
-            }else{
-              this.notify("Following this user is not allowed. Unblock them first.","error");
+            } else {
+              this.notify(
+                "Following this user is not allowed. Unblock them first.",
+                "error"
+              );
             }
-        }
-        
-      });
+          }
+        });
     }
   }
 
   handleSendingMessage(textMsg, uid, type) {
     const myUid = this.state.uid;
-    if (uid !== myUid) {     
+    if (uid !== myUid) {
       // Edit receiver's data
       db.collection(Consts.USERS)
         .doc(uid)
         .get()
         .then((items) => {
-          const {messages = [], notifications = [], blockList = []} = items?.data();
+          const {
+            messages = [],
+            notifications = [],
+            blockList = [],
+          } = items?.data();
           const unupdatedReceiversData = messages;
           const noti = notifications;
-          
+
           let notiCopy = JSON.parse(JSON.stringify(noti));
-          const isBlocked = blockList.some(d => d.blockedUid === this.state.uid);
-          if(!isBlocked){
-                    // Edit sender's data
-              const myData = this.state.receivedData;
-              const unupdatedSendersData = this.state.receivedData?.messages;
-              
-              const blockedThem = this.state.receivedData?.blockList.some(h => h.blockedUid === uid);
-              if(!blockedThem){
-                let sendersCopy = JSON.parse(JSON.stringify(unupdatedSendersData));
-                  let currIndex = sendersCopy
-                  .map((item) => {
-                    //ERROR FOUND
-                    return item?.uid;
-                  })
-                  .indexOf(uid);
-                  if(currIndex !== -1 ){
-                        sendersCopy[currIndex].chatLog.push({
-                        textMsg,
-                        uid: myUid,
-                        userName: myData?.userName,
-                        userAvatarUrl: myData?.userAvatarUrl,
-                        date: new Date(),
-                        type: type,
-                      }); 
-                      
-                      this.updateParts(myUid, "messages", sendersCopy, true, "");
-                  }else{
-                    this.notify("Failed to send.","error");
-                  }
-             
-                
-              }else{
-                this.notify("Messaging this user is not allowed because you blocked them.", "error");
-              }
-            
-              let receiversCopy = JSON.parse(
-                JSON.stringify(unupdatedReceiversData)
+          const isBlocked = blockList.some(
+            (d) => d.blockedUid === this.state.uid
+          );
+          if (!isBlocked) {
+            // Edit sender's data
+            const myData = this.state.receivedData;
+            const unupdatedSendersData = this.state.receivedData?.messages;
+
+            const blockedThem = this.state.receivedData?.blockList.some(
+              (h) => h.blockedUid === uid
+            );
+            if (!blockedThem) {
+              let sendersCopy = JSON.parse(
+                JSON.stringify(unupdatedSendersData)
               );
-              let currIndex = receiversCopy
-                ?.map((el) => {
-                  return el.uid;
+              let currIndex = sendersCopy
+                .map((item) => {
+                  //ERROR FOUND
+                  return item?.uid;
                 })
-                .indexOf(myUid); //derives the index from an id
-              //looks for ours id in person's data
-              if(currIndex !== -1){
-                    notiCopy.isNewMsg = true;
-                    receiversCopy[currIndex].chatLog.push({
-                    textMsg,
-                    uid: myUid,
-                    userName: myData?.userName,
-                    userAvatarUrl: myData?.userAvatarUrl,
-                    date: new Date(),
-                    type: type,
-                  });
-              }else{
-                this.notify("Failed to send.","error");
+                .indexOf(uid);
+              if (currIndex !== -1) {
+                sendersCopy[currIndex].chatLog.push({
+                  textMsg,
+                  uid: myUid,
+                  userName: myData?.userName,
+                  userAvatarUrl: myData?.userAvatarUrl,
+                  date: new Date(),
+                  type: type,
+                });
+
+                this.updateParts(myUid, "messages", sendersCopy, true, "");
+              } else {
+                this.notify("Failed to send.", "error");
               }
-           
-              this.updateParts(uid, "messages", receiversCopy, false, notiCopy);
-          }else{
-            this.notify("Messaging this user is not allowed.","error");
+            } else {
+              this.notify(
+                "Messaging this user is not allowed because you blocked them.",
+                "error"
+              );
+            }
+
+            let receiversCopy = JSON.parse(
+              JSON.stringify(unupdatedReceiversData)
+            );
+            let currIndex = receiversCopy
+              ?.map((el) => {
+                return el.uid;
+              })
+              .indexOf(myUid); //derives the index from an id
+            //looks for ours id in person's data
+            if (currIndex !== -1) {
+              notiCopy.isNewMsg = true;
+              receiversCopy[currIndex].chatLog.push({
+                textMsg,
+                uid: myUid,
+                userName: myData?.userName,
+                userAvatarUrl: myData?.userAvatarUrl,
+                date: new Date(),
+                type: type,
+              });
+            } else {
+              this.notify("Failed to send.", "error");
+            }
+
+            this.updateParts(uid, "messages", receiversCopy, false, notiCopy);
+          } else {
+            this.notify("Messaging this user is not allowed.", "error");
           }
-          
         });
     } else {
       this.notify("Sending messages to yourself is not allowed", "warning");
@@ -832,17 +987,22 @@ class AppProvider extends PureComponent {
   }
 
   generateNewId = () => {
-    return `${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 20)}_${Math.random() * 10}`;
+    return `${Math.random()
+      .toString(36)
+      .replace(/[^a-z]+/g, "")
+      .substr(0, 20)}_${Math.random() * 10}`;
   };
 
   initializeChatDialog(uid, receiverName, receiversAvatarUrl) {
-    if (!this.state.receivedData?.messages.some(el => el.uid === uid)) {
+    if (!this.state.receivedData?.messages.some((el) => el.uid === uid)) {
       // sender
       const unupdatedSendersData = this.state.receivedData?.messages;
       let sendersCopy = JSON.parse(JSON.stringify(unupdatedSendersData));
-      const blockedThem = this.state.receivedData?.blockList.some(h => h.blockedUid === uid);
-      if(!blockedThem){
-          sendersCopy.unshift({
+      const blockedThem = this.state.receivedData?.blockList.some(
+        (h) => h.blockedUid === uid
+      );
+      if (!blockedThem) {
+        sendersCopy.unshift({
           uid: uid,
           userName: receiverName,
           userAvatarUrl: receiversAvatarUrl,
@@ -855,25 +1015,25 @@ class AppProvider extends PureComponent {
           return sendersCopy.find((el) => el.uid === id);
         });
         this.updateParts(this.state.uid, "messages", newCopy, true, "");
-      }else{
+      } else {
         this.notify("Not allowed.", "error");
       }
-      
 
       // receiver
-     return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         db.collection(Consts.USERS)
           .doc(uid)
           .get()
           .then((items) => {
-            
-            const {messages = [], blockList = []} = items?.data();
+            const { messages = [], blockList = [] } = items?.data();
             const unupdatedreceiversData = messages;
             let receiversCopy = JSON.parse(
               JSON.stringify(unupdatedreceiversData)
             );
-            const isBlocked = blockList.some(d => d.blockedUid === this.state.uid);
-              if(!isBlocked){
+            const isBlocked = blockList.some(
+              (d) => d.blockedUid === this.state.uid
+            );
+            if (!isBlocked) {
               receiversCopy.unshift({
                 uid: this.state.uid,
                 userName: this.state.receivedData?.userName,
@@ -887,15 +1047,15 @@ class AppProvider extends PureComponent {
                 return receiversCopy.find((el) => el.uid === id);
               });
               this.updateParts(uid, "messages", newCopy, false, "");
-              
-            }else{
+            } else {
               this.notify("Not allowed.", "error");
             }
-           resolve();
-          }).catch(() => {
+            resolve();
+          })
+          .catch(() => {
             reject();
           });
-     }); 
+      });
     }
   }
 
@@ -949,14 +1109,13 @@ class AppProvider extends PureComponent {
             // deletes content from storage
             if (contentPath) {
               this.deleteContentFromFB(contentPath, "content").catch((err) => {
-                this.notify(err,"error");
+                this.notify(err, "error");
               });
             }
             // updates data
             this.notify("Post deleted");
             this.updateParts(this.state.uid, "posts", postsCopy, true, "");
             this.changeModalState("comments", false);
-            
           }
         },
       },
@@ -1037,205 +1196,290 @@ class AppProvider extends PureComponent {
       });
   };
 
-  addPost = (forwardedContent, type) =>{
-    if(type === Consts.Post){
-    let postsDeepCopy = JSON.parse(JSON.stringify(this.state.receivedData?.posts));
-        postsDeepCopy.unshift(forwardedContent);
-        return new Promise((resolve, reject) => {
-            this.updateParts(this.state.uid, "posts", postsDeepCopy, true, "").then(() => {
-              resolve();
-            }).catch(() => {
-              reject();
-            });
-        })  
-    }else if(type === Consts.Reel){
-      let reelsDeepCopy = JSON.parse(JSON.stringify(this.state.receivedData?.reels));
-        reelsDeepCopy.unshift(forwardedContent);
-        return new Promise((resolve, reject) => {
-            this.updateParts(this.state.uid, "reels", reelsDeepCopy, true, "").then(() => {
-              resolve();
-            }).catch(() => {
-              reject();
-            });
-        })  
+  addPost = (forwardedContent, type) => {
+    if (type === Consts.Post) {
+      let postsDeepCopy = JSON.parse(
+        JSON.stringify(this.state.receivedData?.posts)
+      );
+      postsDeepCopy.unshift(forwardedContent);
+      return new Promise((resolve, reject) => {
+        this.updateParts(this.state.uid, "posts", postsDeepCopy, true, "")
+          .then(() => {
+            resolve();
+          })
+          .catch(() => {
+            reject();
+          });
+      });
+    } else if (type === Consts.Reel) {
+      let reelsDeepCopy = JSON.parse(
+        JSON.stringify(this.state.receivedData?.reels)
+      );
+      reelsDeepCopy.unshift(forwardedContent);
+      return new Promise((resolve, reject) => {
+        this.updateParts(this.state.uid, "reels", reelsDeepCopy, true, "")
+          .then(() => {
+            resolve();
+          })
+          .catch(() => {
+            reject();
+          });
+      });
     }
-  }
-  changeModalState = (modalType, state, usersList,usersType) => {
-
+  };
+  changeModalState = (modalType, state, usersList, usersType) => {
     let copiedObj = JSON.parse(JSON.stringify(this.state.modalsState));
-    if(state){
+    if (state) {
       copiedObj[modalType] = true;
-    }else{
-      Object.keys(copiedObj).map(key => {
+    } else {
+      Object.keys(copiedObj).map((key) => {
         copiedObj[key] = false;
       });
     }
-    this.setState(updateObject(this.state, {modalsState: copiedObj, usersModalList: modalType === "users" && state ? { type: usersType, list:  usersList } : [] }));
+    this.setState(
+      updateObject(this.state, {
+        modalsState: copiedObj,
+        usersModalList:
+          modalType === "users" && state
+            ? { type: usersType, list: usersList }
+            : [],
+      })
+    );
     // this.setState({
     //           ...this.state,
     //           modalsState: copiedObj,
     //           usersModalList: modalType === "users" && state ? { type: usersType, list:  usersList } : [],
     // });
-  } 
+  };
 
-  handleUserBlocking = (blockingState, blockedUid, userName, userAvatarUrl, profileName) => {
-    let myBlockListCopy = JSON.parse(JSON.stringify(this.state.receivedData?.blockList));
-    let myFollowersCopy = JSON.parse(JSON.stringify(this.state.receivedData?.followers));
-    let myFollowingCopy = JSON.parse(JSON.stringify(this.state.receivedData?.following));
+  handleUserBlocking = (
+    blockingState,
+    blockedUid,
+    userName,
+    userAvatarUrl,
+    profileName
+  ) => {
+    let myBlockListCopy = JSON.parse(
+      JSON.stringify(this.state.receivedData?.blockList)
+    );
+    let myFollowersCopy = JSON.parse(
+      JSON.stringify(this.state.receivedData?.followers)
+    );
+    let myFollowingCopy = JSON.parse(
+      JSON.stringify(this.state.receivedData?.following)
+    );
     // const blockedThem = myBlockListCopy && myBlockListCopy.some(f => f.blockedUid === blockedUid);
     //blocked
-    if(myBlockListCopy && blockedUid){
-          if(blockingState){
-          db.collection(Consts.USERS).doc(blockedUid).get().then((items) => {
-            const {followers = [], following = []} = items?.data();
+    if (myBlockListCopy && blockedUid) {
+      if (blockingState) {
+        db.collection(Consts.USERS)
+          .doc(blockedUid)
+          .get()
+          .then((items) => {
+            const { followers = [], following = [] } = items?.data();
             let theirFollowingCopy = JSON.parse(JSON.stringify(following));
             let theirFollowersCopy = JSON.parse(JSON.stringify(followers));
-            let followingThem = theirFollowingCopy.some(o => o.receiverUid === this.state.uid);
-            let followedMe = theirFollowersCopy.some(o => o.senderUid === this.state.uid);
-                  //update user's data
-              if(followingThem || followedMe){
-                if(followingThem){
-                  const uIndex = theirFollowingCopy.map(q => q.receiverUid).indexOf(this.state.uid);
-                  if(uIndex !== -1){
-                      theirFollowingCopy.splice(uIndex, 1);
-                  }else{
-                    this.notify("Failed", "error");
-                  }
-                 
+            let followingThem = theirFollowingCopy.some(
+              (o) => o.receiverUid === this.state.uid
+            );
+            let followedMe = theirFollowersCopy.some(
+              (o) => o.senderUid === this.state.uid
+            );
+            //update user's data
+            if (followingThem || followedMe) {
+              if (followingThem) {
+                const uIndex = theirFollowingCopy
+                  .map((q) => q.receiverUid)
+                  .indexOf(this.state.uid);
+                if (uIndex !== -1) {
+                  theirFollowingCopy.splice(uIndex, 1);
+                } else {
+                  this.notify("Failed", "error");
                 }
-                if(followedMe){
-                  const userIndex = theirFollowersCopy.map(q => q.senderUid).indexOf(this.state.uid);
-                  if(userIndex !== -1){
-                    theirFollowersCopy.splice(userIndex, 1);
-                  }else{
-                    this.notify("Failed", "error");
-                  }
-                  
-                }
-                  new Promise((resolve, reject) => {
-                    db.collection(Consts.USERS)
-                          .doc(blockedUid)
-                          .update({
-                          followers: theirFollowersCopy,
-                          following: theirFollowingCopy
-                          })
-                          .then(() => {
-                            resolve();
-                          }).catch((err) =>{
-                            reject(err.message);
-                        });
-                }) 
               }
-              
+              if (followedMe) {
+                const userIndex = theirFollowersCopy
+                  .map((q) => q.senderUid)
+                  .indexOf(this.state.uid);
+                if (userIndex !== -1) {
+                  theirFollowersCopy.splice(userIndex, 1);
+                } else {
+                  this.notify("Failed", "error");
+                }
+              }
+              new Promise((resolve, reject) => {
+                db.collection(Consts.USERS)
+                  .doc(blockedUid)
+                  .update({
+                    followers: theirFollowersCopy,
+                    following: theirFollowingCopy,
+                  })
+                  .then(() => {
+                    resolve();
+                  })
+                  .catch((err) => {
+                    reject(err.message);
+                  });
+              });
+            }
           });
 
-            //updates follow states
-              if(myFollowersCopy.some(o => o.senderUid === blockedUid)){
-              
-                const userIndex = myFollowersCopy.map(q => q.senderUid).indexOf(blockedUid);
-                if(userIndex !== -1){
-                   myFollowersCopy.splice(userIndex, 1);
-                }else{
-                  this.notify("Failed","error");
-                }
-               
-              }
-              if(myFollowingCopy.some(p => p.receiverUid === blockedUid)){
-                const uIndex = myFollowingCopy.map(q => q.receiverUid).indexOf(blockedUid);
-                if(uIndex !== -1){
-                   myFollowingCopy.splice(uIndex, 1);
-                }else{
-                  this.notify("Failed","error");
-                }
-               
-              }   
-            //updates block list
-          myBlockListCopy.unshift({
-            blockedUid,
-            userName,
-            userAvatarUrl,
-            profileName,
-          })
-        }else if(!blockingState){
-          //unblocked
-          if(myBlockListCopy.some(l => l.blockedUid === blockedUid) && blockedUid){
-            const bIndex = myBlockListCopy.map(u => u.blockedUid).indexOf(blockedUid);
-            if(bIndex !== -1){
-               myBlockListCopy.splice(bIndex, 1);
-            }else{
-              this.notify("Failed", "error");
-            }
-           
-          };
+        //updates follow states
+        if (myFollowersCopy.some((o) => o.senderUid === blockedUid)) {
+          const userIndex = myFollowersCopy
+            .map((q) => q.senderUid)
+            .indexOf(blockedUid);
+          if (userIndex !== -1) {
+            myFollowersCopy.splice(userIndex, 1);
+          } else {
+            this.notify("Failed", "error");
+          }
         }
-        
-        let newBlockedArray = Array.from(
-          new Set(myBlockListCopy.map((itemId) => itemId.blockedUid))
-        ).map((ID) => myBlockListCopy.find((el) => el.blockedUid === ID));
-        //update my data
-    return new Promise((resolve, reject) => {
-            db.collection(Consts.USERS)
-                        .doc(this.state.uid)
-                        .update({
-                          blockList: newBlockedArray,
-                          followers: myFollowersCopy,
-                          following: myFollowingCopy,
-                        })
-                        .then(() => {
-                          this.notify(blockingState ? `${userName ? userName : "User"} has been blocked` : `${userName ? userName : "User"} has been unblocked`);
-                          resolve();
-                        }).catch((err) =>{
-                          reject(err.message);
-                          this.notify(err.message || "Failed to block user.");
-                      });
-        }) 
+        if (myFollowingCopy.some((p) => p.receiverUid === blockedUid)) {
+          const uIndex = myFollowingCopy
+            .map((q) => q.receiverUid)
+            .indexOf(blockedUid);
+          if (uIndex !== -1) {
+            myFollowingCopy.splice(uIndex, 1);
+          } else {
+            this.notify("Failed", "error");
+          }
+        }
+        //updates block list
+        myBlockListCopy.unshift({
+          blockedUid,
+          userName,
+          userAvatarUrl,
+          profileName,
+        });
+      } else if (!blockingState) {
+        //unblocked
+        if (
+          myBlockListCopy.some((l) => l.blockedUid === blockedUid) &&
+          blockedUid
+        ) {
+          const bIndex = myBlockListCopy
+            .map((u) => u.blockedUid)
+            .indexOf(blockedUid);
+          if (bIndex !== -1) {
+            myBlockListCopy.splice(bIndex, 1);
+          } else {
+            this.notify("Failed", "error");
+          }
+        }
+      }
+
+      let newBlockedArray = Array.from(
+        new Set(myBlockListCopy.map((itemId) => itemId.blockedUid))
+      ).map((ID) => myBlockListCopy.find((el) => el.blockedUid === ID));
+      //update my data
+      return new Promise((resolve, reject) => {
+        db.collection(Consts.USERS)
+          .doc(this.state.uid)
+          .update({
+            blockList: newBlockedArray,
+            followers: myFollowersCopy,
+            following: myFollowingCopy,
+          })
+          .then(() => {
+            this.notify(
+              blockingState
+                ? `${userName ? userName : "User"} has been blocked`
+                : `${userName ? userName : "User"} has been unblocked`
+            );
+            resolve();
+          })
+          .catch((err) => {
+            reject(err.message);
+            this.notify(err.message || "Failed to block user.");
+          });
+      });
     }
-    
-  }
+  };
 
-  onCommentDeletion = (type,commentUid, postId, commentId,postIndex, commentIndex, subCommentId, subCommentIndex, postOwnerId, postsArray) => {
-
-    if(commentUid === this.state.uid && postsArray && postsArray.length >0){
-      const getPostIndex = postsArray && postsArray.map(post => post?.id).indexOf(postId);
+  onCommentDeletion = (
+    type,
+    commentUid,
+    postId,
+    commentId,
+    postIndex,
+    commentIndex,
+    subCommentId,
+    subCommentIndex,
+    postOwnerId,
+    postsArray
+  ) => {
+    if (commentUid === this.state.uid && postsArray && postsArray.length > 0) {
+      const getPostIndex =
+        postsArray && postsArray.map((post) => post?.id).indexOf(postId);
       const postsCopy = JSON.parse(JSON.stringify(postsArray));
-      if(getPostIndex === postIndex && getPostIndex !== -1){
-        const getCommentIndex = postsCopy[postIndex].comments && postsCopy[postIndex].comments.map(comment => comment?.commentId).indexOf(commentId);
-        if(getCommentIndex === commentIndex && getCommentIndex !== -1 ){
-          if(type === "comment"){
-             postsCopy && postsCopy[postIndex].comments.splice(getCommentIndex, 1);
-          }else if(type === "subComment"){
-            const getSubCommentIndex = postsCopy[postIndex].comments && postsCopy[postIndex].comments[getCommentIndex].subComments && postsCopy[postIndex].comments[getCommentIndex].subComments.map(subComment => subComment?.subCommentId).indexOf(subCommentId);
-            if(getSubCommentIndex === subCommentIndex && getSubCommentIndex !== -1){
-              postsCopy && postsCopy[postIndex].comments[getCommentIndex].subComments.splice(getSubCommentIndex, 1);
+      if (getPostIndex === postIndex && getPostIndex !== -1) {
+        const getCommentIndex =
+          postsCopy[postIndex].comments &&
+          postsCopy[postIndex].comments
+            .map((comment) => comment?.commentId)
+            .indexOf(commentId);
+        if (getCommentIndex === commentIndex && getCommentIndex !== -1) {
+          if (type === "comment") {
+            postsCopy &&
+              postsCopy[postIndex].comments.splice(getCommentIndex, 1);
+          } else if (type === "subComment") {
+            const getSubCommentIndex =
+              postsCopy[postIndex].comments &&
+              postsCopy[postIndex].comments[getCommentIndex].subComments &&
+              postsCopy[postIndex].comments[getCommentIndex].subComments
+                .map((subComment) => subComment?.subCommentId)
+                .indexOf(subCommentId);
+            if (
+              getSubCommentIndex === subCommentIndex &&
+              getSubCommentIndex !== -1
+            ) {
+              postsCopy &&
+                postsCopy[postIndex].comments[
+                  getCommentIndex
+                ].subComments.splice(getSubCommentIndex, 1);
             }
           }
           const buttons = [
-              {
-                label: "No",
+            {
+              label: "No",
+            },
+            {
+              label: "Yes",
+              onClick: () => {
+                this.updateParts(postOwnerId, "posts", postsCopy, true, "")
+                  .then(() => {
+                    this.notify(
+                      `${type === "comment" ? "Comment" : "Reply"} deleted`
+                    );
+                  })
+                  .catch((err) => {
+                    this.notify(err || "An error occurred");
+                  });
               },
-              {
-                label: "Yes",
-                onClick: () => {
-                      this.updateParts(postOwnerId, "posts", postsCopy, true, "").then(() => {
-                        this.notify(`${type  === "comment" ? "Comment" : "Reply"} deleted`);
-                      }).catch((err) => {
-                        this.notify(err || "An error occurred");
-                      });
-                },
-              },
-            ];
-            this.confirmPrompt("Confirmation", buttons, "Comment will be deleted. Proceed?");
-
-        }else{
-          this.notify("An error occurred. Please try to delete comment later1.","error");
+            },
+          ];
+          this.confirmPrompt(
+            "Confirmation",
+            buttons,
+            "Comment will be deleted. Proceed?"
+          );
+        } else {
+          this.notify(
+            "An error occurred. Please try to delete comment later1.",
+            "error"
+          );
         }
-      }else{
-        this.notify("An error occurred. Please try to delete comment later2.","error");
+      } else {
+        this.notify(
+          "An error occurred. Please try to delete comment later2.",
+          "error"
+        );
       }
-    }else{
-      this.notify("Comment deletion of other users is prohibited.","error");
-    }    
-  }
+    } else {
+      this.notify("Comment deletion of other users is prohibited.", "error");
+    }
+  };
 
   render() {
     return (
@@ -1256,7 +1500,7 @@ class AppProvider extends PureComponent {
           searchInfo: this.state.searchInfo,
           modalsState: this.state.modalsState,
           currentChatIndex: this.state.currentChatIndex,
-          addPost: this.addPost.bind(this),//functions
+          addPost: this.addPost.bind(this), //functions
           generateNewId: this.generateNewId.bind(this),
           updatedReceivedData: this.updatedReceivedData.bind(this),
           updateUserState: this.updateUserState.bind(this),

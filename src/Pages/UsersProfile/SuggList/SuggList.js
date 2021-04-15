@@ -1,41 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Avatar } from "@material-ui/core";
-
+import { withBrowseUser } from "../../../Components/HOC/withBrowseUser";
 const SuggList = (props) => {
-    const {item, receivedData, setSuggestionsBox,  getUsersProfile ,notify, history, handleFollowing} = props;
-    const browseUser = (specialUid, name) => {
-        if(specialUid && name){
-              getUsersProfile(specialUid)
-          .then(() => {
-              setSuggestionsBox(false);
-              history.push(`/user-profile/${name}`);
-          })
-          .catch((err) => {
-              notify(
-              (err && err.message) || "error has occurred. please try again later!",
-              "error"
-              );
-          }); 
-        }
-      
-    };
+    const {item, receivedData, setSuggestionsBox, handleFollowing, browseUser} = props;
+    const closeBoxAndRedirect = ( ) => {
+      browseUser(item?.uid, item?.userName);
+      setSuggestionsBox(false);
+    }
     return (
         <>
                 <li className="suggestion--item flex-column">
                             <div className="suggestion--item-inner">
                               <Avatar
-                                onClick={() =>
-                                  browseUser(item?.uid, item?.userName)
-                                }
+                                onClick={() => closeBoxAndRedirect()}
                                 src={item?.userAvatarUrl}
                                 alt={item?.userName}
                                 className="mb-2"
                               />
                               <span
-                                onClick={() =>
-                                  browseUser(item?.uid, item?.userName)
-                                }
+                                onClick={() => closeBoxAndRedirect()}
                                 title={item?.userName}
                                 className="acc__name"
                               >
@@ -94,7 +78,8 @@ SuggList.propTypes = {
     receivedData: PropTypes.object.isRequired,
     setSuggestionsBox:PropTypes.func,
     notify: PropTypes.func,
-    history: PropTypes.object,
-    handleFollowing: PropTypes.func
+    handleFollowing: PropTypes.func,
+    browseUser: PropTypes.func,
+
 }
-export default SuggList;
+export default withBrowseUser(SuggList);

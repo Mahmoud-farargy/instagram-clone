@@ -38,11 +38,9 @@ const Header = (props) => {
     authLogout,
     igVideoImg,
     handleFollowing,
-    getUsersProfile,
     changeMainState,
     searchUsers,
     searchInfo,
-    notify
   } = context;
   const reverseNotiState = (type) => {
     const notiUpdate = receivedData?.notifications?.isUpdate;
@@ -63,18 +61,6 @@ const Header = (props) => {
     }
   }, [searchVal]);
 
-  const browseUser = (specialUid, name) => {
-    if (specialUid && name) {
-      setSeachBox(false);
-      setNoti(false);
-      getUsersProfile(specialUid).then(() => {
-         props.history.push(`/user-profile/${name}`);
-      }).catch((err)=>{
-        notify((err && err.message) || "error has occurred. please try again later!", "error")
-      });
-     
-    }
-  };
   const clearSearchBox = () => {
     setSearchVal("");
   };
@@ -182,7 +168,7 @@ const Header = (props) => {
                         <SearchItem
                           key={user?.uid || i}
                           user={user}
-                          browseUser={browseUser}
+                          closeSearchBox={setSeachBox}
                         />
                       );
                     })
@@ -272,7 +258,7 @@ const Header = (props) => {
                                       myData={receivedData}
                                       handleFollowing={handleFollowing}
                                       changeMainState={changeMainState}
-                                      browseUser={browseUser}
+                                      closeNotiBox={setNoti}
                                       postIndex={i}
                                     />
                                 );
@@ -356,4 +342,4 @@ const Header = (props) => {
     </Auxiliary>
   );
 };
-export default withRouter(Header);
+export default withRouter(React.memo(Header));

@@ -1,0 +1,89 @@
+#input--form--field .form-group {
+  width: 90%;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+@media only screen and (max-width: 800px) {
+  #input--form--field .form-group {
+    -webkit-box-orient: vertical !important;
+    -webkit-box-direction: normal !important;
+        -ms-flex-direction: column !important;
+            flex-direction: column !important;
+  }
+}
+
+#input--form--field .form-group label {
+  margin: 10px 10px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 18px;
+  text-transform: capitalize;
+  text-align: left;
+}
+
+#input--form--field .form-group .form--input--side {
+  width: 80%;
+}
+
+@media only screen and (max-width: 670px) {
+  #input--form--field .form-group .form--input--side {
+    width: 100%;
+  }
+}
+
+#input--form--field .form-group input, #input--form--field .form-group textarea, #input--form--field .form-group select {
+  margin: 8px 0;
+  min-width: 100px;
+  width: 100%;
+  border: 1px solid #dbdbdb;
+  font-size: 16px;
+  height: 32px;
+  padding: 0 10px;
+  color: #262626;
+  color: #262626;
+  border-radius: 3px;
+}
+
+#input--form--field .form-group textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 70px;
+  padding: 10px;
+}
+
+#input--form--field .form-group small {
+  margin-top: 6px;
+  font-size: 12px;
+  display: block;
+  line-height: 14px;
+  font-weight: 400;
+  color: #8e8e8e;
+  white-space: wrap !important;
+}
+
+#input--form--field .form-group ::-webkit-input-placeholder {
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+#input--form--field .form-group :-ms-input-placeholder {
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+#input--form--field .form-group ::-ms-input-placeholder {
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+#input--form--field .form-group ::placeholder {
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+#input--form--field .form-group .test {
+  border: 1px solid red !important;
+}
+/*# sourceMappingURL=InputForm.css.map */
