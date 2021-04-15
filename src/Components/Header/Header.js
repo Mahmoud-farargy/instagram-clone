@@ -276,6 +276,7 @@ const Header = (props) => {
                   <li>
                     <span onClick={() => setProf(true)}>
                       <Avatar
+                        style={{border: (openProf || props.location.pathname?.toLowerCase() === "/profile" || props.location.pathname?.toLowerCase() === "/edit-profile") ? "2px solid #111" : ""}}
                         src={receivedData?.userAvatarUrl}
                         alt={receivedData?.userName}
                         className="header__user__avatar flex-column"

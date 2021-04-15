@@ -137,7 +137,7 @@ const Home = (props) => {
                   <div className="suggestions--list flex-column">
                     <ul className="flex-column">
                       {suggestionsList &&
-                        suggestionsList.length > 0 &&
+                        suggestionsList.length > 0 ?
                        Array.from(new Set(suggestionsList.map((item) => item.uid))).map((id) => suggestionsList.find((el) => el.uid === id))
                           .filter((item) => (item?.uid !== receivedData?.uid) ).slice(randNum, suggestionsList?.length -1).slice(0,5)
                           .map((user, i) => {
@@ -152,7 +152,10 @@ const Home = (props) => {
                                 receivedData={receivedData ? receivedData : []}
                               />
                             );
-                          })}
+                          }):
+                          <h6>No suggestions yet</h6>
+                      }
+                          
                     </ul>
                   </div>
                 </div>

@@ -17,6 +17,8 @@
     max-width:1200px;
     position: relative;
     align-items:center;
+    max-width: 975px;
+    margin: 0 auto;
 }
 .header--inner a{
     text-decoration:none;

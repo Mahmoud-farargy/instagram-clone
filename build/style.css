@@ -694,7 +694,6 @@ button:active{
 }
 /*-------------Messages-----------*/
 .messages--container{
-    user-select:none;
     height:100%;
 }
 #messages.messages--container .messages--desktop--card{
