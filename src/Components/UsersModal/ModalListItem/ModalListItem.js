@@ -4,7 +4,7 @@ import {Avatar} from "@material-ui/core";
 import ProTypes from "prop-types";
 import { withBrowseUser } from "../../../Components/HOC/withBrowseUser";
 import { AppContext } from "../../../Context";
-import Moment from "react-moment";
+import GetFormattedDate from "../../../Utilities/FormatDate";
 
 const ModalListItem =(props)=>{
     const [isFollowed, setFollowingState] = useState(false);
@@ -22,8 +22,7 @@ const ModalListItem =(props)=>{
                    <Avatar src={avatarUrl} alt={userName} />
                     <div className="modal--user--info flex-column" onClick={()=> { notMyItem && browseUser(uid, userName); notMyItem && changeModalState("users", false, "", "")}}>
                         <h3>{userName}</h3>
-                        
-                        <span><Moment withTitle fromNow>{Date.parse(new Date(date?.seconds && date?.seconds * 1000).toLocaleString().replace(/-/g, "/"))}</Moment></span>
+                        <span><GetFormattedDate date={date?.seconds && date?.seconds} /></span>
                     </div> 
                 </div>
               {

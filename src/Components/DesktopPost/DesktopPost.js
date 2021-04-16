@@ -26,7 +26,7 @@ import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
-import Moment from "react-moment";
+import GetFormattedDate from "../../Utilities/FormatDate";
 
 const DesktopPost = (props) => {
   const { browseUser } = props;
@@ -484,7 +484,7 @@ const DesktopPost = (props) => {
                     </span>
 
                     <small className="post__date">
-                      <Moment withTitle fromNow>{Date.parse(new Date(date?.seconds * 1000).toLocaleString().replace(/-/g, "/"))}</Moment>
+                      <GetFormattedDate date={date?.seconds} />
                     </small>
                     <form
                       onSubmit={(e) => submitComment(e)}

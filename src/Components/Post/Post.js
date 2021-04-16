@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { updateObject } from "../../Utilities/Utility";
 import OptionsModal from "../Generic/OptionsModal/OptionsModal";
 import * as Consts from "../../Utilities/Consts";
-import Moment from 'react-moment';
+import GetFormattedDate from "../../Utilities/FormatDate";
 
 class Post extends PureComponent {
   constructor(props) {
@@ -411,7 +411,7 @@ class Post extends PureComponent {
               ) : null}
 
               <small className="post__date pb-2">
-                <Moment withTitle fromNow>{Date.parse(new Date(postDate?.seconds * 1000).toLocaleString().replace(/-/g, "/"))}</Moment>
+                <GetFormattedDate date={postDate?.seconds} />
               </small>
               {this.state.showInputForm && (
                 <form
