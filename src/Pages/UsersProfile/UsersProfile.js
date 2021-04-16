@@ -10,7 +10,7 @@ import { IoMdGrid } from "react-icons/io";
 import { RiLayoutRowLine } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
 import { ImBlocked } from "react-icons/im";
-import { IoMdArrowDropdown } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import {HiOutlineDotsHorizontal} from "react-icons/hi";
@@ -18,7 +18,7 @@ import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import SuggList from "./SuggList/SuggList";
-import MightKnowLI from "./MutualFriendsList/MutualFriendsItem";
+import MutualFriendsItem from "./MutualFriendsList/MutualFriendsItem";
 import * as Consts from "../../Utilities/Consts";
 
 const UsersProfile = (props) => {
@@ -94,8 +94,6 @@ const UsersProfile = (props) => {
 
   // put this in a modal
   const similarFollowers = (usersProfileData?.uid !== receivedData?.uid) && (receivedData?.blockList?.filter(w => w.blockedUid !== usersProfileData?.uid)) ? receivedData?.following.filter(el => el.receiverUid !== receivedData?.uid && usersProfileData?.followers.some(item => item.senderUid === el.receiverUid)) : [];
-
-  console.log(similarFollowers);
   const websiteToView = usersProfileData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?(?:http:\/\/)?/i, "").split("/")[0];
   const notBlockedOrBlockingUser = receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) && usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid);
   const userProfileInfo = (
@@ -138,7 +136,7 @@ const UsersProfile = (props) => {
                       similarFollowers && similarFollowers.length > 0 &&
                       <p onClick={()=> changeModalState("users",true, similarFollowers, Consts.MUTUALFRIENDS)}  className="similar__followers">Followed by <span>
                         {
-                        similarFollowers.slice(0,3).map(q => <MightKnowLI key={q?.receiverUid} item={q} />)
+                        similarFollowers.slice(0,3).map(q => <MutualFriendsItem key={q?.receiverUid} item={q} />)
                       }
                       {
                         similarFollowers.length > 3 && 
@@ -263,7 +261,7 @@ const UsersProfile = (props) => {
                       }}
                       onClick={() => setSuggestionsBox(!openSuggestionsBox)}
                     >
-                      <IoMdArrowDropdown />
+                      {openSuggestionsBox ? <IoIosArrowUp /> : <IoIosArrowDown/>}
                     </button>
                   </div>
                 </div>

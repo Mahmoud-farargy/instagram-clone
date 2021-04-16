@@ -10,7 +10,9 @@ import { RiMenu4Fill } from "react-icons/ri";
 import { MdClose } from "react-icons/md";
 import PropTypes from "prop-types";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
+import Moment from "react-moment";
 // import { updateObject } from "../../Utilities/Utility";
+
 
 import $ from "jquery";
 
@@ -146,7 +148,7 @@ const Messages = (props) => {
                             >
                              <Avatar src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
                               <div className="messages--user--info space__between">
-                                <div style={{ flex: 1, width: "100%" }}>
+                                <div style={{ flex: 1, width: "60%" }}>
                                   <p>
                                     <TruncateMarkup line={1} ellipsis="..">
                                       {user?.userName}
@@ -163,10 +165,10 @@ const Messages = (props) => {
                                 </div>
                                 <p className="messages__user__date">
                                   {user.chatLog.length >= 1
-                                    ? new Date(
+                                    ? <Moment withTitle fromNow >{Date.parse(new Date(
                                         user.chatLog[user.chatLog?.length - 1]
                                           .date.seconds * 1000
-                                      ).toLocaleString()
+                                      ).toLocaleString().replace(/-/g, "/"))}</Moment>
                                     : null}
                                 </p>
                               </div>
@@ -276,10 +278,10 @@ const Messages = (props) => {
                                   </div>
                                   <p className="messages__user__date">
                                     {user.chatLog.length >= 1
-                                      ? new Date(
+                                      ? <Moment withTitle fromNow >{Date.parse(new Date(
                                           user.chatLog[user.chatLog?.length - 1]
                                             .date.seconds * 1000
-                                        ).toLocaleString()
+                                        ).toLocaleString().replace(/-/g, "/"))}</Moment>
                                       : null}
                                   </p>
                                 </div>

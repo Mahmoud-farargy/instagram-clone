@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useContext, Suspense, lazy} from "react";
-import { Switch, Route, withRouter } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { db, auth } from "../../Config/firebase";
 import AppConfig from "../../Config/app-config.json";
@@ -56,8 +56,8 @@ const App = (props) => {
     currentPostIndex
   } = context;
   const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
-  const [,loading] = useAuthState(auth);
-
+  const [user,loading] = useAuthState(auth);
+  const history = useHistory();
   // experiment
   // useEffect(() => {
   // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
@@ -139,7 +139,7 @@ const App = (props) => {
           auth.signInWithEmailAndPassword(email, returnPassword(password));
         }else{
             // user logged out
-             props.history.push("/auth");
+             history.push("/auth");
              updateUserState(false);
         }
       }
@@ -167,7 +167,7 @@ const App = (props) => {
     document.title = `${currentPage && currentPage + " • "}${AppConfig.title}`;
     if(!navigator.onLine){
       notify("You are Offline! Please reconnect and try again.", "error");
-      props.history.push("/auth");
+      history.push("/auth");
     }
   }, [currentPage]);
   return (
@@ -198,7 +198,7 @@ const App = (props) => {
         <Switch>
           <Suspense fallback={<LoadingScreen />}>
             <Route exact path="/">
-              <Header/>
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               <Home />
               <MobileNav />
               <Footer />
@@ -208,7 +208,7 @@ const App = (props) => {
               <Header />
               { //Guards
                 receivedData && Object.keys(receivedData).length > 0 && receivedData?.messages ?
-                 <Messages history={props.history} />
+                 <Messages history={history} />
                  : 
                  <div>
                     <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
@@ -295,7 +295,7 @@ const App = (props) => {
             <Route exact path="/reels">
               {  
                 reelsProfile ?
-                  <Reels context={context} routeHistory={props.history} />
+                  <Reels context={context} routeHistory={history} />
                 :
                 <div>
                   <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
@@ -316,4 +316,4 @@ const App = (props) => {
   );
 };
 
-export default withRouter(App);
+export default App;

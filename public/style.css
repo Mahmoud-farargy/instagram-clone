@@ -18,6 +18,7 @@ body{
     line-height:18px;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     color:var(--font-black);
+    overflow-x: hidden;
 }
 ul{
     list-style:none;
@@ -303,7 +304,10 @@ a:visited{
     align-items:center;
     background-color: var(--light-gray);
     min-height:90vh;
-    
+}
+time{
+    text-transform: uppercase;
+    font-size: 10px;
 }
 .auth--main .insta--warning{
     margin-top:8px;
@@ -504,7 +508,7 @@ a:visited{
     width:100%;
     align-self: center;
     flex-wrap:wrap;
-    margin:80px 3vw 35px 4vw;
+    margin:60px 3vw 35px 4vw;
     justify-content:space-between;
     max-width: 1150px;
 }
@@ -538,6 +542,11 @@ a:visited{
 .auth--footer--container  .auth--copyright{
     text-align:center;
     overflow: hidden;
+    flex-wrap: wrap;
+}
+.auth--footer--container  .auth--copyright span{
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 .auth--footer--ul li:hover{
     text-decoration:underline;
@@ -570,13 +579,14 @@ button:active{
 .logoText{
     font-family:"instalogo";
     color: var(--main-black);
-    margin-bottom:16px;
+    margin-bottom:8px;
     width:103px;
     height:25px;
     font-size:31px;
     object-fit:auto;
     font-weight:600;
     text-decoration:none !important;
+
 }
 #header .logoText:active{
     color: gray;
@@ -675,6 +685,7 @@ button:active{
     font-weight:600;
     text-overflow: ellipsis;
     margin-right:5px;
+    cursor: pointer;
 }
 .post__top__comment p, .sub--comments--nav li span{
     margin:0;
@@ -814,9 +825,51 @@ button:active{
     margin:0;
 }
 #messages .messages--view--users ul li .messages--user--info{
-    width:80%;
+    width:100%;
     margin-left:5px;
     align-items:center;
+}
+.my-empty--posts--container{
+    width:100%;
+    flex-wrap: wrap;
+    background-color: #fff;
+    padding:0;
+    margin-top: 40px;
+}
+.my-empty--posts--img{
+    flex-basis: 40%;
+}
+.my-empty--posts--text--container{
+    flex-basis:60%;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    min-height: 300px;
+}
+.my-empty--posts--text--container h2{
+    font-size: 18px;
+    font-weight: 600;
+}
+.my-empty--posts--text--container h3{
+    font-size: 16px;
+    font-weight: 500;
+    margin-top:10px;
+}
+.my-empty--posts--img img{
+    width:100%;
+    min-height: 100%;
+    object-fit: contain;
+}
+.my--empty--posts--get--app{
+    width:100%;
+    flex-wrap: wrap;
+    justify-content:center;
+    margin-top:10px;
+}
+.my--empty--posts--get--app img{
+    margin-right: 9px;
+    height:40px;
+    width:136px;
 }
 
 #messages .messages--view--users ul li .messages--user--info div{
@@ -982,7 +1035,7 @@ button:active{
     font-size: 24px;
 }
 #usersProfile .sugg__btn{
-    padding:0 7px !important;
+    padding:0 12px !important;
     font-size: 20px !important;
 }
 #usersProfile .sugg__btn:focus{
@@ -1189,6 +1242,10 @@ button:active{
     padding:0 24px;
     color:#fff;
 }
+.prof__btn__followed svg{
+    width: 12px;
+    height: 12px;
+}
 .prof__btn__followed:active{
     color:rgb(224, 224, 224);
 }
@@ -1361,7 +1418,9 @@ a.prof__btn__unfollowed{
 #usersProfile.users--profile--container .users--action--row div > button{
     margin-right: 15px;
 }
-
+#usersProfile.users--profile--container .users--action--row div > button:last-of-type{
+    margin-right:0;
+}
 /* ------------bound heart on double click effect---------------- */
 @keyframes boundHeartOnDouble {
     0%{
@@ -1393,8 +1452,12 @@ a.prof__btn__unfollowed{
 }   
 #mobNotifications.mob--notifications .noti--popup-item .noti--user--info{
     width:70%;
-    word-break: break-word;
 }
+#mobNotifications.mob--notifications .noti--popup-item .noti--user--info h6{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+ }
 .mob--notifications{
  height:calc(100vh - 50px);
 }
@@ -1599,6 +1662,16 @@ a.prof__btn__unfollowed{
     #usersProfile  .reel--bubble{
         margin:-10px 20px 10px;
     }
+    .my-empty--posts--container{
+        margin-top: 0;
+        flex-direction: column-reverse !important;
+    }
+    .my-empty--posts--img, .my-empty--posts--text--container{
+        flex-basis: 100%;
+    }
+    .my-empty--posts--img img{
+        min-height: 250px;
+    }
     #usersProfile.users--profile--container .MuiAvatar-root{
         width:77px;
         height:77px;
@@ -1715,7 +1788,9 @@ a.prof__btn__unfollowed{
         background-color: rgba(255, 255, 255,0.99);
         border-left:1px solid rgb(167, 166, 166);
     }
-    
+    .auth--footer--container  .auth--copyright{
+        width:90%;
+    }
     .mobile--msgs--menu:hover{
         opacity: 1;
     }

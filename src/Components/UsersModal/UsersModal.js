@@ -4,7 +4,6 @@ import ModalListItem from "./ModalListItem/ModalListItem";
 import * as Consts from "../../Utilities/Consts";
 
 const UsersModal =(props)=>{
-    // const { browseUser } = props;
     const {changeModalState,modalsState, usersModalList} = useContext(AppContext);
     let output;
     switch(usersModalList?.type){

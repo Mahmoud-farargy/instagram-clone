@@ -3,8 +3,7 @@ import Auxiliary from "../HOC/Auxiliary";
 import {NavLink, withRouter} from "react-router-dom";
 import "../Header/Header.css";
 import {HiHome} from "react-icons/hi";
-import {RiSendPlaneFill} from "react-icons/ri";
-import {FaHeart} from "react-icons/fa";
+import {FaHeart, FaFacebookMessenger} from "react-icons/fa";
 import {BsFillPlusCircleFill} from "react-icons/bs";
 import {Avatar} from "@material-ui/core";
 import {AppContext} from "../../Context";
@@ -31,7 +30,7 @@ const MobileNav =(props)=>{
                         <ul className="header--ul flex-row">
                             <li><NavLink exact to="/" activeClassName="active-nav-link"><HiHome style={{fontSize:"26px"}}/></NavLink></li>
                             {/* hides if user is not logged in */}
-                                { user ? <li className="like__icon__item"><NavLink  onClick={()=> reverseNotiState("isNewMsg")}   to="/messages" activeClassName="active-nav-link"><RiSendPlaneFill/>
+                                { user ? <li className="like__icon__item"><NavLink  onClick={()=> reverseNotiState("isNewMsg")}   to="/messages" activeClassName="active-nav-link"><FaFacebookMessenger/>
                                     {
                                       receivedData?.notifications?.isNewMsg && props.location.pathname !== "/messages" ?
                                         <div className="like__noti__dot"></div>

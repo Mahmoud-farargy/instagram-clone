@@ -1,10 +1,9 @@
-import React, { useContext, useState, useEffect, lazy, Suspense } from "react";
+import React, { useContext, useState, useEffect, lazy, Suspense, useRef } from "react";
 import Auxiliary from "../HOC/Auxiliary";
 import { NavLink, Link } from "react-router-dom";
 import "./Header.css";
 import { HiHome } from "react-icons/hi";
-import { RiSendPlaneFill } from "react-icons/ri";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart , FaFacebookMessenger} from "react-icons/fa";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import { Avatar } from "@material-ui/core";
 import { AppContext } from "../../Context";
@@ -19,9 +18,15 @@ import { withRouter } from "react-router-dom";
 import SearchItem from "../SearchItem/SearchItem.js";
 import Loader from "react-loader-spinner";
 import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen";
+import HeaderLogo from "../../Assets/instagram-icon-logo.c1dbcbd5.svg";
 const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
 const Header = (props) => {
+  // Refs
+  const headerRef = useRef(null);
+  const _isMounted = useRef(true);
+  // --xx-- //
+
   // state
   const context = useContext(AppContext);
   const [openNoti, setNoti] = useState(false);
@@ -31,6 +36,7 @@ const Header = (props) => {
   const [searchVal, setSearchVal] = useState("");
   const [capitalizeWord, setCapitalizedWord] = useState("");
   const [openLogoutModal, setLogoutModal] = useState(false);
+  const [scrolled, setScrollingState] = useState(false);
    // --xx--//
   const {
     receivedData,
@@ -51,16 +57,40 @@ const Header = (props) => {
       closeNotificationAlert(type);
     }
   };
+  /// useEffects
   useEffect(() => {
-    if (searchVal && searchVal !== "") {
-      searchUsers(searchVal, "regular");
-      setSeachBox(true);
-    } else {
-      setSeachBox(false);
-      setSearchVal("");
+    if(_isMounted){
+        if (searchVal && searchVal !== "") {
+        searchUsers(searchVal, "regular");
+        setSeachBox(true);
+      } else {
+        setSeachBox(false);
+        setSearchVal("");
+      }
     }
+    
   }, [searchVal]);
-
+  useEffect(() => {
+    if(_isMounted){
+        window.addEventListener("scroll", () =>{
+        if(window.scrollY > 0 && headerRef && headerRef.current){
+          headerRef.current?.classList && headerRef.current.classList.add("shorter_header");
+          setScrollingState(true);
+        }else{
+          // setScrollingState(false);
+          headerRef.current?.classList && headerRef.current.classList.remove("shorter_header");
+        }
+      })
+    }
+        
+    return () =>{
+      window.removeEventListener("scroll", ()=> {});
+      _isMounted.current = false;
+      headerRef.current = false;
+      setScrollingState(false);
+  }
+  }, []);
+// ---xxx-- //
   const clearSearchBox = () => {
     setSearchVal("");
   };
@@ -70,7 +100,6 @@ const Header = (props) => {
     setTimeout(() => {
       authLogout(props.history).then(() => {
         setLogoutModal(false);
-        // props.history.replace("/");
       }).catch(() => {
         setLogoutModal(false);
       });      
@@ -113,11 +142,33 @@ const Header = (props) => {
           ></div>
         {/* --xx-- */}
 
-      <header id="header" className="main--header flex-row">
+      <header ref={headerRef} id="header" className="main--header flex-row">
         <div className="header--inner flex-row">
-          <Link to="/">
-            <h1 className="logoText">Voxgram</h1>
-          </Link>
+          <div className="header--logo--box flex-row">
+            <div style={{
+              // opacity: scrolled ? "0" : "1",
+              // transform: scrolled ? "translateX(-100%)" : "translateX(0)",
+              // transition: "all 0.5s ease-in",
+              animation: "0.5s ease-in disappear-item 1",
+              // animationDelay: "0.5s"
+            }}
+            onClick={() => props.history.push("/")} className="ig--logo--img" >
+              <img src={HeaderLogo} alt="Instagram Logo" />
+            </div>
+            <div style={{
+              opacity: scrolled ? "0" : "1",
+              transform: scrolled ? "translateY(-100%)" : "translateY(0)",
+              transition: "all 0.5s ease-in",
+              animation: "disappear-item",
+              animationDelay: "0.5s"
+            }}
+            className="logo--verti--divider"></div>
+            <Link to="/">
+              <h1 className="logoText">Voxgram</h1>
+            </Link> 
+          </div>
+
+         
 
           <div className="search--bar--container">
             <input
@@ -202,10 +253,10 @@ const Header = (props) => {
                       to="/messages"
                       activeClassName={!openNoti ? "active-nav-link" : ""}
                     >
-                      <RiSendPlaneFill />
+                      <FaFacebookMessenger />
                       {receivedData?.notifications?.isNewMsg &&
                       props.location.pathname !== "/messages" ? (
-                        <div className="like__noti__dot"></div>
+                        <div className="like__noti__dot mt-1"></div>
                       ) : null}
                     </NavLink>
                   </li>

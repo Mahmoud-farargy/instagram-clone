@@ -210,8 +210,6 @@ const AuthPage = (props) => {
                     });
                     updateUserState(true);
                     updateUID(authUser?.uid);
-
-                    // updatedReceivedData();
                   });
                    setLoading(false);
               });
@@ -219,11 +217,11 @@ const AuthPage = (props) => {
                 "user",
                 JSON.stringify({
                   email: loginEmail.toLowerCase(),
-                  password: decipherPassword(loginPassword),
+                  password: decipherPassword(loginPassword)
                 })
               );
               setTimeout(() => {
-                notify(`Welcome back, ${(receivedData?.userName ||  currentUser?.displayName || "User")}`)
+                notify(`Welcome back, ${(receivedData?.userName || currentUser?.displayName || "User")}`);
                 props.history.push("/");
               }, 150);
             })

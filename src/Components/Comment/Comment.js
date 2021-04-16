@@ -2,22 +2,21 @@ import React, { useState, Fragment,  useEffect } from "react";
 import TruncateMarkup from "react-truncate";
 import { FiHeart } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
-import { withRouter } from "react-router";
 import * as Consts from "../../Utilities/Consts";
-
+import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 
 const Commment =(props)=>{
-    var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, posts} = props;
+    var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, posts, browseUser} = props;
     const [viewSubComments, setSubComments] = useState(false); 
     const [postLiked, setPostLiked] = useState(false);
     useEffect(()=>{
         setPostLiked(comment?.likes.some(el => el.id === uid));
-    },[comment?.likes])
+    },[comment, uid]);
     return(
         <Fragment>
         <div className="post--comment--item">
                <div className="flex-row post--comment--row">
-                <span  title={comment?.userName} className="post__top__comment flex-row">
+                <span onClick={() => browseUser( comment?.uid, comment?.userName )} title={comment?.userName} className="post__top__comment flex-row">
                       <strong>{comment?.userName}</strong> <p className="comment__text w-100">
                           <TruncateMarkup className="w-100" line={1} ellipsis="...">{comment?.comment}</TruncateMarkup>
                           </p>
@@ -58,9 +57,9 @@ const Commment =(props)=>{
                                                    comment && comment.subComments.length > 0 && comment.subComments?.map( (subComment, i )=>{
                                                        return(
                                                         <li
-                                                            key={i} title={subComment?.senderName} className="post--comment--item">
+                                                            key={i} className="post--comment--item">
                                                             <div className="flex-row post--comment--row">
-                                                                <div  title={comment?.userName} className="post__top__comment flex-row">
+                                                                <div onClick={() => browseUser( subComment?.senderUid, subComment?.senderName )} title={subComment?.senderName} className="post__top__comment flex-row">
                                                                     <strong>{subComment?.senderName}</strong>
                                                                     <span> {subComment?.commentText}</span>
                                                                 </div>
@@ -102,4 +101,4 @@ const Commment =(props)=>{
         </Fragment>
     )
 }
-export default withRouter(Commment);
+export default withBrowseUser(Commment);

@@ -3,12 +3,12 @@ import Auxiliary from "../HOC/Auxiliary";
 import TruncateMarkup from "react-truncate";
 import {Avatar} from "@material-ui/core";
 import PropTypes from "prop-types";
-
+import Moment from "react-moment";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 
 const NotificationOutput =(props)=>{
     const [isFollowed, setFollowingState] = useState(false);
-    const {notification, igVideoImg, myData,handleFollowing, changeMainState, postIndex, browseUser, closeNotiBox } = props;
+    const {notification, igVideoImg, myData,handleFollowing, browseUser, closeNotiBox } = props;
     useEffect(()=>{
         if(notification?.type === "follow"){
             setFollowingState(myData?.following.some(user => user?.receiverUid === notification?.uid));
@@ -30,7 +30,7 @@ const NotificationOutput =(props)=>{
                         <div><Avatar className="noti__user__img" src={notification?.userAvatarUrl} alt={notification?.userName} /></div>
                         <div className="flex-column noti--user--info" onClick={()=> {browseUser(notification?.uid, notification?.userName); closeNotiBox && closeNotiBox(false)}}>
                             <h6>{notification?.userName}</h6>
-                        <p className="noti__text"><TruncateMarkup line={2} ellipsis="..">{notification?.notiText}</TruncateMarkup>  <time dateTime="date" style={{textOverflow: 'ellipsis'}}>{new Date(notification?.date?.seconds * 1000).toLocaleString()}</time></p>
+                        <p className="noti__text"><TruncateMarkup line={2} ellipsis="..">{notification?.notiText}</TruncateMarkup>  <span style={{textOverflow: 'ellipsis'}}><Moment withTitle fromNow>{Date.parse(new Date(notification?.date?.seconds * 1000).toLocaleString().replace(/-/g, "/"))}</Moment></span></p>
                         </div> 
                     </div>
                     

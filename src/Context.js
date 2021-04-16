@@ -1067,9 +1067,7 @@ class AppProvider extends PureComponent {
       switch (type) {
         case "editProfile":
           Object.keys(copiedArr).length > 0 &&
-            Object.keys(copiedArr).map((item) => {
-              copiedArr[item] = formData[item];
-            });
+            Object.keys(copiedArr).map((item) => copiedArr[item] = formData[item]);
           break;
         case "professionalAcc":
           if (Object.keys(copiedArr).length > 0 && copiedArr.professionalAcc) {
@@ -1078,9 +1076,7 @@ class AppProvider extends PureComponent {
           break;
         default:
           Object.keys(copiedArr).length > 0 &&
-            Object.keys(copiedArr).map((item) => {
-              copiedArr[item] = formData[item];
-            });
+            Object.keys(copiedArr).map((item) => copiedArr[item] = formData[item]);
       }
       this.updateParts(this.state.uid, "profileInfo", copiedArr, false, "");
     }
@@ -1140,6 +1136,7 @@ class AppProvider extends PureComponent {
         break;
       case "info":
         toast.info(text);
+        break;
       case "dark":
         toast.dark(text);
         break;
@@ -1232,9 +1229,7 @@ class AppProvider extends PureComponent {
     if (state) {
       copiedObj[modalType] = true;
     } else {
-      Object.keys(copiedObj).map((key) => {
-        copiedObj[key] = false;
-      });
+      Object.keys(copiedObj).map((key) => copiedObj[key] = false);
     }
     this.setState(
       updateObject(this.state, {

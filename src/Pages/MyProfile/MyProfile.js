@@ -8,12 +8,14 @@ import {useAuthState} from "react-firebase-hooks/auth";
 import {GoVerified } from "react-icons/go";
 import {IoMdGrid} from "react-icons/io";
 import {RiLayoutRowLine} from "react-icons/ri";
-import {BsPlusSquare} from "react-icons/bs";
 import {FaHeart} from "react-icons/fa";
 import {FaRegComment} from "react-icons/fa";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 import * as Consts from "../../Utilities/Consts";
+import emptyPostsImg from "../../Assets/6efc710a1d5a.jpg";
+import appleStore from "../../Assets/get-app-apple.png";
+import gpStore from "../../Assets/get-app-gp.png";
 
 const MyProfile =(props)=>{
     const [,loading] = useAuthState(auth);
@@ -202,13 +204,17 @@ const MyProfile =(props)=>{
                                 (<Skeleton count={10} height={250} width={250} className="mt-4 mr-4 mx-auto"  />)
                         :
                         (
-                            <div className="empty--posts--container flex-column">
-                                <div className="empty--posts--inner flex-column">
-                                    <div className="plus--icon--container flex-column"><BsPlusSquare className="plus__icon"/></div>
-                                    <h3>Profile</h3>
-                                    <p>When you share photos and videos, they'll <br/> be appear on your profile page</p>
-
-                                    <span>Share your first photo or video</span>
+                            <div className="my-empty--posts--container flex-row">
+                                <div className="my-empty--posts--img flex-row">
+                                    <img src={emptyPostsImg} alt="logo" />
+                                </div>
+                                <div className="my-empty--posts--text--container flex-column">
+                                    <h2>Start capturing and sharing your moments.</h2>
+                                    <p>Get the app to share your first photo or video.</p>
+                                    <div className="my--empty--posts--get--app flex-row">
+                                        <img src={appleStore} alt="apple store" />
+                                        <img src={gpStore} alt="google store" />
+                                    </div>
                                 </div>
                             </div>
                         )
