@@ -870,6 +870,7 @@ button:active{
     margin-right: 9px;
     height:40px;
     width:136px;
+    cursor: pointer;
 }
 
 #messages .messages--view--users ul li .messages--user--info div{
@@ -1657,7 +1658,10 @@ a.prof__btn__unfollowed{
         --padding-sides: 4vw;
     }
     .auth{
-        width:75%;
+        width:85%;
+    }
+    .auth .auth--upper--card{
+        padding:15px 15px 18px;
     }
     #usersProfile  .reel--bubble{
         margin:-10px 20px 10px;

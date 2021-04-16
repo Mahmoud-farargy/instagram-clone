@@ -339,7 +339,7 @@ class AddNewPost extends PureComponent {
                 <div>
                   {this.state.uploading ? (
                   <div className="uploading__in__progress flex-column">
-                    <h4>Uploading...</h4>
+                    <h4>Processing...</h4>
                     <Skeleton count={1} width={250} height={250} />
                   </div>
                 ) :  this.state.contentType ? 
