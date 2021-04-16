@@ -41,6 +41,7 @@
     font-size: 16px;
     font-weight:600;
     white-space: pre-wrap;
+    cursor: pointer;
 }
 #upload.post--uploading--container .files-dropzone-active{
     background-color: #0095f6;

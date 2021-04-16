@@ -15,11 +15,13 @@ import { updateObject } from "../../Utilities/Utility";
 import OptionsModal from "../Generic/OptionsModal/OptionsModal";
 import * as Consts from "../../Utilities/Consts";
 import GetFormattedDate from "../../Utilities/FormatDate";
+import ScrollTrigger from 'react-scroll-trigger';
 
 class Post extends PureComponent {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
+    this.videoPost = React.createRef();
     this.state = {
       postLiked: false,
       insertedComment: "",
@@ -166,6 +168,16 @@ class Post extends PureComponent {
       }
     }, 150);
   }
+  handleVideoPlaying =(type) => {
+    if(this.videoPost && this.videoPost?.current){
+        if(type.toLowerCase() === "on-view"){
+          this.videoPost.current.play();
+        }else if(type.toLowerCase() === "out-of-view"){
+          this.videoPost.current.pause();
+        }
+    }
+  
+  }
   render() {
     const {
       userName,
@@ -246,7 +258,7 @@ class Post extends PureComponent {
                     onClick={() => this.doubleClickEvent()}
                     className="post__card__content"
                     src={contentURL}
-                    alt="post"
+                    alt={`Post by ${userName}`}
                     draggable="false"
                   />
                   {this.state.doubleLikeClicked ? (
@@ -267,13 +279,18 @@ class Post extends PureComponent {
                 </div>
               ) : contentType === "video" ? (
                 <div>
-                  <video
-                    onClick={() => this.doubleClickEvent()}
-                    className="post__card__content"
-                    src={contentURL}
-                    draggable="false"
-                    controls
-                  />
+                  <ScrollTrigger onEnter={() => this.handleVideoPlaying("on-view")} onExit={() => this.handleVideoPlaying("out-of-view")} >
+                      <video
+                      ref={this.videoPost}
+                      onClick={() => this.doubleClickEvent()}
+                      className="post__card__content"
+                      src={contentURL}
+                      draggable="false"
+                      controls
+                      muted
+                    />
+                  </ScrollTrigger>
+                  
                   <IoMdVideocam className="video__top__icon" />
                 </div>
               ) : null}

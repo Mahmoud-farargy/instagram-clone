@@ -211,7 +211,7 @@ const MyProfile =(props)=>{
                                 <div className="my-empty--posts--text--container flex-column">
                                     <h2>Start capturing and sharing your moments.</h2>
                                     <p>Get the app to share your first photo or video.</p>
-                                    <div className="my--empty--posts--get--app flex-row">
+                                    <div onClick={() => props.history.push("/add-post")} className="my--empty--posts--get--app flex-row">
                                         <img src={appleStore} alt="apple store" />
                                         <img src={gpStore} alt="google store" />
                                     </div>
