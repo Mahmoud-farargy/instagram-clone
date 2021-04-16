@@ -13,10 +13,12 @@ import Comment from "../../Components/Comment/Comment";
 import { GoVerified } from "react-icons/go";
 import { withRouter } from "react-router-dom";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
+import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
+import Moment from "react-moment";
 
 const PostPage  = (props) => {
   const context = useContext(AppContext);
-  const {changeMainState, getUsersProfile, notify, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleUserBlocking, modalsState,handleLikingComments, onCommentDeletion } = context;
+  const {changeMainState, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleUserBlocking, modalsState,handleLikingComments, onCommentDeletion } = context;
   const [compState, setCompState] = useState({
         postLiked: false,
         insertedComment: "",
@@ -25,8 +27,13 @@ const PostPage  = (props) => {
         doubleLikeClicked: false,
         replayData: {},
   });
+  //====================== 
+  // REFS
   const inputField = useRef(null);
   const autoScroll = useRef(null);
+  //----------------------
+
+  
   // constructor(props) {
   //   super(props);
   //   this.inputField = React.createRef();
@@ -54,22 +61,6 @@ const PostPage  = (props) => {
   useEffect(() => {
     changeMainState("currentPage", "Post");
   }, []);
-
- const browseUser = (specialUid) => {
-    if(specialUid){
-      getUsersProfile(specialUid)
-            .then(() => {
-             props.history.push(`/user-profile`);
-            })
-            .catch((err) => {
-              notify(
-                (err && err.message) || "error has occurred. please try again later!",
-                "error"
-              );
-      });
-    }
-    
-  };
 
   const likesCheck = () => {
     if (usersProfileData?.posts) {//checks whether the user's post is liked or not
@@ -211,7 +202,7 @@ const PostPage  = (props) => {
     //   var isVerified = usersProfileData?.isVerified;
     // }
     // useEffect(() => {
-        var {caption,contentType,contentURL,comments ,likes,location ,date,postOwnerId} = usersProfileData?.posts[currentPostIndex?.index];       
+        var {caption = "",contentType,contentURL = "",comments = [],likes= {},location = "",date = {},postOwnerId = ""} = usersProfileData?.posts[currentPostIndex?.index];       
         var isVerified = usersProfileData?.isVerified;
     // },[usersProfileData]);
     
@@ -246,7 +237,7 @@ const PostPage  = (props) => {
                   <div
                     className="post--header--user--info flex-column"
                     onClick={() =>
-                      browseUser(usersProfileData?.uid)
+                      props.browseUser(usersProfileData?.uid, usersProfileData?.userName)
                     }
                   >
                     <span
@@ -283,6 +274,7 @@ const PostPage  = (props) => {
                 {contentType === "image" ? (
                   <div>
                     <img
+                      loading="lazy"
                       onClick={() => doubleClickEvent()}
                       className="post__card__content"
                       src={contentURL}
@@ -312,6 +304,7 @@ const PostPage  = (props) => {
                       src={contentURL}
                       draggable="false"
                       controls
+                      autoPlay
                     />
                     <IoMdVideocam className="video__top__icon" />
                   </div>
@@ -369,11 +362,11 @@ const PostPage  = (props) => {
                         style={{ cursor: "pointer" }}
                         onClick={() => setCompState({...compState,viewFullCaption: true })}
                       >
-                        {caption}
+                        {caption && caption}
                       </TruncateMarkup>
                     </p>
                   ) : (
-                    <p className="article__post">{caption}</p>
+                    <p className="article__post">{caption && caption}</p>
                   )}
                 </span>
                 {comments?.length >= 1 ? (
@@ -415,7 +408,7 @@ const PostPage  = (props) => {
                 ) : null}
 
                 <small className="post__date">
-                  {new Date(date?.seconds * 1000).toLocaleString()}
+                  <Moment withTitle fromNow >{Date.parse(new Date(date?.seconds * 1000).toLocaleString().replace(/-/g, "/"))}</Moment>
                 </small>
                 <form
                   onSubmit={(e) => submitComment(e)}
@@ -453,4 +446,4 @@ const PostPage  = (props) => {
     );
   
 }
-export default withRouter(PostPage);
+export default withBrowseUser(withRouter(PostPage));

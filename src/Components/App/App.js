@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect, useContext, Suspense, lazy } from "react";
-import { Switch, Route, withRouter } from "react-router-dom";
+import React, { Fragment, useEffect, useContext, Suspense, lazy} from "react";
+import { Switch, Route, useHistory } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { db, auth } from "../../Config/firebase";
 import AppConfig from "../../Config/app-config.json";
@@ -11,6 +11,7 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import $ from "jquery";
 import Header from "../Header/Header";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
+import * as Consts from "../../Utilities/Consts";
 
 //lazy loading
 const UsersModal = lazy(()=> import( "../../Components/UsersModal/UsersModal"));
@@ -32,6 +33,8 @@ const MyProfile = lazy(() => import("../../Pages/MyProfile/MyProfile"));
 const EditProfile = lazy(() => import("../../Pages/EditProfile/EditProfile"));
 const Reels = lazy(() => import("../../Pages/Reels/Reels"));
 const About = lazy(() => import("../../Pages/About/About"));
+
+
 //--xx---//
 const App = (props) => {
   const context = useContext(AppContext);
@@ -53,7 +56,8 @@ const App = (props) => {
     currentPostIndex
   } = context;
   const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
-  const [_, loading] = useAuthState(auth);
+  const [user,loading] = useAuthState(auth);
+  const history = useHistory();
   // experiment
   // useEffect(() => {
   // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
@@ -91,7 +95,7 @@ const App = (props) => {
   //            return;
   //        };
   //        console.log(snapshot);
-  //        db.collection("users").doc("RJRllL1KMje3HadGMCJUi5h6BmE2").update({
+  //        db.collection(Consts.USERS).doc("RJRllL1KMje3HadGMCJUi5h6BmE2").update({
   //            test: "online"
   //        })
   // If we are currently connected, then use the 'onDisconnect()'
@@ -115,8 +119,8 @@ const App = (props) => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        db.collection("users")
-          .limit(10)
+        db.collection(Consts.USERS)
+          .limit(100)
           .get()
           .then((query) => {
             query.forEach((user) => {
@@ -135,7 +139,7 @@ const App = (props) => {
           auth.signInWithEmailAndPassword(email, returnPassword(password));
         }else{
             // user logged out
-             props.history.push("/auth");
+             history.push("/auth");
              updateUserState(false);
         }
       }
@@ -160,16 +164,17 @@ const App = (props) => {
 
   useEffect(() => {
     //<<make cleanup work here
-    document.title = `${currentPage} • ${AppConfig.title}`;
+    document.title = `${currentPage && currentPage + " • "}${AppConfig.title}`;
     if(!navigator.onLine){
       notify("You are Offline! Please reconnect and try again.", "error");
-      props.history.push("/auth");
+      history.push("/auth");
     }
   }, [currentPage]);
   return (
     <Fragment>
       <main>
         {/* Modals */}
+        {/*  comments modal */}
         <Suspense fallback={<LoadingScreen />}>
             {modalsState?.users && usersModalList && Object.keys(usersModalList).length > 0 ? <UsersModal /> : null}
           {modalsState?.comments ? (
@@ -184,7 +189,7 @@ const App = (props) => {
               className="backdrop "
               onClick={() => changeModalState("users", false, "", "")}
             ></div>
-          {loading && <div className="global__loading"></div>}
+          {loading && <div className="global__loading"></div>}          
         </Suspense>
         
         {/* Notifications container */}
@@ -193,7 +198,7 @@ const App = (props) => {
         <Switch>
           <Suspense fallback={<LoadingScreen />}>
             <Route exact path="/">
-              <Header />
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               <Home />
               <MobileNav />
               <Footer />
@@ -203,7 +208,7 @@ const App = (props) => {
               <Header />
               { //Guards
                 receivedData && Object.keys(receivedData).length > 0 && receivedData?.messages ?
-                 <Messages history={props.history} />
+                 <Messages history={history} />
                  : 
                  <div>
                     <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
@@ -290,7 +295,7 @@ const App = (props) => {
             <Route exact path="/reels">
               {  
                 reelsProfile ?
-                  <Reels context={context} routeHistory={props.history} />
+                  <Reels context={context} routeHistory={history} />
                 :
                 <div>
                   <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
@@ -311,4 +316,4 @@ const App = (props) => {
   );
 };
 
-export default withRouter(App);
+export default App;

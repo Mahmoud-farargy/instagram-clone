@@ -156,19 +156,27 @@
     .block--list--inner{
       padding:20px;
       .block__list__ul{
+        width: 100%;
         padding:0;
         list-style: none;
-        overflow: auto;
+        overflow-y: auto;
           .block__li{
             justify-content:space-between;
             align-items:center;
+            .blocked--user--info{
+              align-items:space-between;
+            }
+            
+            margin-bottom:15px;
             .blocked__name{
               font-size: 14px;
               font-weight: 600;
+              margin-bottom: 2px;
             }
             .blocked__profile__name{
               font-size: 14px;
               font-weight: 400;
+              margin-bottom: 1px;
             }
           }
       }   

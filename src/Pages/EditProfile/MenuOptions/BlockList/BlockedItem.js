@@ -2,7 +2,7 @@ import React, {Fragment} from 'react';
 import {Avatar} from "@material-ui/core";
 
 function BlockedItem(props) {
-    const {item, userblockingFunc, notify } = props;
+    const {item, userblockingFunc } = props;
     const onUnblock = (uid, userName) => {
         userblockingFunc( false, uid, userName )
     }
@@ -13,7 +13,7 @@ function BlockedItem(props) {
                     <Avatar className="mr-2" src={item?.userAvatarUrl} alt={item?.userName} title={item?.userName} />
                     <div className="blocked--user--info flex-column">
                         <h3 className="blocked__name">{item?.userName}</h3>
-                        <h5 className="blocked__profile__name">{item?.profileInfo}</h5>
+                        {item?.profileName && <h5 className="blocked__profile__name">{item?.profileName}</h5>}
                     </div>
                     
                 </div>

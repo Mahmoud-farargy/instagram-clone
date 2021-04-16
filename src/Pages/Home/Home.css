@@ -41,9 +41,15 @@
     right:0;
     top: 88px;
     left:60%;
-    height:100%;
+    height:80%;
     z-index:90;
     width:40%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+#home.main--home--container .home--sider::-webkit-scrollbar{
+    display: none;
+    width: 0;
 }
 .side--user--info{
     align-items: center;
@@ -56,7 +62,15 @@
     margin-bottom:0;
     text-transform :none;
     align-items:center;
+    text-overflow: ellipsis;
     color: var(--main-black);
+}
+.side--user--info small{
+    font-size: 12px;
+    font-weight: 400;
+    color: #8e8e8e;
+    line-height: 14px;
+    margin: 2px 5px 2px 9px;
 }
 .instagram__embed{
     max-width: 80%;
@@ -64,17 +78,19 @@
 #home.main--home--container .suggestions--home--container{
     margin:20px 0;
     padding:0px 10px;
-    width:70%;
 }
 #home.main--home--container .suggestions--header{
     justify-content:space-between;
     align-items:center;
     margin-bottom:5px;
 }
-#home.main--home--container .suggestions--header h5{
-    color: var(--light-gray);
-    font-size:17px;
-    font-weight:400;
+#home.main--home--container .suggestions--header h6{
+    color: #8e8e8e;
+    color: rgb(142, 142, 142);
+    font-size:14px;
+    font-weight:600;
+    line-height: 18px;
+    display:block;
 }
 #home.main--home--container .suggestions--header button{
     border:none;
@@ -124,6 +140,7 @@
         position: relative;
         width:100%;
         height:100%;
+        min-width: 100%;
         scroll-snap-align:start;
     }
     .post--card--article{
@@ -149,9 +166,9 @@
     }
     #home.main--home--container .home--sider{
         position:static;
-        width:100%;
-        top:0;
+        width:100% !important;
         z-index:400;
+        padding:0 !important;
     }
     .instagram--embed--container{
         padding:10px;
@@ -187,11 +204,21 @@
     #home.main--home--container .home--posts--side{
         margin:0 auto 20px auto;
         padding-right:0;
-        /* max-width:400px; */
         align-items:center;
     }
     #home.main--home--container .suggestions--home--container{
         width:100%;
-        max-width: 300px;
+        max-width: 100%;
     }
+    #home.main--home--container .home--sider{
+        position:static;
+        width:80%;
+        z-index:400;
+    }
+}
+@media only screen and (min-width: 740px){
+    #home.main--home--container .suggestions--home--container{
+        width:70%;
+    }
+
 }

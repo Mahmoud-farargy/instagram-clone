@@ -1,10 +1,9 @@
-import React, { useContext, useState, lazy, Suspense, useEffect } from "react";
+import React, { useContext, useState, useEffect, lazy, Suspense, useRef } from "react";
 import Auxiliary from "../HOC/Auxiliary";
-import { NavLink, Link, BrowserRouter } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import "./Header.css";
 import { HiHome } from "react-icons/hi";
-import { RiSendPlaneFill } from "react-icons/ri";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart , FaFacebookMessenger} from "react-icons/fa";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import { Avatar } from "@material-ui/core";
 import { AppContext } from "../../Context";
@@ -18,8 +17,17 @@ import NotificationOutput from "../NotificationsOutput/NotificationsOutput";
 import { withRouter } from "react-router-dom";
 import SearchItem from "../SearchItem/SearchItem.js";
 import Loader from "react-loader-spinner";
+import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen";
+import HeaderLogo from "../../Assets/instagram-icon-logo.c1dbcbd5.svg";
+const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
 const Header = (props) => {
+  // Refs
+  const headerRef = useRef(null);
+  const _isMounted = useRef(true);
+  // --xx-- //
+
+  // state
   const context = useContext(AppContext);
   const [openNoti, setNoti] = useState(false);
   const [openProf, setProf] = useState(false);
@@ -27,60 +35,140 @@ const Header = (props) => {
   const [user] = useAuthState(auth);
   const [searchVal, setSearchVal] = useState("");
   const [capitalizeWord, setCapitalizedWord] = useState("");
+  const [openLogoutModal, setLogoutModal] = useState(false);
+  const [scrolled, setScrollingState] = useState(false);
+   // --xx--//
   const {
     receivedData,
     closeNotificationAlert,
     authLogout,
     igVideoImg,
     handleFollowing,
-    getUsersProfile,
     changeMainState,
     searchUsers,
     searchInfo,
-    notify
   } = context;
   const reverseNotiState = (type) => {
     const notiUpdate = receivedData?.notifications?.isUpdate;
     const notiMsg = receivedData?.notifications?.isNewMsg;
-
     if (type === "isUpdate" && notiUpdate) {
       closeNotificationAlert(type);
     } else if (type === "isNewMsg" && notiMsg) {
       closeNotificationAlert(type);
     }
   };
+  /// useEffects
   useEffect(() => {
-    if (searchVal && searchVal !== "") {
-      searchUsers(searchVal, "regular");
-      setSeachBox(true);
-    } else {
-      setSeachBox(false);
-      setSearchVal("");
+    if(_isMounted){
+        if (searchVal && searchVal !== "") {
+        searchUsers(searchVal, "regular");
+        setSeachBox(true);
+      } else {
+        setSeachBox(false);
+        setSearchVal("");
+      }
     }
+    
   }, [searchVal]);
-
-  const browseUser = (specialUid, name) => {
-    if (specialUid && name) {
-      setSeachBox(false);
-      setNoti(false);
-      getUsersProfile(specialUid).then(() => {
-         props.history.push(`/user-profile/${name}`);
-      }).catch((err)=>{
-        notify(err && err.message || "error has occurred. please try again later!", "error")
-      });
-     
+  useEffect(() => {
+    if(_isMounted){
+        window.addEventListener("scroll", () =>{
+        if(window.scrollY > 0 && headerRef && headerRef.current){
+          headerRef.current?.classList && headerRef.current.classList.add("shorter_header");
+          setScrollingState(true);
+        }else{
+          // setScrollingState(false);
+          headerRef.current?.classList && headerRef.current.classList.remove("shorter_header");
+        }
+      })
     }
-  };
+        
+    return () =>{
+      window.removeEventListener("scroll", ()=> {});
+      _isMounted.current = false;
+      headerRef.current = false;
+      setScrollingState(false);
+  }
+  }, []);
+// ---xxx-- //
   const clearSearchBox = () => {
     setSearchVal("");
   };
+  const onLoggingOut = () => {
+   setLogoutModal(true);
+   setProf(false);
+    setTimeout(() => {
+      authLogout(props.history).then(() => {
+        setLogoutModal(false);
+      }).catch(() => {
+        setLogoutModal(false);
+      });      
+    },1500);
+  }
   return (
     <Auxiliary>
-      <header id="header" className="main--header flex-row">
+      {/* modals */}
+      <Suspense fallback={<LoadingScreen />}>
+          {openLogoutModal && (
+              <OptionsModal>
+                <div id="logoutModal">
+                    <div className="logout--modal flex-column">
+                  <h2>Logging Out</h2>
+                  <p>You need to log back in.</p>
+                  <Loader
+                    type="Oval"
+                            color="#0095f6"
+                            height={18}
+                            width={18}
+                            timeout={5000}
+                    />
+                  </div>
+                  <span onClick={() => props.history.replace("/auth")}>
+                    Log In
+                  </span>
+                </div>
+              
+              </OptionsModal>
+            )}
+      </Suspense>
+          <div
+            style={{
+              opacity: openLogoutModal ? "1" : "0",
+              display: openLogoutModal ? "block" : "none",
+              transition: "all 0.5s ease",
+            }}
+            className="backdrop "
+            onClick={() => setLogoutModal(false)}
+          ></div>
+        {/* --xx-- */}
+
+      <header ref={headerRef} id="header" className="main--header flex-row">
         <div className="header--inner flex-row">
-          <Link to="/">
-            <h1 className="logoText">Voxgram</h1>
-          </Link>
+          <div className="header--logo--box flex-row">
+            <div style={{
+              // opacity: scrolled ? "0" : "1",
+              // transform: scrolled ? "translateX(-100%)" : "translateX(0)",
+              // transition: "all 0.5s ease-in",
+              animation: "0.5s ease-in disappear-item 1",
+              // animationDelay: "0.5s"
+            }}
+            onClick={() => props.history.push("/")} className="ig--logo--img" >
+              <img src={HeaderLogo} alt="Instagram Logo" />
+            </div>
+            <div style={{
+              opacity: scrolled ? "0" : "1",
+              transform: scrolled ? "translateY(-100%)" : "translateY(0)",
+              transition: "all 0.5s ease-in",
+              animation: "disappear-item",
+              animationDelay: "0.5s"
+            }}
+            className="logo--verti--divider"></div>
+            <Link to="/">
+              <h1 className="logoText">Voxgram</h1>
+            </Link> 
+          </div>
+
+         
 
           <div className="search--bar--container">
             <input
@@ -131,7 +219,7 @@ const Header = (props) => {
                         <SearchItem
                           key={user?.uid || i}
                           user={user}
-                          browseUser={browseUser}
+                          closeSearchBox={setSeachBox}
                         />
                       );
                     })
@@ -165,10 +253,10 @@ const Header = (props) => {
                       to="/messages"
                       activeClassName={!openNoti ? "active-nav-link" : ""}
                     >
-                      <RiSendPlaneFill />
+                      <FaFacebookMessenger />
                       {receivedData?.notifications?.isNewMsg &&
                       props.location.pathname !== "/messages" ? (
-                        <div className="like__noti__dot"></div>
+                        <div className="like__noti__dot mt-1"></div>
                       ) : null}
                     </NavLink>
                   </li>
@@ -209,20 +297,21 @@ const Header = (props) => {
                         {receivedData?.notifications?.list.length >= 1 ? (
                           <ul className="noti--popup--ul flex-column">
                             {receivedData?.notifications?.list
-                              ?.slice(0, 30)
+                              ?.slice(0, 30).sort((a,b) =>{
+                                return b.date.seconds - a.date.seconds
+                              })
                               .map((notification, i) => {
                                 return (
-                                  <div key={notification?.notiId}>
                                     <NotificationOutput
+                                    key={notification?.notiId}
                                       notification={notification}
                                       igVideoImg={igVideoImg}
                                       myData={receivedData}
                                       handleFollowing={handleFollowing}
                                       changeMainState={changeMainState}
-                                      browseUser={browseUser}
+                                      closeNotiBox={setNoti}
                                       postIndex={i}
                                     />
-                                  </div>
                                 );
                               })}
                           </ul>
@@ -238,6 +327,7 @@ const Header = (props) => {
                   <li>
                     <span onClick={() => setProf(true)}>
                       <Avatar
+                        style={{border: (openProf || props.location.pathname?.toLowerCase() === "/profile" || props.location.pathname?.toLowerCase() === "/edit-profile") ? "2px solid #111" : ""}}
                         src={receivedData?.userAvatarUrl}
                         alt={receivedData?.userName}
                         className="header__user__avatar flex-column"
@@ -277,11 +367,7 @@ const Header = (props) => {
                             </li>
                           </Link>
                           <li
-                            onClick={() => {
-                              authLogout(props.history);
-                              setProf(false);
-                              window.location.reload();
-                            }}
+                            onClick={() => onLoggingOut()}
                           >
                             <BiPowerOff className="prof__popup" /> Log Out
                           </li>
@@ -308,4 +394,4 @@ const Header = (props) => {
     </Auxiliary>
   );
 };
-export default withRouter(Header);
+export default withRouter(React.memo(Header));

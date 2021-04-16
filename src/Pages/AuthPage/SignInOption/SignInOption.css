@@ -1,0 +1,86 @@
+.signIn__Btn {
+  padding: 8px 16px;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: 600;
+  background: rgba(158, 158, 158, 0.2);
+  -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.4), 0 3px 1px -2px rgba(0, 0, 0, 0.1), 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.4), 0 3px 1px -2px rgba(0, 0, 0, 0.1), 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+  min-width: 64px;
+  font-size: 14px;
+  color: #fff;
+  margin: 9px 0px;
+  outline: 0;
+  display: inline-block;
+  overflow: hidden;
+  will-change: box-shadow;
+  -webkit-transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1), -webkit-box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1);
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1), -webkit-box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1);
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1), -webkit-box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1);
+  vertical-align: middle;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  font-family: Roboto,Helvetica,Arial,sans-serif;
+  line-height: normal;
+  width: 100%;
+  direction: ltr;
+  text-transform: capitalize;
+}
+
+.signIn__Btn img {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+}
+
+.signIn__Btn:hover {
+  background-color: rgba(158, 158, 158, 0.2);
+}
+
+.signIn__Btn:focus {
+  outline: 1px dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+}
+
+.signIn__Btn:active {
+  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0 8px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.3);
+  background: rgba(158, 158, 158, 0.4);
+}
+
+.signIn__Btn.google__auth {
+  background-color: #ffffff;
+  color: #757575;
+}
+
+.signIn__Btn.google__auth:hover {
+  background-color: #f7f7f7;
+}
+
+.signIn__Btn.github__auth {
+  background-color: #333333;
+}
+
+.signIn__Btn.github__auth:hover {
+  background-color: #424242;
+}
+
+.signIn__Btn.twitter__auth {
+  background-color: #55acee;
+}
+
+.signIn__Btn.twitter__auth:hover {
+  background-color: #55b5ff;
+}
+
+.signIn__Btn.facebook__auth {
+  background-color: #3b5998;
+}
+
+.signIn__Btn.facebook__auth:hover {
+  background-color: #3054a1;
+}
+/*# sourceMappingURL=SignInOption.css.map */

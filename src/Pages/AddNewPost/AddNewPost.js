@@ -1,5 +1,5 @@
 import React, { PureComponent, Fragment } from "react";
-import { db, auth, storage } from "../../Config/firebase";
+import { storage } from "../../Config/firebase";
 import { AppContext } from "../../Context";
 import "./AddNewPost.css";
 import { withRouter } from "react-router-dom";
@@ -203,7 +203,7 @@ class AddNewPost extends PureComponent {
             uploadedItem.size <= 12378523
           ) {
             const itemType = /image/g.test(metadata.contentType) ? "image" : "video";
-            if (uploadedItem.name.split("").length <= 50) {
+            if (uploadedItem.name.split("").length <= 200) {
               const uploadContent = storage
                 .ref(`content/${receivedData?.uid}/${fileName}`)
                 .put(uploadedItem, metadata);
@@ -248,7 +248,7 @@ class AddNewPost extends PureComponent {
               );
             } else {
               notify(
-                `The name of the ${itemType} is too long. it should not exceed 50 characters`,
+                `The name of the ${itemType} is too long. it should not exceed 200 characters`,
                 "info"
               );
             }
@@ -388,7 +388,7 @@ class AddNewPost extends PureComponent {
                           maxFiles={1}
                           onError={(error)=> notify(error.message, "error")}
                           dragActiveClassName="files-dropzone-active"
-                        >  Drop files here or click to upload</Files>
+                        >  {`${this.state.method.toLowerCase() === Consts.Post ? "Drop an image or video here to upload " : this.state.method.toLowerCase() === Consts.Reel ?  "Drop a video here to upload" : "Drop a file here or click to upload"}`}</Files>
                       <InputForm
                           type="select"
                           options={["Post", "Reel"]}
@@ -432,7 +432,7 @@ class AddNewPost extends PureComponent {
                             </Button>
                           ) : null}
                           <Button disabled={!isValid} type="submit" value="Post" variant="contained" color="primary">
-                            Post
+                            Share
                           </Button>
                         </div>
                       ) : null}

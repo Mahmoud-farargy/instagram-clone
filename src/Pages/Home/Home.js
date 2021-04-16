@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import "./Home.css";
 import Post from "../../Components/Post/Post";
@@ -19,7 +19,6 @@ const Home = (props) => {
     handleMyLikes,
     handleSubmittingComments,
     suggestionsList,
-    getUsersProfile,
     uid,
     handleFollowing,
     deletePost,
@@ -27,28 +26,20 @@ const Home = (props) => {
     handleLikingComments,
     changeModalState,
     changeMainState,
-    notify,
     modalsState,
     onCommentDeletion
   } = useContext(AppContext);
   let posts = receivedData?.posts;
-  const browseUser = (specialUid, name) => {
-    if (specialUid && name) {
-      getUsersProfile(specialUid).then((res)=>{
-        props.history.push(`/user-profile/${name}`);
-      }).catch((err) =>{
-        notify(err && err.message ||"error has occurred. please try again later!", "error");
-      });
-     
-    }
-  };
-  let [user, loading] = useAuthState(auth);
+  let [, loading] = useAuthState(auth);
+  const [randNum, setRandNum] = useState(0);
   useEffect(() => {
     changeMainState("currentPage", "Home");
-  }, [changeMainState]);
-  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  useEffect(()=> {
+        setRandNum(Math.floor(Math.random() * suggestionsList?.length -6));
+  },[suggestionsList]);
+
   const recievedAuth = localStorage.getItem("user");
 
   return (
@@ -146,9 +137,9 @@ const Home = (props) => {
                   <div className="suggestions--list flex-column">
                     <ul className="flex-column">
                       {suggestionsList &&
-                        suggestionsList.length > 0 &&
+                        suggestionsList.length > 0 ?
                        Array.from(new Set(suggestionsList.map((item) => item.uid))).map((id) => suggestionsList.find((el) => el.uid === id))
-                          .filter((item) => item?.uid !== receivedData?.uid)
+                          .filter((item) => (item?.uid !== receivedData?.uid) ).slice(randNum, suggestionsList?.length -1).slice(0,5)
                           .map((user, i) => {
                             return (
                               <SuggestItem
@@ -157,12 +148,14 @@ const Home = (props) => {
                                 isVerified={user?.isVerified}
                                 userUid={user?.uid}
                                 userAvatarUrl={user?.userAvatarUrl}
-                                browseUser={browseUser}
                                 handleFollowing={handleFollowing}
-                                receivedData={receivedData}
+                                receivedData={receivedData ? receivedData : []}
                               />
                             );
-                          })}
+                          }):
+                          <h6>No suggestions yet</h6>
+                      }
+                          
                     </ul>
                   </div>
                 </div>

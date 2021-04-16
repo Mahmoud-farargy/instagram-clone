@@ -2,28 +2,35 @@ import React, {useEffect, useState} from "react";
 import Auxiliary from "../HOC/Auxiliary";
 import TruncateMarkup from "react-truncate";
 import {Avatar} from "@material-ui/core";
+import PropTypes from "prop-types";
+import Moment from "react-moment";
+import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 
 const NotificationOutput =(props)=>{
     const [isFollowed, setFollowingState] = useState(false);
-    const {notification, igVideoImg, myData,handleFollowing, changeMainState, postIndex, browseUser } = props;
+    const {notification, igVideoImg, myData,handleFollowing, browseUser, closeNotiBox } = props;
     useEffect(()=>{
         if(notification?.type === "follow"){
             setFollowingState(myData?.following.some(user => user?.receiverUid === notification?.uid));
         }
     },[myData?.following]);
 
-    // const redirectMeToPost=()=>{
-    //     getUsersProfile(notification.uid);
-    //     changeMainState("currentPostIndex", {index: postIndex, id: notification?.uid});
-    // }
+    const redirectMeToPost=(e)=>{
+        e.stopPropagation();
+        // getUsersProfile(notification.uid);
+        // changeMainState("currentPostIndex", {index: i, id: id});
+        // getUsersProfile(uid).then(() => {
+        //     props.history.push("/browse-post");
+        // });
+    }
     return(
         <Auxiliary >
             <li  key={notification?.notiId} className="space__between noti--popup-item">
                     <div className="flex-row noti--row">
                         <div><Avatar className="noti__user__img" src={notification?.userAvatarUrl} alt={notification?.userName} /></div>
-                        <div className="flex-column noti--user--info" onClick={()=> browseUser(notification?.uid, notification?.userName)}>
+                        <div className="flex-column noti--user--info" onClick={()=> {browseUser(notification?.uid, notification?.userName); closeNotiBox && closeNotiBox(false)}}>
                             <h6>{notification?.userName}</h6>
-                        <p className="noti__text"><TruncateMarkup line={2} ellipsis="..">{notification?.notiText}</TruncateMarkup>  <time dateTime="date" style={{textOverflow: 'ellipsis'}}>{new Date(notification?.date?.seconds * 1000).toLocaleString()}</time></p>
+                        <p className="noti__text"><TruncateMarkup line={2} ellipsis="..">{notification?.notiText}</TruncateMarkup>  <span style={{textOverflow: 'ellipsis'}}><Moment withTitle fromNow>{Date.parse(new Date(notification?.date?.seconds * 1000).toLocaleString().replace(/-/g, "/"))}</Moment></span></p>
                         </div> 
                     </div>
                     
@@ -37,7 +44,8 @@ const NotificationOutput =(props)=>{
                         } 
                         {
                              notification?.type !== "follow"?
-                                <img className="noti__bar__img" src={notification?.contentType ==="image" ? notification?.contentURL : notification?.contentType ==="video" ? igVideoImg : null } />
+                             <div onClick={(e)=> redirectMeToPost(e)}><img className="noti__bar__img" src={notification?.contentType ==="image" ? notification?.contentURL : notification?.contentType ==="video" ? igVideoImg : null } /></div>
+                                
                              : null
                         }
 
@@ -47,4 +55,13 @@ const NotificationOutput =(props)=>{
         </Auxiliary>
     )
 }
-export default NotificationOutput;
+NotificationOutput.propTypes = {
+    notification: PropTypes.object.isRequired,
+    igVideoImg: PropTypes.string.isRequired,
+    myData: PropTypes.object.isRequired,
+    closeNotiBox: PropTypes.func,
+    handleFollowing: PropTypes.func.isRequired,
+    changeMainState: PropTypes.func,
+    postIndex: PropTypes.number
+}
+export default  withBrowseUser(React.memo(NotificationOutput));

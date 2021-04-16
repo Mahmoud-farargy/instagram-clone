@@ -1,35 +1,22 @@
-import React, {useState, Fragment,  useEffect, useContext} from "react";
+import React, { useState, Fragment,  useEffect } from "react";
 import TruncateMarkup from "react-truncate";
-import {FiHeart} from "react-icons/fi";
-import {FaHeart} from "react-icons/fa";
-import { withRouter } from "react-router";
-// import {AppContext} from "../../Context";
-
+import { FiHeart } from "react-icons/fi";
+import { FaHeart } from "react-icons/fa";
+import * as Consts from "../../Utilities/Consts";
+import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 
 const Commment =(props)=>{
-    var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, posts} = props;
+    var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, posts, browseUser} = props;
     const [viewSubComments, setSubComments] = useState(false); 
     const [postLiked, setPostLiked] = useState(false);
     useEffect(()=>{
         setPostLiked(comment?.likes.some(el => el.id === uid));
-    },[comment?.likes])
-    // const context = useContext(AppContext);
-    // const browseUser = (specialUid) => {
-    //     const {getUsersProfile, notify} = context;
-    //     if (specialUid) {
-    //       getUsersProfile(specialUid).then((res)=>{
-    //         props.history.push(`/user-profile`);
-    //       }).catch((err) =>{
-    //         notify(err && err.message ||"error has occurred. please try again later!", "error");
-    //       });
-         
-    //     }
-    //   };
+    },[comment, uid]);
     return(
         <Fragment>
         <div className="post--comment--item">
                <div className="flex-row post--comment--row">
-                <span  title={comment?.userName} className="post__top__comment flex-row">
+                <span onClick={() => browseUser( comment?.uid, comment?.userName )} title={comment?.userName} className="post__top__comment flex-row">
                       <strong>{comment?.userName}</strong> <p className="comment__text w-100">
                           <TruncateMarkup className="w-100" line={1} ellipsis="...">{comment?.comment}</TruncateMarkup>
                           </p>
@@ -51,7 +38,7 @@ const Commment =(props)=>{
                <div className="post--comment--actions flex-row">
                       {
                           comment.likes?.length >=1 ?
-                             <span className="acc-action" onClick={()=> changeModalState("users",true, comment?.likes, "likes")}>{comment.likes?.length.toLocaleString()} {comment.likes?.length > 1 ? "likes" : "like"}</span>
+                             <span className="acc-action" onClick={()=> changeModalState("users",true, comment?.likes, Consts.LIKES)}>{comment.likes?.length.toLocaleString()} {comment.likes?.length > 1 ? "likes" : "like"}</span>
                           : null
                       } 
                        <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid); setSubComments(true)}}> Replay</span>      
@@ -70,9 +57,9 @@ const Commment =(props)=>{
                                                    comment && comment.subComments.length > 0 && comment.subComments?.map( (subComment, i )=>{
                                                        return(
                                                         <li
-                                                            key={i} title={subComment?.senderName} className="post--comment--item">
+                                                            key={i} className="post--comment--item">
                                                             <div className="flex-row post--comment--row">
-                                                                <div  title={comment?.userName} className="post__top__comment flex-row">
+                                                                <div onClick={() => browseUser( subComment?.senderUid, subComment?.senderName )} title={subComment?.senderName} className="post__top__comment flex-row">
                                                                     <strong>{subComment?.senderName}</strong>
                                                                     <span> {subComment?.commentText}</span>
                                                                 </div>
@@ -91,7 +78,7 @@ const Commment =(props)=>{
                                                             <div className="post--comment--actions flex-row">
                                                                     {
                                                                         subComment?.likes?.length >=1 ?
-                                                                            <span className="acc-action" onClick={()=> changeModalState("users",true, subComment?.likes, "likes")}>{subComment?.likes?.length.toLocaleString()} {subComment?.likes?.length > 1 ? "likes" : "like"}</span>
+                                                                            <span className="acc-action" onClick={()=> changeModalState("users",true, subComment?.likes, Consts.LIKES)}>{subComment?.likes?.length.toLocaleString()} {subComment?.likes?.length > 1 ? "likes" : "like"}</span>
                                                                         : null
                                                                     } 
                                                                     <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid); setSubComments(true)}}> Replay</span>      
@@ -114,4 +101,4 @@ const Commment =(props)=>{
         </Fragment>
     )
 }
-export default withRouter(Commment);
+export default withBrowseUser(Commment);

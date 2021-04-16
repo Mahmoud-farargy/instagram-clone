@@ -11,7 +11,7 @@ function Reels(props) {
     useEffect(()=>{
         changeMainState("currentPage", "Reels");
     },[]);
-    const [_,loading] = useAuthState(auth);
+    const [,loading] = useAuthState(auth);
     return (
         <Fragment>
             <section id="reels"> 

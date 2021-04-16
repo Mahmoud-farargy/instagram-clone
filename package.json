@@ -15,6 +15,7 @@
     "font-awesome": "^4.7.0",
     "jquery": "^3.5.1",
     "material-ui": "^0.20.2",
+    "moment": "^2.29.1",
     "next": "^9.4.4",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
@@ -38,6 +39,7 @@
     "react-instagram-embed": "^1.5.0",
     "react-loader-spinner": "^4.0.0",
     "react-loading-skeleton": "^2.2.0",
+    "react-moment": "^1.1.1",
     "react-owl-carousel": "^2.3.3",
     "react-paypal-express-checkout": "^1.0.5",
     "react-redux": "^7.2.0",
@@ -49,7 +51,6 @@
     "react-truncate": "^2.4.0",
     "redux": "^4.0.5",
     "save": "^2.4.0",
-    "spotify-web-api-js": "^1.5.0",
     "styled-components": "^5.1.1"
   },
   "scripts": {

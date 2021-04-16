@@ -8,7 +8,11 @@ import { FiSend, FiInfo } from "react-icons/fi";
 import { VscSmiley } from "react-icons/vsc";
 import { RiMenu4Fill } from "react-icons/ri";
 import { MdClose } from "react-icons/md";
+import PropTypes from "prop-types";
+import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
+import Moment from "react-moment";
 // import { updateObject } from "../../Utilities/Utility";
+
 
 import $ from "jquery";
 
@@ -21,8 +25,8 @@ const Messages = (props) => {
         openSidedrawer: false,
         showEmojis: false,
     })
-  const { handleSendingMessage, receivedData, currentChatIndex, changeMainState, getUsersProfile, notify } = context;
-  const {messages} = receivedData;
+  const { handleSendingMessage, receivedData, currentChatIndex, changeMainState } = context;
+  const { messages } = receivedData;
 
   useEffect(() =>{
     $(document).ready(() => {
@@ -34,9 +38,6 @@ const Messages = (props) => {
           });
         });
     changeMainState("currentPage", "Messages");
-    // if(receivedData?.notifications?.isNewMsg){
-    //   changeMainState("currentChatIndex", 0);
-    // }
   },[]);
 
   useEffect(() =>{
@@ -83,16 +84,6 @@ const Messages = (props) => {
     });
   }
 
- const browseUser = (specialUid) => {
-        if (specialUid) {
-          getUsersProfile(specialUid).then((res)=>{
-            props.history.push(`/user-profile`);
-          }).catch((err) =>{
-            notify(err && err.message ||"error has occurred. please try again later!", "error");
-          });
-         
-        }
-  };
  const viewUsersMessages = (_, loadedIndex) => {
     changeMainState("currentChatIndex", loadedIndex);
     // setCompState({
@@ -155,9 +146,9 @@ const Messages = (props) => {
                               key={user.uid + index}
                               onClick={() => viewUsersMessages(user?.uid, index)}
                             >
-                              <Avatar src={user?.receiversAvatarUrl} />
+                             <Avatar src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
                               <div className="messages--user--info space__between">
-                                <div style={{ flex: 1, width: "100%" }}>
+                                <div style={{ flex: 1, width: "60%" }}>
                                   <p>
                                     <TruncateMarkup line={1} ellipsis="..">
                                       {user?.userName}
@@ -174,10 +165,10 @@ const Messages = (props) => {
                                 </div>
                                 <p className="messages__user__date">
                                   {user.chatLog.length >= 1
-                                    ? new Date(
+                                    ? <Moment withTitle fromNow >{Date.parse(new Date(
                                         user.chatLog[user.chatLog?.length - 1]
                                           .date.seconds * 1000
-                                      ).toLocaleString()
+                                      ).toLocaleString().replace(/-/g, "/"))}</Moment>
                                     : null}
                                 </p>
                               </div>
@@ -267,7 +258,7 @@ const Messages = (props) => {
                                 className="messages--user flex-row"
                                 key={user.uid + index}
                                 onClick={() => viewUsersMessages(user?.uid, index)} >
-                                <Avatar src={user?.receiversAvatarUrl} />
+                                <Avatar src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
                                 <div className="messages--user--info space__between">
                                   <div style={{ flex: 1, width: "100%" }}>
                                     <p>
@@ -287,10 +278,10 @@ const Messages = (props) => {
                                   </div>
                                   <p className="messages__user__date">
                                     {user.chatLog.length >= 1
-                                      ? new Date(
+                                      ? <Moment withTitle fromNow >{Date.parse(new Date(
                                           user.chatLog[user.chatLog?.length - 1]
                                             .date.seconds * 1000
-                                        ).toLocaleString()
+                                        ).toLocaleString().replace(/-/g, "/"))}</Moment>
                                       : null}
                                   </p>
                                 </div>
@@ -335,7 +326,7 @@ const Messages = (props) => {
                       {/* -- header */}
                       <Avatar src={msg?.userAvatarUrl} alt={msg?.userName} />
                       <div className="messages--user--info space__between">
-                        <p style={{cursor:"pointer"}} onClick={() => browseUser(msg?.uid)}>
+                        <p style={{cursor:"pointer"}} onClick={() => props.browseUser(msg?.uid, msg?.userName)}>
                           <TruncateMarkup line={1} ellipsis="..">
                             {msg?.userName}
                           </TruncateMarkup>{" "}
@@ -493,5 +484,7 @@ const Messages = (props) => {
       </Auxiliary>
     );
 }
-
-export default Messages;
+Messages.propTypes = {
+  browseUser: PropTypes.func.isRequired
+}
+export default withBrowseUser(Messages);

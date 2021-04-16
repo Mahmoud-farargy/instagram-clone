@@ -1,0 +1,71 @@
+.signIn__Btn{
+    padding: 8px 16px;
+    border: none;
+    text-align:center;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: 600;
+    background: hsla(0,0%,62%,.2);
+    // box-shadow: 0 2px 2px 1px rgba(21, 21, 21, 0.15);
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0 / 14%, 0.4), 0 3px 1px -2px rgba(0, 0, 0 / 20%, 0.1), 0 1px 5px 0 rgba(0, 0, 0 / 12%, 0.1);
+    min-width: 64px;
+    font-size: 14px;
+    color: #fff;
+    margin: 9px 0px;
+    outline:0;
+    display: inline-block;
+    overflow: hidden;
+    will-change: box-shadow;
+    transition: box-shadow .2s cubic-bezier(.4,0,1,1),background-color .2s cubic-bezier(.4,0,.2,1),color .2s cubic-bezier(.4,0,.2,1);
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    text-decoration: none;
+    font-family: Roboto,Helvetica,Arial,sans-serif;
+    line-height:normal;
+    width:100%;
+    // max-width:220px;
+    direction: ltr;
+    text-transform: capitalize;
+    img{
+        width:18px;
+        height:18px;
+        margin-right: 10px;
+    }
+    &:hover{
+        background-color:hsla(0,0%,62%,.2);
+    }
+    &:focus{
+        outline: 1px dotted;
+        outline: 5px auto -webkit-focus-ring-color;
+    }
+    &:active{
+    box-shadow: 0 0 8px rgba(0, 0, 0 / 18%, 0.2), 0 8px 16px rgba(0, 0, 0 / 36%,0.3);
+    background: hsla(0,0%,62%,.4);
+    }
+}
+
+.signIn__Btn.google__auth{
+    background-color: #ffffff;
+    color:#757575;
+    &:hover{
+        background-color: #f7f7f7;
+    }
+}
+.signIn__Btn.github__auth{
+    background-color: #333333;
+    &:hover{
+        background-color: #424242;
+    }
+}
+.signIn__Btn.twitter__auth{
+    background-color:#55acee;
+    &:hover{
+        background-color:#55b5ff;
+    }
+}
+.signIn__Btn.facebook__auth{
+    background-color: #3b5998;
+    &:hover{
+        background-color: hsl(221, 54%, 41%);
+    }
+}

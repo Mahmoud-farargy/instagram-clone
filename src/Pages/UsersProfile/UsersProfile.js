@@ -10,21 +10,26 @@ import { IoMdGrid } from "react-icons/io";
 import { RiLayoutRowLine } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
 import { ImBlocked } from "react-icons/im";
-import { IoMdArrowDropdown } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import {HiOutlineDotsHorizontal} from "react-icons/hi";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
+import SuggList from "./SuggList/SuggList";
+import MutualFriendsItem from "./MutualFriendsList/MutualFriendsItem";
+import * as Consts from "../../Utilities/Consts";
 
 const UsersProfile = (props) => {
-  const [_, loading] = useAuthState(auth);
+  const [, loading] = useAuthState(auth);
   const [isFollowed, setFollowingState] = useState(false);
   const [isFollower, setFollowerState] = useState(false);
   const [grid, setGrid] = useState(true);
   const context = useContext(AppContext);
   const [openSuggestionsBox, setSuggestionsBox] = useState(false);
+  const [randNum, setRandNum] = useState(0);
+
   const {
     usersProfileData,
     changeMainState,
@@ -36,8 +41,6 @@ const UsersProfile = (props) => {
     igVideoImg,
     modalsState,
     suggestionsList,
-    getUsersProfile,
-    notify,
     handleUserBlocking,
     currentPostIndex
   } = context;
@@ -70,28 +73,15 @@ const UsersProfile = (props) => {
   }, [receivedData, usersProfileData]);
 
   useEffect(() => {
-    changeMainState("currentPage", usersProfileData.userName || "User Profile");
+    changeMainState("currentPage", `${usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name ? usersProfileData?.profileInfo?.name+" (" : ""}@${usersProfileData.userName}${usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name ? ")" : ""}` || "User Profile");
   }, [usersProfileData, changeMainState]);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  useEffect(()=> {
+    suggestionsList?.length > 0 ? setRandNum(Math.floor(Math.random() * suggestionsList?.length -6)) : setRandNum(0);
+  },[suggestionsList, usersProfileData]);
 
-  const browseUser = (specialUid, name) => {
-      if(specialUid, name){
-            getUsersProfile(specialUid)
-        .then(() => {
-            setSuggestionsBox(false);
-            props.history.push(`/user-profile/${name}`);
-        })
-        .catch((err) => {
-            notify(
-            (err && err.message) || "error has occurred. please try again later!",
-            "error"
-            );
-        }); 
-      }
-    
-  };
   const openPostModal = (postId, index) =>{
     changeMainState("currentPostIndex", { index: index, id: postId });
     changeModalState("post", true);
@@ -101,12 +91,71 @@ const UsersProfile = (props) => {
     changeModalState("options", false);
     handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() => props.history.push("/"));
   }
+
+  // put this in a modal
+  const similarFollowers = (usersProfileData?.uid !== receivedData?.uid) && (receivedData?.blockList?.filter(w => w.blockedUid !== usersProfileData?.uid)) ? receivedData?.following.filter(el => el.receiverUid !== receivedData?.uid && usersProfileData?.followers.some(item => item.senderUid === el.receiverUid)) : [];
+  const websiteToView = usersProfileData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?(?:http:\/\/)?/i, "").split("/")[0];
+  const notBlockedOrBlockingUser = receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) && usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid);
+  const userProfileInfo = (
+    <div>
+       {
+        notBlockedOrBlockingUser ?
+        <div>
+          {usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name &&
+                      <div className="prof--acc--name">
+                        <h1>
+                          {usersProfileData?.profileInfo?.name}
+                        </h1>
+                        <br />
+                      </div>
+                    }
+                      {usersProfileData?.profileInfo &&
+                      usersProfileData?.profileInfo.professionalAcc &&
+                      usersProfileData?.profileInfo.professionalAcc.show && (
+                        <div className="prof--acc--category">
+                          <span>
+                            {
+                              usersProfileData.profileInfo?.professionalAcc
+                                ?.category
+                            }
+                          </span>
+                          <br />
+                        </div>
+                      )}
+
+                    <div className="bottom--row--user-info flex-column">
+                      <span>{usersProfileData?.profileInfo?.bio}</span>
+                    </div>
+                    {
+                        usersProfileData?.profileInfo && usersProfileData?.profileInfo?.website &&
+                        <div className="prof--acc--website">
+                              <a rel="noopener noreferrer" target="_blank" href={usersProfileData?.profileInfo?.website}>{websiteToView}</a>
+                        </div>
+                    }
+                    {
+                      similarFollowers && similarFollowers.length > 0 &&
+                      <p onClick={()=> changeModalState("users",true, similarFollowers, Consts.MUTUALFRIENDS)}  className="similar__followers">Followed by <span>
+                        {
+                        similarFollowers.slice(0,3).map(q => <MutualFriendsItem key={q?.receiverUid} item={q} />)
+                      }
+                      {
+                        similarFollowers.length > 3 && 
+                        <span className="similar__followers__more pl-1">+{ `${similarFollowers.length - 3}`} more</span>
+                      }
+                        </span></p>
+                    }
+        </div>
+        : null
+      }
+    </div>
+   
+  )
   return (
     <Fragment> 
        {/* Modals */}
       {
         modalsState?.post && usersProfileData?.posts[currentPostIndex?.index] &&
-          <PostModal history={props.history} />
+          <PostModal />
       }
       {
          modalsState?.options &&
@@ -212,7 +261,7 @@ const UsersProfile = (props) => {
                       }}
                       onClick={() => setSuggestionsBox(!openSuggestionsBox)}
                     >
-                      <IoMdArrowDropdown />
+                      {openSuggestionsBox ? <IoIosArrowUp /> : <IoIosArrowDown/>}
                     </button>
                   </div>
                 </div>
@@ -260,7 +309,7 @@ const UsersProfile = (props) => {
                       following
                     </p>
                   {
-                      usersProfileData?.uid !== receivedData?.uid && receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) && usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) &&
+                      usersProfileData?.uid !== receivedData?.uid && notBlockedOrBlockingUser &&
                     <p>
                       <span className="profile--more--btn" onClick={() => changeModalState("options", true)}>
                          <HiOutlineDotsHorizontal />
@@ -277,43 +326,13 @@ const UsersProfile = (props) => {
 
                 {/* bottom row */}
                 <div className="desktop-only flex-column">
-                  {usersProfileData?.profileInfo &&
-                  usersProfileData?.profileInfo.professionalAcc &&
-                  usersProfileData?.profileInfo.professionalAcc.show && (
-                    <div className="prof--acc--category">
-                      <span>
-                        {
-                          usersProfileData.profileInfo?.professionalAcc
-                            ?.category
-                        }
-                      </span>
-                    </div>
-                  )}
-
-                <div className="bottom--row--user-info flex-column">
-                  <span>{usersProfileData?.profileInfo?.bio}</span>
-                </div>
+                {userProfileInfo}
               </div>
               
               </div>
               {/* profile info */}
               <div className="profile--user--info mobile-only flex-column">
-                  {usersProfileData?.profileInfo &&
-                  usersProfileData?.profileInfo.professionalAcc &&
-                  usersProfileData?.profileInfo.professionalAcc.show && (
-                    <div className="prof--acc--category">
-                      <span>
-                        {
-                          usersProfileData.profileInfo?.professionalAcc
-                            ?.category
-                        }
-                      </span>
-                    </div>
-                  )}
-
-                <div className="bottom--row--user-info flex-column">
-                  <span>{usersProfileData?.profileInfo?.bio}</span>
-                </div>
+                {userProfileInfo}
               </div>
             </header>
             {openSuggestionsBox && (
@@ -324,79 +343,13 @@ const UsersProfile = (props) => {
                 </div>
                 <div className="suggestions--list--container flex-row">
                   <ul className="suggestion--items flex-row">
-                    {suggestionsList
-                      ?.filter(
+                    {suggestionsList && suggestionsList.length > 0 &&
+                      suggestionsList.filter(
                         (item) =>
                           item?.uid !== receivedData?.uid &&
                           item?.uid !== usersProfileData?.uid
-                      )
-                      .map((item, i) => {
-                        return (
-                          <li key={i} className="suggestion--item flex-column">
-                            <div className="suggestion--item-inner">
-                              <Avatar
-                                onClick={() =>
-                                  browseUser(item?.uid, item?.userName)
-                                }
-                                src={item?.userAvatarUrl}
-                                alt={item?.userName}
-                                className="mb-2"
-                              />
-                              <span
-                                onClick={() =>
-                                  browseUser(item?.uid, item?.userName)
-                                }
-                                title={item?.userName}
-                                className="acc__name"
-                              >
-                                {item?.userName}
-                              </span>
-                              <span
-                                className="user__name"
-                                title={item?.userName}
-                              >
-                                {item?.profileInfo?.name}
-                              </span>
-                              <button
-                                className={
-                                  receivedData?.following &&
-                                  receivedData?.following?.length > 0 &&
-                                  receivedData?.following?.some(
-                                    (q) => q.receiverUid === item?.uid
-                                  )
-                                    ? "profile__btn prof__btn__unfollowed"
-                                    : "profile__btn prof__btn__followed"
-                                }
-                                color="primary"
-                                onClick={(e) => {
-                                  handleFollowing(
-                                    receivedData?.following &&
-                                      receivedData?.following?.length > 0 &&
-                                      receivedData?.following?.some(
-                                        (el) => el?.receiverUid === item?.uid
-                                      ),
-                                    item?.uid,
-                                    item?.userName,
-                                    item?.userAvatarUrl,
-                                    receivedData?.uid,
-                                    receivedData?.userName,
-                                    receivedData?.userAvatarUrl
-                                  ); e.stopPropagation()
-                                    }
-                                }
-                              >
-                                {receivedData?.following &&
-                                receivedData?.following?.length > 0 &&
-                                receivedData?.following?.some(
-                                  (user) => user?.receiverUid === item?.uid
-                                )
-                                  ? "Unfollow"
-                                  : "Follow"}
-                              </button>
-                            </div>
-                          </li>
-                        );
-                      })}
+                      ).slice(randNum, suggestionsList?.length -1).slice(0,10)
+                      .map((item, i) => <SuggList key={(item?.uid || i)} item={item} receivedData={receivedData} setSuggestionsBox={setSuggestionsBox} handleFollowing={handleFollowing}/>)}
                   </ul>
                 </div>
               </div>
@@ -404,7 +357,7 @@ const UsersProfile = (props) => {
           </div>
           {
                                  usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) &&  usersProfileData?.reels && usersProfileData?.reels.length > 0 && receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) &&( //find an alternative to make data always updating
-                                         <Link to="/reels" onClick={()=> changeMainState("reelsProfile", usersProfileData)} className="reel--bubble flex-column"><img className="reels__icon" src={reelsIco} />
+                                         <Link to="/reels" onClick={()=> changeMainState("reelsProfile", usersProfileData)} className="reel--bubble flex-column"><img className="reels__icon" alt="Reel" src={reelsIco} />
                                             <span className="mt-1">Reels</span>
                                          </Link>
                                     )
@@ -459,6 +412,7 @@ const UsersProfile = (props) => {
                                     className="user--img--container desktop-only flex-column"
                                   >
                                     <img
+                                    loading="lazy"
                                       style={{ width: "100%" }}
                                       className="users__profile__image"
                                       src={
@@ -473,13 +427,13 @@ const UsersProfile = (props) => {
                                     <div className="user--img--cover">
                                       <div className="flex-row">
                                         <span className="mr-3">
-                                          <FaHeart /> {post?.likes?.people?.length}
+                                          <FaHeart /> {post?.likes?.people?.length.toLocaleString()}
                                         </span>
                                         <span>
                                           <FaRegComment />{" "}
                                           {post?.comments.length > 0
                                             ? post?.comments.length
-                                            : post?.comments.length}{" "}
+                                            : post?.comments.length.toLocaleString()}{" "}
                                         </span>
                                       </div>
                                     </div>
@@ -490,6 +444,7 @@ const UsersProfile = (props) => {
                                     className="user--img--container mobile-only flex-column"
                                   >
                                     <img
+                                      loading="lazy"
                                       style={{ width: "100%" }}
                                       className="users__profile__image"
                                       src={
@@ -589,4 +544,4 @@ const UsersProfile = (props) => {
     </Fragment>
   );
 };
-export default withRouter(UsersProfile);
+export default withRouter(React.memo(UsersProfile));

@@ -9,7 +9,32 @@
     border-bottom: 1px solid var(--gray);
     align-items:center;
     padding:6px var(--padding-sides);
-    height:54px;
+    height:70px;
+    transition: all 0.5s ease-in;
+}
+#header.main--header .header--inner .header--logo--box{
+    align-items:center;
+    cursor: pointer;
+}
+#header.main--header .header--inner .header--logo--box .logo--verti--divider{
+    width: 1.2%;
+    height: 27px;
+    border-right: 1px solid #111;
+    margin-right: 13px;
+}
+#header.main--header .header--inner .header--logo--box .ig--logo--img{
+    width: 30px;
+    height:30px;
+    margin-right: 13px;
+}
+#header.main--header .header--inner .header--logo--box .ig--logo--img img{
+    width: 100%;
+    min-height: 100%;
+    object-fit: contain;
+   
+}
+.shorter_header{
+    height: 54px !important;
 }
 .header--inner{
     justify-content:space-between;
@@ -17,6 +42,7 @@
     max-width:1200px;
     position: relative;
     align-items:center;
+    margin: 0 auto;
 }
 .header--inner a{
     text-decoration:none;
@@ -159,6 +185,8 @@
     padding:15px;
     color:#8e8e8e;
     color:rgb(142, 142, 142);
+    height: 100%;
+    width: 100%;
 }
 #header .empty--box h4{
     font-size:14px;
@@ -226,7 +254,9 @@
     border-radius:20px;
 }
 .noti--popup--ul{
-    padding:1px 0;
+    padding:1px 6px;
+    margin-bottom: 0;
+    min-height: 100px;
 }
 .noti--popup--inner .noti--popup--ul .noti--popup-item{
     min-height:40px;
@@ -236,6 +266,7 @@
     position:relative;
     width:100%;
 }
+
 .noti--popup--inner .noti--popup--ul .noti--popup-item:after{
     content:"";
     position:absolute;
@@ -378,6 +409,10 @@
 }
 /* --------x------Mobile Nav------x------- */
 
+@keyframes disappear-item {
+    /* from {background-color: red;} */
+  to {display: none;}
+}
 @media only screen and (max-width:670px){
     #header.main--header, .noti--popup--window, .search--pop--window{
         display: none !important;
@@ -389,5 +424,13 @@
 @media only screen and (max-width:900px){
     .noti--popup--inner{
         max-height:auto ;
+    }
+    .ig--logo--img, .logo--verti--divider{
+        display:none;
+    }
+}
+@media only screen and (min-width:800px){
+    .header--inner{
+        max-width: 975px;
     }
 }

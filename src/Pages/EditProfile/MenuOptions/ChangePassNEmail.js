@@ -296,12 +296,15 @@ const ChangePassNEmail = (props) => {
               }
               value="Change Email"
             />
-            <span
+           {
+             !currentUser?.emailVerified && 
+             <span
               onClick={() => verifyEmail()}
               className="change__prof__pic mt-3"
             >
               Verify Email
             </span>
+           }
           </div>
         </form>
         {/* Password form */}

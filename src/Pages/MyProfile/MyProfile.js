@@ -8,22 +8,24 @@ import {useAuthState} from "react-firebase-hooks/auth";
 import {GoVerified } from "react-icons/go";
 import {IoMdGrid} from "react-icons/io";
 import {RiLayoutRowLine} from "react-icons/ri";
-import {BsPlusSquare} from "react-icons/bs";
 import {FaHeart} from "react-icons/fa";
 import {FaRegComment} from "react-icons/fa";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
+import * as Consts from "../../Utilities/Consts";
+import emptyPostsImg from "../../Assets/6efc710a1d5a.jpg";
+import appleStore from "../../Assets/get-app-apple.png";
+import gpStore from "../../Assets/get-app-gp.png";
 
 const MyProfile =(props)=>{
-    const [_,loading] = useAuthState(auth);
+    const [,loading] = useAuthState(auth);
     const [grid, setGrid] = useState(true);
-    const {receivedData,changeModalState, igVideoImg, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, usersProfileData, modalsState} = useContext(AppContext);
+    const {receivedData,changeModalState, igVideoImg, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState} = useContext(AppContext);
     const redirectToPost=(i, id)=>{
         changeMainState("currentPostIndex", {index: i, id: id});
         getUsersProfile(uid).then(() => {
             props.history.push("/browse-post");
         });
-        
     }
     useEffect(()=>{
         changeMainState("currentPage", "Profile");
@@ -37,13 +39,14 @@ const MyProfile =(props)=>{
         changeMainState("currentPostIndex", { index: index, id: postId });
         getUsersProfile(uid).then(() => {
               changeModalState("post", true);
-        })
+        });
     }
+    const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0];
      return(
         <Fragment>
             {/* Modals */}
             {modalsState?.post && receivedData?.posts[currentPostIndex?.index] &&
-                <PostModal history={props.history} />
+                <PostModal/>
             }
             <section id="usersProfile" className="users--profile--container ">
                 {/* Header */}
@@ -66,26 +69,45 @@ const MyProfile =(props)=>{
                                 </h5>
                                 <div className="flex-row">
                                 <Link role="button" className="profile__btn prof__btn__unfollowed mr-2" to="/edit-profile" >Edit profile</Link>
-                                <button className="mobile-only" onClick={()=> {authLogout(props.history); window.location.reload()}}>Log out</button>
+                                <button className="mobile-only" onClick={()=> authLogout(props.history)}>Log out</button>
                                 </div>
                                 
                             </div>
                             <div className="desktop--social--row flex-row">
-                                <p><span>{receivedData?.posts?.length.toLocaleString()}</span> {receivedData?.posts?.length >1 ?"posts": "post"}</p>
-                                <p className="acc-action" onClick={()=> changeModalState("users",true, receivedData?.followers, "followers")}><span>{receivedData?.followers?.length.toLocaleString()}</span> {receivedData?.followers?.length >1 ?"followers": "follower"}</p>
-                                <p className="acc-action"  onClick={()=> changeModalState("users",true, receivedData?.following, "following")}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
+                                <p><span>{receivedData?.posts?.length.toLocaleString()}</span> {receivedData?.posts?.length >1 ? "posts": "post"}</p>
+                                <p className="acc-action" onClick={()=> changeModalState("users",true, receivedData?.followers, Consts.FOLLOWERS)}><span>{receivedData?.followers?.length.toLocaleString()}</span> {receivedData?.followers?.length >1 ?"followers": "follower"}</p>
+                                <p className="acc-action"  onClick={()=> changeModalState("users",true, receivedData?.following, Consts.FOLLOWING)}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
                             </div>
                             {/* bottom row */}
+                            {/* TODO: refactor this to be only one piece of code */}
                             <div className="desktop-only flex-column">
+                                {receivedData?.profileInfo && receivedData?.profileInfo?.name &&
+                                    <div className="prof--acc--name">
+                                        <h1>
+                                        {receivedData?.profileInfo?.name}
+                                        </h1>
+                                        <br />
+                                    </div>
+                                }
                                 {
                                 receivedData?.profileInfo && receivedData?.profileInfo.professionalAcc && receivedData?.profileInfo.professionalAcc.show &&
                                     <div className="prof--acc--category">
                                         <span>{receivedData.profileInfo?.professionalAcc?.category}</span>
+                                        <br />
                                     </div>
-                            } 
-                                <div className="bottom--row--user-info flex-column">
+                                } 
+                                {
+                                    receivedData?.profileInfo && receivedData?.profileInfo?.bio &&
+                                    <div className="bottom--row--user-info flex-column">
                                         <span>{receivedData?.profileInfo?.bio}</span>
-                                </div> 
+                                    </div>
+                                }
+                                {
+                                     receivedData?.profileInfo && receivedData?.profileInfo?.website &&
+                                    <div className="prof--acc--website">
+                                        <a rel="noopener noreferrer" target="_blank" href={receivedData?.profileInfo?.website}>{websiteToView}</a>
+                                    </div>
+                                }
 
                             </div>
 
@@ -93,21 +115,40 @@ const MyProfile =(props)=>{
                     </header>
                      {/* profile info */}
                     <div className="profile--user--info mobile-only flex-column">
-                    {
+                            {receivedData?.profileInfo && receivedData?.profileInfo?.name &&
+                                <div className="prof--acc--name">
+                                    <h1>
+                                    {receivedData?.profileInfo?.name}
+                                    </h1>
+                                    <br />
+                                </div>
+                            }
+                            {
                                 receivedData?.profileInfo && receivedData?.profileInfo.professionalAcc && receivedData?.profileInfo.professionalAcc.show &&
                                     <div className="prof--acc--category">
                                         <span>{receivedData.profileInfo?.professionalAcc?.category}</span>
+                                        <br />
                                     </div>
                             } 
+                            {
+                                receivedData?.profileInfo && receivedData?.profileInfo?.bio &&
                                 <div className="bottom--row--user-info flex-column">
-                                        <span>{receivedData?.profileInfo?.bio}</span>
+                                    <span>{receivedData?.profileInfo?.bio}</span>
                                 </div>
+                            }
+                               
+                            {
+                                receivedData?.profileInfo && receivedData?.profileInfo?.website &&
+                                <div className="prof--acc--website">
+                                    <a rel="noopener noreferrer" target="_blank" href={receivedData?.profileInfo?.website}>{websiteToView}</a>
+                                </div>
+                            }
                     </div>
                                          
                 </div>
                       {
                                     receivedData?.reels && receivedData?.reels.length > 0 && (
-                                         <Link to="/reels" className="reel--bubble flex-column"><img className="reels__icon" src={reelsIco} />
+                                         <Link to="/reels" className="reel--bubble flex-column"><img className="reels__icon" src={reelsIco} alt="icon"/>
                                             <span className="mt-1">Reels</span>
                                          </Link>
                                     )
@@ -130,13 +171,14 @@ const MyProfile =(props)=>{
                         {receivedData?.posts?.map((post, i)=>{
                                         return (
                                             <div key={post?.id+i} className="profile--posts--container">   
+                                            {/* TODO: refactor this to be only one piece of code */}
                                               {/* Desktop */}
                                                 <div className="user--img--container desktop-only flex-column" onClick={() => openPostModal(post?.id,i)}>
-                                                        <img style={{width:"100%"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
+                                                        <img style={{width:"100%"}} loading="lazy"  className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
                                                                 <div className="user--img--cover">
                                                                         <div className="flex-row">
-                                                                            <span className="mr-3"><FaHeart/> {post?.likes?.people?.length}</span>
-                                                                            <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length } </span>
+                                                                            <span className="mr-3"><FaHeart/> {post?.likes?.people?.length.toLocaleString()}</span>
+                                                                            <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length.toLocaleString() } </span>
                                                                         
                                                                         </div>
                                                                 
@@ -144,11 +186,11 @@ const MyProfile =(props)=>{
                                                 </div>                                                
                                                 {/* Mobile */}
                                                 <div className="user--img--container mobile-only flex-column"  onClick={()=> redirectToPost(i, post?.id) } >
-                                                        <img style={{width:"100%"}} className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
+                                                        <img style={{width:"100%"}}  loading="lazy" className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
                                                                 <div className="user--img--cover">
                                                                         <div className="flex-row">
-                                                                            <span className="mr-3"><FaHeart/> {post?.likes?.people?.length}</span>
-                                                                            <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length } </span>
+                                                                            <span className="mr-3"><FaHeart/> {post?.likes?.people?.length.toLocaleString()}</span>
+                                                                            <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length.toLocaleString() } </span>
                                                                         
                                                                         </div>
                                                                 
@@ -162,13 +204,17 @@ const MyProfile =(props)=>{
                                 (<Skeleton count={10} height={250} width={250} className="mt-4 mr-4 mx-auto"  />)
                         :
                         (
-                            <div className="empty--posts--container flex-column">
-                                <div className="empty--posts--inner flex-column">
-                                    <div className="plus--icon--container flex-column"><BsPlusSquare className="plus__icon"/></div>
-                                    <h3>Profile</h3>
-                                    <p>When you share photos and videos, they'll <br/> be appear on your profile page</p>
-
-                                    <span>Share your first photo or video</span>
+                            <div className="my-empty--posts--container flex-row">
+                                <div className="my-empty--posts--img flex-row">
+                                    <img src={emptyPostsImg} alt="logo" />
+                                </div>
+                                <div className="my-empty--posts--text--container flex-column">
+                                    <h2>Start capturing and sharing your moments.</h2>
+                                    <p>Get the app to share your first photo or video.</p>
+                                    <div className="my--empty--posts--get--app flex-row">
+                                        <img src={appleStore} alt="apple store" />
+                                        <img src={gpStore} alt="google store" />
+                                    </div>
                                 </div>
                             </div>
                         )

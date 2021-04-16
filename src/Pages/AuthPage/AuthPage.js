@@ -5,13 +5,17 @@ import gpStore from "../../Assets/get-app-gp.png";
 import instaReview from "../../Assets/iphone-with-profile.jpg";
 import { GrInstagram } from "react-icons/gr";
 import Loader from "react-loader-spinner";
+import SignInOption from "./SignInOption/SignInOption";
+import * as Consts from "../../Utilities/Consts";
+
+
 import {
   auth,
   db,
   googleProvider,
   twitterProvider,
   facebookProvider,
-  phoneProvider,
+  githubProvider,
 } from "../../Config/firebase";
 import { withRouter } from "react-router-dom";
 import { AppContext } from "../../Context";
@@ -19,7 +23,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 const AuthPage = (props) => {
   var context = useContext(AppContext);
-  const [_, loading] = useAuthState(auth);
+  const [,loading] = useAuthState(auth);
   //----------- states----------------------
   const [signUpState, switchToSignUp] = useState(false);
   const [signUpEmail, setSignUpEmail] = useState("");
@@ -33,6 +37,7 @@ const AuthPage = (props) => {
   const [getPasswordMode, setPasswordMode] = useState(false);
 
   //-----x------ states--------x--------------
+  
   useEffect(() => {
     return () => {
       context.changeMainState(
@@ -59,6 +64,8 @@ const AuthPage = (props) => {
       updateUID,
       updateUserState,
       notify,
+      receivedData,
+      currentUser
     } = context;
     setLoading(true);
     if (authType === "signUp") {
@@ -86,7 +93,7 @@ const AuthPage = (props) => {
                     .createUserWithEmailAndPassword(signUpEmail.toLowerCase(), signUpPassword)
                     .then((cred) => {
                       setLoading(false);
-                      db.collection("users")
+                      db.collection(Consts.USERS)
                         .doc(cred.user.uid)
                         .set({
                           uid: cred.user.uid,
@@ -105,7 +112,10 @@ const AuthPage = (props) => {
                             professionalAcc: {
                               show: true,
                               category: "Just For Fun",
+                             
                             },
+                            accountCreationDate: new Date(),
+                            registrationMethod: "email"
                           },
                           homePosts: [],
                           reels: [],
@@ -120,8 +130,12 @@ const AuthPage = (props) => {
                           },
                           isVerified: false,
                           userAvatarUrl: "",
+                         
                         })
-                        .then((res) => {
+                        .then(() => {
+                          auth.currentUser.updateProfile({
+                            displayName: signUpUsername,
+                          });
                           setLoading(false);
                           setSignUpEmail("");
                           setSignUpPassword("");
@@ -188,7 +202,7 @@ const AuthPage = (props) => {
               setLoginPassword("");
 
               auth.onAuthStateChanged((authUser) => {
-                db.collection("users")
+                db.collection(Consts.USERS)
                   .get()
                   .then((query) => {
                     query.forEach((user) => {
@@ -196,8 +210,6 @@ const AuthPage = (props) => {
                     });
                     updateUserState(true);
                     updateUID(authUser?.uid);
-
-                    // updatedReceivedData();
                   });
                    setLoading(false);
               });
@@ -205,10 +217,11 @@ const AuthPage = (props) => {
                 "user",
                 JSON.stringify({
                   email: loginEmail.toLowerCase(),
-                  password: decipherPassword(loginPassword),
+                  password: decipherPassword(loginPassword)
                 })
               );
               setTimeout(() => {
+                notify(`Welcome back, ${(receivedData?.userName || currentUser?.displayName || "User")}`);
                 props.history.push("/");
               }, 150);
             })
@@ -224,52 +237,230 @@ const AuthPage = (props) => {
   };
   const signInMethods = (method) => {
     switch (method) {
+      //google
       case "googleProvider":
+        setLoading(true);
         auth
           .signInWithPopup(googleProvider)
           .then((cred) => {
-            //     db.collection("users").doc(cred.user.uid).set({
-            //         uid: cred.user.uid,
-            //         userName: signUpUsername,
-            //         posts: [],
-            //         followers: [],
-            //         following: [],
-            //         messages: [],
-            //         profileInfo: {bio: "",website: "", gender: "", status: "", name:"", phoneNumber: "", professionalAcc: {show: true, category: "Just For Fun" }},
-            //         homePosts: [],
-            //         latestLikedPosts: [],
-            //         savedposts: [],
-            //         reels: [],
-            //         blockList: [],
-            //         stories: [],
-            //         notifications: {isNewMsg: false, isUpdate: false, list: []},
-            //         isVerified: false,
-            //         userAvatarUrl: "" //auth.currentUser
-            // }).then((res)=>{
-            //     console.log(res, "successful");
-            //     setSignUpEmail("");
-            //     setSignUpPassword("");
-            //     setSignUpUsername("");
-            //     props.history.push("/");
-            // })
+            setLoading(false);
+            const {profile:{email,name,picture, given_name}, isNewUser} = cred?.additionalUserInfo;
+              if(isNewUser){
+                  db.collection(Consts.USERS).doc(cred.user.uid).set({
+                      uid: cred.user.uid,
+                      userName: trimUserName(name),
+                      posts: [],
+                      followers: [],
+                      following: [],
+                      messages: [],
+                      profileInfo: {
+                        bio: "",
+                        website: "",
+                        gender: "",
+                        status: "",
+                        name: (given_name || ""),
+                        phoneNumber: "",
+                        professionalAcc: {
+                          show: true,
+                          category: "Just For Fun",
+                          
+                        },
+                        accountCreationDate: new Date(),
+                        registrationMethod: "google"
+                      },
+                      homePosts: [],
+                      reels: [],
+                      latestLikedPosts: [],
+                      savedposts: [],
+                      stories: [],
+                      blockList: [],
+                      notifications: {
+                        isNewMsg: false,
+                        isUpdate: false,
+                        list: [],
+                      },
+                      isVerified: false,
+                      userAvatarUrl: picture,
+                      
+                }).then(() => {
+                  setTimeout(() => {
+                    props.history.push("/");
+                    context.notify("Welcome to Voxgram. Start by adding posts to your account.");
+                  }, 150);
+                })
+              }
+               setLoading(false);
+                  localStorage.setItem(
+                    "user",
+                    JSON.stringify({
+                      email: email ? email.toLowerCase() : "",
+                      password: decipherPassword(signUpPassword),
+                    })
+                  );
+                  setTimeout(() => {
+                    context.notify(`Welcome back, ${given_name || "User"}.`);
+                    props.history.push("/");
+                  }, 150);
           })
           .catch((err) => {
-            alert(err.message);
+            setLoading(false);
+            context.notify(err.message, "error");
           });
         break;
       case "facebookProvider":
-        // auth.signInWithPopup(facebookProvider);
+        auth.signInWithPopup(facebookProvider).then((res) =>{
+          console.log(res);
+        });
         break;
       case "twitterProvider":
-        // auth.signInWithPopup(twitterProvider);
+        setLoading(true);
+        auth.signInWithPopup(twitterProvider).then((cred) => {
+          setLoading(false);
+          const {profile:{name,profile_image_url, profile_image_url_https, screen_name, userName}, isNewUser} = cred?.additionalUserInfo;
+            if(isNewUser){
+                db.collection(Consts.USERS).doc(cred.user.uid).set({
+                    uid: cred.user.uid,
+                    userName: trimUserName((userName || name || screen_name || "")),
+                    posts: [],
+                    followers: [],
+                    following: [],
+                    messages: [],
+                    profileInfo: {
+                      bio: "",
+                      website: "",
+                      gender: "",
+                      status: "",
+                      name: "",
+                      phoneNumber: "",
+                      professionalAcc: {
+                        show: true,
+                        category: "Just For Fun",
+                        
+                      },
+                      accountCreationDate: new Date(),
+                      registrationMethod: "twitter"
+                    },
+                    homePosts: [],
+                    reels: [],
+                    latestLikedPosts: [],
+                    savedposts: [],
+                    stories: [],
+                    blockList: [],
+                    notifications: {
+                      isNewMsg: false,
+                      isUpdate: false,
+                      list: [],
+                    },
+                    isVerified: false,
+                    userAvatarUrl: (profile_image_url || profile_image_url_https || ""),
+                    
+              }).then(() => {
+                setTimeout(() => {
+                  props.history.push("/");
+                  context.notify("Welcome to Voxgram. Start by adding posts to your account.");
+                }, 150);
+              })
+            }
+             setLoading(false);
+                localStorage.setItem(
+                  "user",
+                  JSON.stringify({
+                    email: "",
+                    password: decipherPassword(signUpPassword),
+                  })
+                );
+                setTimeout(() => {
+                  context.notify(`Welcome back, ${name || "User"}.`);
+                  props.history.push("/");
+                }, 150);
+        })
+        .catch((err) => {
+          setLoading(false);
+          context.notify(err.message, "error");
+        });
         break;
-      case "phoneProvider":
-        // auth.signInWithPopup(phoneProvider);
-        break;
+      case "githubProvider":
+        setLoading(true);
+          auth.signInWithPopup(githubProvider).then((cred) => {
+            setLoading(false);
+            const {profile:{email,username,avatar_url, bio, login}, isNewUser} = cred?.additionalUserInfo;
+              if(isNewUser){
+                  db.collection(Consts.USERS).doc(cred.user.uid).set({
+                      uid: cred.user.uid,
+                      userName: trimUserName(username || login),
+                      posts: [],
+                      followers: [],
+                      following: [],
+                      messages: [],
+                      profileInfo: {
+                        bio: bio ? bio : "",
+                        website: "",
+                        gender: "",
+                        status: "",
+                        name: "",
+                        phoneNumber: "",
+                        professionalAcc: {
+                          show: true,
+                          category: "Just For Fun",
+                          
+                        },
+                        accountCreationDate: new Date(),
+                        registrationMethod: "github"
+                      },
+                      homePosts: [],
+                      reels: [],
+                      latestLikedPosts: [],
+                      savedposts: [],
+                      stories: [],
+                      blockList: [],
+                      notifications: {
+                        isNewMsg: false,
+                        isUpdate: false,
+                        list: [],
+                      },
+                      isVerified: false,
+                      userAvatarUrl: avatar_url,
+                      
+                }).then(() =>{
+                  setLoading(false);
+                  localStorage.setItem(
+                    "user",
+                    JSON.stringify({
+                      email: (email ? email.toLowerCase(): ""),
+                      password: decipherPassword(signUpPassword),
+                    })
+                  );
+                  setTimeout(() => {
+                    props.history.push("/");
+                    context.notify("Welcome to Voxgram. Start by adding posts to your account.");
+                  }, 150);
+                });
+              }else{
+                setLoading(false);
+                  localStorage.setItem(
+                    "user",
+                    JSON.stringify({
+                      email: (email ? email.toLowerCase(): ""),
+                      password: decipherPassword(signUpPassword),
+                    })
+                  );
+                  setTimeout(() => {
+                    context.notify(`Welcome back, ${(username || login || "User")}.`);
+                    props.history.push("/");
+                  }, 150);
+              }
+               
+          })
+          .catch((err) => {
+            setLoading(false);
+            context.notify(err.message, "error");
+          });
+      break;
       default:
-        auth.signInWithPopup(googleProvider);
+        context.notify("An error occurred");
     }
   };
+  
   const resetEmail = (e) => {
     e.preventDefault();
     const { notify } = context;
@@ -291,6 +482,10 @@ const AuthPage = (props) => {
         );
       });
   };
+  const trimUserName = (fullName) => {
+    const limit= 17;
+    return `${fullName.split("").length > limit ? fullName.split("").slice(0,limit).join("")+".." : fullName}`;
+  }
   return (
     <Auxiliary>
       <section className="auth--main flex-column">
@@ -306,6 +501,7 @@ const AuthPage = (props) => {
                 </span>
                 <h1 className="logoText">Voxgram</h1>
               </div>
+              <small className="insta--warning">Note: this is not the official Instagram website.</small>
 
               {
                 // log in state
@@ -330,6 +526,7 @@ const AuthPage = (props) => {
                           onChange={(e) => setLoginPassword(e.target.value)}
                           type="password"
                           placeholder="Password"
+                          autoComplete="off"
                         />
                     {
                       loading || inProgress ?
@@ -401,12 +598,13 @@ const AuthPage = (props) => {
                         />
                       </div>
                     )}
-                    {/* <div>
-                                     <span onClick={()=>signInMethods("googleProvider")}>Sign in with Google</span>
-                                     <span onClick={()=> signInMethods("facebookProvider")}>Sign in with Facebook</span>
-                                     <span onClick={()=> signInMethods("twitterProvider")}>Sign in with Twitter</span>
-                                     <span onClick={()=>signInMethods("phoneProvider")}>Sign in with a phone number</span>
-                                    </div> */}
+                    <div className="divider--or flex-row"><span className="div__or__start"></span><span className="div__or__middle">or</span><span className="div__or__end"></span></div>
+                    <div className="signIn--options--box">
+                            <SignInOption method="google"  isLoading={inProgress} signInFunc={(x)=> signInMethods(x)} />
+                            {/* <SignInOption method="facebook" signInFunc={(x)=> signInMethods(x)} /> */}
+                            <SignInOption method="twitter" isLoading={inProgress} signInFunc={(x)=> signInMethods(x)} />
+                            <SignInOption method="github"  isLoading={inProgress} signInFunc={(x)=> signInMethods(x)} />
+                    </div>
                   </form>
                 ) : (
                   // sign up state
@@ -444,6 +642,7 @@ const AuthPage = (props) => {
                         value={signUpPassword}
                         onChange={(e) => setSignUpPassword(e.target.value)}
                         type="password"
+                        autoComplete="off"
                         placeholder="Password"
                       />
                       <input
@@ -451,6 +650,7 @@ const AuthPage = (props) => {
                         value={reTypedPassword}
                         onChange={(e) => setRePassword(e.target.value)}
                         type="password"
+                        autoComplete="off"
                         placeholder="Re-type Password"
                       />
                    {
@@ -529,8 +729,8 @@ const AuthPage = (props) => {
             <li>HASHTAGS</li>
             <li>LANGUAGE</li>
           </ul>
-          <div className="auth--copyright">
-            <span>This app was made for personal use</span>
+          <div className="auth--copyright flex-column flex-wrap">
+            <span >This app was made for personal use</span>
             <span>
               @2020 - {new Date().getFullYear()} Instagram clone made by Mahmoud
               Farargy

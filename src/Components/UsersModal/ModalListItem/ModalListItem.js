@@ -1,24 +1,29 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useContext} from "react";
 import Auxiliary from "../../HOC/Auxiliary";
 import {Avatar} from "@material-ui/core";
-import {withRouter} from "react-router-dom";
+import ProTypes from "prop-types";
+import { withBrowseUser } from "../../../Components/HOC/withBrowseUser";
+import { AppContext } from "../../../Context";
+import Moment from "react-moment";
 
 const ModalListItem =(props)=>{
     const [isFollowed, setFollowingState] = useState(false);
-    const {uid, userName, avatarUrl, date , receivedData, handleFollowing, browseUser} = props;
-
+    const {uid, userName, avatarUrl, date , browseUser} = props;
+    const {changeModalState, receivedData, handleFollowing} = useContext(AppContext);
+    const notMyItem = receivedData?.uid !== uid;
     useEffect(()=>{
         setFollowingState(receivedData?.following.filter(user  => user.receiverUid === uid)[0] ? true : false);
     },[receivedData?.following]);
-
+    
     return(
         <Auxiliary>
             <div className="modal--user--item flex-row">
                 <div className="modal--item--inner flex-row acc-action" >
                    <Avatar src={avatarUrl} alt={userName} />
-                    <div className="modal--user--info flex-column" onClick={()=> browseUser(uid, userName)}>
+                    <div className="modal--user--info flex-column" onClick={()=> { notMyItem && browseUser(uid, userName); notMyItem && changeModalState("users", false, "", "")}}>
                         <h3>{userName}</h3>
-                        {/* <span>{date}</span> */}
+                        
+                        <span><Moment withTitle fromNow>{Date.parse(new Date(date?.seconds && date?.seconds * 1000).toLocaleString().replace(/-/g, "/"))}</Moment></span>
                     </div> 
                 </div>
               {
@@ -30,5 +35,11 @@ const ModalListItem =(props)=>{
         </Auxiliary>
     )
 }
-
-export default withRouter(ModalListItem);
+ModalListItem.propTypes = {
+    uid: ProTypes.string.isRequired,
+    userName: ProTypes.string.isRequired,
+    avatarUrl: ProTypes.string.isRequired,
+    date: ProTypes.object,
+    browseUser: ProTypes.func.isRequired
+}
+export default withBrowseUser(ModalListItem);
