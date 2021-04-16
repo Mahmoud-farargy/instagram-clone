@@ -14,7 +14,7 @@ import { GoVerified } from "react-icons/go";
 import { withRouter } from "react-router-dom";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
-import Moment from "react-moment";
+import GetFormattedDate from "../../Utilities/FormatDate";
 
 const PostPage  = (props) => {
   const context = useContext(AppContext);
@@ -408,7 +408,7 @@ const PostPage  = (props) => {
                 ) : null}
 
                 <small className="post__date">
-                  <Moment withTitle fromNow >{Date.parse(new Date(date?.seconds * 1000).toLocaleString().replace(/-/g, "/"))}</Moment>
+                  <GetFormattedDate date={date?.seconds} />
                 </small>
                 <form
                   onSubmit={(e) => submitComment(e)}

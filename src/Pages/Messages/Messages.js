@@ -10,7 +10,7 @@ import { RiMenu4Fill } from "react-icons/ri";
 import { MdClose } from "react-icons/md";
 import PropTypes from "prop-types";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
-import Moment from "react-moment";
+import GetFormattedDate from "../../Utilities/FormatDate";
 // import { updateObject } from "../../Utilities/Utility";
 
 
@@ -165,10 +165,8 @@ const Messages = (props) => {
                                 </div>
                                 <p className="messages__user__date">
                                   {user.chatLog.length >= 1
-                                    ? <Moment withTitle fromNow >{Date.parse(new Date(
-                                        user.chatLog[user.chatLog?.length - 1]
-                                          .date.seconds * 1000
-                                      ).toLocaleString().replace(/-/g, "/"))}</Moment>
+                                    ? <GetFormattedDate date={user.chatLog[user.chatLog?.length - 1]
+                                      .date.seconds} />
                                     : null}
                                 </p>
                               </div>
@@ -278,10 +276,8 @@ const Messages = (props) => {
                                   </div>
                                   <p className="messages__user__date">
                                     {user.chatLog.length >= 1
-                                      ? <Moment withTitle fromNow >{Date.parse(new Date(
-                                          user.chatLog[user.chatLog?.length - 1]
-                                            .date.seconds * 1000
-                                        ).toLocaleString().replace(/-/g, "/"))}</Moment>
+                                      ? <GetFormattedDate date={user.chatLog[user.chatLog?.length - 1]
+                                        .date.seconds} />
                                       : null}
                                   </p>
                                 </div>

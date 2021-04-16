@@ -1,7 +1,7 @@
 import React, {Fragment, useRef, useState} from 'react'
 import {Avatar} from "@material-ui/core";
 import {FaPlay, FaPause, FaVolumeMute, FaVolumeUp, FaHeart, FaCommentAlt} from "react-icons/fa";
-import Moment from "react-moment";
+import GetFormattedDate from "../../../Utilities/FormatDate";
 
 function ReelItem(props) {
     const reelVideo = useRef(null);
@@ -46,7 +46,7 @@ function ReelItem(props) {
                         <div className="reel--header--left flex-row">
                             <Avatar src={userAvatarUrl} alt={userName} title={userName} />
                             <span className="reel__user__name">{userName}</span>
-                            <span className="reel__date"><Moment withTitle fromNow>{Date.parse(new Date(item?.date.seconds * 1000).toLocaleString().replace(/-/g, "/"))}</Moment></span>
+                            <span className="reel__date"><GetFormattedDate date={item?.date.seconds} /></span>
                         </div>
                         <div className="reel--header--right flex-row">
                                 {
