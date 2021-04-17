@@ -1209,9 +1209,7 @@ class AppProvider extends PureComponent {
           });
       });
     } else if (type === Consts.Reel) {
-      let reelsDeepCopy = JSON.parse(
-        JSON.stringify(this.state.receivedData?.reels)
-      );
+      let reelsDeepCopy = JSON.parse(JSON.stringify(this.state.receivedData?.reels));
       reelsDeepCopy.unshift(forwardedContent);
       return new Promise((resolve, reject) => {
         this.updateParts(this.state.uid, "reels", reelsDeepCopy, true, "")

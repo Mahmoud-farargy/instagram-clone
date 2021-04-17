@@ -41,7 +41,7 @@ function ReelItem(props) {
     return (
         <Fragment>
             <div className="reel--video--content">
-                <video  onClick={() => onVideoClick()} onKeyPress={(event)=> event.charCode === 32 && onVideoClick()} ref={reelVideo} src={item.contentURL} loop />
+                <video onClick={() => onVideoClick()} onKeyPress={(event)=> event.charCode === 32 && onVideoClick()} ref={reelVideo} src={item.contentURL} loop />
                     <header className="reel--header flex-row">
                         <div className="reel--header--left flex-row">
                             <Avatar src={userAvatarUrl} alt={userName} title={userName} />

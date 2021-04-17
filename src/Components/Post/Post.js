@@ -288,6 +288,7 @@ class Post extends PureComponent {
                       draggable="false"
                       controls
                       muted
+                      preload={"none"} 
                     />
                   </ScrollTrigger>
                   

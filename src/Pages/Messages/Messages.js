@@ -222,11 +222,6 @@ const Messages = (props) => {
                   {" "}
                   {/*mobile */}
                   <div className="messages--users--side mobile-only flex-column">
-                    <div className="users--side--header flex-row">
-                      <span className="space__between">
-                        <h4>Direct</h4>
-                      </span>
-                    </div>
                     <div className="messages--top--nav flex-row">
                       <div className="space__between">
                         <h5>private</h5>

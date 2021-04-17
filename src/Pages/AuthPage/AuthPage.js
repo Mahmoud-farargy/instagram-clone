@@ -85,12 +85,12 @@ const AuthPage = (props) => {
             ) {
               if (signUpPassword === reTypedPassword) {
                 if (
-                  /^(?=[a-zA-Z0-9._-]{6,18}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test(
+                  /^(?=[a-zA-Z0-9._-]{6,19}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test(
                     signUpUsername
                   )
                 ) {
                   auth
-                    .createUserWithEmailAndPassword(signUpEmail.toLowerCase(), signUpPassword)
+                    .createUserWithEmailAndPassword(signUpEmail.toLowerCase().trim(), signUpPassword)
                     .then((cred) => {
                       setLoading(false);
                       db.collection(Consts.USERS)
@@ -160,7 +160,7 @@ const AuthPage = (props) => {
                 } else {
                   setLoading(false);
                   notify(
-                    "Username should be between 6 and 18 characters with no spaces.",
+                    "Username should be between 6 and 19 characters with no spaces.",
                     "error"
                   );
                 }
@@ -195,7 +195,7 @@ const AuthPage = (props) => {
          
           //avoids data overlapping
           auth
-            .signInWithEmailAndPassword(loginEmail.toLowerCase(), loginPassword)
+            .signInWithEmailAndPassword(loginEmail.toLowerCase().trim(), loginPassword)
             .then(() => {
               setLoading(false);
               setLoginEmail("");
@@ -483,7 +483,7 @@ const AuthPage = (props) => {
       });
   };
   const trimUserName = (fullName) => {
-    const limit= 17;
+    const limit= 18;
     return `${fullName.split("").length > limit ? fullName.split("").slice(0,limit).join("")+".." : fullName}`;
   }
   return (
