@@ -388,7 +388,7 @@
     margin:0;
     width:100%;
     left:0px;
-    z-index:2000;
+    z-index:5000;
     background-color:#fff;
     border-top: 1px solid var(--gray);
     align-items:center;

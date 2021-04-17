@@ -33,7 +33,7 @@ const MobileNav =(props)=>{
                                 { user ? <li className="like__icon__item"><NavLink  onClick={()=> reverseNotiState("isNewMsg")}   to="/messages" activeClassName="active-nav-link"><FaFacebookMessenger/>
                                     {
                                       receivedData?.notifications?.isNewMsg && props.location.pathname !== "/messages" ?
-                                        <div className="like__noti__dot"></div>
+                                        <div className="like__noti__dot mt-1"></div>
                                             : null
                                     } </NavLink></li> : null}
                                 { user ? <li ><NavLink  to="/add-post" activeClassName="active-nav-link"><BsFillPlusCircleFill/></NavLink></li> : null}
@@ -41,7 +41,7 @@ const MobileNav =(props)=>{
                                     <FaHeart />
                                     {
                                       receivedData?.notifications?.isUpdate && receivedData.notifications?.list?.length>=1 ?
-                                        <div className="like__noti__dot"></div>
+                                        <div className="like__noti__dot mt-1"></div>
                                             : null
                                     } 
                                     </NavLink></li> : null}

@@ -61,13 +61,14 @@ const DesktopPost = (props) => {
     changeMainState("currentPage", "Post");
   }, []);
 
-  const likesCheck = () => {
-    if (usersProfileData?.posts) {
-      //checks whether the user's post is liked or not
-      var { likes } = usersProfileData?.posts[currentPostIndex?.index];
-      return likes.people?.some((el) => el.id === uid);
-    }
-  };
+  // const likesCheck = () => {
+  //   if (usersProfileData?.posts) {
+  //     //checks whether the user's post is liked or not
+  //     var { likes } = usersProfileData?.posts[currentPostIndex?.index];
+  //     return likes.people?.some((el) => el.id === uid);
+  //   }
+  // };
+  var postLiked = usersProfileData?.posts && usersProfileData?.posts[currentPostIndex?.index]?.likes?.people?.some((el) => el.id === uid);
   const handleCurrLikes = (boolean) => {
     let postsData = usersProfileData?.posts;
     if (postsData) {
@@ -416,7 +417,7 @@ const DesktopPost = (props) => {
                   <div className="post--card--footer flex-column">
                     <div className="post--footer--upper--row flex-row">
                       <div className=" flex-row">
-                        {!likesCheck() ? (
+                        {!postLiked ? (
                           <span onClick={() => handleCurrLikes(true)}>
                             <FiHeart />
                           </span>
@@ -424,7 +425,7 @@ const DesktopPost = (props) => {
                           <span
                             onClick={() => handleCurrLikes(false)}
                             style={{
-                              animation: likesCheck()
+                              animation: postLiked
                                 ? "boundHeart 0.5s forwards ease"
                                 : null,
                             }}

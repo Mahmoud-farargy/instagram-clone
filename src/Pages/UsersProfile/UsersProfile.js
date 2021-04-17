@@ -12,7 +12,7 @@ import { CgProfile } from "react-icons/cg";
 import { ImBlocked } from "react-icons/im";
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
-import { FaRegComment } from "react-icons/fa";
+import { FaComment } from "react-icons/fa";
 import {HiOutlineDotsHorizontal} from "react-icons/hi";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
@@ -38,7 +38,6 @@ const UsersProfile = (props) => {
     handleFollowing,
     receivedData,
     changeModalState,
-    igVideoImg,
     modalsState,
     suggestionsList,
     handleUserBlocking,
@@ -411,29 +410,28 @@ const UsersProfile = (props) => {
                                     onClick={() => openPostModal(post?.id,i)}
                                     className="user--img--container desktop-only flex-column"
                                   >
-                                    <img
-                                    loading="lazy"
-                                      style={{ width: "100%" }}
-                                      className="users__profile__image"
-                                      src={
-                                        post?.contentType === "image"
-                                          ? post?.contentURL
-                                          : post?.contentType === "video"
-                                          ? igVideoImg
-                                          : null
-                                      }
-                                      alt={`post #${i}`}
-                                    />
+                                   {
+                                     post?.contentType === "image" ?  
+                                      <img
+                                      loading="lazy"
+                                        style={{ width: "100%" }}
+                                        className="users__profile__image"
+                                        src={post?.contentURL}
+                                        alt={`post #${i}`}
+                                      />
+                                      : post?.contentType === "video" ?
+                                        <video className="users__profile__image" muted disabled contextMenu="users__profile__image" onContextMenu={() => false}  src={post?.contentURL} />
+                                      : <h4>Not found</h4>
+                                   } 
+                                   
                                     <div className="user--img--cover">
                                       <div className="flex-row">
                                         <span className="mr-3">
                                           <FaHeart /> {post?.likes?.people?.length.toLocaleString()}
                                         </span>
                                         <span>
-                                          <FaRegComment />{" "}
-                                          {post?.comments.length > 0
-                                            ? post?.comments.length
-                                            : post?.comments.length.toLocaleString()}{" "}
+                                          <FaComment />{" "}
+                                          {post?.comments.length && post?.comments.length.toLocaleString()}{" "}
                                         </span>
                                       </div>
                                     </div>
@@ -443,29 +441,27 @@ const UsersProfile = (props) => {
                                     onClick={() => redirectToPost(i, post?.id)}
                                     className="user--img--container mobile-only flex-column"
                                   >
-                                    <img
+                                    {
+                                     post?.contentType === "image" ?  
+                                      <img
                                       loading="lazy"
-                                      style={{ width: "100%" }}
-                                      className="users__profile__image"
-                                      src={
-                                        post?.contentType === "image"
-                                          ? post?.contentURL
-                                          : post?.contentType === "video"
-                                          ? igVideoImg
-                                          : null
-                                      }
-                                      alt={`post #${i}`}
-                                    />
+                                        style={{ width: "100%" }}
+                                        className="users__profile__image"
+                                        src={post?.contentURL}
+                                        alt={`post #${i}`}
+                                      />
+                                      : post?.contentType === "video" ?
+                                        <video className="users__profile__image" muted disabled onContextMenu={() => false} contextMenu="users__profile__image"  src={post?.contentURL} />
+                                      : <h4>Not found</h4>
+                                   } 
                                     <div className="user--img--cover">
                                       <div className="flex-row">
                                         <span className="mr-3">
-                                          <FaHeart /> {post?.likes?.people?.length}
+                                          <FaHeart /> {post?.likes?.people?.length.toLocaleString()}
                                         </span>
                                         <span>
-                                          <FaRegComment />{" "}
-                                          {post?.comments.length > 0
-                                            ? post?.comments.length
-                                            : post?.comments.length}{" "}
+                                          <FaComment />{" "}
+                                          {post?.comments && post?.comments.length?.toLocaleString()}{" "}
                                         </span>
                                       </div>
                                     </div>

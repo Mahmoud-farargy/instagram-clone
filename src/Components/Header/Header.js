@@ -144,7 +144,7 @@ const Header = (props) => {
 
       <header ref={headerRef} id="header" className="main--header flex-row">
         <div className="header--inner flex-row">
-          <div className="header--logo--box flex-row">
+          <div title="Voxgram" className="header--logo--box flex-row">
             <div style={{
               // opacity: scrolled ? "0" : "1",
               // transform: scrolled ? "translateX(-100%)" : "translateX(0)",
@@ -325,7 +325,7 @@ const Header = (props) => {
                     </div>
                   </li>
                   <li>
-                    <span onClick={() => setProf(true)}>
+                    <span title={receivedData?.userName} onClick={() => setProf(true)}>
                       <Avatar
                         style={{border: (openProf || props.location.pathname?.toLowerCase() === "/profile" || props.location.pathname?.toLowerCase() === "/edit-profile") ? "2px solid #111" : ""}}
                         src={receivedData?.userAvatarUrl}

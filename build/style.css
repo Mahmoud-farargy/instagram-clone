@@ -279,6 +279,9 @@ a:visited{
 .modal--user--info{
     margin-left:8px;
 }
+.modal--user--item .modal--user--info span{
+    font-weight: 600;
+}
 .modal--user--item h3,.modal--user--item span{
     margin:0;
     font-size:14px;
@@ -636,14 +639,13 @@ button:active{
     position: fixed;
     top:0;
     left:0;
-    height:2px;
+    height:3px;
     z-index:1000;
     width: 100%;
     background: #f09433; 
     background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
     background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
     background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
-    /* background-color: var(--secondary-clr); */
     filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
     animation: fakeLoading 0.6s ease-out ; 
     animation-iteration-count:2;
@@ -740,7 +742,7 @@ button:active{
     border-right: var(--main-border);
 }
 #messages.messages--container .mobile--users--sidedrawer #messagesUL{
-    max-height:85%;
+    max-height:75%;
     overflow-y: auto;
 }
 #messages.messages--container .messages--side{
@@ -1307,9 +1309,10 @@ a.prof__btn__unfollowed{
     padding:10px 0 44px;
     align-items:center;
     justify-content:space-between;
+    min-height: 220px;
 }
 #usersProfile .similar__followers{
- padding-left: 3px;
+ padding-left: 0;
  color: #8e8e8e;
  color: rgb(142, 142, 142);
  font-size: 12px;
@@ -1395,11 +1398,12 @@ a.prof__btn__unfollowed{
 #usersProfile.users--profile--container .profile__display__name{
     font-size:28px;
     line-height:32px;
-    margin: -5px 7px 0 -6px;
     white-space:nowrap;
     word-break: keep-all;
     text-align:left;
     text-overflow: ellipsis;
+    overflow:hidden;
+    max-width: 210px;
 }
 #usersProfile.users--profile--container .desktop--social--row p span{
     font-weight:600;
@@ -1413,7 +1417,7 @@ a.prof__btn__unfollowed{
 }
 #usersProfile.users--profile--container .users--action--row div,
 #usersProfile.users--profile--container .users--action--row h5{
-    flex-basis:50%;
+    flex-basis:48%;
     margin-bottom:19px;
 }
 #usersProfile.users--profile--container .users--action--row div > button{
@@ -1663,6 +1667,13 @@ a.prof__btn__unfollowed{
     .auth .auth--upper--card{
         padding:15px 15px 18px;
     }
+    #usersProfile.users--profile--container .users--action--row,
+    #usersProfile.users--profile--container .desktop--social--row p{
+        align-items: baseline;
+    }
+    #usersProfile.users--profile--container .profile__display__name{
+        font-size:25px;
+    }
     #usersProfile  .reel--bubble{
         margin:-10px 20px 10px;
     }
@@ -1788,6 +1799,7 @@ a.prof__btn__unfollowed{
         height:100vh;
         width:70%;
         right:0;
+        padding-top: 13px;
         z-index:1800;
         background-color: rgba(255, 255, 255,0.99);
         border-left:1px solid rgb(167, 166, 166);
