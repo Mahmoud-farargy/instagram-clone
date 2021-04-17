@@ -9,7 +9,7 @@ import {GoVerified } from "react-icons/go";
 import {IoMdGrid} from "react-icons/io";
 import {RiLayoutRowLine} from "react-icons/ri";
 import {FaHeart} from "react-icons/fa";
-import {FaRegComment} from "react-icons/fa";
+import {FaComment} from "react-icons/fa";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 import * as Consts from "../../Utilities/Consts";
@@ -20,7 +20,7 @@ import gpStore from "../../Assets/get-app-gp.png";
 const MyProfile =(props)=>{
     const [,loading] = useAuthState(auth);
     const [grid, setGrid] = useState(true);
-    const {receivedData,changeModalState, igVideoImg, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState} = useContext(AppContext);
+    const {receivedData,changeModalState, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState} = useContext(AppContext);
     const redirectToPost=(i, id)=>{
         changeMainState("currentPostIndex", {index: i, id: id});
         getUsersProfile(uid).then(() => {
@@ -174,23 +174,34 @@ const MyProfile =(props)=>{
                                             {/* TODO: refactor this to be only one piece of code */}
                                               {/* Desktop */}
                                                 <div className="user--img--container desktop-only flex-column" onClick={() => openPostModal(post?.id,i)}>
-                                                        <img style={{width:"100%"}} loading="lazy"  className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
+                                                       {
+                                                           post?.contentType === "image" ?
+                                                            <img style={{width:"100%"}} loading="lazy"  className="users__profile__image" src={post?.contentURL} alt={`post #${i}`} />
+                                                           : post?.contentType === "video" ?
+                                                           <video disabled src={post?.contentURL} className="users__profile__image" contextMenu="users__profile__image" onContextMenu={() => false} />
+                                                           : <h4>Not found</h4>
+                                                       }
+
                                                                 <div className="user--img--cover">
                                                                         <div className="flex-row">
                                                                             <span className="mr-3"><FaHeart/> {post?.likes?.people?.length.toLocaleString()}</span>
-                                                                            <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length.toLocaleString() } </span>
-                                                                        
+                                                                            <span><FaComment/> {post?.comments.length && post?.comments.length?.toLocaleString() } </span>
                                                                         </div>
-                                                                
                                                                 </div>
                                                 </div>                                                
                                                 {/* Mobile */}
                                                 <div className="user--img--container mobile-only flex-column"  onClick={()=> redirectToPost(i, post?.id) } >
-                                                        <img style={{width:"100%"}}  loading="lazy" className="users__profile__image" src={post?.contentType === "image" ? post?.contentURL : post?.contentType === "video" ? igVideoImg : null} alt={`post #${i}`} />
+                                                        {
+                                                           post?.contentType === "image" ?
+                                                            <img style={{width:"100%"}} loading="lazy"  className="users__profile__image" src={post?.contentURL} alt={`post #${i}`} />
+                                                           : post?.contentType === "video" ?
+                                                           <video disabled muted src={post?.contentURL} className="users__profile__image" contextMenu="users__profile__image" onContextMenu={() => false} />
+                                                           : <h4>Not found</h4>
+                                                       }
                                                                 <div className="user--img--cover">
                                                                         <div className="flex-row">
                                                                             <span className="mr-3"><FaHeart/> {post?.likes?.people?.length.toLocaleString()}</span>
-                                                                            <span><FaRegComment/> {post?.comments.length >0 ? (post?.comments.length) : post?.comments.length.toLocaleString() } </span>
+                                                                            <span><FaComment/> {post?.comments.length && post?.comments.length?.toLocaleString() } </span>
                                                                         
                                                                         </div>
                                                                 

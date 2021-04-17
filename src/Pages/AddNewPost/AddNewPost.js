@@ -203,7 +203,7 @@ class AddNewPost extends PureComponent {
             uploadedItem.size <= 12378523
           ) {
             const itemType = /image/g.test(metadata.contentType) ? "image" : "video";
-            if (uploadedItem.name.split("").length <= 200) {
+            if (uploadedItem.name.split("").length <= 250) {
               const uploadContent = storage
                 .ref(`content/${receivedData?.uid}/${fileName}`)
                 .put(uploadedItem, metadata);
@@ -248,7 +248,7 @@ class AddNewPost extends PureComponent {
               );
             } else {
               notify(
-                `The name of the ${itemType} is too long. it should not exceed 200 characters`,
+                `The name of the ${itemType} is too long. it should not exceed 250 characters`,
                 "info"
               );
             }
@@ -264,7 +264,7 @@ class AddNewPost extends PureComponent {
         /video/g.test(metadata.contentType) &&
         uploadedItem.size <= 12378523
       ) {
-        if (uploadedItem.name.split("").length <= 50) {
+        if (uploadedItem.name.split("").length <= 250) {
           const uploadContent = storage
             .ref(`reels/${receivedData?.uid}/${fileName}`)
             .put(uploadedItem, metadata);
@@ -309,7 +309,7 @@ class AddNewPost extends PureComponent {
           );
         } else {
           notify(
-            `The name of the video is too long. it should not exceed 50 characters`,
+            `The name of the video is too long. it should not exceed 250 characters`,
             "info"
           );
         }
