@@ -42,9 +42,7 @@ const EditProfileOption = (props) => {
       Object.keys(receivedData?.profileInfo).length > 0
     ) {
       let copiedArr = JSON.parse(JSON.stringify(formState));
-      Object.keys(receivedData?.profileInfo).map((item) => {
-        copiedArr[item] = receivedData?.profileInfo[item];
-      });
+      Object.keys(receivedData?.profileInfo).map((item) => copiedArr[item] = receivedData?.profileInfo[item]);
       setForm(copiedArr);
     }
   }, [receivedData]);
@@ -272,7 +270,7 @@ const EditProfileOption = (props) => {
               changeInput={onInputChange}
               label="status"
               name="status"
-              val={formState?.status}
+              val={formState.status}
               submitted={submitted}
             />
 
@@ -351,7 +349,7 @@ const EditProfileOption = (props) => {
               label="gender"
               name="gender"
               options={["Male", "Female"]}
-              val={formState?.gender}
+              val={formState.gender}
               submitted={submitted}
             />
           </Suspense>

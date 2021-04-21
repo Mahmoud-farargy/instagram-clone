@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react'
+import React, {Fragment, useEffect, useState} from 'react'
 import "./Reels.scss";
 import {Link} from "react-router-dom";
 import Loader from "react-loader-spinner";
@@ -7,11 +7,12 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import ReelItem from "./ReelItem/ReelItem";
 
 function Reels(props) {
-    const {reelsProfile, changeMainState} = props.context;
+    const {reelsProfile = {}, changeMainState, currentReel} = props.context;
     useEffect(()=>{
         changeMainState("currentPage", "Reels");
     },[]);
     const [,loading] = useAuthState(auth);
+    const [currentPlayingReel, setCurrPlayingReel] = useState(0);
     return (
         <Fragment>
             <section id="reels"> 
@@ -29,9 +30,9 @@ function Reels(props) {
                         <div className="reel--video--box flex-column" >
                         {
                             !loading ?
-                            reelsProfile?.reels && reelsProfile?.reels.length > 0 && reelsProfile?.reels.map(((reel, i) => {
-                                return <ReelItem key={i} index={i} profile={reelsProfile} item={reel}/>
-                                }))
+                           reelsProfile?.reels?.length > 0 && reelsProfile?.reels?.[currentReel?.groupIndex]?.reelItems && reelsProfile?.reels[currentReel?.groupIndex]?.reelItems?.sort((a,b) => b.date.seconds - a.date.seconds ).map((reel, i) => {
+                                return <ReelItem setCurrPlayingReel={setCurrPlayingReel} currentPlayingReel={currentPlayingReel} key={i} groupName={reelsProfile?.reels?.[currentReel?.groupIndex]?.groupName} index={i} item={reel}/>
+                                })
 
                             :
                             <div className="reels-loading flex-column">

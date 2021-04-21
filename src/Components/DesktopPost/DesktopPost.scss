@@ -1,6 +1,7 @@
 .desktopPost{
-    width:855px;
+    width:880px;
     height:80%;
+    max-width: 1000px;
     position:fixed;
     left:50%;
     top:50%;
@@ -13,6 +14,7 @@
         height:100%;
         align-items:center;
         position:relative;
+        justify-content: center;
             .desktop__left__arrow, .desktop__right__arrow{
                 position: absolute;
                 top:50%;
@@ -46,7 +48,7 @@
                     height: 100%;
                     display: grid;
                     border:none !important;
-                    grid-template-columns: 60% 40%;
+                    grid-template-columns: 55% 45%;
                     .desktop--left, .desktop--right{
                         height:100%;
                         @media only screen and (max-width: 670px){

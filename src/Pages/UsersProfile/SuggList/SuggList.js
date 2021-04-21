@@ -13,6 +13,7 @@ const SuggList = (props) => {
                 <li className="suggestion--item flex-column">
                             <div className="suggestion--item-inner">
                               <Avatar
+                                loading="lazy"
                                 onClick={() => closeBoxAndRedirect()}
                                 src={item?.userAvatarUrl}
                                 alt={item?.userName}

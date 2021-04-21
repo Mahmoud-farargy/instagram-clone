@@ -19,6 +19,7 @@ import SearchItem from "../SearchItem/SearchItem.js";
 import Loader from "react-loader-spinner";
 import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen";
 import HeaderLogo from "../../Assets/instagram-icon-logo.c1dbcbd5.svg";
+import {IoIosCompass} from "react-icons/io";
 const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
 const Header = (props) => {
@@ -104,6 +105,16 @@ const Header = (props) => {
         setLogoutModal(false);
       });      
     },1500);
+  }
+  const closeNotificationOnClick = (w) => {
+    w.persist();
+    if(w.target.tagName === "H6" && _isMounted){
+      const timeOut = setTimeout(() => {
+        setNoti(false);
+        clearTimeout(timeOut);
+      },100);
+
+    }
   }
   return (
     <Auxiliary>
@@ -236,7 +247,7 @@ const Header = (props) => {
 
           <nav className="header--nav flex-row">
             <ul className="header--ul flex-row">
-              <li>
+              <li title="Home">
                 <NavLink
                   exact
                   to="/"
@@ -247,7 +258,7 @@ const Header = (props) => {
               </li>
               {user ? (
                 <div className="flex-row" style={{ alignItems: "center" }}>
-                  <li className="like__icon__item">
+                  <li className="like__icon__item" title="Messages">
                     <NavLink
                       onClick={() => reverseNotiState("isNewMsg")}
                       to="/messages"
@@ -260,7 +271,16 @@ const Header = (props) => {
                       ) : null}
                     </NavLink>
                   </li>
-                  <li>
+                  <li className="like__icon__item" title="Explore">
+                    <NavLink
+                      to="/explore"
+                      activeClassName={!openNoti ? "active-nav-link" : ""}
+                    >
+                      <IoIosCompass className="compass__explore__icon" />
+                     
+                    </NavLink>
+                  </li>
+                  <li title="Add New">
                     <NavLink
                       to="/add-post"
                       activeClassName={!openNoti ? "active-nav-link" : ""}
@@ -269,6 +289,7 @@ const Header = (props) => {
                     </NavLink>
                   </li>
                   <li
+                    title="Notifications"
                     className="noti--parent--container"
                     onClick={() => {
                       setNoti(true);
@@ -295,7 +316,7 @@ const Header = (props) => {
                       <div className="noti--popup--arrow"> </div>
                       <div className="noti--popup--inner">
                         {receivedData?.notifications?.list.length >= 1 ? (
-                          <ul className="noti--popup--ul flex-column">
+                          <ul onClick={(s) => closeNotificationOnClick(s)} className="noti--popup--ul flex-column">
                             {receivedData?.notifications?.list
                               ?.slice(0, 30).sort((a,b) =>{
                                 return b.date.seconds - a.date.seconds
@@ -309,7 +330,6 @@ const Header = (props) => {
                                       myData={receivedData}
                                       handleFollowing={handleFollowing}
                                       changeMainState={changeMainState}
-                                      closeNotiBox={setNoti}
                                       postIndex={i}
                                     />
                                 );
@@ -324,9 +344,10 @@ const Header = (props) => {
                       <div className="noti__transparent"></div>
                     </div>
                   </li>
-                  <li>
+                  <li >
                     <span title={receivedData?.userName} onClick={() => setProf(true)}>
                       <Avatar
+                        loading="lazy"
                         style={{border: (openProf || props.location.pathname?.toLowerCase() === "/profile" || props.location.pathname?.toLowerCase() === "/edit-profile") ? "2px solid #111" : ""}}
                         src={receivedData?.userAvatarUrl}
                         alt={receivedData?.userName}

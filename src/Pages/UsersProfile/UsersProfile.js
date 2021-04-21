@@ -41,7 +41,8 @@ const UsersProfile = (props) => {
     modalsState,
     suggestionsList,
     handleUserBlocking,
-    currentPostIndex
+    currentPostIndex,
+    updateReelsProfile
   } = context;
 
   const redirectToPost = (i, id) => {
@@ -91,7 +92,11 @@ const UsersProfile = (props) => {
     handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() => props.history.push("/"));
   }
 
-  // put this in a modal
+  const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
+    updateReelsProfile(usersProfileData?.uid).then(() => {
+        changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
+    });
+}
   const similarFollowers = (usersProfileData?.uid !== receivedData?.uid) && (receivedData?.blockList?.filter(w => w.blockedUid !== usersProfileData?.uid)) ? receivedData?.following.filter(el => el.receiverUid !== receivedData?.uid && usersProfileData?.followers.some(item => item.senderUid === el.receiverUid)) : [];
   const websiteToView = usersProfileData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?(?:http:\/\/)?/i, "").split("/")[0];
   const notBlockedOrBlockingUser = receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) && usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid);
@@ -180,6 +185,7 @@ const UsersProfile = (props) => {
             <header className="user-top-inner flex-row">
               <div className="user--pic--container flex-column">
                 <Avatar
+                  loading="lazy"
                   className="user__picture"
                   title={usersProfileData?.userName}
                   src={usersProfileData?.userAvatarUrl}
@@ -256,6 +262,7 @@ const UsersProfile = (props) => {
                         backgroundColor: openSuggestionsBox
                           ? "#63baf4"
                           : "#0095f6",
+                        transition: "all 0.5 linear",
                         border: openSuggestionsBox ? "#63baf4" : "#0095f6",
                       }}
                       onClick={() => setSuggestionsBox(!openSuggestionsBox)}
@@ -354,13 +361,27 @@ const UsersProfile = (props) => {
               </div>
             )}
           </div>
-          {
-                                 usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) &&  usersProfileData?.reels && usersProfileData?.reels.length > 0 && receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) &&( //find an alternative to make data always updating
-                                         <Link to="/reels" onClick={()=> changeMainState("reelsProfile", usersProfileData)} className="reel--bubble flex-column"><img className="reels__icon" alt="Reel" src={reelsIco} />
-                                            <span className="mt-1">Reels</span>
-                                         </Link>
-                                    )
-                            }
+          <ul className="reels--ul flex-row">
+                  {
+                      usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) &&  usersProfileData?.reels && usersProfileData?.reels.length > 0 && receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) && //find an alternative to make data always updating
+                              usersProfileData?.reels &&  usersProfileData?.reels.length > 0 &&
+                              usersProfileData.reels.map((reel, index) => (
+                                  <li key={reel?.id + index}>
+                                    <Link  onClick={() => loadReels({currentGroupId: reel?.id, currentGroupIndex: index, currentReelIndex: 0, currentReelId: 0})}  to="/reels" className="reel--bubble flex-column">
+                                    <div className="reel--upper--container flex-column">
+                                            <div className="reel--upper--inner flex-row" >
+                                                <img className="reels__icon" src={reelsIco} alt="icon"/>
+                                            </div>
+                                      </div>
+                                      
+                                     <span className="mt-1">{reel.groupName}</span>
+                                    </Link>   
+                                </li>
+                              ))
+                              
+                      
+                  }
+          </ul>
           {/* body */}
       {
        usersProfileData?.blockList && !receivedData?.blockList.some(x => x.blockedUid === usersProfileData?.uid) ?

@@ -147,7 +147,7 @@ const DesktopPost = (props) => {
             uid,
             receivedData?.userName,
             compState.insertedComment,
-            usersProfileData?.userAvatarUrl,
+            receivedData?.userAvatarUrl,
             new Date(),
             id,
             postOwnerId,
@@ -340,6 +340,7 @@ const DesktopPost = (props) => {
                   <div className="post--card--header flex-row">
                     <header className="post--header--avatar flex-row">
                       <Avatar
+                        loading="lazy"
                         className="post__header__avatar"
                         src={usersProfileData?.userAvatarUrl}
                         alt={usersProfileData?.userName}

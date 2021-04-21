@@ -28,6 +28,8 @@ class AddNewPost extends PureComponent {
         },
       ],
       caption: "",
+      selectedReelGroup: "New Group",
+      newGroupName: "",
       progressBarPercentage: 0,
       uploading: false,
       postingPhase: true,
@@ -36,18 +38,22 @@ class AddNewPost extends PureComponent {
       contentName: "",
       location: "",
       method: "Post",
-      submitted: false
+      submitted: false,
+      showReelFieldErr: false,
     };
     this._isMounted = false;
   }
+  //fix memory leak
   static contextType = AppContext;
   componentDidMount = () => {
     this._isMounted = true;
     if (this._isMounted) {
-      this.context.changeMainState("currentPage", "New Post");
+      const { changeMainState, receivedData } = this.context;
+      changeMainState("currentPage", "Add a Post or Reel");
       this.setState({
         ...this.state,
-        postingPhase: true,
+        postingPhase: true, 
+        selectedReelGroup: receivedData?.reels && (receivedData?.reels?.length > 0 ? (receivedData?.reels[0].groupName) :"New Group"),
       });
     }
   };
@@ -119,6 +125,7 @@ class AddNewPost extends PureComponent {
       contentURL: "",
       location: "",
       contentName: "",
+      showReelFieldErr: false
     });
   }
 
@@ -166,25 +173,47 @@ class AddNewPost extends PureComponent {
           }
       } else if(this.state.method.toLowerCase() === Consts.Reel) {
         //submits reel
-        const addedReel = {
-          id: generateNewId(),
-          comments: [],
-          contentURL: this.state.contentURL,
-          date: new Date(),
-          likes: [],
-          userName: receivedData?.userName,
-          postOwnerId: uid,
-          userAvatarUrl: receivedData?.userAvatarUrl,
-          contentName: this.state.contentName,
+        if(this.state.selectedReelGroup && (this.state.selectedReelGroup.toLowerCase() === "new group" ? this.state.newGroupName : true)){
+          if(this.state.newGroupName.toLowerCase() !== "new group"){
+              if(this.state.newGroupName?.split("").length <= 25){
+                  if(receivedData?.reels && (receivedData?.reels.length > 0 ? (receivedData?.reels?.some(K => K.groupName.toLowerCase() !== this.state.newGroupName.toLowerCase())) : true)){
+                    const addedReel = {
+                      id: generateNewId(),
+                      comments: [],
+                      contentURL: this.state.contentURL,
+                      date: new Date(),
+                      likes: [],
+                      userName: receivedData?.userName,
+                      reelOwnerId: uid,
+                      userAvatarUrl: receivedData?.userAvatarUrl,
+                      contentName: this.state.contentName,
+                    }
+                    addPost(addedReel, Consts.Reel, {selectedGroup:this.state.selectedReelGroup, newGroupName: this.state.newGroupName}).then(() => {
+                      notify(`Reel has been added to ${this.state.selectedReelGroup.toLowerCase() === "new group" ? this.state.newGroupName : this.state.selectedReelGroup}.`);
+                      this.props.history.push("/profile");
+                      this.resetState();
+                      this.setState(updateObject(this.state, {submitted: false}));
+                    }).catch((err) =>{
+                      notify((err?.message || "Failed to post reel. Please try again later!"), "error");
+                    });
+                }else{
+                  notify("This group name is aleady exit. Please choose another name.", "error");
+                } 
+              }else{
+                notify("Group name should not exceed 25 characters.", "error");
+              }
+           
+          }else{
+            notify(`Can't accept the group name you entered. "New Group" is a reserved word that can't be used. Please choose another name!`, "error");
+          }
+          
+        }else{
+          this.setState({
+            ...this.state,
+            showReelFieldErr: true
+          })
         }
-        addPost(addedReel, Consts.Reel).then(() => {
-          notify("Reel has been added.");
-          this.props.history.goBack();
-          this.resetState();
-          this.setState(updateObject(this.state, {submitted: false}));
-        }).catch(() =>{
-          notify("Failed to post reel. Please try again later!", "error");
-        });
+       
       }
       
     }
@@ -324,11 +353,14 @@ class AddNewPost extends PureComponent {
     
   };
   onInputChange =(val, name) => {
-    this.setState(updateObject(this.state,{[name]: val}))
+    this.setState(updateObject(this.state,{[name]: val}));
+    if(this.state.method.toLowerCase() === Consts.Reel){
+      !this.state.selectedReelGroup && (this.setState({...this.state,selectedReelGroup: "New Group"}));
+    }
   }
   render() {
-    const isValid = this.state.method.toLowerCase() === Consts.Post ? this.state.caption && this.state.location && this.state.contentType : this.state.method.toLowerCase() === Consts.Reel? this.state.contentType : null;
-    const {notify } = this.context;
+    const isValid = this.state.method.toLowerCase() === Consts.Post ? this.state.caption && this.state.location && this.state.contentType : this.state.method.toLowerCase() === Consts.Reel? (this.state.contentType && (this.state.selectedReelGroup ||  this.state.newGroupName)) : null;
+    const {notify, receivedData:{reels} } = this.context;
     return (
       <Fragment>
         <section id="upload" className="post--uploading--container flex-column">
@@ -371,7 +403,42 @@ class AddNewPost extends PureComponent {
                               changeInput={this.onInputChange}
                             />
                     </div>  
-                  : null  
+                  : this.state.method?.toLowerCase() === Consts.Reel ?
+                  <div className="mt-2">
+                    {
+                      reels?.length > 0 &&
+                      <InputForm
+                            required={true}
+                            type="select"
+                            name="selectedReelGroup"
+                            label="selected group"
+                            options={[ "New Group",...reels.map(s => s?.groupName)]}
+                            val={this.state.selectedReelGroup}
+                            changeInput={this.onInputChange}
+                            submitted={this.state.submitted}
+                      />
+                    }  
+                    {
+                      (reels?.length <= 0 || this.state.selectedReelGroup?.toLowerCase() === "new group") &&
+                      <div>
+                          <InputForm
+                              required={true}
+                              autoFocus={true}
+                              type="text"
+                              name="newGroupName"
+                              label="Group Name"
+                              val={this.state.newGroupName}
+                              changeInput={this.onInputChange}
+                              submitted={this.state.submitted}
+                        /> 
+                       
+                      </div>
+                    }
+                    {
+                      this.state.showReelFieldErr && this.state.selectedReelGroup?.toLowerCase() === "new group" && <small  className="text-align-center text-danger">Field above is required</small>
+                    } 
+                  </div>
+                  :null  
                   }
               
                 </div>)

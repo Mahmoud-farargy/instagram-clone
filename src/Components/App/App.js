@@ -33,8 +33,7 @@ const MyProfile = lazy(() => import("../../Pages/MyProfile/MyProfile"));
 const EditProfile = lazy(() => import("../../Pages/EditProfile/EditProfile"));
 const Reels = lazy(() => import("../../Pages/Reels/Reels"));
 const About = lazy(() => import("../../Pages/About/About"));
-
-
+const Explore = lazy(() => import("../../Pages/Explore/Explore"));
 //--xx---//
 const App = (props) => {
   const context = useContext(AppContext);
@@ -186,7 +185,7 @@ const App = (props) => {
                 display: isAnyModalOpen ? "block" : "none",
                 transition: "all 0.5s linear",
               }}
-              className="backdrop "
+              className="backdrop"
               onClick={() => changeModalState("users", false, "", "")}
             ></div>
           {loading && <div className="global__loading"></div>}          
@@ -294,14 +293,25 @@ const App = (props) => {
             </Route>
             <Route exact path="/reels">
               {  
-                reelsProfile ?
+               reelsProfile?.reels ?
                   <Reels context={context} routeHistory={history} />
                 :
                 <div>
                   <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
                 </div>
               }
-            
+            </Route>
+            <Route exact path="/explore">
+            <Header />
+              {  
+               true ?
+                  <Explore/>
+                :
+                <div>
+                  <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
+                </div>
+              }
+            <MobileNav />
             </Route>
             <Route exact path="/about">
                 <Header />
