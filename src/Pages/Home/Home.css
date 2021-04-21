@@ -62,8 +62,15 @@
     margin-bottom:0;
     text-transform :none;
     align-items:center;
-    text-overflow: ellipsis;
+    max-width: 100%;
+    overflow: hidden;
+    white-space:nowrap;
+    display:block;
     color: var(--main-black);
+    text-overflow: ellipsis;
+}
+.side--user--info h5:hover{
+    text-decoration: underline;
 }
 .side--user--info small{
     font-size: 12px;
@@ -218,7 +225,7 @@
 }
 @media only screen and (min-width: 740px){
     #home.main--home--container .suggestions--home--container{
-        width:70%;
+        width:65%;
     }
 
 }

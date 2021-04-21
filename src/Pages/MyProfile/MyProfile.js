@@ -1,26 +1,27 @@
-import React, {useContext, Fragment, useState, useEffect} from "react";
-import {AppContext} from "../../Context";
-import {Avatar} from "@material-ui/core";
+import React, { useContext, Fragment, useState, useEffect } from "react";
+import { AppContext } from "../../Context";
+import { Avatar } from "@material-ui/core";
 import { withRouter, Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
-import {auth} from '../../Config/firebase';
-import {useAuthState} from "react-firebase-hooks/auth";
-import {GoVerified } from "react-icons/go";
-import {IoMdGrid} from "react-icons/io";
-import {RiLayoutRowLine} from "react-icons/ri";
-import {FaHeart} from "react-icons/fa";
-import {FaComment} from "react-icons/fa";
+import { auth } from '../../Config/firebase';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { GoVerified } from "react-icons/go";
+import { IoMdGrid } from "react-icons/io";
+import { RiLayoutRowLine } from "react-icons/ri";
+import { FaHeart } from "react-icons/fa";
+import { FaComment } from "react-icons/fa";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 import * as Consts from "../../Utilities/Consts";
 import emptyPostsImg from "../../Assets/6efc710a1d5a.jpg";
 import appleStore from "../../Assets/get-app-apple.png";
 import gpStore from "../../Assets/get-app-gp.png";
+import { HiOutlinePlus } from "react-icons/hi";
 
 const MyProfile =(props)=>{
     const [,loading] = useAuthState(auth);
     const [grid, setGrid] = useState(true);
-    const {receivedData,changeModalState, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState} = useContext(AppContext);
+    const {receivedData,changeModalState, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState, updateReelsProfile} = useContext(AppContext);
     const redirectToPost=(i, id)=>{
         changeMainState("currentPostIndex", {index: i, id: id});
         getUsersProfile(uid).then(() => {
@@ -30,16 +31,18 @@ const MyProfile =(props)=>{
     useEffect(()=>{
         changeMainState("currentPage", "Profile");
     },[]);
-    useEffect(()=>{
-        if(receivedData?.reels && receivedData?.reels.length > 0){
-            changeMainState("reelsProfile", receivedData);
-        }
-    },[receivedData]);
     const openPostModal = (postId,index) =>{
         changeMainState("currentPostIndex", { index: index, id: postId });
         getUsersProfile(uid).then(() => {
               changeModalState("post", true);
         });
+    }
+    const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
+        updateReelsProfile(uid).then(() => {
+            changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
+        });
+    
+       
     }
     const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0];
      return(
@@ -56,7 +59,7 @@ const MyProfile =(props)=>{
                 <div className="user--top--info flex-column">
                 <header className="user-top-inner flex-row">
                         <div className="user--pic--container flex-column">
-                            <Avatar className="user__picture" src={receivedData?.userAvatarUrl} alt={receivedData?.userName} />
+                            <Avatar loading="lazy" className="user__picture" src={receivedData?.userAvatarUrl} alt={receivedData?.userName} />
                         </div>
                     <div className="desktop--inner--info flex-column">
                             <div className="users--action--row w-100 flex-row">
@@ -146,13 +149,38 @@ const MyProfile =(props)=>{
                     </div>
                                          
                 </div>
-                      {
-                                    receivedData?.reels && receivedData?.reels.length > 0 && (
-                                         <Link to="/reels" className="reel--bubble flex-column"><img className="reels__icon" src={reelsIco} alt="icon"/>
-                                            <span className="mt-1">Reels</span>
-                                         </Link>
-                                    )
-                            }
+                <ul className="reels--ul flex-row">
+                        {
+                            receivedData?.reels && receivedData?.reels.length > 0 && 
+                                <div className="flex-row">
+                                <li className="reel--list--item">
+                                    <Link to="/add-post" className="reel--bubble reels--new flex-column">
+                                    <div className="reel--upper--container flex-column">
+                                            <div className="reel--upper--inner flex-row" >
+                                                <HiOutlinePlus  className="add__new__reels__ico"/>
+                                            </div>
+                                      </div>
+                                      <span className="mt-1">New</span>
+                                    </Link>
+                                </li>
+                                
+                                {receivedData?.reels.map((reel, index) =>
+                                <li key={reel?.id + index} className="reel--list--item">
+                                  <Link  onClick={() => loadReels({currentGroupId: reel?.id, currentGroupIndex: index, currentReelIndex: 0, currentReelId: 0})}  to="/reels" className="reel--bubble flex-column">
+                                      <div className="reel--upper--container flex-column">
+                                            <div className="reel--upper--inner flex-row" >
+                                                <img className="reels__icon" src={reelsIco} alt="icon"/>
+                                            </div>
+                                      </div>
+                                      
+                                     <span className="mt-1">{reel.groupName}</span>
+                                   </Link>   
+                                </li>
+                                )}
+                               </div>         
+                        }
+                </ul>
+                      
                 {/* body */}
                 <div className="users--profile--stripe flex-row">
                   {

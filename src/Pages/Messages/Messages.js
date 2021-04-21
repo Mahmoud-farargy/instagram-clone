@@ -146,7 +146,7 @@ const Messages = (props) => {
                               key={user.uid + index}
                               onClick={() => viewUsersMessages(user?.uid, index)}
                             >
-                             <Avatar src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
+                             <Avatar loading="lazy" src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
                               <div className="messages--user--info space__between">
                                 <div style={{ flex: 1, width: "60%" }}>
                                   <p>
@@ -251,7 +251,7 @@ const Messages = (props) => {
                                 className="messages--user flex-row"
                                 key={user.uid + index}
                                 onClick={() => viewUsersMessages(user?.uid, index)} >
-                                <Avatar src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
+                                <Avatar loading="lazy" src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
                                 <div className="messages--user--info space__between">
                                   <div style={{ flex: 1, width: "100%" }}>
                                     <p>
@@ -315,7 +315,7 @@ const Messages = (props) => {
                   <div className="messages--chatlog--container">
                     <div className="messages--chatbox--header flex-row">
                       {/* -- header */}
-                      <Avatar src={msg?.userAvatarUrl} alt={msg?.userName} />
+                      <Avatar loading="lazy" src={msg?.userAvatarUrl} alt={msg?.userName} />
                       <div className="messages--user--info space__between">
                         <p style={{cursor:"pointer"}} onClick={() => props.browseUser(msg?.uid, msg?.userName)}>
                           <TruncateMarkup line={1} ellipsis="..">

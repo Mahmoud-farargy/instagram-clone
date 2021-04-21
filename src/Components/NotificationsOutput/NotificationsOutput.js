@@ -5,10 +5,11 @@ import {Avatar} from "@material-ui/core";
 import PropTypes from "prop-types";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
+import reelDefaultPic from "../../Assets/reels-instagram-logo-white_1379-5039.jpeg"
 
 const NotificationOutput =(props)=>{
     const [isFollowed, setFollowingState] = useState(false);
-    const {notification, igVideoImg, myData,handleFollowing, browseUser, closeNotiBox } = props;
+    const {notification, igVideoImg, myData,handleFollowing, browseUser } = props;
     useEffect(()=>{
         if(notification?.type === "follow"){
             setFollowingState(myData?.following.some(user => user?.receiverUid === notification?.uid));
@@ -28,7 +29,7 @@ const NotificationOutput =(props)=>{
             <li  key={notification?.notiId} className="space__between noti--popup-item">
                     <div className="flex-row noti--row">
                         <div><Avatar className="noti__user__img" src={notification?.userAvatarUrl} alt={notification?.userName} /></div>
-                        <div className="flex-column noti--user--info" onClick={()=> {browseUser(notification?.uid, notification?.userName); closeNotiBox && closeNotiBox(false)}}>
+                        <div className="flex-column noti--user--info" onClick={()=> browseUser(notification?.uid, notification?.userName)}>
                             <h6>{notification?.userName}</h6>
                         <p className="noti__text"><TruncateMarkup line={2} ellipsis="..">{notification?.notiText}</TruncateMarkup>  <span style={{textOverflow: 'ellipsis'}}><GetFormattedDate date={notification?.date?.seconds} /></span></p>
                         </div> 
@@ -44,7 +45,7 @@ const NotificationOutput =(props)=>{
                         } 
                         {
                              notification?.type !== "follow"?
-                             <div onClick={(e)=> redirectMeToPost(e)}><img className="noti__bar__img" src={notification?.contentType ==="image" ? notification?.contentURL : notification?.contentType ==="video" ? igVideoImg : null } /></div>
+                             <div onClick={(e)=> redirectMeToPost(e)}><img alt="Post" className="noti__bar__img" src={notification?.contentType ==="image" ? (notification?.contentURL) : notification?.contentType ==="video" ? igVideoImg : notification?.contentType === "reel" ? reelDefaultPic : null } /></div>
                                 
                              : null
                         }
@@ -59,7 +60,6 @@ NotificationOutput.propTypes = {
     notification: PropTypes.object.isRequired,
     igVideoImg: PropTypes.string.isRequired,
     myData: PropTypes.object.isRequired,
-    closeNotiBox: PropTypes.func,
     handleFollowing: PropTypes.func.isRequired,
     changeMainState: PropTypes.func,
     postIndex: PropTypes.number

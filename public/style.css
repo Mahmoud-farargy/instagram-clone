@@ -84,21 +84,66 @@ a:visited{
     background-color: rgb(98, 98, 98);
     min-height: 14px;
 }
+.reels--ul{
+    padding: 0 0 0 40px;
+    margin: 0;
+    align-items:center;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.reels--ul li{
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
 #usersProfile  .reel--bubble{
     align-items:center;
     cursor:pointer;
     width: 80px;
     text-decoration: none;
     color: #262626;
-    margin:0px 40px 20px;
+    margin:0px 10px 20px;
 }
-#usersProfile  .reel--bubble .reels__icon{
+#usersProfile  .reel--bubble .reel--upper--container{
+    position: relative;
     width:77px;
     height:77px;
+    text-align:center;
+    justify-content: center;
+    align-items:center;
+}
+#usersProfile  .reel--bubble .reel--upper--container .reel--upper--inner{
+    position: relative;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    border: 1px solid rgb(199, 199, 199);
+    text-align:center;
+    align-items:center;
+}
+#usersProfile  .reel--bubble .reel--upper--container .reel--upper--inner .reels__icon, .add__new__reels__ico{
+    position: absolute;
+    margin: 0 auto 0 2px;
+}
+#usersProfile .reel--bubble .reel--upper--container .reel--upper--inner, #usersProfile  .reel--bubble .reel--upper--container .reel--upper--inner .reels__icon{
+    width:100% !important;
+    height:100% !important;
     border-radius: 50px;
+}
+#usersProfile svg.add__new__reels__ico{
+    border-radius: 50px;
+    width: 100%;
+    color: rgb(73, 73, 73);
+    font-size: 34px;
+    font-weight: 800;
+}
+#usersProfile .reel--list--item{
     position: relative;
 }
-
+#usersProfile  .reel--bubble .reel--upper--container .reels--new .reel--upper--inner{
+    border: 1px solid rgb(138, 138, 138) !important;
+}
 #usersProfile .reel--bubble span{
     font-weight:600;
     font-size:14px;
@@ -108,6 +153,7 @@ a:visited{
     text-overflow:ellipsis;
     display:block;
     text-align:center;
+    text-transform: capitalize;
 }
 /* #usersProfile .reels__icon:after{
     content:'';
@@ -127,7 +173,7 @@ a:visited{
     font-size: 16px;
     line-height: 24px;
     white-space: pre-line;
-    margin-bottom:8px;
+    margin-bottom:4px;
     width:100%;
 }
 .flex-row{
@@ -180,6 +226,7 @@ a:visited{
     font-size:14px;
     font-weight:600;
     margin: 15px 5px;
+    line-height:24px;
 }
 
 .article__post{
@@ -252,8 +299,9 @@ a:visited{
     vertical-align:baseline;
 }
 .userModal--card--body{
-    width:100%;
-    overflow: hidden auto;
+    width:99%;
+    overflow-y:scroll;
+    overflow-x: hidden;
 }
 .modal--user--item{
     padding:8px 16px;
@@ -267,11 +315,35 @@ a:visited{
 .userModal__close{
     position: absolute;
     right:4%;
-    top:3px;
+    top:0px;
     font-size:24px;
-    font-weight:400;
+    font-weight:500;
     cursor:pointer;
     z-index:1600;
+    padding:7px 11px;
+}
+.txt_follow, .txt_unfollow{
+    font-size: 12px;
+    font-weight:600;
+    display:inline;
+    background-color: transparent;
+    border: none;
+    line-height: 14px;
+    cursor: pointer;
+    padding: 4px 9px;
+}
+.txt_follow:active, .txt_unfollow:active{
+    outline:none !important;
+}
+.txt_follow{
+    color: var(--secondary-clr);
+}
+.txt_unfollow{
+    color:var(--font-black);
+}
+.userModal__close:active{
+    background-color: rgba(51, 102, 145, 0.1);
+    border-radius: 5px;
 }
 .modal--item--inner{
     align-items:center;
@@ -655,6 +727,11 @@ button:active{
     justify-content:space-between;
     align-items:center;
 }
+.post--comment--row .comment__user__avatar{
+    width:32px !important;
+    height: 32px;
+    margin-right: 10px;
+}
 .post--comment--actions{
     align-items:center;
     white-space:nowrap;
@@ -683,11 +760,21 @@ button:active{
 .post--comment--actions .acc-action{
     margin:0 5px 0px;
 }
+.long__dash{
+    border-bottom: 1px solid var(--second--gray);
+    width: 24px;
+    margin-right: 8px;
+    display: inline-block;
+    height: 0;
+}
 .post__top__comment strong, .sub--comments--nav li strong{
     font-weight:600;
     text-overflow: ellipsis;
     margin-right:5px;
+    white-space:nowrap;
+    max-width:80%;
     cursor: pointer;
+    display:inline;
 }
 .post__top__comment p, .sub--comments--nav li span{
     margin:0;
@@ -810,8 +897,7 @@ button:active{
 }
 .messages--view--users{
     padding:8px 0px;
-    overflow:auto;
-    height:100%;
+    overflow-y:auto;
 }
 .messages--view--users ul{
     padding:0;
@@ -977,7 +1063,8 @@ button:active{
 }
 .receiver{
     background: transparent;
-    border: 1px solid var(--second--gray);
+    border: 1px solid #efefef;
+    border: 1px solid rgb(239, 239, 239);
 }
 .message--outer{
     touch-action:manipulation;
@@ -993,6 +1080,7 @@ button:active{
     line-height:18px;
     font-weight:400;
     margin: -3px 0 -4px;
+    text-transform: none;
 }
 .active-msg{
     background-color: #efefef !important;
@@ -1065,6 +1153,10 @@ button:active{
     display:none;
 
 }
+#usersProfile .suggest--item--container{
+    max-width: 100%;
+    overflow-x: auto;
+}
 #usersProfile .suggestion--item{
     padding:20px;
     position: relative;
@@ -1072,8 +1164,9 @@ button:active{
     background-color: #fff;
     margin-right: 18px;
     /* min-width:200px; */
-    /* width: 208px;
-    height:150px; */
+    width: 180px;
+    height:auto;
+    max-height: 200px;
     align-items:center;
     justify-content: center;
     text-align:center;
@@ -1276,7 +1369,7 @@ a.prof__btn__unfollowed{
     width:100%;
     object-fit:cover;
     cursor:pointer;
-    max-height: 300px;
+    height: 290px;
     margin:0 auto;
     padding:0;
     min-height:100%;
@@ -1605,6 +1698,7 @@ a.prof__btn__unfollowed{
     text-overflow: ellipsis;
     overflow: hidden;
     text-decoration:none;
+    display: inline;
 }
 .prof--acc--name h1{
     display: inline;
@@ -1674,8 +1768,13 @@ a.prof__btn__unfollowed{
     #usersProfile.users--profile--container .profile__display__name{
         font-size:25px;
     }
-    #usersProfile  .reel--bubble{
-        margin:-10px 20px 10px;
+    #usersProfile .reel--bubble{
+        width: 60px;
+        margin:0px 10px 10px;
+    }
+    #usersProfile .reel--bubble .reels__icon{
+        width: 40px;
+        height: 40px;
     }
     .my-empty--posts--container{
         margin-top: 0;
@@ -1861,6 +1960,13 @@ a.prof__btn__unfollowed{
     }
     .usersModal--container{
         position:fixed;
+        z-index: 5100;
+    }
+    .reels--ul{
+        padding: 0 0 0 10px;
+    }
+    .reels--ul li{
+        margin-right: 15px;
     }
     .usersModal--inner{
         margin:0;
@@ -1880,7 +1986,7 @@ a.prof__btn__unfollowed{
         padding-bottom:40px;
     }
     #usersProfile.users--profile--container .users__profile__image{
-        max-height: 250px;
+        height: 160px;
     }
     /* #commentsModal.comments--modal--container{
         position:static !important;
@@ -1928,6 +2034,12 @@ a.prof__btn__unfollowed{
         padding-top:10px;
         margin-left:auto; 
         margin-right:auto;
+    }
+
+}
+@media only screen and (min-width:760px){
+    .messages--view--users{
+        max-height: 70vh;
     }
 }
 @media only screen and (max-width:930px) and (min-width: 670px){

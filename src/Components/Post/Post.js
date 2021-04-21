@@ -56,7 +56,7 @@ class Post extends PureComponent {
   likesCheck() {
     var { likes, id } = this.props;
     this.setState({
-      postLiked: likes.people?.some((el) => el.id === id),
+      postLiked: likes?.people?.some((el) => el.id === id),
     });
   }
   handleCurrLikes = (boolean) => {
@@ -209,6 +209,7 @@ class Post extends PureComponent {
             <div className="post--card--header flex-row">
               <header className="post--header--avatar flex-row">
                 <Avatar
+                  loading="lazy"
                   className="post__header__avatar"
                   src={userAvatar}
                   alt={userName}
@@ -332,13 +333,13 @@ class Post extends PureComponent {
                   <RiBookmarkLine />
                 </div>
               </div>
-              {likes.people?.length >= 1 ? (
+              {likes?.people?.length >= 1 ? (
                 <div
                   className="likes__count"
-                  onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes.people : []), Consts.LIKES)}
+                  onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}
                 >
-                  {likes.people?.length.toLocaleString()}{" "}
-                  {likes.people?.length === 1 ? "like" : "likes"}
+                  {likes?.people?.length.toLocaleString()}{" "}
+                  {likes?.people?.length === 1 ? "like" : "likes"}
                 </div>
               ) : null}
               <span className="post__caption flex-row">

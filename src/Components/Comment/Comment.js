@@ -4,6 +4,9 @@ import { FiHeart } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import * as Consts from "../../Utilities/Consts";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
+import GetFormattedDate from "../../Utilities/FormatDate";
+import { Avatar } from "@material-ui/core";
+import { trimText } from "../../Utilities/TrimText";
 
 const Commment =(props)=>{
     var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, posts, browseUser} = props;
@@ -16,9 +19,10 @@ const Commment =(props)=>{
         <Fragment>
         <div className="post--comment--item">
                <div className="flex-row post--comment--row">
+                { <Avatar className="comment__user__avatar" loading="lazy" src={comment?.userAvatarUrl} alt={comment?.userName}/>}
                 <span onClick={() => browseUser( comment?.uid, comment?.userName )} title={comment?.userName} className="post__top__comment flex-row">
                       <strong>{comment?.userName}</strong> <p className="comment__text w-100">
-                          <TruncateMarkup className="w-100" line={1} ellipsis="...">{comment?.comment}</TruncateMarkup>
+                          <TruncateMarkup className="w-100" line={1} ellipsis="...">{trimText(comment?.comment, 600)}</TruncateMarkup>
                           </p>
                 </span>   
 
@@ -36,6 +40,10 @@ const Commment =(props)=>{
                </div>
               
                <div className="post--comment--actions flex-row">
+                  {
+                      comment?.postDate &&
+                        <span><GetFormattedDate date={comment?.postDate?.seconds} ago /></span>
+                  } 
                       {
                           comment.likes?.length >=1 ?
                              <span className="acc-action" onClick={()=> changeModalState("users",true, comment?.likes, Consts.LIKES)}>{comment.likes?.length.toLocaleString()} {comment.likes?.length > 1 ? "likes" : "like"}</span>
@@ -49,7 +57,7 @@ const Commment =(props)=>{
                     {
                         comment.subComments?.length >=1 ? 
                         <div>
-                           <span className="post__view__replies__btn" onClick={()=> setSubComments( !viewSubComments)}> — {viewSubComments ? "Hide": "View"} replies ({comment.subComments?.length})</span>
+                           <span className="post__view__replies__btn" onClick={()=> setSubComments( !viewSubComments)}> <small className="long__dash"></small> {viewSubComments ? "Hide": "View"} replies ({comment.subComments?.length})</span>
                              {
                                  viewSubComments ?
                                        <ul className="sub--comments--nav">
@@ -59,9 +67,10 @@ const Commment =(props)=>{
                                                         <li
                                                             key={i} className="post--comment--item">
                                                             <div className="flex-row post--comment--row">
+                                                            {<Avatar className="comment__user__avatar" loading="lazy" src={subComment?.userAvatarUrl} alt={subComment?.senderName}/>}
                                                                 <div onClick={() => browseUser( subComment?.senderUid, subComment?.senderName )} title={subComment?.senderName} className="post__top__comment flex-row">
                                                                     <strong>{subComment?.senderName}</strong>
-                                                                    <span> {subComment?.commentText}</span>
+                                                                    <span> {trimText(subComment?.commentText, 600)}</span>
                                                                 </div>
                                                                 {
                                                                     !subComment?.likes?.some(el => el.id === uid) ?
@@ -75,7 +84,11 @@ const Commment =(props)=>{
                                                                         className="liked__heart"><FaHeart/></span>
                                                                 }  
                                                             </div>
-                                                            <div className="post--comment--actions flex-row">
+                                                            <div className="post--comment--actions flex-row"> 
+                                                                    {
+                                                                        subComment?.date &&
+                                                                            <span><GetFormattedDate date={subComment?.date?.seconds} ago /></span>
+                                                                    } 
                                                                     {
                                                                         subComment?.likes?.length >=1 ?
                                                                             <span className="acc-action" onClick={()=> changeModalState("users",true, subComment?.likes, Consts.LIKES)}>{subComment?.likes?.length.toLocaleString()} {subComment?.likes?.length > 1 ? "likes" : "like"}</span>
