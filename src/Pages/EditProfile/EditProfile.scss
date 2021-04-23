@@ -111,9 +111,15 @@
     text-overflow: ellipsis;
     overflow: hidden;
   }
-  .form--btns{
+  .form--btns, .account--info--container .account--info--inner{
+    margin-top:10px;
     justify-content:space-between;
     flex-wrap: wrap;
+    width: 90%;
+    @media only screen and (max-width: 670px) {
+      gap: 10px;
+      width: 100%;
+    }
   }
   .change__prof__pic{
       color: #0095f6;
@@ -146,9 +152,41 @@
     @media only screen and (max-width: 670px){
       width:90%;
     }
-  }
-  .user--info--container{
-    background-color: green;
+    .prof--input--row{
+      justify-content: space-between;
+      @media only screen and (min-width: 670px) {
+        align-items: center;
+      }
+      label{
+        margin:0;
+      }
+    }
+    .account--info--box{
+      margin-top: 10px;
+      width: 100%;
+      .account--info--text{
+        display: block;
+        color: rgb(70, 70, 70);
+        font-weight:300;
+        margin-bottom: 4px;
+        line-height: 20px;
+        span{
+          font-weight:600;
+          margin-right:4px;
+        }
+        time{
+          font-weight: inherit;
+          font-size: inherit;
+          color: inherit;
+          text-transform: none;
+        }
+      }
+    }
+    @media only screen and (max-width:670px) {
+      .prof--input--row, .account--info--container .account--info--inner{
+        flex-direction: column !important;
+      }
+    }
   }
   .modal--btns{
     justify-content: flex-end;

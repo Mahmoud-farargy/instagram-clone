@@ -20,6 +20,8 @@ import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import SuggList from "./SuggList/SuggList";
 import MutualFriendsItem from "./MutualFriendsList/MutualFriendsItem";
 import * as Consts from "../../Utilities/Consts";
+import { firebase } from "../../Config/firebase";
+import Moment from "react-moment";
 
 const UsersProfile = (props) => {
   const [, loading] = useAuthState(auth);
@@ -29,6 +31,7 @@ const UsersProfile = (props) => {
   const context = useContext(AppContext);
   const [openSuggestionsBox, setSuggestionsBox] = useState(false);
   const [randNum, setRandNum] = useState(0);
+  const [connectivityStatus, setConnectivityStatus] = useState({});
 
   const {
     usersProfileData,
@@ -42,7 +45,8 @@ const UsersProfile = (props) => {
     suggestionsList,
     handleUserBlocking,
     currentPostIndex,
-    updateReelsProfile
+    updateReelsProfile,
+    isUserOnline
   } = context;
 
   const redirectToPost = (i, id) => {
@@ -75,10 +79,21 @@ const UsersProfile = (props) => {
   useEffect(() => {
     changeMainState("currentPage", `${usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name ? usersProfileData?.profileInfo?.name+" (" : ""}@${usersProfileData.userName}${usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name ? ")" : ""}` || "User Profile");
   }, [usersProfileData, changeMainState]);
-  useEffect(() => {
+  useEffect(() => {   
     window.scrollTo(0, 0);
   }, []);
   useEffect(()=> {
+    if(isUserOnline){
+    firebase?.database() &&  firebase.database().ref(`/status/${usersProfileData?.uid}`).once('value').then((snapshot) => {
+        if(snapshot.val() && snapshot.val()?.state){
+            const {state, last_changed} = snapshot.val();
+            setConnectivityStatus({state, last_changed});
+        }else{
+          setConnectivityStatus({state: "", last_changed: ""});
+        }
+      });
+    }
+    
     suggestionsList?.length > 0 ? setRandNum(Math.floor(Math.random() * suggestionsList?.length -6)) : setRandNum(0);
   },[suggestionsList, usersProfileData]);
 
@@ -105,6 +120,19 @@ const UsersProfile = (props) => {
        {
         notBlockedOrBlockingUser ?
         <div>
+                  {
+                     connectivityStatus && connectivityStatus?.state && isFollowed && (usersProfileData?.profileInfo?.professionalAcc?.status || receivedData?.profileInfo?.professionalAcc?.status) &&
+                    <span className="activity--container">
+                      {connectivityStatus?.state === "online" ?
+                      <small className="online--status flex-row"><span>Online</span><span className="online__user"></span></small>
+                      : connectivityStatus?.last_changed &&
+                      <small>
+                        Active {<Moment fromNow withTitle>{new Date( connectivityStatus?.last_changed).toISOString()}</Moment>}
+                      </small>
+                   
+                     }
+                    </span>
+                    }
           {usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name &&
                       <div className="prof--acc--name">
                         <h1>
@@ -441,7 +469,7 @@ const UsersProfile = (props) => {
                                         alt={`post #${i}`}
                                       />
                                       : post?.contentType === "video" ?
-                                        <video className="users__profile__image" muted disabled contextMenu="users__profile__image" onContextMenu={() => false}  src={post?.contentURL} />
+                                        <video className="users__profile__image" muted disabled autoPlay loop contextMenu="users__profile__image" onContextMenu={() => false}  src={post?.contentURL} />
                                       : <h4>Not found</h4>
                                    } 
                                    
@@ -452,7 +480,7 @@ const UsersProfile = (props) => {
                                         </span>
                                         <span>
                                           <FaComment />{" "}
-                                          {post?.comments.length && post?.comments.length.toLocaleString()}{" "}
+                                          {post?.comments?.length && post?.comments?.length.toLocaleString()}{" "}
                                         </span>
                                       </div>
                                     </div>
@@ -472,7 +500,7 @@ const UsersProfile = (props) => {
                                         alt={`post #${i}`}
                                       />
                                       : post?.contentType === "video" ?
-                                        <video className="users__profile__image" muted disabled onContextMenu={() => false} contextMenu="users__profile__image"  src={post?.contentURL} />
+                                        <video className="users__profile__image" muted disabled autoPlay loop onContextMenu={() => false} contextMenu="users__profile__image"  src={post?.contentURL} />
                                       : <h4>Not found</h4>
                                    } 
                                     <div className="user--img--cover">

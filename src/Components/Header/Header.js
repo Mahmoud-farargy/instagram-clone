@@ -289,6 +289,7 @@ const Header = (props) => {
                     </NavLink>
                   </li>
                   <li
+                    id="notifications"
                     title="Notifications"
                     className="noti--parent--container"
                     onClick={() => {
@@ -368,7 +369,9 @@ const Header = (props) => {
                         <ul className="prof--popup--ul flex-column">
                           <Link onClick={() => setProf(false)} to="/profile">
                             <li>
-                              <CgProfile className="prof__popup" /> Profile
+                              <span className="prof--item--inner flex-row">
+                                <CgProfile className="prof__popup" /> <span>Profile</span>
+                              </span>
                             </li>
                           </Link>
                           <Link
@@ -376,7 +379,9 @@ const Header = (props) => {
                             to="/edit-profile"
                           >
                             <li>
-                              <BiCog className="prof__popup" /> Settings
+                            <span className="prof--item--inner flex-row">
+                              <BiCog className="prof__popup" /> <span>Settings</span>
+                              </span>
                             </li>
                           </Link>
                           <Link
@@ -384,13 +389,17 @@ const Header = (props) => {
                             to="/about"
                           >
                             <li>
-                              <BiInfoCircle className="prof__popup" /> About
+                            <span className="prof--item--inner flex-row">
+                              <BiInfoCircle className="prof__popup" /> <span>About</span>
+                              </span>
                             </li>
                           </Link>
                           <li
                             onClick={() => onLoggingOut()}
                           >
-                            <BiPowerOff className="prof__popup" /> Log Out
+                             <span className="prof--item--inner flex-row">
+                              <BiPowerOff className="prof__popup" /> <span>Log Out</span>
+                            </span>
                           </li>
                         </ul>
                       </div>

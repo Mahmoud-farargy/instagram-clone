@@ -59,7 +59,6 @@ const AuthPage = (props) => {
     event.preventDefault();
     var {
       resetAllData,
-      updateSuggestionsList,
       isUserOnline,
       updateUID,
       updateUserState,
@@ -112,7 +111,8 @@ const AuthPage = (props) => {
                             professionalAcc: {
                               show: true,
                               category: "Just For Fun",
-                             
+                              suggested: true,
+                              status: true
                             },
                             accountCreationDate: new Date(),
                             registrationMethod: "email"
@@ -202,15 +202,8 @@ const AuthPage = (props) => {
               setLoginPassword("");
 
               auth.onAuthStateChanged((authUser) => {
-                db.collection(Consts.USERS)
-                  .get()
-                  .then((query) => {
-                    query.forEach((user) => {
-                      updateSuggestionsList(user.data());
-                    });
-                    updateUserState(true);
+                  updateUserState(true);
                     updateUID(authUser?.uid);
-                  });
                    setLoading(false);
               });
               localStorage.setItem(
@@ -263,7 +256,8 @@ const AuthPage = (props) => {
                         professionalAcc: {
                           show: true,
                           category: "Just For Fun",
-                          
+                          suggested: true,
+                          status: true
                         },
                         accountCreationDate: new Date(),
                         registrationMethod: "google"
@@ -335,7 +329,8 @@ const AuthPage = (props) => {
                       professionalAcc: {
                         show: true,
                         category: "Just For Fun",
-                        
+                        suggested: true,
+                        status: true
                       },
                       accountCreationDate: new Date(),
                       registrationMethod: "twitter"
@@ -402,7 +397,8 @@ const AuthPage = (props) => {
                         professionalAcc: {
                           show: true,
                           category: "Just For Fun",
-                          
+                          suggested: true,
+                          status: true
                         },
                         accountCreationDate: new Date(),
                         registrationMethod: "github"
@@ -447,7 +443,7 @@ const AuthPage = (props) => {
                   setTimeout(() => {
                     context.notify(`Welcome back, ${(username || login || "User")}.`);
                     props.history.push("/");
-                  }, 150);
+                  }, 200);
               }
                
           })

@@ -6,7 +6,7 @@ import { auth } from "../../../Config/firebase";
 import { withRouter } from "react-router-dom";
 import OptionsModal from "../../../Components/Generic/OptionsModal/OptionsModal";
 import $ from "jquery";
-import { storage } from "../../../Config/firebase";
+import { storage, storageRef } from "../../../Config/firebase";
 
 const InputForm = lazy(() =>
   import("../../../Components/Generic/InpuForm/InputForm")
@@ -29,7 +29,6 @@ const EditProfileOption = (props) => {
     currentUser,
     handleEditingProfile,
     notify,
-    confirmPrompt,
     changeProfilePic,
     modalsState,
     changeModalState,
@@ -57,41 +56,7 @@ const EditProfileOption = (props) => {
         (item) => formState[item] !== receivedData?.profileInfo?.[item]
       );
   }
-  const onDeleteAccount = (x) => {
-    x.stopPropagation(); //temporarily
-    const buttons = [
-      {
-        label: "Cancel",
-      },
-      {
-        label: "Confirm",
-        onClick: () => {
-          notify(
-            "Deletion request has been submitted. Your account will be deleted in 48 hours max."
-          );
-          // storageRef.child(`content/${receivedData?.uid}`).delete().then(()=>{
-          //make credentials first
-          // auth.currentUser.delete().then(() => {
-          //  .collection("users")
-          //     .doc(receivedData?.uid)
-          //     .delete()
-          //     .then(() => {});
-          //     props.history.replace("/auth");
-          //     localStorage.clear();
-          //     notify("Your account has been deleted. We are sad to see you go.");
-          //     // }).catch(err=>{
-          //     //     notify(err, "error");
-          //     // });
-          // });
-        },
-      },
-    ];
-    confirmPrompt(
-      "Confirmation",
-      buttons,
-      "Are you sure you want to delete your account permanently?"
-    );
-  };
+
   const submitForm = (e) => {
     e.preventDefault();
     const curr = auth.currentUser;
@@ -118,8 +83,20 @@ const EditProfileOption = (props) => {
     if (process === "update") {
       $("#fileUploader").trigger("click");
     } else if (process === "delete") {
-      changeProfilePic("");
-      notify("Profile picture removed.", "success");
+      
+      (async function (myUid){
+      return await storageRef
+              .child(`/avatars/${myUid}`)
+              .delete()
+              .then(() => {
+                changeProfilePic("");
+                notify("Profile picture removed.", "success"); 
+              })
+              .catch((err) => {
+                notify((err.message || "Failed to remove picture. Please try again later."), "error");
+              });
+        })(receivedData?.uid)
+     
     }
   };
   const onPhotoChange = (e) => {
@@ -151,11 +128,12 @@ const EditProfileOption = (props) => {
                 .getDownloadURL()
                 .then((url) => {
                   changeProfilePic(url);
-
                   curr.updateProfile({
                     photoURL: url,
                   });
                   notify("Profile picture updated successfully.", "success");
+                }).catch((err) => {
+                  notify((err.message ||"Failed to upload picture.Please try again later"), "error");
                 });
             }
           );
@@ -178,21 +156,24 @@ const EditProfileOption = (props) => {
       {/* modals */}
       {modalsState?.options && (
         <OptionsModal>
-          <span className="py-4 text-dark option__font">
+          <div className="py-4 text-dark option__font text-center">
             Change Profile Photo
-          </span>
+          </div>
           <span
             className="text-primary option__font"
             onClick={() => changePhoto("update")}
           >
             upload photo
           </span>
-          <span
+         {
+           receivedData?.userAvatarUrl &&
+           <span
             className="text-danger option__font"
             onClick={() => changePhoto("delete")}
           >
             Remove current Photo
           </span>
+         } 
           <span onClick={() => changeModalState("options",false)}>Cancel</span>
         </OptionsModal>
       )}
@@ -285,12 +266,15 @@ const EditProfileOption = (props) => {
               val={currentUser?.email}
               extraText={
                 <small>
-                  <span
-                    className="change__prof__pic"
-                    onClick={() => props.changeIndex(2)}
-                  >
-                    Change Email?
-                  </span>
+                {
+                  receivedData?.profileInfo?.registerationMethod === "email" &&
+                    <span
+                      className="change__prof__pic"
+                      onClick={() => props.changeIndex(2, "Change_Password_or_Email")}
+                    >
+                      Change Email?
+                    </span>
+                } 
                   <p className="mt-2">
                     This email won't be shown to anyone except you.
                   </p>
@@ -364,12 +348,6 @@ const EditProfileOption = (props) => {
                   : "profile__btn prof__btn__followed mb-2"
               }
             />
-            <span
-              className="change__prof__pic mt-3"
-              onClick={(x) => onDeleteAccount(x)}
-            >
-              Permanently delete my account
-            </span>
           </div>
         </form>
       </div>

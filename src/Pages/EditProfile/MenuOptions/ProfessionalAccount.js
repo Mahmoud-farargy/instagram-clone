@@ -10,16 +10,18 @@ import { AppContext } from "../../../Context";
 import { CategoryList } from "../../../Lists/Lists";
 import { updateObject } from "../../../Utilities/Utility";
 import { withRouter } from "react-router-dom";
+import CheckboxIOS from "../../../Components/Generic/CheckboxIOS/CheckboxIOS";
+import Moment from "react-moment";
 
 const InputForm = lazy(() =>
   import("../../../Components/Generic/InpuForm/InputForm")
 );
 
 const ProfessionalAccount = (props) => {
-  const { receivedData, handleEditingProfile, notify } = useContext(AppContext);
+  const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser } = useContext(AppContext);
   //useState
   const [formState, setForm] = useState({
-    professionalAcc: { category: "", show: false },
+    professionalAcc: { category: "", show: true, status: true, suggested: true},
     catOptions: CategoryList,
     submitted: false,
   });
@@ -61,7 +63,41 @@ const ProfessionalAccount = (props) => {
       notify("Profile updated", "success");
     }
   };
-
+  const onDeleteAccount = (x) => {
+    x.stopPropagation(); //temporarily
+    const buttons = [
+      {
+        label: "Cancel",
+      },
+      {
+        label: "Confirm",
+        onClick: () => {
+          notify(
+            "Deletion request submitted. Your account will be permanently deleted in 20 days max."
+          );
+          // storageRef.child(`content/${receivedData?.uid}`).delete().then(()=>{
+          //make credentials first
+          // auth.currentUser.delete().then(() => {
+          //  .collection("users")
+          //     .doc(receivedData?.uid)
+          //     .delete()
+          //     .then(() => {});
+          //     props.history.replace("/auth");
+          //     localStorage.clear();
+          //     notify("Your account has been deleted. We are sad to see you go.");
+          //     // }).catch(err=>{
+          //     //     notify(err, "error");
+          //     // });
+          // });
+        },
+      },
+    ];
+    confirmPrompt(
+      "Confirmation",
+      buttons,
+      "Are you sure you want to delete your account permanently?"
+    );
+  };
   return (
     <Fragment>
       <div className="option--container">
@@ -76,15 +112,37 @@ const ProfessionalAccount = (props) => {
               submitted={formState?.submitted}
               val={formState?.professionalAcc?.category}
             />
-            <InputForm
-              type="checkbox"
-              changeInput={onInputChange}
-              label="show"
-              name="show"
-              labelText="Show category on profile"
-              submitted={formState?.submitted}
-              val={formState?.professionalAcc?.show}
-            />
+            <div id="input--form--field">
+              <div className="form-group flex-column">
+                <div className="prof--input--row  flex-row">
+                  <label htmlFor="show">Show category on profile</label>
+                  <CheckboxIOS checked={formState?.professionalAcc?.show} changeInput={onInputChange} id="show" name="show" />
+              </div>
+              </div>
+              
+            </div>
+            <div id="input--form--field">
+              <div className=" form-group flex-column">
+                <div className="prof--input--row flex-row">
+                     <label htmlFor="status">Show Activity Status</label>
+                <CheckboxIOS checked={formState?.professionalAcc?.status} changeInput={onInputChange} id="status" name="status" />
+                </div>
+             <small>Allow accounts you follow and anyone you message to see when you were last active on Voxgram app. When this is turned off, you won't be able to see the activity status of other accounts.</small>
+              </div>
+              
+            </div>
+            <div id="input--form--field">
+              <div className=" form-group flex-column">
+                <div className="prof--input--row flex-row">
+                     <label htmlFor="suggested">Similar account suggestions</label>
+                <CheckboxIOS checked={formState?.professionalAcc?.suggested} changeInput={onInputChange} id="suggested" name="suggested" />
+                </div>
+                <small>Include your account when recommending similar accounts people might want to follow.</small>
+              </div>
+              
+            </div>
+           
+           
           </Suspense>
           <div className="form--btns flex-row">
             <input
@@ -97,8 +155,43 @@ const ProfessionalAccount = (props) => {
                   : "profile__btn prof__btn__followed mb-2"
               }
             />
+            <span
+              className="change__prof__pic"
+              onClick={(x) => onDeleteAccount(x)}
+            >
+              Permanently delete my account
+            </span>
+
           </div>
         </form>
+        <div id="input--form--field">
+                  <div className="account--info--container flex-row">
+                    <div className="form-group">
+                      <div className="account--info--inner flex-row">
+                        <label>Account Information</label>
+                        <div className="account--info--box flex-column">
+                            <div className="account--info--text">
+                              <span>Created in:</span>
+                              {new Date(currentUser?.metadata?.creationTime).toDateString() + " "}
+                              (<Moment fromNow withTitle>{new Date(currentUser?.metadata?.creationTime).toISOString()}</Moment>)
+                            </div>
+                            <div className="account--info--text">
+                              <span>Last time you signed was in:</span>
+                              {new Date(currentUser?.metadata?.lastSignInTime).toDateString() + " "}
+                              (<Moment fromNow withTitle>{currentUser?.metadata?.lastSignInTime}</Moment>)
+                            </div>
+                            
+                            <div className="account--info--text">
+                              <span>Email: </span>{currentUser?.email}
+                            </div>
+                            <div className="account--info--text">
+                              <span>UID: </span>{currentUser?.uid}
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                </div> 
+            </div>
       </div>
     </Fragment>
   );

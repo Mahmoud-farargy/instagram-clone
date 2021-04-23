@@ -32,32 +32,6 @@ const PostPage  = (props) => {
   const inputField = useRef(null);
   const autoScroll = useRef(null);
   //----------------------
-
-  
-  // constructor(props) {
-  //   super(props);
-  //   this.inputField = React.createRef();
-  //   this.state = {
-  //     postLiked: false,
-  //     insertedComment: "",
-  //     viewFullCaption: false,
-  //     btnClicks: 0,
-  //     doubleLikeClicked: false,
-  //     replayData: {},
-  //   };
-  // }
-
-  // const convertSeconds=(s)=>{
-  //         var sec = s % 60;
-  //         var secInMinutes = (s- sec) /60;
-  //         var min = secInMinutes %60;
-  //         var hr = (secInMinutes - min) /60;
-  //          if(sec<10){
-  //             return hr + "h" + " " + min + "m" + " "+ 0+sec + "s";
-  //          }
-  //          return hr + "h" + " "+ min + "m" +" "+ sec + "s";
-  // }
-  // console.log(new Date(803980830.toDate()));
   useEffect(() => {
     changeMainState("currentPage", "Post");
   }, []);

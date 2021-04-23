@@ -49,7 +49,7 @@ class AddNewPost extends PureComponent {
     this._isMounted = true;
     if (this._isMounted) {
       const { changeMainState, receivedData } = this.context;
-      changeMainState("currentPage", "Add a Post or Reel");
+      changeMainState("currentPage", "Add New");
       this.setState({
         ...this.state,
         postingPhase: true, 
@@ -271,7 +271,7 @@ class AddNewPost extends PureComponent {
                       uploadedItem = "";
                     })
                     .catch((err) => {
-                      notify(err, "error");
+                      notify((err.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
                     });
                 }
               );
@@ -332,7 +332,7 @@ class AddNewPost extends PureComponent {
                   uploadedItem = "";
                 })
                 .catch((err) => {
-                  notify(err, "error");
+                  notify((err.message|| `Failed to upload video. Please try again later.`), "error");
                 });
             }
           );
