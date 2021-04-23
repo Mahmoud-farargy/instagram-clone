@@ -1,4 +1,5 @@
 {
     "title": "voxgram",
-    "description": "Voxgram"
+    "description": "Voxgram",
+    "baseUrl": "https://instagram-clone-21d9b.firebaseio.com/"
 }

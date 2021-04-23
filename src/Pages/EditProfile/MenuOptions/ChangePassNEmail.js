@@ -291,8 +291,8 @@ const ChangePassNEmail = (props) => {
               className={
                 !formState?.email.regexRules?.test(formState?.email.value) ||
                 formState?.email.value === currentUser?.email
-                  ? "disabled profile__btn prof__btn__followed mb-2"
-                  : "profile__btn prof__btn__followed mb-2"
+                  ? "disabled profile__btn prof__btn__followed "
+                  : "profile__btn prof__btn__followed"
               }
               value="Change Email"
             />
@@ -300,7 +300,7 @@ const ChangePassNEmail = (props) => {
              !currentUser?.emailVerified && 
              <span
               onClick={() => verifyEmail()}
-              className="change__prof__pic mt-3"
+              className="change__prof__pic"
             >
               Verify Email
             </span>
@@ -344,15 +344,15 @@ const ChangePassNEmail = (props) => {
                 !formState?.oldPassword.value ||
                 !formState?.newPassword.value ||
                 !formState?.confirmPassword.value
-                  ? "disabled profile__btn prof__btn__followed mb-2"
-                  : "profile__btn prof__btn__followed mb-2"
+                  ? "disabled profile__btn prof__btn__followed"
+                  : "profile__btn prof__btn__followed"
               }
               type="submit"
               value="Change Password"
             />
             <span
               onClick={() => setModal({ ...openModal, emailModal: true })}
-              className="change__prof__pic mt-3"
+              className="change__prof__pic"
             >
               Forgot password?
             </span>

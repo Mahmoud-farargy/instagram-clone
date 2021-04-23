@@ -1307,6 +1307,7 @@ button:active{
 #usersProfile.users--profile--container .user--pic--container{
     flex-basis:30%;
     align-items:center;
+    position: relative;
 }
 #usersProfile.users--profile--container .desktop--inner--info{
     width:100%;
@@ -1432,6 +1433,33 @@ a.prof__btn__unfollowed{
 #usersProfile .similar__followers__item:last-of-type::after{
     content: "";
     display: none;
+}
+#usersProfile .activity--container .online__user{
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(rgba(111, 201, 111, 1), rgba(37, 224, 37, 1) ) ;
+    border:1px solid #fff;
+    display: inline-block;
+    margin-left: 5px;
+}
+.activity--container{
+    margin-bottom: 10px;
+}
+.activity--container small{
+    font-size: 14px !important;
+    color: #8e8e8e;
+    font-weight: 400;
+    text-transform: none ;
+    line-height: 14px;
+}
+.activity--container small time{
+    text-transform: inherit !important;
+    font-size: inherit;
+    font-weight: inherit;
+}
+.activity--container .online--status{
+    align-items:center;
 }
 .user-top-inner{
     margin:0 auto;
@@ -1581,8 +1609,6 @@ a.prof__btn__unfollowed{
 #mobNotifications.mob--notifications .noti--popup-item .noti--user--info p.noti__text{
     width:90% !important;
     word-break: break-word;
-    /* text-overflow: b */
-    white-space: pre-wrap;
     display:inline-block;
 }
 #mobNotifications.mob--notifications .noti--popup-item .noti--row{
@@ -2029,7 +2055,7 @@ a.prof__btn__unfollowed{
     }
 }
 @media only screen and (min-width:1160px){
-    #usersProfile .desktop-comp{
+    #usersProfile .desktop-comp, #explore .desktop-comp{
         max-width: 935px !important;
         padding-top:10px;
         margin-left:auto; 

@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useContext, Suspense, lazy} from "react";
 import { Switch, Route, useHistory } from "react-router-dom";
 import { AppContext } from "../../Context";
-import { db, auth } from "../../Config/firebase";
+import { db, auth, changeConnectivityStatus} from "../../Config/firebase";
 import AppConfig from "../../Config/app-config.json";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { ToastContainer } from "react-toastify";
@@ -35,7 +35,7 @@ const Reels = lazy(() => import("../../Pages/Reels/Reels"));
 const About = lazy(() => import("../../Pages/About/About"));
 const Explore = lazy(() => import("../../Pages/Explore/Explore"));
 //--xx---//
-const App = (props) => {
+const App = () => {
   const context = useContext(AppContext);
   const {
     updatedReceivedData,
@@ -52,74 +52,17 @@ const App = (props) => {
     usersModalList,
     usersProfileData,
     reelsProfile,
-    currentPostIndex
+    currentPostIndex,
+    explore
   } = context;
   const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
   const [user,loading] = useAuthState(auth);
   const history = useHistory();
-  // experiment
-  // useEffect(() => {
-  // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
-  //   .then((res) => {
-  //       console.log(res);
-  //     // Existing and future Auth states are now persisted in the current
-  //     // session only. Closing the window would clear any existing state even
-  //     // if a user forgets to sign out.
-  //     // ...
-  //     // New sign-in will be persisted with session persistence.
-  //     // return firebase.auth().signInWithEmailAndPassword("user5@gmail.com", "123456Jb");
-  //   })
-  //   .catch((error) => {
-  //     // Handle Errors here.
-  //     console.log(error.code);
-  //     console.log(error.message);
-  //   });
-  //  --------
-  // var currUid =  u.currentUser;
-  // var userDatabaseRef = database.ref("/status" + "RJRllL1KMje3HadGMCJUi5h6BmE2");
-  // console.log(database.ref().child("/users" + "RJRllL1KMje3HadGMCJUi5h6BmE2").onDisconnect().update({status: "offline"}));
-  //     var isOfflineForDatabase = {
-  //        state: 'offline',
-  //        last_changed: firebase.database.ServerValue.TIMESTAMP,
-  //    };
-
-  //    var isOnlineForDatabase = {
-  //        state: 'online',
-  //        last_changed: firebase.database.ServerValue.TIMESTAMP,
-  //    };
-  //        // and `false` when disconnected.
-  //    database.ref('.info/connected').on('value', function(snapshot) {
-  //        // If we're not currently connected, don't do anything.
-  //        if (snapshot.val() == false) {
-  //            return;
-  //        };
-  //        console.log(snapshot);
-  //        db.collection(Consts.USERS).doc("RJRllL1KMje3HadGMCJUi5h6BmE2").update({
-  //            test: "online"
-  //        })
-  // If we are currently connected, then use the 'onDisconnect()'
-  // method to add a set which will only trigger once this
-  // client has disconnected by closing the app,
-  // losing internet, or any other means.
-  //    userDatabaseRef.onDisconnect().set(isOfflineForDatabase).then(function() {
-  //    The promise returned from .onDisconnect().set() will
-  //    resolve as soon as the server acknowledges the onDisconnect()
-  //    request, NOT once we've actually disconnected:
-  //    https://firebase.google.com/docs/reference/js/firebase.database.OnDisconnect
-
-  //    We can now safely set ourselves as 'online' knowing that the
-  //    server will mark us as offline once we lose connection.
-  //    userDatabaseRef.set(isOnlineForDatabase);
-  //    });
-  //    });
-  // }, [uid]);
-  //----
-
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         db.collection(Consts.USERS)
-          .limit(100)
+          .limit(150)
           .get()
           .then((query) => {
             query.forEach((user) => {
@@ -130,12 +73,14 @@ const App = (props) => {
         updateUserState(true);
         updateUID(authUser?.uid);
         updatedReceivedData();
+        changeConnectivityStatus(authUser?.uid);
       } else {
         const recievedAuth = localStorage.getItem("user");
         if (recievedAuth) {
             //attempting to log in again using local storage data
-          const { email, password } = JSON.parse(recievedAuth);
-          auth.signInWithEmailAndPassword(email, returnPassword(password));
+          //   debugger
+          // const { email, password } = JSON.parse(recievedAuth);
+          // auth.signInWithEmailAndPassword(email, returnPassword(password));
         }else{
             // user logged out
              history.push("/auth");
@@ -204,7 +149,7 @@ const App = (props) => {
             </Route>
             <Route exact path="/auth" component={AuthPage} />
             <Route exact path="/messages">
-              <Header />
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               { //Guards
                 receivedData && Object.keys(receivedData).length > 0 && receivedData?.messages ?
                  <Messages history={history} />
@@ -217,12 +162,12 @@ const App = (props) => {
               <MobileNav />
             </Route>
             <Route exact path="/add-post">
-              <Header />
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               <AddNewPost />
               <MobileNav />
             </Route>
             <Route exact path="/notifications">
-              <Header />
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               {
                 receivedData && receivedData?.notifications ?
                  <MobileNotifications context={context} />
@@ -236,7 +181,7 @@ const App = (props) => {
               <MobileNav />
             </Route>
             <Route exact path="/profile">
-              <Header />
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               {
                 receivedData && Object.keys(receivedData).length > 0 ?
                   <MyProfile />
@@ -251,7 +196,7 @@ const App = (props) => {
               <Footer />
             </Route>
             <Route path="/user-profile">
-              <Header />
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               {
                 usersProfileData && Object.keys(usersProfileData).length > 0 && usersProfileData?.posts ? 
                 <UsersProfile />
@@ -265,7 +210,7 @@ const App = (props) => {
               <Footer />
             </Route>
             <Route exact path="/browse-post">
-              <Header />
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               {
                 Object.keys(usersProfileData).length > 0 && usersProfileData?.posts &&  usersProfileData?.posts[currentPostIndex?.index] ?
                 <PostPage />
@@ -278,7 +223,7 @@ const App = (props) => {
               <MobileNav />
             </Route>
             <Route exact path="/edit-profile">
-              <Header />
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               {
                  receivedData && Object.keys(receivedData).length > 0 && receivedData?.profileInfo?
                   <EditProfile />
@@ -302,9 +247,9 @@ const App = (props) => {
               }
             </Route>
             <Route exact path="/explore">
-            <Header />
+            {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               {  
-               true ?
+               explore ?
                   <Explore/>
                 :
                 <div>
@@ -312,9 +257,10 @@ const App = (props) => {
                 </div>
               }
             <MobileNav />
+            <Footer />
             </Route>
             <Route exact path="/about">
-                <Header />
+                {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
                 <About changeMainState={changeMainState} />
                 <MobileNav />
                 <Footer />

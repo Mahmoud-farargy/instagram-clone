@@ -32,19 +32,10 @@ class Post extends PureComponent {
       showInputForm: false,
       replayData: {},
       openOptionsModal: false,
+      buffering: true,
+      isVidePlaying: false
     };
   }
-  // const convertSeconds=(s)=>{
-  //         var sec = s % 60;
-  //         var secInMinutes = (s- sec) /60;
-  //         var min = secInMinutes %60;
-  //         var hr = (secInMinutes - min) /60;
-  //          if(sec<10){
-  //             return hr + "h" + " " + min + "m" + " "+ 0+sec + "s";
-  //          }
-  //          return hr + "h" + " "+ min + "m" +" "+ sec + "s";
-  // }
-  // console.log(new Date(803980830.toDate()));
   componentDidMount() {
     this.likesCheck();
   }
@@ -169,14 +160,19 @@ class Post extends PureComponent {
     }, 150);
   }
   handleVideoPlaying =(type) => {
-    if(this.videoPost && this.videoPost?.current){
-        if(type.toLowerCase() === "on-view"){
+    if(this.videoPost && this.videoPost?.current && this.videoPost.current?.play() && !this.state.buffering){
+        if(type.toLowerCase() === "on-view" && !this.state.isVidePlaying){
           this.videoPost.current.play();
+          this.setState({...this.state, isVidePlaying: true });
         }else if(type.toLowerCase() === "out-of-view"){
           this.videoPost.current.pause();
+          this.setState({...this.state, isVidePlaying: false });
         }
     }
-  
+  }
+  componentWillUnmount = () => {
+    this.videoPost = false;
+    this.inputField = false;
   }
   render() {
     const {
@@ -290,6 +286,7 @@ class Post extends PureComponent {
                       controls
                       muted
                       preload={"none"} 
+                      onCanPlay={(x) => {this.setState( { ...this.state, buffering: false } ); x.persist()}}
                     />
                   </ScrollTrigger>
                   

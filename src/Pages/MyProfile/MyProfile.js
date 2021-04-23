@@ -206,7 +206,7 @@ const MyProfile =(props)=>{
                                                            post?.contentType === "image" ?
                                                             <img style={{width:"100%"}} loading="lazy"  className="users__profile__image" src={post?.contentURL} alt={`post #${i}`} />
                                                            : post?.contentType === "video" ?
-                                                           <video disabled src={post?.contentURL} className="users__profile__image" contextMenu="users__profile__image" onContextMenu={() => false} />
+                                                           <video disabled muted autoPlay loop src={post?.contentURL} className="users__profile__image" contextMenu="users__profile__image" onContextMenu={() => false} />
                                                            : <h4>Not found</h4>
                                                        }
 
@@ -223,7 +223,7 @@ const MyProfile =(props)=>{
                                                            post?.contentType === "image" ?
                                                             <img style={{width:"100%"}} loading="lazy"  className="users__profile__image" src={post?.contentURL} alt={`post #${i}`} />
                                                            : post?.contentType === "video" ?
-                                                           <video disabled muted src={post?.contentURL} className="users__profile__image" contextMenu="users__profile__image" onContextMenu={() => false} />
+                                                           <video disabled muted autoPlay loop src={post?.contentURL} className="users__profile__image" contextMenu="users__profile__image" onContextMenu={() => false} />
                                                            : <h4>Not found</h4>
                                                        }
                                                                 <div className="user--img--cover">

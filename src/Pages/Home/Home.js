@@ -27,7 +27,8 @@ const Home = (props) => {
     changeModalState,
     changeMainState,
     modalsState,
-    onCommentDeletion
+    onCommentDeletion,
+    isUserOnline
   } = useContext(AppContext);
   let posts = receivedData?.posts;
   let [, loading] = useAuthState(auth);
@@ -44,7 +45,7 @@ const Home = (props) => {
 
   return (
     <Auxiliary>
-      {recievedAuth ? (
+      {  (isUserOnline || recievedAuth)  ? (
         <section id="home" className="main--home--container ">
           <div className="main--home--inner desktop-comp">
             <div className="home--posts--side flex-column">
