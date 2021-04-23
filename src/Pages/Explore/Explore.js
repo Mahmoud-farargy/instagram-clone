@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import "./Explore.scss";
 import { AppContext } from "../../Context";
@@ -11,6 +11,7 @@ import { auth } from "../../Config/firebase";
 
 const Explore = () => {
     const { explore, changeMainState, changeModalState} = useContext(AppContext);
+    const [newExploreArr, setExploreArr] = useState([]);
     const [,loading] = useAuthState(auth);
     const history = useHistory();
     const getRandom = (length) => {
@@ -19,8 +20,13 @@ const Explore = () => {
              return  Math.floor(Math.random() * newLength);
         }      
     };
-    const modifiedExplore = explore && explore.length >0 && explore.map(posts => posts[getRandom(posts?.length)]);
-    console.log(modifiedExplore);
+    useEffect(() => {
+        setExploreArr(
+            explore && explore.length >0 && explore.map(posts => posts[getRandom(posts?.length)])
+        )
+        console.log(newExploreArr);
+    },[]);
+  
     const openPostModal = (postId, index) =>{
         console.log(postId, index);
         // changeMainState("currentPostIndex", { index: index, id: postId });
@@ -40,9 +46,9 @@ const Explore = () => {
             <div id="usersProfile" className="users--profile--container ">
                 {/* add another container in the first row */}
                 {
-                    (explore && explore.length > 0 && modifiedExplore.length >= 1 && !loading) ? (
+                    (explore && explore.length > 0 && newExploreArr.length >= 1 && !loading) ? (
                         <div className="users--profile--posts" >
-                            {modifiedExplore.map((post, i) => {
+                            {newExploreArr.map((post, i) => {
                               return (
                                 <div
                                   key={post?.id + i}

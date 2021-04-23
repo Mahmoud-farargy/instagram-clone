@@ -116,7 +116,7 @@ const ProfessionalAccount = (props) => {
               <div className="form-group flex-column">
                 <div className="prof--input--row  flex-row">
                   <label htmlFor="show">Show category on profile</label>
-                  <CheckboxIOS checked={formState?.professionalAcc?.show} changeInput={onInputChange} id="show" name="show" />
+                  <CheckboxIOS checked={(formState?.professionalAcc?.show || false)} changeInput={onInputChange} id="show" name="show" />
               </div>
               </div>
               
@@ -125,7 +125,7 @@ const ProfessionalAccount = (props) => {
               <div className=" form-group flex-column">
                 <div className="prof--input--row flex-row">
                      <label htmlFor="status">Show Activity Status</label>
-                <CheckboxIOS checked={formState?.professionalAcc?.status} changeInput={onInputChange} id="status" name="status" />
+                <CheckboxIOS checked={(formState?.professionalAcc?.status || false)} changeInput={onInputChange} id="status" name="status" />
                 </div>
              <small>Allow accounts you follow and anyone you message to see when you were last active on Voxgram app. When this is turned off, you won't be able to see the activity status of other accounts.</small>
               </div>
@@ -135,7 +135,7 @@ const ProfessionalAccount = (props) => {
               <div className=" form-group flex-column">
                 <div className="prof--input--row flex-row">
                      <label htmlFor="suggested">Similar account suggestions</label>
-                <CheckboxIOS checked={formState?.professionalAcc?.suggested} changeInput={onInputChange} id="suggested" name="suggested" />
+                <CheckboxIOS checked={(formState?.professionalAcc?.suggested || false)} changeInput={onInputChange} id="suggested" name="suggested" />
                 </div>
                 <small>Include your account when recommending similar accounts people might want to follow.</small>
               </div>
