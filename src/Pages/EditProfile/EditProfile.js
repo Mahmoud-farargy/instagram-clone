@@ -10,14 +10,15 @@ import EditProfileOption from "./MenuOptions/EditProfileOption";
 import ProfessionalAccount from "./MenuOptions/ProfessionalAccount";
 import ChangePassNEmail from "./MenuOptions/ChangePassNEmail";
 import BlockList from "./MenuOptions/BlockList/BlockList";
-
+import Feedback from "./MenuOptions/Feedback";
 class EditProfile extends PureComponent {
   state = {
     sideMenuOptions: [
       {option:"Edit Profile", id:"Edit_Profile"},
       {option:"Account Settings", id: "Professional_Account"},
       {option:"Change Password or Email", id:"Change_Password_or_Email"},
-      {option:"Blocked Users", id:"Blocked_Users" }
+      {option:"Blocked Users", id:"Blocked_Users" },
+      {option:"Feedback", id: "Feedback"}
     ],
     active: {activeIndex: 0, activeID: "Edit_Profile"},
   };
@@ -74,7 +75,9 @@ class EditProfile extends PureComponent {
                     <ChangePassNEmail />
                   ) : this.state.active.activeID === this.state.sideMenuOptions[3].id ?
                     <BlockList context={this.context} />
-                   : null}
+                   : this.state.active.activeID === this.state.sideMenuOptions[4].id ? (
+                     <Feedback />
+                   ): null} 
                 </div>
                 {/* end right side */}
               </div>

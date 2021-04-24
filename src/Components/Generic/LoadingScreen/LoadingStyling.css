@@ -16,7 +16,7 @@
 
 #loadingScreen img {
   min-width: 70px;
-  max-width: 200px;
+  max-width: 100px;
   -o-object-fit: contain;
      object-fit: contain;
 }

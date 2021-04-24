@@ -83,19 +83,25 @@ const EditProfileOption = (props) => {
     if (process === "update") {
       $("#fileUploader").trigger("click");
     } else if (process === "delete") {
-      
-      (async function (myUid){
-      return await storageRef
-              .child(`/avatars/${myUid}`)
-              .delete()
-              .then(() => {
-                changeProfilePic("");
-                notify("Profile picture removed.", "success"); 
-              })
-              .catch((err) => {
-                notify((err.message || "Failed to remove picture. Please try again later."), "error");
-              });
-        })(receivedData?.uid)
+      if(receivedData?.profileInfo?.registerationMethod?.toLowerCase() === "email"){
+          (async function (myUid){
+        return await storageRef
+                .child(`/avatars/${myUid}`)
+                .delete()
+                .then(() => {
+                  changeProfilePic("");
+                  notify("Profile picture removed.", "success"); 
+                })
+                .catch((err) => {
+                  notify((err.message || "Failed to remove picture. Please try again later."), "error");
+                });
+          })(receivedData?.uid);
+      }else{
+        changeProfilePic("");
+        notify("Profile picture removed.", "success"); 
+      }
+     
+
      
     }
   };

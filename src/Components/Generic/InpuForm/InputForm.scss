@@ -47,14 +47,12 @@
             font-weight:400;
             color:#8e8e8e;
             white-space: wrap !important;
+            max-width: 90%;
 
         }
         ::placeholder{
             text-transform: capitalize;
             font-size:14px;
-        }
-        .test{
-            border:1px solid red !important;
         }
     }
 }

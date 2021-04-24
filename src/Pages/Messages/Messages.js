@@ -296,7 +296,7 @@ const Messages = (props) => {
                   </div>
                 </div>
 
-                {compState.loadedChatLog < 1 ? (
+                {(compState.loadedChatLog < 1 || messages.length <= 0 ) ? (
                   <div className="messages--empty--container flex-column">
                     {/* if there is no messages */}{" "}
                     {/* when loading messages */}

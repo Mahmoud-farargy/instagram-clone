@@ -728,7 +728,7 @@ const AuthPage = (props) => {
           <div className="auth--copyright flex-column flex-wrap">
             <span >This app was made for personal use</span>
             <span>
-              @2020 - {new Date().getFullYear()} Instagram clone made by Mahmoud
+              &times;2020 - {new Date().getFullYear()} Instagram clone made by Mahmoud
               Farargy
             </span>
           </div>

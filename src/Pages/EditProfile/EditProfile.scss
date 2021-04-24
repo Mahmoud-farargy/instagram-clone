@@ -14,6 +14,61 @@
        width:100%;
        border-top: 1px solid #dbdbdb;
     }
+    #feedback {
+      padding: 30px 0 25px 0;
+      width: 100%;
+      overflow-y:auto;
+      .feedback--section{
+        width: 100%;
+        align-items:center;
+        padding: 20px 0;
+        text-align:center;
+        position: relative;
+        h3{
+          font-weight: 500;
+          font-size: 22px;
+        }
+        p{
+          font-size: 14px;
+          font-weight: 400;
+        }
+        user-select:none;
+        -webkit-user-select: none;
+        .rating__edit__btn{
+          border:none;
+          background: #fff;
+          border-radius: 8px;
+          border: 1px solid #fff;
+          color: var(--secondary-clr);
+          cursor: pointer;
+          &:focus{
+            outline:none;
+          }
+          position: absolute;
+          top:50%;
+          left:50%;
+          transform: translate(-50%, -50%);
+          z-index: 1000;
+          padding:15px 25px;         
+          svg{
+            font-size: 30px;
+          }
+        }
+        
+        .form--btns{
+         justify-content:center;
+         margin-top:30px;
+        }
+        .rating--box{
+          min-height: 65px;
+        }
+        #custom-css-standard-input{
+            width: 100%;
+            height: 150px;
+            padding-top:30px;
+        }
+      }
+    }
   }
   .edit--box {
     background-color: #fff;

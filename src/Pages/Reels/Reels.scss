@@ -51,6 +51,7 @@
                 position: relative; 
                 -ms-overflow-style: none;
                 scrollbar-width: none;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
                 .reel--video--content{
                     width: 100%;
                     height: 100%;
@@ -293,11 +294,15 @@
                     width:100%;
                     border-radius: 0px;
                     max-width: 100%;
+                   
                 }  
                 &::-webkit-scrollbar{
                     display:none;
                     width: 0;
                 }       
+            }
+            @media only screen and (max-width: 670px){
+                 margin:0px ;
             }
         }
        .reels-loading{

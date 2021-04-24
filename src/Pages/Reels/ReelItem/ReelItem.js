@@ -117,7 +117,7 @@ function ReelItem(props) {
       reelVideo && reelVideo.current.pause();
       setVideoPlaying(false);
     }
-  },[currentPlayingReel])
+  },[currentPlayingReel, index]);
   return (
     <Fragment>
       {/* Modal(s) */}
