@@ -4,7 +4,7 @@ import "./Home.css";
 import Post from "../../Components/Post/Post";
 import { Avatar } from "@material-ui/core";
 import { AppContext } from "../../Context";
-import { Redirect, withRouter } from "react-router-dom";
+import { Redirect, withRouter, Link } from "react-router-dom";
 import SuggestItem from "../../Components/SuggestItem/SuggestItem";
 import { GoVerified } from "react-icons/go";
 import { useAuthState } from "react-firebase-hooks/auth"; //firebase hook
@@ -98,7 +98,7 @@ const Home = (props) => {
                       on your posts page
                     </p>
 
-                    <span>Share your first photo or video</span>
+                   <Link to="/add-post"><span>Share your first photo or video</span></Link>
                   </div>
                 </div>
               ) : null}

@@ -15,17 +15,31 @@ const Explore = () => {
     const [,loading] = useAuthState(auth);
     const history = useHistory();
     const getRandom = (length) => {
-        const newLength  = length < 0 ? 0 : length;
+        const newLength  = explore.length < 0 || length < 0 ? 0 : length;
         if(newLength >= 0){
              return  Math.floor(Math.random() * newLength);
-        }      
+        }
     };
     useEffect(() => {
-        setExploreArr(
-            explore && explore.length >0 && explore.map(posts => posts[getRandom(posts?.length)])
-        )
-        console.log(newExploreArr);
+      changeMainState("currentPage", "Explore");
     },[]);
+    useEffect(() => {
+      if(explore && explore.length >0){
+          function shufflePosts(array) {
+            var j,x,i;
+            for (i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                x = array[i];
+                array[i] = array[j];
+                array[j] = x;         
+                return (array || []);
+            }
+        }
+          const arr = shufflePosts(explore.map(posts => posts && posts.length > 0 ? posts[getRandom(posts?.length)] : []));
+           setExploreArr((arr || []));
+      }
+   
+    },[explore]);
   
     const openPostModal = (postId, index) =>{
         console.log(postId, index);
@@ -46,7 +60,9 @@ const Explore = () => {
             <div id="usersProfile" className="users--profile--container ">
                 {/* add another container in the first row */}
                 {
-                    (explore && explore.length > 0 && newExploreArr.length >= 1 && !loading) ? (
+                    newExploreArr ?
+                    (((explore && explore?.length > 0) &&
+                    newExploreArr.length >= 1 && !loading) ? (
                         <div className="users--profile--posts" >
                             {newExploreArr.map((post, i) => {
                               return (
@@ -123,8 +139,8 @@ const Explore = () => {
                         ) : loading ? (
                           <Skeleton
                             count={10}
-                            height={250}
-                            width={250}
+                            height={550}
+                            width={550}
                             className="mt-4 mr-4 mx-auto"
                           />
                         ) : (
@@ -142,7 +158,8 @@ const Explore = () => {
                               <span>Share your first photo or video</span>
                             </div>
                           </div>
-                        )
+                        ))
+                        : <p>loading...</p>
                     
        }
         </div>

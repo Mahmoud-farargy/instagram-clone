@@ -538,7 +538,7 @@ const UsersProfile = (props) => {
                                 your profile page
                               </p>
 
-                              <span>Share your first photo or video</span>
+                              <Link to="/add-post"><span>Share your first photo or video</span></Link>
                             </div>
                           </div>
                         )

@@ -10,10 +10,11 @@ const ModalListItem =(props)=>{
     const [isFollowed, setFollowingState] = useState(false);
     const {uid, userName, avatarUrl, date , browseUser} = props;
     const {changeModalState, receivedData, handleFollowing} = useContext(AppContext);
+    const {following= []} = receivedData;
     const notMyItem = receivedData?.uid !== uid;
     useEffect(()=>{
-        setFollowingState(receivedData?.following.filter(user  => user.receiverUid === uid)[0] ? true : false);
-    },[receivedData?.following]);
+        setFollowingState(receivedData?.following.some(user  => user.receiverUid === uid));
+    },[following]);
     
     return(
         <Auxiliary>

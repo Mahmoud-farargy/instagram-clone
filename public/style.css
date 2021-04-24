@@ -367,7 +367,7 @@ a:visited{
 .modal--user--item span{
    
     font-weight:400px;
-    color: #8e8e8e;
+    color: var(--second--gray);
 }
 .modal--user--item .MuiAvatar-root{
     height: 34px;
@@ -527,7 +527,7 @@ time{
     font-weight:600;
     line-height: 18px;
     text-transform: uppercase;
-    color:#8e8e8e;
+    color:var(--second--gray);
     color:rgb(142, 142, 142);
     flex-shrink:0;
     -webkit-box-flex: 0;
@@ -588,7 +588,7 @@ time{
     max-width: 1150px;
 }
 .auth--footer--container span{
-    color: #8e8e8e;
+    color: var(--second--gray);
     font-size: 12px;
     font-weight: 600;
     margin-bottom:2px;
@@ -607,21 +607,51 @@ time{
     font-size:12px;
     cursor:pointer;
     margin-right:10px;
-    font-weight:600;
+    font-weight:400;
     text-transform: uppercase;
     transition: var(--mild-transition);
 }
 .auth--footer--ul li:active{
     color:#0e60ad;
 }
-.auth--footer--container  .auth--copyright{
+.auth--footer--container  .auth--copyright, .auth--copyright--inner{
     text-align:center;
     overflow: hidden;
     flex-wrap: wrap;
+    justify-content: center;
 }
+.auth--footer--container  .auth--copyright, .auth--copyright--inner select{
+    background: transparent;
+    /* padding:2px 8px; */
+    border: none;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+    padding:2px 6px 2px 7px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: auto;
+}   
+.auth--footer--container  .auth--copyright, .auth--copyright--inner .lang--selector{
+    align-items: center;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--second--gray);
+    margin-right:9px;
+}
+.auth--footer--container  .auth--copyright, .auth--copyright--inner select:active{
+    outline: none;
+}
+
 .auth--footer--container  .auth--copyright span{
     white-space: pre-wrap;
     word-break: break-word;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--second--gray);
+    line-height: 24px;
+    pointer-events:none;
 }
 .auth--footer--ul li:hover{
     text-decoration:underline;
@@ -750,7 +780,7 @@ button:active{
 .post__view__replies__btn,
 .post--comment--actions span{
     font-size:12px !important;
-    color:#8e8e8e;
+    color:var(--second--gray);
     line-height:14px;
     font-weight:600;
 }
@@ -1178,7 +1208,7 @@ button:active{
     text-overflow:ellipsis;
 }
 #usersProfile .user__name{
-    color: #8e8e8e;
+    color: var(--second--gray);
     margin:  0;
     padding: 6px 0;
 }
@@ -1188,7 +1218,7 @@ button:active{
     margin:0 auto;
 }
 #usersProfile .user__sugg__title__title{
-    color: #8e8e8e;
+    color: var(--second--gray);
     flex: 1 auto;
 }
 #usersProfile .users--suggestions--container{
@@ -1407,7 +1437,7 @@ a.prof__btn__unfollowed{
 }
 #usersProfile .similar__followers{
  padding-left: 0;
- color: #8e8e8e;
+ color: var(--second--gray);
  color: rgb(142, 142, 142);
  font-size: 12px;
  display: block;
@@ -1448,7 +1478,7 @@ a.prof__btn__unfollowed{
 }
 .activity--container small{
     font-size: 14px !important;
-    color: #8e8e8e;
+    color: var(--second--gray);
     font-weight: 400;
     text-transform: none ;
     line-height: 14px;
@@ -1742,7 +1772,7 @@ a.prof__btn__unfollowed{
     font-size: 16px;
 }
 .prof--acc--category span {
-    color: #8e8e8e;
+    color: var(--second--gray);
     color: rgb(142, 142, 142);
     line-height:20px;
     font-size: 16px;
@@ -1767,7 +1797,7 @@ a.prof__btn__unfollowed{
         grid-template-columns: 1fr !important;
         gap: 2vw;
     }
-    .auth--copyright{
+    .auth--copyright span{
         font-size:11px !important;
     }
     .user-top-inner{
@@ -1849,7 +1879,7 @@ a.prof__btn__unfollowed{
         flex-direction: column !important;
     }
     .auth--footer--container .auth--copyright{
-        margin-top:30px;
+        margin-top:25px;
     }
     #usersProfile.users--profile--container .profile--posts--container{
         padding:1px;

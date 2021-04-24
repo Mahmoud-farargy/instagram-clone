@@ -34,7 +34,9 @@ const EditProfile = lazy(() => import("../../Pages/EditProfile/EditProfile"));
 const Reels = lazy(() => import("../../Pages/Reels/Reels"));
 const About = lazy(() => import("../../Pages/About/About"));
 const Explore = lazy(() => import("../../Pages/Explore/Explore"));
+const ErrorRoute = lazy(() => import("../../Pages/ErrorRoute/ErrorRoute"));
 //--xx---//
+
 const App = () => {
   const context = useContext(AppContext);
   const {
@@ -139,8 +141,9 @@ const App = () => {
         {/* Notifications container */}
         <ToastContainer />
         {/* Routes */}
-        <Switch>
+       
           <Suspense fallback={<LoadingScreen />}>
+            <Switch>
             <Route exact path="/">
               {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               <Home />
@@ -154,9 +157,7 @@ const App = () => {
                 receivedData && Object.keys(receivedData).length > 0 && receivedData?.messages ?
                  <Messages history={history} />
                  : 
-                 <div>
-                    <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
-                </div>
+                <ErrorRoute type="403"/>
               }
              
               <MobileNav />
@@ -172,9 +173,7 @@ const App = () => {
                 receivedData && receivedData?.notifications ?
                  <MobileNotifications context={context} />
                  :
-                 <div>
-                    <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
-                 </div>
+                <ErrorRoute type="403"/>
 
               }
              
@@ -184,11 +183,9 @@ const App = () => {
               {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               {
                 receivedData && Object.keys(receivedData).length > 0 ?
-                  <MyProfile />
+                <MyProfile />
                  :
-                 <div>
-                    <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
-                 </div>
+                <ErrorRoute type="403"/>
 
               }
               
@@ -201,9 +198,7 @@ const App = () => {
                 usersProfileData && Object.keys(usersProfileData).length > 0 && usersProfileData?.posts ? 
                 <UsersProfile />
                 :
-                <div>
-                   <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
-                </div>
+                <ErrorRoute type="403"/>
               }
               
               <MobileNav />
@@ -215,9 +210,7 @@ const App = () => {
                 Object.keys(usersProfileData).length > 0 && usersProfileData?.posts &&  usersProfileData?.posts[currentPostIndex?.index] ?
                 <PostPage />
                 : 
-                <div>
-                  <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
-                </div>
+                <ErrorRoute type="403"/>
               }
               
               <MobileNav />
@@ -228,9 +221,7 @@ const App = () => {
                  receivedData && Object.keys(receivedData).length > 0 && receivedData?.profileInfo?
                   <EditProfile />
                   :
-                <div>
-                  <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
-                </div>
+                  <ErrorRoute type="403"/>
               }
              
               <MobileNav />
@@ -239,11 +230,9 @@ const App = () => {
             <Route exact path="/reels">
               {  
                reelsProfile?.reels ?
-                  <Reels context={context} routeHistory={history} />
+                <Reels context={context} routeHistory={history} />
                 :
-                <div>
-                  <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
-                </div>
+                <ErrorRoute type="403"/>
               }
             </Route>
             <Route exact path="/explore">
@@ -252,9 +241,7 @@ const App = () => {
                explore ?
                   <Explore/>
                 :
-                <div>
-                  <h3 className="flex-column justify-content-center align-items-center text-center">Sorry, cannot access this page now.</h3>
-                </div>
+                <ErrorRoute type="403"/>
               }
             <MobileNav />
             <Footer />
@@ -265,8 +252,16 @@ const App = () => {
                 <MobileNav />
                 <Footer />
             </Route>
+            <Route path="*" >
+            {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+            <ErrorRoute type="404"/>
+            <MobileNav />
+            <Footer />
+            </Route>
+            </Switch>
           </Suspense>
-        </Switch>
+         
+        
       </main>
     </Fragment>
   );
