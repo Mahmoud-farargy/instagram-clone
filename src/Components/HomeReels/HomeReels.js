@@ -37,13 +37,13 @@ const HomeReels = () => {
                 if(reels && reels?.length > 0){
                     const randomGroup = reels?.[getRandom(reels?.length)];
                     return {
-                            ...randomGroup?.reelItems[getRandom(randomGroup?.reelItems?.length)],
+                            ...randomGroup?.reelItems?.[Math.floor(Math.random() * (randomGroup?.reelItems?.length > 0 ? randomGroup?.reelItems?.length : 0 ))],
                             groupId: randomGroup?.id
                         };
                 }else{
                     return [];
                 }
-            }).slice(0,50));
+            }));
             setReelsArr((arr || []));
         }
     }, [homeReels]);
@@ -69,7 +69,7 @@ const HomeReels = () => {
     return (
         <Fragment>
            {
-               !loading ? 
+               !loading && newReelsArr.length > 0 ? 
                <section id="homeReels">
                 <div className="home--reels--inner">
                     <div className="home--reels--box flex-row">
@@ -77,7 +77,7 @@ const HomeReels = () => {
                             {
                                 newReelsArr.map((reel, i, ) => {
                                         return (
-                                             <li key={reel.id + i} onClick={()=> openReel(reel?.id,reel?.groupId ,reel?.reelOwnerId)} className="home-reel-item flex-column" title={reel?.userName}>
+                                             <li key={reel.id + i} onClick={()=> {reel?.id && openReel(reel?.id,reel?.groupId ,reel?.reelOwnerId)}} className="home-reel-item flex-column" title={reel?.userName}>
                                                 <div className=" home-reel-container flex-column">
                                                         <div className="reel--reel--inner flex-column" >
                                                             <Avatar className="reels__icon" src={(reel?.userAvatarUrl || reelDefaultIco)} alt={reel.userName}/>
@@ -97,10 +97,10 @@ const HomeReels = () => {
             : <div className="mx-auto text-align-center mb-3">
                 <Loader
                     type="Bars"
-                    color="gray"
+                    color="var(--secondary-clr)"
                     height={40}
                     width={40}
-                    timeout={5000} />
+                    timeout={3000} />
             </div>
            }
         </Fragment>

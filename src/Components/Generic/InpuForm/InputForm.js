@@ -20,6 +20,7 @@ const InputForm = (props) => {
                 type={props.inputType ? props.inputType : "text"}
                 value={props.val || ""}
                 disabled={props.disabled}
+                autoFocus={props.autoFocus}
                 required={props.required}
                 name={props.label}
                 onChange={(x) => props.changeInput(x.target.value, props.name)}
@@ -42,6 +43,8 @@ const InputForm = (props) => {
                 className={props.disabled && "disabled"}
                 id={props.label}
                 name={props.label}
+                disabled={props.disabled}
+                autoFocus={props.autoFocus}
                 onChange={(x) => props.changeInput(x.target.value, props.name)}
                 placeholder={props.label}
                 defaultValue={props.val || ""}

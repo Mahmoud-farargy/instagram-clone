@@ -61,14 +61,7 @@ const DesktopPost = (props) => {
   useEffect(() => {
     changeMainState("currentPage", "Post");
   }, []);
-
-  // const likesCheck = () => {
-  //   if (usersProfileData?.posts) {
-  //     //checks whether the user's post is liked or not
-  //     var { likes } = usersProfileData?.posts[currentPostIndex?.index];
-  //     return likes.people?.some((el) => el.id === uid);
-  //   }
-  // };
+  
   var postLiked = usersProfileData?.posts && usersProfileData?.posts[currentPostIndex?.index]?.likes?.people?.some((el) => el.id === uid);
   const handleCurrLikes = (boolean) => {
     let postsData = usersProfileData?.posts;

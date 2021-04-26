@@ -112,7 +112,8 @@ const AuthPage = (props) => {
                               show: true,
                               category: "Just For Fun",
                               suggested: true,
-                              status: true
+                              status: true,
+                              reelsForFollowing: false
                             },
                             accountCreationDate: new Date(),
                             registrationMethod: "email"
@@ -257,7 +258,8 @@ const AuthPage = (props) => {
                           show: true,
                           category: "Just For Fun",
                           suggested: true,
-                          status: true
+                          status: true,
+                          reelsForFollowing: false
                         },
                         accountCreationDate: new Date(),
                         registrationMethod: "google"
@@ -330,7 +332,8 @@ const AuthPage = (props) => {
                         show: true,
                         category: "Just For Fun",
                         suggested: true,
-                        status: true
+                        status: true,
+                        reelsForFollowing: false
                       },
                       accountCreationDate: new Date(),
                       registrationMethod: "twitter"
@@ -398,7 +401,8 @@ const AuthPage = (props) => {
                           show: true,
                           category: "Just For Fun",
                           suggested: true,
-                          status: true
+                          status: true,
+                          reelsForFollowing: false
                         },
                         accountCreationDate: new Date(),
                         registrationMethod: "github"

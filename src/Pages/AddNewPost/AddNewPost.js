@@ -359,7 +359,7 @@ class AddNewPost extends PureComponent {
     }
   }
   render() {
-    const isValid = this.state.method.toLowerCase() === Consts.Post ? this.state.caption && this.state.location && this.state.contentType : this.state.method.toLowerCase() === Consts.Reel? (this.state.contentType && (this.state.selectedReelGroup ||  this.state.newGroupName)) : null;
+    const isValid = this.state.method.toLowerCase() === Consts.Post ? this.state.caption && this.state.contentType : this.state.method.toLowerCase() === Consts.Reel? (this.state.contentType && (this.state.selectedReelGroup ||  this.state.newGroupName)) : null;
     const {notify, receivedData } = this.context;
     return (
       <Fragment>
@@ -388,6 +388,7 @@ class AddNewPost extends PureComponent {
                   <div className="mt-2">        
                           <InputForm
                               required={true}
+                              autoFocus={true}
                               type="textarea"
                               name="caption"
                               label="Enter a caption"
@@ -498,7 +499,7 @@ class AddNewPost extends PureComponent {
                               Cancel
                             </Button>
                           ) : null}
-                          <Button disabled={!isValid} type="submit" value="Post" variant="contained" color="primary">
+                          <Button disabled={!isValid} className={`share--btn ${!isValid && "disabled"}`} type="submit" value="Post" >
                             Share
                           </Button>
                         </div>

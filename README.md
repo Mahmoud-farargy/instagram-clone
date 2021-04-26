@@ -3,6 +3,102 @@
 
 
 <img src="/Screenshots/Capture2.png" />
+
+<img src="/Screenshots/Capture3.png" />
+
+<h2>Description</h2>
+A social media app similar to Instagram that people can actually use.
+<h2>Core Features</h2>
+
+ <ul class="bullet--1">
+                                            <li><p>Users can sign-in with different methods like Google, Twitter, Github or Email and password</p></li>
+                                            <li><p>Custom feed based on who they follow</p></li>
+                                            <li><p>Profile screen</p>
+                                                <ul class="bullet--2">
+                                                    <li> <p>Follow / unfollow users
+                                                        <ul>
+                                                            <li class="bullet--3"><p>View all followed users on your profile or other's</p></li>
+                                                        </ul>
+                                                        </p>
+                                                    </li>
+                                                    <li><p>Show mutual friends</p></li>
+                                                    <li><p>Edit profile</p>
+                                                            <ul>
+                                                                <li class="bullet--3"><p>Update profile information or avatar picture</p></li>
+                                                                <li class="bullet--3"><p>Manage blocked users</p></li>
+                                                                <li class="bullet--3"><p>Change account's Username and Password</p></li>
+                                                            </ul>
+                                                        </li>
+                                                    <li><p>Account settings</p></li>
+                                                     <ul>
+                                                             <li class="bullet--3"><p>Show / hide activity status</p></li>
+                                                             <li class="bullet--3"><p>Delete account and more options</p></li>
+                                                    </ul>
+                                                </ul>
+                                            </li>
+                                            <li><p>Posts</p>
+                                                <ul class="bullet--2">
+                                                    <li><p>Users can post pictures and videos from camera or gallery</p></li>
+                                                    <li><p>Like / dislike posts
+                                                        <ul class="bullet--3">
+                                                            <li><p>View all likes on a post and who liked it</p></li>
+                                                            <li><p>Nice animation when liking a post</p></li>
+                                                        </ul>
+                                                        </p>
+                                                    </li>
+                                                    <li><p>Comment
+                                                            <ul class="bullet--3">
+                                                                <li><p>Comment or reply on someone else'comment</p></li>
+                                                                <li><p>Like / dislike comments and sub-comments</p></li>
+                                                                <li><p>View all comments and who liked them</p></li>
+                                                            </ul>
+                                                        </p>
+                                                    </li>
+                                                    <li><p>Delete comments or an entire post only by their owners </p>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <p>Chat screen</p>
+                                                <ul class="bullet--2">
+                                                    <li><p>Chat with any user</p></li>
+                                                    <li><p>Share images, videos and emojis while chatting</p></li>
+                                                </ul>
+                                            </li>
+                                             <li>
+                                                <p>Explore</p>
+                                                <ul class="bullet--2">
+                                                    <li><p>Explore other people's posts</p></li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <p>Notification screen of the latest updates</p>
+                                            </li>
+                                            <li><p>Authentications handling with an ability to retrieve password if it was forgetten</p></li>
+                                            <li><p>Block / unblock users</p></li>
+                                            <li><p>Share video Reels</p>
+                                                       <ul class="bullet--2">
+                                                          <li>Like and comment on other people's reels</li>
+                                                    </ul>
+                                            </li>
+                                            <li><p>Search users</p></li>
+                                            <li><p>Suggestions list</p></li>
+                                            <li><p>Activity Status</p></li>
+                                        </ul>
+ <h2>Used technologies</h2>    
+  <ul class="bullet--1">
+                                                    <li><p>React</p></li>
+                                                    <li><p>Context API</p></li>
+                                                    <li><p>Firebase</p></li>
+                                                    <li><p>jQuery</p></li>
+                                                    <li><p>SCSS</p></li>
+                                                </ul>
+  <h2>Features that will be added soon</h2>  
+   <ul class="bullet--1">
+    <li><p>Stories</p></li>
+    <li><p>Unsend messages</p></li>
+   </ul>
+
 ## Available Scripts
 
 In the project directory, you can run:
