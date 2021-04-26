@@ -28,7 +28,8 @@ const Home = (props) => {
     changeMainState,
     modalsState,
     onCommentDeletion,
-    isUserOnline
+    isUserOnline,
+    homeReels
   } = useContext(AppContext);
   let posts = receivedData?.posts;
   let [user, loading] = useAuthState(auth);
@@ -48,7 +49,9 @@ const Home = (props) => {
         <section id="home" className="main--home--container ">
           <div className="main--home--inner desktop-comp">
             <div className="home--posts--side flex-column">
-              <HomeReels />
+              {
+                homeReels && homeReels.length >0 && <HomeReels />
+              } 
               {!loading && posts?.length >= 1 ? (
                 posts?.map((post, i) => {
                   return (

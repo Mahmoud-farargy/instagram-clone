@@ -29,13 +29,18 @@
 }
 #post.post--card--container .post--card--article .post--card--header .post--header--user--info {
     position: relative;
+    max-width:220px;
 }
-#post.post--card--container .post--card--article .post--card--header .post--header--user--info span h5,
+#post.post--card--container .post--card--article .post--card--header .post--header--user--info span h5 a,
 #post.post--card--container .post--card--article .post--card--header .post--header--user--info span p
 {
     white-space:nowrap;
     word-break: keep-all;
     color:var(--main-black);
+}
+#post.post--card--container .post--card--article .post--card--header .post--header--user--info span h5 a{
+    font-size: 14px;
+    font-weight: 600;
 }
 #post.post--card--container .post--card--article .post--card--header .post--header--user--info span{
     margin:0;
@@ -148,9 +153,9 @@
 }
 #post.post--card--container .post--card--article .post--card--footer .post__comments__count{
     color: #8e8e8e;
-    font-weight:600;
+    font-weight:500;
     font-size: 14px;
-    margin-bottom:2px;
+    margin-bottom:4px;
     cursor:pointer;
 }
 #post.post--card--container .post--card--article .post--card--footer .post__date{

@@ -21,7 +21,7 @@ const ProfessionalAccount = (props) => {
   const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser } = useContext(AppContext);
   //useState
   const [formState, setForm] = useState({
-    professionalAcc: { category: "", show: true, status: true, suggested: true},
+    professionalAcc: { category: "", show: true, status: true, suggested: true, reelsForFollowing: false},
     catOptions: CategoryList,
     submitted: false,
   });
@@ -141,7 +141,15 @@ const ProfessionalAccount = (props) => {
               </div>
               
             </div>
-           
+            <div id="input--form--field">
+              <div className=" form-group flex-column">
+                <div className="prof--input--row flex-row">
+                     <label htmlFor="reelsForFollowing">Show reels of only people you follow</label>
+                <CheckboxIOS checked={(formState?.professionalAcc?.reelsForFollowing || false)} changeInput={onInputChange} id="reelsForFollowing" name="reelsForFollowing" />
+                </div>
+              </div>
+              
+            </div>
            
           </Suspense>
           <div className="form--btns flex-row">

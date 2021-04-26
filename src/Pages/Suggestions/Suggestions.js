@@ -1,11 +1,14 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import "./Suggestions.scss";
 import { AppContext } from "../../Context";
 import SuggestionItem from "../../Components/SuggestItem/SuggestItem";
 
 const Suggestions = () => {
-    const { suggestionsList, uid } = useContext(AppContext);
+    const { suggestionsList, uid, changeMainState} = useContext(AppContext);
+    useEffect(() => {
+        changeMainState("currentPage", "Suggestions");
+    }, [])
     return (
         <Auxiliary>
             <div id="suggestionsPage">

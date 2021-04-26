@@ -1,5 +1,4 @@
 import React, { useState, Fragment,  useEffect } from "react";
-import TruncateMarkup from "react-truncate";
 import { FiHeart } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import * as Consts from "../../Utilities/Consts";
@@ -20,9 +19,9 @@ const Commment =(props)=>{
         <div className="post--comment--item">
                <div className="flex-row post--comment--row">
                 { <Avatar className="comment__user__avatar" loading="lazy" src={comment?.userAvatarUrl} alt={comment?.userName}/>}
-                <span onClick={() => browseUser( comment?.uid, comment?.userName )} title={comment?.userName} className="post__top__comment flex-row">
+                <span onClick={() => {browseUser( comment?.uid, comment?.userName ); changeModalState("users", false, "", "")}} title={comment?.userName} className="post__top__comment flex-row">
                       <strong>{comment?.userName}</strong> <p className="comment__text w-100">
-                          <TruncateMarkup className="w-100" line={1} ellipsis="...">{trimText(comment?.comment, 600)}</TruncateMarkup>
+                          {trimText(comment?.comment, 600)}
                           </p>
                 </span>   
 

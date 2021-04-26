@@ -350,6 +350,7 @@ class Post extends PureComponent {
                       ellipsis="...more"
                       style={{ cursor: "pointer" }}
                       onClick={() => this.setState({ viewFullCaption: true })}
+                      style={{width: "100%", display:"block"}}
                     >
                       {caption}
                     </TruncateMarkup>

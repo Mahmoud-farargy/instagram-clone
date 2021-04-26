@@ -793,7 +793,7 @@ button:active{
     font-size:12px !important;
     color:var(--second--gray);
     line-height:14px;
-    font-weight:600;
+    font-weight:500;
 }
 .post--comment--actions span{
     padding:2px 3px;
