@@ -1,11 +1,13 @@
-import React, {Fragment} from "react";
+import React, {Fragment, useContext} from "react";
 import {Avatar} from "@material-ui/core";
 import {GoVerified} from "react-icons/go";
 import PropTypes from "prop-types";
 import { withBrowseUser } from "../HOC/withBrowseUser";
+import { AppContext } from "../../Context";
 
 const SuggestItem =(props)=>{
-    const {userName, isVerified, userUid, userAvatarUrl, browseUser , handleFollowing, receivedData} = props;
+    const { handleFollowing, receivedData} = useContext(AppContext);
+    const {userName, isVerified, userUid, userAvatarUrl, browseUser} = props;
 
     return(
         <Fragment>
@@ -26,10 +28,8 @@ const SuggestItem =(props)=>{
     )
 }
 SuggestItem.propTypes = {
-    receivedData: PropTypes.object.isRequired,
     userName:PropTypes.string.isRequired,
     isVerified: PropTypes.bool.isRequired,
     userUid: PropTypes.string.isRequired,
-    handleFollowing: PropTypes.func.isRequired
 }
 export default withBrowseUser(SuggestItem);

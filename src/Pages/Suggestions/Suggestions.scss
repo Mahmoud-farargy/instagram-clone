@@ -1,0 +1,50 @@
+#suggestionsPage{
+    .suggestions--p--inner{
+        width: 60%;
+        margin: 5px auto;
+        
+        h4{
+            font-size:16px;
+            font-weight:600;
+            line-height:24px;
+            display: block;
+            width: 100%;
+        }
+      
+        ul.suggestions--p--ul{
+            padding:10px;
+            margin:0;
+            background-color: #fff;
+           
+            overflow-y:auto;
+            .suggest--item--container{
+                width: 100%;
+                .suggestion--item {
+                    width: 100%;
+                    padding:0;
+                    margin:0;
+                    padding:10px;
+                    justify-content: space-between;
+                    .side--user--info{
+                        // width: 100%;
+                        max-width: auto;
+                        margin:0;
+                        padding: 0;;
+                    }
+                }
+            }
+        }
+        @media only screen and (max-width: 670px){
+            width: 100%;
+            h4{
+                padding-left:10px;
+            }
+            ul.suggestions--p--ul{
+                 max-height: 80vh;
+            }
+        }
+    }
+    @media screen and (max-width:670px) {
+        background-color: #fff;
+    }
+}

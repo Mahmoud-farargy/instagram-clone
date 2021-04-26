@@ -47,14 +47,14 @@
 .header--inner a{
     text-decoration:none;
 }
-#header .search--bar--container{
+.search--bar--container{
     position: relative;
     min-width:125px;
     width: 215px;
     flex: 0 1 auto;
     height:28px;
 }
-#header .search--bar--container .search__input{
+.search--bar--container .search__input{
     border: 1px solid #dbdbdb;
     -webkit-appearance: none;
     background-color: #fafafa;
@@ -71,7 +71,7 @@
     text-align:center;
     margin-left: 12px;
 }
-#header .search--bar--container .search__icon{
+.search--bar--container .search__icon{
     font-size:13px;
     color: #8e8e8e;
     margin-right: 7px;
@@ -81,7 +81,7 @@
     left:7px;
 }
 
-#header .search--bar--container .clear--search--box, .loading--search--box{
+.search--bar--container .clear--search--box, .loading--search--box{
     position: absolute;
     top:4px;
     right:4px;
@@ -92,10 +92,10 @@
 #header .compass__explore__icon{
     font-size: 27px;
 }
-#header .search--bar--container .clear--search--box{
+.search--bar--container .clear--search--box{
     z-index:1000;
 }
-#header .search--bar--container .loading--search--box{
+.search--bar--container .loading--search--box{
     z-index: 20;
 }
 #profilePopup .noti--popup--inner{
@@ -382,7 +382,7 @@
     color: var(--main-black);
 }
 
-.active--profile--nav{
+.active--profile--nav img{
     border:2px solid rgb(29, 29, 29);
     border-radius: 50%;
 }
@@ -410,34 +410,36 @@
     left:0px;
     z-index:5000;
     background-color:#fff;
-    border-top: 1px solid var(--gray);
+    border-top: 1px solid rgb(245, 245, 245);
     align-items:center;
-    /* padding:6px var(--padding-sides); */
     height:50px;
    
 }
 
-#mobNav.mobile--nav .header--nav .header--ul{
-     justify-content: space-between;
-     flex:1;
-     width:100%;
-}
-#mobNav.mobile--nav .header--ul li{
-    padding: 6px 9px;
-}
-#mobNav.mobile--nav .header--nav{
-    width: 100%;
-    max-width:350px;
-    margin:0 auto;
-    align-items:center;
-}
+
 /* --------x------Mobile Nav------x------- */
 
 @keyframes disappear-item {
-    /* from {background-color: red;} */
   to {display: none;}
 }
 @media only screen and (max-width:670px){
+    #mobNav.mobile--nav .header--nav .header--ul{
+     justify-content: space-between;
+     flex:1;
+     width:100%;
+    }
+    #mobNav.mobile--nav .header--ul li{
+        padding: 0px;
+    }
+    #mobNav.mobile--nav .header--ul li a{
+        padding: 6px 9px;
+    }
+    #mobNav.mobile--nav .header--nav{
+        width: 100%;
+        max-width:350px;
+        margin:0 auto;
+        align-items:center;
+    }
     #header.main--header, .noti--popup--window, .search--pop--window{
         display: none !important;
     }

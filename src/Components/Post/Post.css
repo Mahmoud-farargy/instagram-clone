@@ -22,9 +22,10 @@
     border-top-right-radius:4px;
     border-top-left-radius:4px;
     justify-content:space-between;
-    padding:6px 16px 6px 16px;
+    padding:16px;
     align-items:center;
     position: relative;
+    height: 60px;
 }
 #post.post--card--container .post--card--article .post--card--header .post--header--user--info {
     position: relative;
@@ -76,9 +77,12 @@
     background-color:#fff;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius:4px;
+    overflow-x: hidden;
 }
-#post.post--card--container .post__header__avatar{
+#post.post--card--container .MuiAvatar-circle.post__header__avatar{
     margin-right:7px;
+    width:32px;
+    height:32px;
 }
 #post.post--card--container .post--header--options{
     font-size: 20px;
@@ -238,7 +242,7 @@
         left:0;
         width:100%;
         background-color: #fff;
-        z-index:1500;
+        z-index:1200;
         padding:0;
         margin:0;
         height:55px;

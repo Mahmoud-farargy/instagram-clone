@@ -17,25 +17,26 @@ import emptyPostsImg from "../../Assets/6efc710a1d5a.jpg";
 import appleStore from "../../Assets/get-app-apple.png";
 import gpStore from "../../Assets/get-app-gp.png";
 import { HiOutlinePlus } from "react-icons/hi";
+import { FiLogOut } from "react-icons/fi";
 
 const MyProfile =(props)=>{
     const [,loading] = useAuthState(auth);
     const [grid, setGrid] = useState(true);
     const {receivedData,changeModalState, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState, updateReelsProfile} = useContext(AppContext);
-    const redirectToPost=(i, id)=>{
-        changeMainState("currentPostIndex", {index: i, id: id});
-        getUsersProfile(uid).then(() => {
-            props.history.push("/browse-post");
-        });
-    }
     useEffect(()=>{
         changeMainState("currentPage", "Profile");
     },[]);
-    const openPostModal = (postId,index) =>{
-        changeMainState("currentPostIndex", { index: index, id: postId });
-        getUsersProfile(uid).then(() => {
-              changeModalState("post", true);
-        });
+    const openPost = (postId,index) =>{
+        if(index !== -1){
+              changeMainState("currentPostIndex", { index: index, id: postId });
+            getUsersProfile(uid).then(() => {
+                if((window.innerWidth || document.documentElement.clientWidth) >= 670){
+                    changeModalState("post", true);
+                }else{
+                    props.history.push("/browse-post");
+                }
+            });
+        }
     }
     const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
         updateReelsProfile(uid).then(() => {
@@ -72,7 +73,7 @@ const MyProfile =(props)=>{
                                 </h5>
                                 <div className="flex-row">
                                 <Link role="button" className="profile__btn prof__btn__unfollowed mr-2" to="/edit-profile" >Edit profile</Link>
-                                <button className="mobile-only" onClick={()=> authLogout(props.history)}>Log out</button>
+                                <button className="mobile-only profile__btn prof__btn__unfollowed" onClick={()=> authLogout(props.history)}><FiLogOut className="mr-1" /> Log out</button>
                                 </div>
                                 
                             </div>
@@ -199,9 +200,7 @@ const MyProfile =(props)=>{
                         {receivedData?.posts?.map((post, i)=>{
                                         return (
                                             <div key={post?.id+i} className="profile--posts--container">   
-                                            {/* TODO: refactor this to be only one piece of code */}
-                                              {/* Desktop */}
-                                                <div className="user--img--container desktop-only flex-column" onClick={() => openPostModal(post?.id,i)}>
+                                                <div className="user--img--container flex-column" onClick={() => openPost(post?.id,i)}>
                                                        {
                                                            post?.contentType === "image" ?
                                                             <img style={{width:"100%"}} loading="lazy"  className="users__profile__image" src={post?.contentURL} alt={`post #${i}`} />
@@ -210,31 +209,13 @@ const MyProfile =(props)=>{
                                                            : <h4>Not found</h4>
                                                        }
 
-                                                                <div className="user--img--cover">
-                                                                        <div className="flex-row">
-                                                                            <span className="mr-3"><FaHeart/> {post?.likes?.people?.length.toLocaleString()}</span>
-                                                                            <span><FaComment/> {post?.comments.length && post?.comments.length?.toLocaleString() } </span>
-                                                                        </div>
+                                                        <div className="user--img--cover">
+                                                                <div className="flex-row">
+                                                                        <span className="mr-3"><FaHeart/> {post?.likes?.people?.length.toLocaleString()}</span>
+                                                                        <span><FaComment/> {post?.comments.length && post?.comments.length?.toLocaleString() } </span>
                                                                 </div>
+                                                        </div>
                                                 </div>                                                
-                                                {/* Mobile */}
-                                                <div className="user--img--container mobile-only flex-column"  onClick={()=> redirectToPost(i, post?.id) } >
-                                                        {
-                                                           post?.contentType === "image" ?
-                                                            <img style={{width:"100%"}} loading="lazy"  className="users__profile__image" src={post?.contentURL} alt={`post #${i}`} />
-                                                           : post?.contentType === "video" ?
-                                                           <video disabled muted autoPlay loop src={post?.contentURL} className="users__profile__image" contextMenu="users__profile__image" onContextMenu={() => false} />
-                                                           : <h4>Not found</h4>
-                                                       }
-                                                                <div className="user--img--cover">
-                                                                        <div className="flex-row">
-                                                                            <span className="mr-3"><FaHeart/> {post?.likes?.people?.length.toLocaleString()}</span>
-                                                                            <span><FaComment/> {post?.comments.length && post?.comments.length?.toLocaleString() } </span>
-                                                                        
-                                                                        </div>
-                                                                
-                                                                </div>
-                                                </div>  
                                             </div>
                                         )
                                 })}

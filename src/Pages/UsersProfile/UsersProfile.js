@@ -49,10 +49,6 @@ const UsersProfile = (props) => {
     isUserOnline
   } = context;
 
-  const redirectToPost = (i, id) => {
-    changeMainState("currentPostIndex", { index: i, id: id });
-    props.history.push("/browse-post");
-  };
   const message = (uid, username, avatarUrl) => {
     const newIndex = receivedData && receivedData.messages?.map(d => d.uid).indexOf(uid);
     if(newIndex !== -1){
@@ -97,9 +93,14 @@ const UsersProfile = (props) => {
     suggestionsList?.length > 0 ? setRandNum(Math.floor(Math.random() * suggestionsList?.length -6)) : setRandNum(0);
   },[suggestionsList, usersProfileData]);
 
-  const openPostModal = (postId, index) =>{
+  const openPost = (postId, index) =>{
     changeMainState("currentPostIndex", { index: index, id: postId });
-    changeModalState("post", true);
+    if((window.innerWidth || document.documentElement.clientWidth) >= 670){
+      changeModalState("post", true);
+    }else{
+      props.history.push("/browse-post");
+    }
+    
   }
 
   const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
@@ -124,7 +125,7 @@ const UsersProfile = (props) => {
                      connectivityStatus && connectivityStatus?.state && isFollowed && (usersProfileData?.profileInfo?.professionalAcc?.status || receivedData?.profileInfo?.professionalAcc?.status) &&
                     <span className="activity--container">
                       {connectivityStatus?.state === "online" ?
-                      <small className="online--status flex-row"><span>Online</span><span className="online__user"></span></small>
+                      <small className="online--status flex-row"><span>Active now</span><span className="online__user"></span></small>
                       : connectivityStatus?.last_changed &&
                       <small>
                         Active {<Moment fromNow withTitle>{new Date( connectivityStatus?.last_changed).toISOString()}</Moment>}
@@ -190,9 +191,9 @@ const UsersProfile = (props) => {
           <PostModal />
       }
       {
-         modalsState?.options &&
+         modalsState?.options && !modalsState?.post &&
          (<OptionsModal>
-             <span
+             <span className="text-danger font-weight-bold"
                onClick={() => blockUser(usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, usersProfileData?.profileInfo && usersProfileData.profileInfo?.name ? usersProfileData?.profileInfo?.name : "" )} >
                {" "}
                Block user
@@ -373,7 +374,7 @@ const UsersProfile = (props) => {
               <div className="users--suggestions--container">
                 <div className="user--sugg--header flex-row">
                   <span className="user__sugg__title__title">Suggestions</span>
-                  <span className="user__see__all__btn">see all</span>
+                  <Link to="/explore/people/suggestions"><span className="user__see__all__btn">see all</span></Link>
                 </div>
                 <div className="suggestions--list--container flex-row">
                   <ul className="suggestion--items flex-row">
@@ -454,10 +455,10 @@ const UsersProfile = (props) => {
                                   key={post?.id + i}
                                   className="profile--posts--container "
                                 >
-                                  {/* desktop */}
+                                  {/* Posts */}
                                   <div
-                                    onClick={() => openPostModal(post?.id,i)}
-                                    className="user--img--container desktop-only flex-column"
+                                    onClick={() => openPost(post?.id,i)}
+                                    className="user--img--container flex-column"
                                   >
                                    {
                                      post?.contentType === "image" ?  
@@ -481,36 +482,6 @@ const UsersProfile = (props) => {
                                         <span>
                                           <FaComment />{" "}
                                           {post?.comments?.length && post?.comments?.length.toLocaleString()}{" "}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  {/* Mobile */}
-                                  <div
-                                    onClick={() => redirectToPost(i, post?.id)}
-                                    className="user--img--container mobile-only flex-column"
-                                  >
-                                    {
-                                     post?.contentType === "image" ?  
-                                      <img
-                                      loading="lazy"
-                                        style={{ width: "100%" }}
-                                        className="users__profile__image"
-                                        src={post?.contentURL}
-                                        alt={`post #${i}`}
-                                      />
-                                      : post?.contentType === "video" ?
-                                        <video className="users__profile__image" muted disabled autoPlay loop onContextMenu={() => false} contextMenu="users__profile__image"  src={post?.contentURL} />
-                                      : <h4>Not found</h4>
-                                   } 
-                                    <div className="user--img--cover">
-                                      <div className="flex-row">
-                                        <span className="mr-3">
-                                          <FaHeart /> {post?.likes?.people?.length.toLocaleString()}
-                                        </span>
-                                        <span>
-                                          <FaComment />{" "}
-                                          {post?.comments && post?.comments.length?.toLocaleString()}{" "}
                                         </span>
                                       </div>
                                     </div>

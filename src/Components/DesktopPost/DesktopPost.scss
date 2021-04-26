@@ -9,6 +9,14 @@
     z-index:1500;
     align-items:center;
     justify-content: center;
+    .desktop--left{
+        min-height: 500px;
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
     .d--post--container{
         width:100%;
         height:100%;
@@ -41,11 +49,12 @@
             .d--post--box{
                 background-color: #fff;
                 width:90%;
-                min-height: 300px;
+                min-height: 500px;
                 margin: 0 auto;
                 .post--card--article{
                     width:100%;
                     height: 100%;
+                    min-height: 500px;
                     display: grid;
                     border:none !important;
                     grid-template-columns: 55% 45%;
@@ -57,11 +66,11 @@
                     }
                     .post--comments--layout{
                         min-height:150px;
-                        max-height:340px;
-                        // height:150px;
+                        max-height:240px;
                         overflow-y:auto !important;
                     }
                     .desktop--right{
+                        height: 100%;
                         position: relative;
                         background-color: #fff;
                         .post--card--header{

@@ -18,7 +18,7 @@ import GetFormattedDate from "../../Utilities/FormatDate";
 
 const PostPage  = (props) => {
   const context = useContext(AppContext);
-  const {changeMainState, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleUserBlocking, modalsState,handleLikingComments, onCommentDeletion } = context;
+  const {changeMainState, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleFollowing,  handleUserBlocking, modalsState,handleLikingComments, onCommentDeletion } = context;
   const [compState, setCompState] = useState({
         postLiked: false,
         insertedComment: "",
@@ -180,16 +180,27 @@ const PostPage  = (props) => {
         var isVerified = usersProfileData?.isVerified;
     // },[usersProfileData]);
     
-  
+    const isFollowed = receivedData?.following?.length && receivedData?.following.some((item) => item?.receiverUid === usersProfileData?.uid);
     return (
       <Fragment>
         {
           modalsState?.options &&
           (<OptionsModal>
-              <span
+              <span className="text-danger font-weight-bold"
                 onClick={() => blockUser(usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, usersProfileData?.profileInfo && usersProfileData.profileInfo?.name ? usersProfileData?.profileInfo?.name : "" )} >
                 {" "}
                 Block user
+              </span>
+              <span className={`text-danger font-weight-bold ${isFollowed ? "text-danger" : "text-primary"}`} onClick={() => handleFollowing(
+                          isFollowed,
+                          usersProfileData?.uid,
+                          usersProfileData?.userName,
+                          usersProfileData?.userAvatarUrl,
+                          uid,
+                          receivedData?.userName,
+                          receivedData?.userAvatarUrl
+                          )}>
+                {isFollowed? "Unfollow" : "Follow"}
               </span>
               <span onClick={() => changeModalState("options",false)}>
                 {" "}
@@ -200,7 +211,7 @@ const PostPage  = (props) => {
         }
         {usersProfileData?.posts ? (
           <div id="post" className="post--card--container mobile--post post--page">
-            <article className="post--card--article">
+            <article className="desktop-comp post--card--article">
               <div className="post--card--header flex-row">
                 <header className="post--header--avatar flex-row">
                   <Avatar
@@ -383,7 +394,7 @@ const PostPage  = (props) => {
                 ) : null}
 
                 <small className="post__date">
-                  <GetFormattedDate date={date?.seconds} />
+                  <GetFormattedDate date={date?.seconds} /> • <time>{new Date(date?.seconds * 1000).toDateString()}</time>
                 </small>
                 <form
                   onSubmit={(e) => submitComment(e)}

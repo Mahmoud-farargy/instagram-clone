@@ -360,7 +360,7 @@ class AddNewPost extends PureComponent {
   }
   render() {
     const isValid = this.state.method.toLowerCase() === Consts.Post ? this.state.caption && this.state.location && this.state.contentType : this.state.method.toLowerCase() === Consts.Reel? (this.state.contentType && (this.state.selectedReelGroup ||  this.state.newGroupName)) : null;
-    const {notify, receivedData:{reels} } = this.context;
+    const {notify, receivedData } = this.context;
     return (
       <Fragment>
         <section id="upload" className="post--uploading--container flex-column">
@@ -371,7 +371,7 @@ class AddNewPost extends PureComponent {
                 <div>
                   {this.state.uploading ? (
                   <div className="uploading__in__progress flex-column">
-                    <h4>Processing...</h4>
+                    <h4 className="mb-3">Processing...</h4>
                     <Skeleton count={1} width={250} height={250} />
                   </div>
                 ) :  this.state.contentType ? 
@@ -406,20 +406,20 @@ class AddNewPost extends PureComponent {
                   : this.state.method?.toLowerCase() === Consts.Reel ?
                   <div className="mt-2">
                     {
-                      reels?.length > 0 &&
+                      receivedData?.reels?.length > 0 &&
                       <InputForm
                             required={true}
                             type="select"
                             name="selectedReelGroup"
                             label="selected group"
-                            options={[ "New Group",...reels.map(s => s?.groupName)]}
+                            options={[ "New Group",... receivedData?.reels?.map(s => s?.groupName)]}
                             val={this.state.selectedReelGroup}
                             changeInput={this.onInputChange}
                             submitted={this.state.submitted}
                       />
                     }  
                     {
-                      (reels?.length <= 0 || this.state.selectedReelGroup?.toLowerCase() === "new group") &&
+                      ( receivedData?.reels?.length <= 0 || this.state.selectedReelGroup?.toLowerCase() === "new group") &&
                       <div>
                           <InputForm
                               required={true}

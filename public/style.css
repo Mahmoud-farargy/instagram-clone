@@ -62,7 +62,7 @@ input {
     /* paddings */
     --desktop-padding-top: 30px;
     --desktop-padding-bottom: 30px;
-    --padding-sides: 10vw;
+    --padding-sides: 9vw;
     /* colors */
     --gray: #dbdbdb;
     --light-gray:#fafafa;
@@ -92,11 +92,15 @@ a:visited{
     overflow-x: auto;
     overflow-y: hidden;
 }
+.reels--ul::-webkit-scrollbar{
+    width: 0;
+    display:none;
+}
 .reels--ul li{
     margin-right: 20px;
     margin-bottom: 10px;
 }
-#usersProfile  .reel--bubble{
+.reel--bubble{
     align-items:center;
     cursor:pointer;
     width: 80px;
@@ -104,7 +108,11 @@ a:visited{
     color: #262626;
     margin:0px 10px 20px;
 }
-#usersProfile  .reel--bubble .reel--upper--container{
+#usersProfile .reel--bubble span{
+    color: var(--font-black);
+    text-decoration: none;
+}
+.reel--bubble .reel--upper--container{
     position: relative;
     width:77px;
     height:77px;
@@ -112,7 +120,7 @@ a:visited{
     justify-content: center;
     align-items:center;
 }
-#usersProfile  .reel--bubble .reel--upper--container .reel--upper--inner{
+.reel--bubble .reel--upper--container .reel--upper--inner{
     position: relative;
     top:0;
     bottom:0;
@@ -122,11 +130,11 @@ a:visited{
     text-align:center;
     align-items:center;
 }
-#usersProfile  .reel--bubble .reel--upper--container .reel--upper--inner .reels__icon, .add__new__reels__ico{
+.reel--bubble .reel--upper--container .reel--upper--inner .reels__icon, .add__new__reels__ico{
     position: absolute;
-    margin: 0 auto 0 2px;
+    margin: 2px;
 }
-#usersProfile .reel--bubble .reel--upper--container .reel--upper--inner, #usersProfile  .reel--bubble .reel--upper--container .reel--upper--inner .reels__icon{
+.reel--bubble .reel--upper--container .reel--upper--inner, .reel--bubble .reel--upper--container .reel--upper--inner .reels__icon{
     width:100% !important;
     height:100% !important;
     border-radius: 50px;
@@ -141,7 +149,7 @@ a:visited{
 #usersProfile .reel--list--item{
     position: relative;
 }
-#usersProfile  .reel--bubble .reel--upper--container .reels--new .reel--upper--inner{
+.reel--bubble .reel--upper--container .reels--new .reel--upper--inner{
     border: 1px solid rgb(138, 138, 138) !important;
 }
 #usersProfile .reel--bubble span{
@@ -273,6 +281,9 @@ a:visited{
     align-items:center;
     justify-content:center;
 }
+a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {
+    vertical-align: baseline;
+}
 .usersModal--card{
     position: relative;
     height:100%;
@@ -300,7 +311,7 @@ a:visited{
 }
 .userModal--card--body{
     width:99%;
-    overflow-y:scroll;
+    overflow-y:auto;
     overflow-x: hidden;
 }
 .modal--user--item{
@@ -1169,7 +1180,7 @@ button:active{
     overflow-x: auto;
     gap:10px;
     flex-wrap: nowrap;
-    padding:0 10px;
+    padding:0px 10px 10px 10px;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -1181,7 +1192,6 @@ button:active{
 #usersProfile .suggestions--list--container ::-webkit-scrollbar, #usersProfile .suggestion--items ::-webkit-scrollbar{
     width:0px;
     display:none;
-
 }
 #usersProfile .suggest--item--container{
     max-width: 100%;
@@ -1193,7 +1203,6 @@ button:active{
     border: 1px solid var(--gray);
     background-color: #fff;
     margin-right: 18px;
-    /* min-width:200px; */
     width: 180px;
     height:auto;
     max-height: 200px;
@@ -1213,9 +1222,14 @@ button:active{
     padding: 6px 0;
 }
 #usersProfile .suggestion--item-inner .MuiAvatar-root{
-    width:50px !important;
-    height:50px !important;
+    width:49px !important;
+    height:49px !important;
     margin:0 auto;
+}
+#home .suggest--item--container .suggestion--item .MuiAvatar-root{
+    width:32px;
+    height:32px;
+    cursor: pointer;
 }
 #usersProfile .user__sugg__title__title{
     color: var(--second--gray);
@@ -1237,11 +1251,11 @@ button:active{
     width:100%;
 }
 .user__see__all__btn{
-    color: #0095f6;
+    color: var(--font-black);
     display:block;
-    font-size:14px;
+    font-size:12px !important;
     font-weight:600;
-    text-transform: capitalize;
+    text-transform: capitalize !important;
 }
 #usersProfile .profile--more--btn{
     padding: 9px 7px;
@@ -1627,7 +1641,7 @@ a.prof__btn__unfollowed{
     width:100%;
     background-color: #fcfcfc;
     position: sticky;
-    top:0;
+    top:50px;
     left:0;
     z-index: 1000;
 }
@@ -1814,6 +1828,9 @@ a.prof__btn__unfollowed{
     .auth{
         width:85%;
     }
+    .desktop-comp{
+        padding:0;
+    }
     .auth .auth--upper--card{
         padding:15px 15px 18px;
     }
@@ -1982,6 +1999,7 @@ a.prof__btn__unfollowed{
         padding-bottom:0px;
     }
     .desktop-comp{
+        padding-top:50px !important;
         padding-bottom:50px;
         min-width: 100%;
     }
@@ -2035,8 +2053,14 @@ a.prof__btn__unfollowed{
         height:100vh;
         width:100%;
     }
-    #usersProfile.users--profile--container .desktop-comp{
-        padding-top:7px !important;
+    .userModal--card--body{
+        max-height: 100%;
+    }
+    #messages.messages--container .desktop-comp{
+        padding-top:0px !important;
+    }
+    #editProfile .edit--box{
+        padding-top:40px !important;
     }
     #usersProfile.users--profile--container, .post--comments--layout{
         padding-bottom:40px;
@@ -2070,9 +2094,6 @@ a.prof__btn__unfollowed{
 
 /* ---------Query less than or equal 9300px------------ */
 @media only screen and (max-width:930px){
-    .desktop-comp{
-        padding:0;
-    }
     #usersProfile.users--profile--container .users--action--row{
         flex-direction: column;
         flex-wrap: wrap !important;
@@ -2096,6 +2117,9 @@ a.prof__btn__unfollowed{
 @media only screen and (min-width:760px){
     .messages--view--users{
         max-height: 70vh;
+    }
+    .userModal--card--body{
+        max-height: 400px;
     }
 }
 @media only screen and (max-width:930px) and (min-width: 670px){

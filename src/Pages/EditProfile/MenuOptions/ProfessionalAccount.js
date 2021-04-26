@@ -176,7 +176,7 @@ const ProfessionalAccount = (props) => {
                               (<Moment fromNow withTitle>{new Date(currentUser?.metadata?.creationTime).toISOString()}</Moment>)
                             </div>
                             <div className="account--info--text">
-                              <span>Last time you signed was in:</span>
+                              <span>Last time you signed in:</span>
                               {new Date(currentUser?.metadata?.lastSignInTime).toDateString() + " "}
                               (<Moment fromNow withTitle>{currentUser?.metadata?.lastSignInTime}</Moment>)
                             </div>

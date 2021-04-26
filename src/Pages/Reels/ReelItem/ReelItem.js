@@ -29,6 +29,7 @@ function ReelItem(props) {
   const [commentTxt, setCommentTxt] = useState("");
   const [buffering, setBuffering] = useState(true);
   const [showOptions, setShowingOptions] =useState(false);
+  // const [ doubleClicked, setDoubleClicks ] = useState({state: false, clicks: 0});
   const { item, index, browseUser, groupName, setCurrPlayingReel, currentPlayingReel } = props;
   const {
     handleReelsActions,
@@ -118,6 +119,32 @@ function ReelItem(props) {
       setVideoPlaying(false);
     }
   },[currentPlayingReel, index]);
+
+  // const doubleClickEvent = () => {
+  //   let currCount = doubleClicked.clicks;
+  //   //single click
+  //   setDoubleClicks(doubleClicked, {clicks: doubleClicked.clicks ++});
+  //   console.log(doubleClicked);
+  //   const resetCounter = () => {
+  //     setDoubleClicks({state:false, clicks: 0});
+  //   };
+  //   onVideoClick();
+  //   if (currCount === 1) {
+  //     //double click
+  //     console.log("triggered");
+  //     handleReels({type: "like", state: true});
+  //     resetCounter();
+  //     setDoubleClicks(doubleClicked,{state:true});
+  //    const timeout1 = setTimeout(() => {
+  //     setDoubleClicks(doubleClicked,{state:false});
+  //       clearTimeout(timeout1);
+  //     }, 1100);
+  //   }
+  //   const timeout2 = setTimeout(() => {
+  //     resetCounter();
+  //     clearTimeout(timeout2);
+  //   }, 1000);
+  // };
   return (
     <Fragment>
       {/* Modal(s) */}
@@ -163,7 +190,7 @@ function ReelItem(props) {
           (<div>
             <OptionsModal>
               <div className="reel--items--inner" onClick={(q)=> eventDelegation(q)}>
-                  <span
+                  <span className="text-danger font-weight-bold"
                   onClick={() => handleReelsActions("delete-reel", {
                       contentPath: item?.contentName,
                       ownerUid: receivedData?.uid,
@@ -176,7 +203,7 @@ function ReelItem(props) {
                   {" "}
                 Delete reel
                 </span>
-                <span
+                <span className="text-danger font-weight-bold"
                   onClick={() => handleReelsActions("delete-group", {
                       contentPath: item?.contentName,
                       ownerUid: receivedData?.uid,
