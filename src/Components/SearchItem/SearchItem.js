@@ -39,6 +39,6 @@ const SearchItem = (props) => {
 SearchItem.propTypes = {
   user: PropTypes.object.isRequired,
   browseUser: PropTypes.func.isRequired,
-  closeSearchBox: PropTypes.func.isRequired,
+  closeSearchBox: PropTypes.func
 }
 export default withBrowseUser(SearchItem);

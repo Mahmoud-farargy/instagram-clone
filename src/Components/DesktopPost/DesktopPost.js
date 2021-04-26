@@ -29,7 +29,7 @@ import PropTypes from "prop-types";
 import GetFormattedDate from "../../Utilities/FormatDate";
 
 const DesktopPost = (props) => {
-  const { browseUser } = props;
+  const { browseUser, disableArrows } = props;
   const history = useHistory();
   const context = useContext(AppContext);
   const {
@@ -45,6 +45,7 @@ const DesktopPost = (props) => {
     handleUserBlocking,
     handleLikingComments,
     onCommentDeletion,
+    handleFollowing,
     modalsState,
   } = context;
   const [compState, setCompState] = useState({
@@ -56,7 +57,7 @@ const DesktopPost = (props) => {
     replayData: {},
   });
   const inputField = useRef(null);
-
+  const isFollowed = receivedData?.following?.some((item) => item?.receiverUid === usersProfileData?.uid);
   useEffect(() => {
     changeMainState("currentPage", "Post");
   }, []);
@@ -209,23 +210,26 @@ const DesktopPost = (props) => {
   var isVerified = usersProfileData?.isVerified;
 
   const onPostMovement = (direction) => {
-    const finalIndex = usersProfileData?.posts.length - 1;
-    const currentIndex = currentPostIndex?.index;
-    let currentDirection;
+    if(usersProfileData?.posts.length > 1 && !disableArrows){
+          const finalIndex = usersProfileData?.posts.length - 1;
+          const currentIndex = currentPostIndex?.index;
+          let currentDirection;
 
-    if (direction === "left") {
-      currentIndex > 0
-        ? (currentDirection = currentIndex - 1)
-        : (currentDirection = finalIndex);
-    } else if (direction === "right") {
-      currentIndex < finalIndex
-        ? (currentDirection = currentIndex + 1)
-        : (currentDirection = 0);
+          if (direction === "left") {
+            currentIndex > 0
+              ? (currentDirection = currentIndex - 1)
+              : (currentDirection = finalIndex);
+          } else if (direction === "right") {
+            currentIndex < finalIndex
+              ? (currentDirection = currentIndex + 1)
+              : (currentDirection = 0);
+          }
+          changeMainState("currentPostIndex", {
+            ...currentPostIndex,
+            index: currentDirection,
+          });
     }
-    changeMainState("currentPostIndex", {
-      ...currentPostIndex,
-      index: currentDirection,
-    });
+   
   };
   const navigate = (event) => {
     if (event.keyCode === 37) {
@@ -237,29 +241,54 @@ const DesktopPost = (props) => {
   return (
     <Fragment>
       <section className="desktopPost flex-column">
+          <div
+              style={{
+                position: "fixed",
+                zIndex: "2000",
+                opacity: (modalsState?.options || modalsState?.comments ||modalsState?.users ) ? "1" : "0",
+                display: (modalsState?.options || modalsState?.comments ||modalsState?.users )  ? "block" : "none",
+                transition: "all 0.5s linear",
+              }}
+              className="backdrop"
+              onClick={() => changeModalState("users", false, "", "")}
+            ></div>
         {modalsState?.options && (
-          <OptionsModal>
-            <span
-              onClick={() =>
-                blockUser(
-                  usersProfileData?.uid,
-                  usersProfileData?.userName,
-                  usersProfileData?.userAvatarUrl,
-                  usersProfileData?.profileInfo &&
-                    usersProfileData.profileInfo?.name
-                    ? usersProfileData?.profileInfo?.name
-                    : ""
-                )
-              }
-            >
-              {" "}
-              Block user
-            </span>
-            <span onClick={() => changeModalState("options", false)}>
-              {" "}
-              Cancel
-            </span>
-          </OptionsModal>
+          <div>
+              <OptionsModal>
+              <span className="text-danger font-weight-bold"
+                onClick={() =>
+                  blockUser(
+                    usersProfileData?.uid,
+                    usersProfileData?.userName,
+                    usersProfileData?.userAvatarUrl,
+                    usersProfileData?.profileInfo &&
+                      usersProfileData.profileInfo?.name
+                      ? usersProfileData?.profileInfo?.name
+                      : ""
+                  )
+                }
+              >
+                {" "}
+                Block user
+              </span>
+              <span className={`font-weight-bold ${isFollowed ? "text-danger" : "text-primary"}`} onClick={() => handleFollowing(
+                            isFollowed,
+                            usersProfileData?.uid,
+                            usersProfileData?.userName,
+                            usersProfileData?.userAvatarUrl,
+                            uid,
+                            receivedData?.userName,
+                            receivedData?.userAvatarUrl
+                            )}>
+                        {isFollowed ? "Unfollow" : "Follow"}
+              </span>
+              <span onClick={() => changeModalState("options", false)}>
+                {" "}
+                Cancel
+              </span>
+            </OptionsModal>
+          </div>
+          
         )}
         <span
           className="post--modal--close"
@@ -270,7 +299,7 @@ const DesktopPost = (props) => {
         <div className="d--post--container flex-column">
           <span
             className={
-              usersProfileData?.posts.length > 1
+              (usersProfileData?.posts.length > 1 && !disableArrows)
                 ? "desktop__left__arrow"
                 : "desktop__left__arrow disabled"
             }
@@ -280,7 +309,7 @@ const DesktopPost = (props) => {
           </span>
           <span
             className={
-              usersProfileData?.posts.length > 1
+              (usersProfileData?.posts.length > 1 && !disableArrows)
                 ? "desktop__right__arrow"
                 : "desktop__right__arrow disabled"
             }
@@ -347,7 +376,7 @@ const DesktopPost = (props) => {
                       />
                       <div
                         className="post--header--user--info flex-column"
-                        onClick={() => browseUser(usersProfileData?.uid)}
+                        onClick={() => {browseUser(usersProfileData?.uid, usersProfileData?.userName ); changeModalState("users", false, "", "")}}
                       >
                         <span
                           tabIndex="0"
@@ -435,7 +464,7 @@ const DesktopPost = (props) => {
                             <FaHeart />
                           </span>
                         )}
-                        <span>
+                        <span onClick={() => inputField && inputField?.current && inputField?.current?.focus()}>
                           <FaRegComment />
                         </span>
                         <span>
@@ -486,7 +515,7 @@ const DesktopPost = (props) => {
                     </span>
 
                     <small className="post__date">
-                      <GetFormattedDate date={date?.seconds} />
+                      <GetFormattedDate date={date?.seconds} /> • <time>{new Date(date?.seconds * 1000).toDateString()}</time>
                     </small>
                     <form
                       onSubmit={(e) => submitComment(e)}
@@ -530,5 +559,6 @@ const DesktopPost = (props) => {
 };
 DesktopPost.propTypes = {
   browseUser: PropTypes.func.isRequired,
+  disableArrows: PropTypes.bool
 };
 export default withBrowseUser(React.memo(DesktopPost));

@@ -12,6 +12,7 @@ import { auth } from "../../Config/firebase";
 import Skeleton from "react-loading-skeleton";
 // import InstagramEmbed from "react-instagram-embed";
 import { BsPlusSquare } from "react-icons/bs";
+import HomeReels from "../../Components/HomeReels/HomeReels";
 
 const Home = (props) => {
   let {
@@ -20,7 +21,6 @@ const Home = (props) => {
     handleSubmittingComments,
     suggestionsList,
     uid,
-    handleFollowing,
     deletePost,
     handleSubComments,
     handleLikingComments,
@@ -31,7 +31,7 @@ const Home = (props) => {
     isUserOnline
   } = useContext(AppContext);
   let posts = receivedData?.posts;
-  let [, loading] = useAuthState(auth);
+  let [user, loading] = useAuthState(auth);
   const [randNum, setRandNum] = useState(0);
   useEffect(() => {
     changeMainState("currentPage", "Home");
@@ -42,13 +42,13 @@ const Home = (props) => {
   },[suggestionsList]);
 
   const recievedAuth = localStorage.getItem("user");
-
   return (
     <Auxiliary>
-      {  (isUserOnline || recievedAuth)  ? (
+      {  ( recievedAuth || isUserOnline || user)  ? (
         <section id="home" className="main--home--container ">
           <div className="main--home--inner desktop-comp">
             <div className="home--posts--side flex-column">
+              <HomeReels />
               {!loading && posts?.length >= 1 ? (
                 posts?.map((post, i) => {
                   return (
@@ -84,7 +84,7 @@ const Home = (props) => {
                 })
               ) : loading ? (
                 <div className="w-100 flex-column">
-                  <Skeleton count={6} height={500} className="mb-5" />
+                  <Skeleton count={6}height={500} className="mb-5" />
                 </div>
               ) : posts?.length < 1 ? (
                 <div className="empty--posts--container flex-column">
@@ -103,7 +103,7 @@ const Home = (props) => {
                 </div>
               ) : null}
             </div>
-            <aside className="home--sider">
+            <aside className="home--sider flex-column">
               {loading && (
                 <div className="loading--skeleton--home flex-column">
                   <Skeleton count={6} height={40} className="mt-3" />
@@ -133,7 +133,7 @@ const Home = (props) => {
                 <div className="suggestions--home--container">
                   <div className="suggestions--header flex-row">
                     <h6>Suggestions For you</h6>
-                    <button className="user__see__all__btn">See all</button>
+                    <Link to="/explore/people/suggestions"><button className="user__see__all__btn">See all</button></Link>
                   </div>
                   <div className="suggestions--list flex-column">
                     <ul className="flex-column">
@@ -149,8 +149,6 @@ const Home = (props) => {
                                 isVerified={user?.isVerified}
                                 userUid={user?.uid}
                                 userAvatarUrl={user?.userAvatarUrl}
-                                handleFollowing={handleFollowing}
-                                receivedData={receivedData ? receivedData : []}
                               />
                             );
                           }):

@@ -15,23 +15,26 @@ const ErrorRoute = (props) => {
     return (
         <Auxiliary>
             <section id="errorRoute">
-            <div className="error--inner flex-column">
-             {
-                type.toLowerCase() === "404" ?
-                <div className="not--found flex-column">
-                    <h2>Sorry, this page isn't available.</h2>
-                    <h5>The link you followed may be broken, or the page may have been removed. <Link to="/">Go back to Voxgram.</Link></h5> 
-                    <p>{location.pathname} is not found.</p>
+                <div className="desktop-comp">
+                <div  className="error--inner flex-column">
+                    {
+                        type.toLowerCase() === "404" ?
+                        <div className="not--found flex-column">
+                            <h2>Sorry, this page isn't available.</h2>
+                            <h5>The link you followed may be broken, or the page may have been removed. <Link to="/">Go back to Voxgram.</Link></h5> 
+                            <p>{location.pathname} is not found.</p>
+                        </div>
+                        : 
+                        <div className="forbidden flex-column">
+                            <h2>Sorry, cannot access this page now.</h2>
+                        </div>
+                    }   
+                    <div className="ig--error--error flex-row">
+                        <img src={igGrayLogo} alt="ig logo" />
+                    </div>
+                    </div> 
                 </div>
-                : 
-                <div className="forbidden flex-column">
-                    <h2>Sorry, cannot access this page now.</h2>
-                </div>
-             }   
-            <div className="ig--error--error flex-row">
-                <img src={igGrayLogo} alt="ig logo" />
-            </div>
-             </div>
+           
             </section>
         </Auxiliary>
     )

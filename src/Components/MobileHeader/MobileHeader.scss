@@ -1,0 +1,29 @@
+#mobileHeader {
+    width: 100%;
+    position: fixed;
+    top:0;
+    left:0;
+    margin:0;
+    background-color:#fff;
+    align-items:center;
+    border-bottom: 1px solid rgb(230, 230, 230);
+    padding:6px var(--padding-sides);
+    height:50px;
+    z-index:350;
+    transition: all 0.5s ease-in;
+    .header--ul{
+        .active-nav-link svg{
+            font-size: 25px;
+            font-weight: bold;
+        }
+        li{
+            margin:0;
+            padding:0;
+            a{
+                padding:4px 10px;
+            }    
+        }
+        
+    }
+    
+}

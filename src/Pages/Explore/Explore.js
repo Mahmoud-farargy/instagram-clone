@@ -8,9 +8,11 @@ import { useHistory } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../Config/firebase";
+import PostModal from "../../Components/DesktopPost/DesktopPost";
 
 const Explore = () => {
-    const { explore, changeMainState, changeModalState} = useContext(AppContext);
+    const context = useContext(AppContext);
+    const { explore, changeMainState, changeModalState, getUsersProfile, usersProfileData, notify, modalsState, currentPostIndex } = context;
     const [newExploreArr, setExploreArr] = useState([]);
     const [,loading] = useAuthState(auth);
     const history = useHistory();
@@ -28,7 +30,7 @@ const Explore = () => {
           function shufflePosts(array) {
             var j,x,i;
             for (i = array.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
+                j = Math.floor(Math.random() * (i + 1));
                 x = array[i];
                 array[i] = array[j];
                 array[j] = x;         
@@ -41,19 +43,35 @@ const Explore = () => {
    
     },[explore]);
   
-    const openPostModal = (postId, index) =>{
-        console.log(postId, index);
-        // changeMainState("currentPostIndex", { index: index, id: postId });
-        // changeModalState("post", true);
+    const openPost = (postId, uid) =>{
+        getUsersProfile(uid).then((res) => {
+             const getPostIndex =  res?.posts.map(post => post?.id).indexOf(postId);
+
+               if(getPostIndex !== -1){
+                  changeMainState("currentPostIndex", { index: getPostIndex, id: postId });
+                  if(( window.innerWidth || document.documentElement.clientWidth ) >= 670){
+                    // Desktop
+                      changeModalState("post", true);
+                  }else{
+                    // Mobile
+                      history.push("/browse-post");
+                  }
+               }else{
+                 notify("Post is not available or got removed","error");
+               }
+            
+        });
+        
+        
+       
     }
 
-    const redirectToPost = (i, id) => {
-        console.log(i, id);
-    //     changeMainState("currentPostIndex", { index: i, id: id });
-    //    history.push("/browse-post");
-    };
     return(
         <Auxiliary>
+          {/* Modals */}
+            {modalsState?.post && usersProfileData?.posts[currentPostIndex?.index] &&
+                <PostModal disableArrows={true}/>
+            }
             <section id="explore" className="explore-container flex-column">
                 <div className="desktop-comp explore-inner flex-column">
                         {/* explore start */}
@@ -70,11 +88,9 @@ const Explore = () => {
                                   key={post?.id + i}
                                   className="profile--posts--container "
                                 >
-                                    {/* TODO: find another way to differentiate between mobile and desktop view functionally */}
-                                  {/* desktop */}
                                   <div
-                                    onClick={() => openPostModal(post?.id,i)}
-                                    className="user--img--container desktop-only flex-column"
+                                    onClick={() => openPost(post?.id, post?.postOwnerId)}
+                                    className="user--img--container flex-column"
                                   >
                                    {
                                      post?.contentType === "image" ?  
@@ -98,36 +114,6 @@ const Explore = () => {
                                         <span>
                                           <FaComment />{" "}
                                           {post?.comments?.length && post?.comments?.length.toLocaleString()}{" "}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  {/* Mobile */}
-                                  <div
-                                    onClick={() => redirectToPost(i, post?.id)}
-                                    className="user--img--container mobile-only flex-column"
-                                  >
-                                    {
-                                     post?.contentType === "image" ?  
-                                      <img
-                                      loading="lazy"
-                                        style={{ width: "100%" }}
-                                        className="users__profile__image"
-                                        src={post?.contentURL}
-                                        alt={`post #${i}`}
-                                      />
-                                      : post?.contentType === "video" ?
-                                        <video className="users__profile__image" muted autoPlay loop disabled onContextMenu={() => false} contextMenu="users__profile__image"  src={post?.contentURL} />
-                                      : <h4>Not found</h4>
-                                   } 
-                                    <div className="user--img--cover">
-                                      <div className="flex-row">
-                                        <span className="mr-3">
-                                          <FaHeart /> {post?.likes?.people?.length.toLocaleString()}
-                                        </span>
-                                        <span>
-                                          <FaComment />{" "}
-                                          {post?.comments && post?.comments.length?.toLocaleString()}{" "}
                                         </span>
                                       </div>
                                     </div>

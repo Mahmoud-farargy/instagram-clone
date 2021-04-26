@@ -71,14 +71,16 @@ class Post extends PureComponent {
       this.setState({
         doubleLikeClicked: true,
       });
-      setTimeout(() => {
+     const timeout1 = setTimeout(() => {
         this.setState({
           doubleLikeClicked: false,
         });
+        clearTimeout(timeout1);
       }, 1100);
     }
-    setTimeout(() => {
+    const timeout2 = setTimeout(() => {
       resetCounter();
+      clearTimeout(timeout2);
     }, 1000);
   };
 
@@ -426,8 +428,8 @@ class Post extends PureComponent {
                 </div>
               ) : null}
 
-              <small className="post__date pb-2">
-                <GetFormattedDate date={postDate?.seconds} />
+              <small className="post__date pb-2 ">
+                <GetFormattedDate date={postDate?.seconds} /> • <time>{new Date(postDate?.seconds * 1000).toDateString()}</time>
               </small>
               {this.state.showInputForm && (
                 <form
@@ -465,7 +467,7 @@ class Post extends PureComponent {
           </article>
           {this.state.openOptionsModal && (
             <OptionsModal>
-              <span
+              <span className="text-danger font-weight-bold"
                 onClick={() => {
                   deletePost(postId, index, contentName);
                   this.setState({openOptionsModal:false})

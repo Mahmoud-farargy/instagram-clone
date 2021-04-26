@@ -35,7 +35,6 @@ const Header = (props) => {
   const [openSearchBox, setSeachBox] = useState(false);
   const [user] = useAuthState(auth);
   const [searchVal, setSearchVal] = useState("");
-  const [capitalizeWord, setCapitalizedWord] = useState("");
   const [openLogoutModal, setLogoutModal] = useState(false);
   const [scrolled, setScrollingState] = useState(false);
    // --xx--//
@@ -74,13 +73,16 @@ const Header = (props) => {
   useEffect(() => {
     if(_isMounted){
         window.addEventListener("scroll", () =>{
-        if(window.scrollY > 0 && headerRef && headerRef.current){
-          headerRef.current?.classList && headerRef.current.classList.add("shorter_header");
-          setScrollingState(true);
-        }else{
-          // setScrollingState(false);
-          headerRef.current?.classList && headerRef.current.classList.remove("shorter_header");
+        if(headerRef && headerRef.current){
+          if(window.scrollY > 0){
+            headerRef.current?.classList && headerRef.current.classList.add("shorter_header");
+            setScrollingState(true);
+          }else{
+            setScrollingState(false);
+            headerRef?.current?.classList && headerRef.current.classList.remove("shorter_header");
+          }
         }
+        
       })
     }
         
@@ -183,8 +185,8 @@ const Header = (props) => {
 
           <div className="search--bar--container">
             <input
-              value={capitalizeWord.charAt(0).toUpperCase() + searchVal.slice(1)}
-              onChange={(e) => {setSearchVal(e.target.value); setCapitalizedWord(e.target.value)}}
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
               type="text"
               className="search__input"
               aria-label="search bar"

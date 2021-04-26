@@ -1,0 +1,93 @@
+#homeReels{
+    display:block;
+    width: 100%;
+    padding: 10px 0;
+    background-color: #fff;
+    border: 1px solid var(--second--gray);
+    border: 1px solid rgb(219, 219, 219);
+    margin-bottom: 24px;
+    border-radius: 3px;
+    margin-top:0;
+    max-width: 614px;
+    overflow: hidden !important;
+    white-space: nowrap;
+    .home--reels--box, .home--reels--inner, .home--reels--ul{
+        overflow: hidden;
+        white-space: nowrap;
+    }
+        .home--reels--ul{
+            width:100%;
+                overflow-x:auto;
+                overflow-y: hidden;
+                max-width: 100%;
+                align-items:center;
+                padding-left:18px;
+                margin-bottom:0;
+                min-height: 50px;
+                align-content: flex-start;
+                transition: all 0.5 ease-in;
+                &::-webkit-scrollbar{
+                    width:0;
+                    display: none;
+                };
+                white-space: nowrap;
+            .home-reel-item{
+                margin-right:8px;
+                cursor: pointer;
+                .home-reel-container{
+                    justify-content:center;
+                    align-items: center;
+                    .reel--reel--inner{
+                        position: relative;
+                        border: 2px solid transparent;
+                        margin:auto;
+                        border-radius: 50%;
+                        width: 62px;
+                        height: 62px;
+                        justify-content: center;
+                        align-items:center;
+                        background-clip: padding-box;
+                        $border: 1px;
+                        min-height: 60px;
+                        z-index: 0;
+                        &::before{
+                            content: "";
+                            position: absolute;
+                            top: 0;
+                            bottom: 0;
+                            right:0;
+                            left:0;
+                            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 10%, #fd5949 45%,#d6249f 90%);
+                            -webkit-text-fill-color: transparent;
+                            border-radius: inherit;
+                            margin: -$border;
+                            z-index: -1;
+                        }
+                        .reels__icon{
+                            position: absolute;
+                            object-fit: contain;
+                            width: 54px;
+                            height: 54px;
+                            min-height: 54px;
+                            background-color: #fafafa;
+                        }   
+                    }
+                    .home--reel--user--name{
+                        white-space:nowrap;
+                        overflow: hidden;
+                        text-overflow:ellipsis;
+                        max-width: 74px;
+                        letter-spacing: 0.0.1em;
+                        display:block;
+                        font-size: 12px;
+                        font-weight:400;
+                        text-align:center;
+                    }
+                }
+        }
+    }
+   
+    @media only screen and (max-width: 670px){
+        margin:0;
+    }
+}

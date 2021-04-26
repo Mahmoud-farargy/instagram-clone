@@ -35,6 +35,9 @@ const Reels = lazy(() => import("../../Pages/Reels/Reels"));
 const About = lazy(() => import("../../Pages/About/About"));
 const Explore = lazy(() => import("../../Pages/Explore/Explore"));
 const ErrorRoute = lazy(() => import("../../Pages/ErrorRoute/ErrorRoute"));
+const MobileHeader = lazy(() =>  import("../../Components/MobileHeader/MobileHeader"));
+const MobileSearch = lazy(() => import("../../Pages/MobileSearch/MobileSearch"));
+const Suggestions = lazy(() => import("../../Pages/Suggestions/Suggestions"));
 //--xx---//
 
 const App = () => {
@@ -48,6 +51,7 @@ const App = () => {
     currentPage,
     changeMainState,
     returnPassword,
+    suggestionsList,
     modalsState,
     notify,
     changeModalState,
@@ -146,6 +150,7 @@ const App = () => {
             <Switch>
             <Route exact path="/">
               {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              <MobileHeader />
               <Home />
               <MobileNav />
               <Footer />
@@ -164,11 +169,13 @@ const App = () => {
             </Route>
             <Route exact path="/add-post">
               {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              <MobileHeader />
               <AddNewPost />
               <MobileNav />
             </Route>
             <Route exact path="/notifications">
               {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              <MobileHeader />
               {
                 receivedData && receivedData?.notifications ?
                  <MobileNotifications context={context} />
@@ -181,6 +188,7 @@ const App = () => {
             </Route>
             <Route exact path="/profile">
               {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              <MobileHeader />
               {
                 receivedData && Object.keys(receivedData).length > 0 ?
                 <MyProfile />
@@ -194,6 +202,7 @@ const App = () => {
             </Route>
             <Route path="/user-profile">
               {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              <MobileHeader />
               {
                 usersProfileData && Object.keys(usersProfileData).length > 0 && usersProfileData?.posts ? 
                 <UsersProfile />
@@ -206,6 +215,7 @@ const App = () => {
             </Route>
             <Route exact path="/browse-post">
               {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              <MobileHeader />
               {
                 Object.keys(usersProfileData).length > 0 && usersProfileData?.posts &&  usersProfileData?.posts[currentPostIndex?.index] ?
                 <PostPage />
@@ -217,6 +227,7 @@ const App = () => {
             </Route>
             <Route exact path="/edit-profile">
               {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              <MobileHeader />
               {
                  receivedData && Object.keys(receivedData).length > 0 && receivedData?.profileInfo?
                   <EditProfile />
@@ -237,6 +248,7 @@ const App = () => {
             </Route>
             <Route exact path="/explore">
             {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+            <MobileHeader />
               {  
                explore ?
                   <Explore/>
@@ -248,15 +260,36 @@ const App = () => {
             </Route>
             <Route exact path="/about">
                 {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+                <MobileHeader />
                 <About changeMainState={changeMainState} />
                 <MobileNav />
                 <Footer />
             </Route>
-            <Route path="*" >
+            <Route exact path="/search">
             {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
-            <ErrorRoute type="404"/>
+              <MobileHeader/>
+              <MobileSearch />
+              <MobileNav />
+              <Footer />
+            </Route>
+            <Route exact path="/explore/people/suggestions">
+            {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+            <MobileHeader />
+            {
+              suggestionsList && suggestionsList.length > 0 ?
+              <Suggestions />
+              :
+              <ErrorRoute type="403" />
+            }
             <MobileNav />
             <Footer />
+            </Route>
+            <Route path="*" >
+                {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+                <MobileHeader />
+                <ErrorRoute type="404"/>
+                <MobileNav />
+                <Footer />
             </Route>
             </Switch>
           </Suspense>
