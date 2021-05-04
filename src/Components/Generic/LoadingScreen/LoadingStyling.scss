@@ -4,12 +4,24 @@
     position:fixed;
     top:0;
     left:0;
-    z-index: 200;
-    background-color: rgb(238, 238, 238);
-    justify-content:center;
-    align-items:center;
+    z-index: 5000;
+    background-color: #fff;
+    margin-top: 50px;
+    overflow-x: hidden;
+    .loading--screen--inner{
+        height:70vh ;
+        background-color: rgb(238, 238, 238);
+        justify-content:center;
+        align-items:center;
+        @media only screen and (max-width:670px){
+            height:calc(100vh - 50px) ;
+        }
+    }
+    #header.main--header {
+        position: fixed;
+    }
     img{
-        min-width:70px;
+        width:130px;
         max-width: 200px;
         object-fit: contain;
     }

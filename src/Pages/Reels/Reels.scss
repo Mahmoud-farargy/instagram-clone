@@ -272,6 +272,15 @@
                                     border-radius: 5px;
                                 }
                             }
+                             
+                            .reel--num span{
+                                user-select:none;
+                                background-color: rgba(0,0,0,0.2);
+                                border-radius: 3px;
+                                font-size: 12px;
+                                padding: 2px 4px;
+                                color: #fff;
+                            }
                         }
                         .reel--header--right{
                             font-size: 18px;

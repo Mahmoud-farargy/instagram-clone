@@ -45,11 +45,17 @@
             display:block;
             line-height: 14px;
             font-weight:400;
-            color:#8e8e8e;
+            color:var(--second--gray);
             white-space: wrap !important;
             max-width: 90%;
 
         }
+        h2 {
+            font-size:14px;
+            font-weight: 600;
+            color: var(--second--gray);
+            margin-bottom: -2px;
+          }
         ::placeholder{
             text-transform: capitalize;
             font-size:14px;

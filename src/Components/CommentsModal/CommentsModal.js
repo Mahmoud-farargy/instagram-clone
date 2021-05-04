@@ -12,13 +12,13 @@ class CommentsModal extends PureComponent{
             replayData: {}
         }
     }
-    replayFunc(postOwnerName,commentIndex, postIndex, postId, postOwnerId, senderUid){
+    replayFunc(postOwnerName,commentIndex, postIndex, postId, postOwnerId, senderUid, commentId){
         if(this.inputField.current){
              this.inputField.current.focus();
         }
         this.setState({
             ...this.state,
-            replayData: {postOwnerName,commentIndex, postIndex, postId, postOwnerId, senderUid},
+            replayData: {postOwnerName,commentIndex, postIndex, postId, postOwnerId, senderUid, commentId},
             insertedComment: `@${postOwnerName} `
         })
     }
@@ -35,7 +35,7 @@ class CommentsModal extends PureComponent{
                  if( this.state.replayData !== {}   && /^[@]/.test(this.state.insertedComment)){
                  handleSubComments(this.state.replayData, this.state.insertedComment, receivedData?.userAvatarUrl, false, contentURL, contentType);
                 }else{//comment
-                    handleSubmittingComments("others",currentPostIndex?.index, uid, receivedData?.userName, this.state.insertedComment, receivedData?.userAvatarUrl, new Date(), id, postOwnerId, contentURL, contentType);
+                    handleSubmittingComments("others",currentPostIndex?.index, uid, receivedData?.userName, this.state.insertedComment, receivedData?.userAvatarUrl, id, postOwnerId, contentURL, contentType);
                 }
                 this.setState({
                     insertedComment: "",
@@ -86,7 +86,6 @@ class CommentsModal extends PureComponent{
                                         contentURL= {contentURL}
                                         changeModalState={changeModalState}
                                         deleteComment={onCommentDeletion}
-                                        posts={usersProfileData?.posts}
                                         />
                                     )
                                 })

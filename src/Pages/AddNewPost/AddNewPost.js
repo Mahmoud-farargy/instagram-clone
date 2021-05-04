@@ -70,50 +70,6 @@ class AddNewPost extends PureComponent {
     }
   };
 
-  // generateNewId = () => {
-  //   let char1 = "G";
-  //   let char2 = "j";
-  //   let char3 = "k";
-  //   let char4 = "M";
-  //   let char5 = "N";
-  //   let char6 = "Z";
-  //   var charRandom = () => {
-  //     return Math.floor(Math.random() * 6 + 1);
-  //   };
-  //   for (let i = 0; i < 5; i++) {
-  //     charRandom(); //calls the "charRandom" function repeatedly 6 time, each time a new character will be created.
-  //     switch (
-  //       charRandom() //determines which new char will be created for each variable
-  //     ) {
-  //       case 1:
-  //         char1 = "A";
-  //         break;
-  //       case 2:
-  //         char2 = "B";
-  //         break;
-  //       case 3:
-  //         char3 = "C";
-  //         break;
-  //       case 4:
-  //         char4 = "D";
-  //         break;
-  //       case 5:
-  //         char5 = "E";
-  //         break;
-  //       default:
-  //         char6 = "F";
-  //     }
-  //   }
-
-  //   const numRandom = () => {
-  //     return (
-  //       char1 + char2 + char3 + Math.random() * 9999 + 1 + char4 + char5 + char6
-  //     );
-  //   };
-
-  //   return numRandom();
-  // };
-
   resetState() {
     this.setState({
       ...this.state,
@@ -223,7 +179,7 @@ class AddNewPost extends PureComponent {
     let uploadedItem = w[0];
     const fileName = `${Math.random()}${uploadedItem.name}`;
     const metadata = {
-      contentType: uploadedItem !== "" ? uploadedItem?.type : null,
+      contentType: uploadedItem !== "" ? uploadedItem?.type : "",
     };
     //post
     if(this.state.method.toLowerCase() === Consts.Post){
@@ -232,7 +188,7 @@ class AddNewPost extends PureComponent {
             uploadedItem.size <= 12378523
           ) {
             const itemType = /image/g.test(metadata.contentType) ? "image" : "video";
-            if (uploadedItem.name.split("").length <= 250) {
+            if (uploadedItem.name.split("").length < 300) {
               const uploadContent = storage
                 .ref(`content/${receivedData?.uid}/${fileName}`)
                 .put(uploadedItem, metadata);
@@ -277,7 +233,7 @@ class AddNewPost extends PureComponent {
               );
             } else {
               notify(
-                `The name of the ${itemType} is too long. it should not exceed 250 characters`,
+                `The name of the ${itemType} is too long. it should not exceed 300 characters`,
                 "info"
               );
             }
@@ -371,7 +327,7 @@ class AddNewPost extends PureComponent {
                 <div>
                   {this.state.uploading ? (
                   <div className="uploading__in__progress flex-column">
-                    <h4 className="mb-3">Processing...</h4>
+                    <h4 className="mb-3">{ this.state.progressBarPercentage <= 0 ? "Preparing..": this.state.progressBarPercentage >= 100 ?  "Processing..." : "Uploading.." }</h4>
                     <Skeleton count={1} width={250} height={250} />
                   </div>
                 ) :  this.state.contentType ? 
@@ -413,7 +369,7 @@ class AddNewPost extends PureComponent {
                             type="select"
                             name="selectedReelGroup"
                             label="selected group"
-                            options={[ "New Group",... receivedData?.reels?.map(s => s?.groupName)]}
+                            options={[ "New Group",...receivedData?.reels?.map(s => s?.groupName)]}
                             val={this.state.selectedReelGroup}
                             changeInput={this.onInputChange}
                             submitted={this.state.submitted}

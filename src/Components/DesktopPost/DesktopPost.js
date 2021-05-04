@@ -27,6 +27,7 @@ import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 import GetFormattedDate from "../../Utilities/FormatDate";
+import Caption from "../../Components/Generic/Caption/Caption";
 
 const DesktopPost = (props) => {
   const { browseUser, disableArrows } = props;
@@ -47,11 +48,11 @@ const DesktopPost = (props) => {
     onCommentDeletion,
     handleFollowing,
     modalsState,
+    deletePost
   } = context;
   const [compState, setCompState] = useState({
     postLiked: false,
     insertedComment: "",
-    viewFullCaption: false,
     btnClicks: 0,
     doubleLikeClicked: false,
     replayData: {},
@@ -142,7 +143,6 @@ const DesktopPost = (props) => {
             receivedData?.userName,
             compState.insertedComment,
             receivedData?.userAvatarUrl,
-            new Date(),
             id,
             postOwnerId,
             contentURL,
@@ -163,7 +163,8 @@ const DesktopPost = (props) => {
     postIndex,
     postId,
     postOwnerId,
-    senderUid
+    senderUid,
+    commentId
   ) => {
     inputField.current.focus();
     setCompState({
@@ -175,12 +176,12 @@ const DesktopPost = (props) => {
         postId,
         postOwnerId,
         senderUid,
+        commentId
       },
       insertedComment: `@${postOwnerName} `,
     });
   };
   const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
-    changeModalState("options", false);
     handleUserBlocking(
       true,
       blockedUid,
@@ -232,63 +233,87 @@ const DesktopPost = (props) => {
     }
   };
   return (
-    <Fragment>
-      <section className="desktopPost flex-column">
-          <div
-              style={{
-                position: "fixed",
-                zIndex: "2000",
-                opacity: (modalsState?.options || modalsState?.comments ||modalsState?.users ) ? "1" : "0",
-                display: (modalsState?.options || modalsState?.comments ||modalsState?.users )  ? "block" : "none",
-                transition: "all 0.5s linear",
-              }}
-              className="backdrop"
-              onClick={() => changeModalState("users", false, "", "")}
-            ></div>
-        {modalsState?.options && (
-          <div>
-              <OptionsModal>
-              <span className="text-danger font-weight-bold"
-                onClick={() =>
-                  blockUser(
-                    usersProfileData?.uid,
-                    usersProfileData?.userName,
-                    usersProfileData?.userAvatarUrl,
-                    usersProfileData?.profileInfo &&
-                      usersProfileData.profileInfo?.name
-                      ? usersProfileData?.profileInfo?.name
-                      : ""
-                  )
-                }
-              >
-                {" "}
-                Block user
-              </span>
-              <span className={`font-weight-bold ${isFollowed ? "text-danger" : "text-primary"}`} onClick={() => handleFollowing(
-                            isFollowed,
-                            usersProfileData?.uid,
-                            usersProfileData?.userName,
-                            usersProfileData?.userAvatarUrl,
-                            uid,
-                            receivedData?.userName,
-                            receivedData?.userAvatarUrl
-                            )}>
-                        {isFollowed ? "Unfollow" : "Follow"}
-              </span>
-              <span onClick={() => changeModalState("options", false)}>
-                {" "}
-                Cancel
-              </span>
-            </OptionsModal>
-          </div>
-          
-        )}
+    <Fragment> 
         <span
           className="post--modal--close"
           onClick={() => changeModalState("users", false, "", "")}
         >
           &times;
         </span>
+        
+     {(modalsState?.comments || modalsState?.users) &&  <div
+              style={{
+                position: "fixed",
+                zIndex: "1600",
+                opacity: "1",
+                display: ( modalsState?.comments ||modalsState?.users ) ? "block" : "none",
+                transition: "all 0.5s linear",
+              }}
+              className="backdrop"
+              onClick={() => changeModalState("users", false, "", "")}
+          ></div>}
+      <section className="desktopPost flex-column">
+
+        {modalsState?.options && (
+          <div>
+              <OptionsModal>
+               {
+                  usersProfileData?.uid === receivedData?.uid ?
+                  <span className="text-danger font-weight-bold" onClick={() => deletePost( usersProfileData?.posts[currentPostIndex?.index]?.id, currentPostIndex?.index, usersProfileData?.posts[currentPostIndex?.index]?.contentName, usersProfileData?.posts[currentPostIndex?.index]?.contentURL )}>
+                          Delete post
+                  </span>
+                  :
+                  <div>
+                    <span className="text-danger font-weight-bold"
+                      onClick={() =>
+                        blockUser(
+                          usersProfileData?.uid,
+                          usersProfileData?.userName,
+                          usersProfileData?.userAvatarUrl,
+                          usersProfileData?.profileInfo &&
+                            usersProfileData.profileInfo?.name
+                            ? usersProfileData?.profileInfo?.name
+                            : ""
+                        )
+                      }
+                    >
+                      {" "}
+                      Block this user
+                    </span>
+                    <span className={`font-weight-bold ${isFollowed ? "text-danger" : "text-primary"}`} onClick={() => handleFollowing(
+                                  isFollowed,
+                                  usersProfileData?.uid,
+                                  usersProfileData?.userName,
+                                  usersProfileData?.userAvatarUrl,
+                                  uid,
+                                  receivedData?.userName,
+                                  receivedData?.userAvatarUrl
+                                  )}>
+                              {isFollowed ? "Unfollow" : "Follow"}
+                    </span>
+                </div>
+               } 
+              <span onClick={() => changeModalState("options", false)}>
+                {" "}
+                Cancel
+              </span>
+            </OptionsModal>
+            <div
+              style={{
+                position: "fixed",
+                zIndex: "1500",
+                opacity: "1",
+                height: "100vh",
+                width: "100%",
+                display:  "block",
+                transition: "all 0.5s linear",
+              }}
+              className="backdrop"
+              onClick={() => changeModalState("options", false)}
+          ></div>
+          </div>
+          
+        )}
         <div className="d--post--container flex-column">
           <span
             className={
@@ -358,7 +383,7 @@ const DesktopPost = (props) => {
                     </div>
                   ) : null}
                 </div>
-                <div className="desktop--right">
+                <div className="desktop--right desktop-only">
                   <div className="post--card--header flex-row">
                     <header className="post--header--avatar flex-row">
                       <Avatar
@@ -400,9 +425,7 @@ const DesktopPost = (props) => {
                     <span
                       className="post--header--options"
                       onClick={() =>
-                        usersProfileData?.uid !== receivedData?.uid
-                          ? changeModalState("options", true)
-                          : null
+                        changeModalState("options", true)
                       }
                     >
                       <HiDotsHorizontal />
@@ -430,7 +453,6 @@ const DesktopPost = (props) => {
                             contentURL={contentURL}
                             changeModalState={changeModalState}
                             deleteComment={onCommentDeletion}
-                            posts={usersProfileData?.posts}
                           />
                         );
                       })}
@@ -484,28 +506,7 @@ const DesktopPost = (props) => {
                         {likes?.people?.length === 1 ? "like" : "likes"}
                       </div>
                     ) : null}
-                    <span className="post__caption flex-row">
-                      <strong>{usersProfileData?.userName}</strong>{" "}
-                      {!compState.viewFullCaption ? (
-                        <p>
-                          <TruncateMarkup
-                            line={4}
-                            ellipsis="...more"
-                            style={{ cursor: "pointer" }}
-                            onClick={() =>
-                              setCompState({
-                                ...compState,
-                                viewFullCaption: true,
-                              })
-                            }
-                          >
-                            {caption && caption}
-                          </TruncateMarkup>
-                        </p>
-                      ) : (
-                        <p className="article__post">{caption && caption}</p>
-                      )}
-                    </span>
+                  <Caption caption={caption} userName={usersProfileData?.userName} />
 
                     <small className="post__date">
                       <GetFormattedDate date={date?.seconds} /> • <time>{new Date(date?.seconds * 1000).toDateString()}</time>

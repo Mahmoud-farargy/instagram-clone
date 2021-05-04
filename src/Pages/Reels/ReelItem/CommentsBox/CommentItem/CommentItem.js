@@ -28,7 +28,7 @@ const CommentItem = (props) => {
                         <span><GetFormattedDate date={comment?.postDate?.seconds} ago /></span>
                   } 
                     {/* {
-                        comment?.uid === uid && (<span style={{cursor:"pointer"}} className="ml-1" onClick={() => deleteComment("comment", comment?.uid, comment?.postId, comment?.commentId ,postIndex,commentIndex,null, null, postOwnerId, posts)}>Delete</span>)
+                        comment?.uid === uid && (<span style={{cursor:"pointer"}} className="ml-1" onClick={() => deleteComment("comment", comment?.uid, comment?.postId, comment?.commentId ,postIndex,commentIndex,null, null, postOwnerId, posts, notiArr)}>Delete</span>)
                     }                              */}
                </div>
                     

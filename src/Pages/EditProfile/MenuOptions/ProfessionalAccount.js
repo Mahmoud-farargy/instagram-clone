@@ -21,19 +21,23 @@ const ProfessionalAccount = (props) => {
   const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser } = useContext(AppContext);
   //useState
   const [formState, setForm] = useState({
-    professionalAcc: { category: "", show: true, status: true, suggested: true, reelsForFollowing: false},
+    professionalAcc: { category: "", show: true, status: true, suggested: true, reelsForFollowing: false, notificationBell:{state: true, type: "Both"}},
     catOptions: CategoryList,
     submitted: false,
   });
-
   //--x-end of useState-x--//
   const onInputChange = (val, name) => {
+      setForm({
+        ...formState,
+        professionalAcc: { ...formState?.professionalAcc, [name]: val },
+      });
+  };
+  const onNotificationInputChange = (val, name) => {
     setForm({
       ...formState,
-      professionalAcc: { ...formState?.professionalAcc, [name]: val },
+      professionalAcc: { ...formState.professionalAcc, notificationBell:{...formState.professionalAcc.notificationBell, [name]: val} },
     });
-  };
-
+  }
   useEffect(() => {
     setForm({
       ...formState,
@@ -144,13 +148,34 @@ const ProfessionalAccount = (props) => {
             <div id="input--form--field">
               <div className=" form-group flex-column">
                 <div className="prof--input--row flex-row">
-                     <label htmlFor="reelsForFollowing">Show reels of only people you follow</label>
+                     <label htmlFor="reelsForFollowing">Show reels of only people I follow</label>
                 <CheckboxIOS checked={(formState?.professionalAcc?.reelsForFollowing || false)} changeInput={onInputChange} id="reelsForFollowing" name="reelsForFollowing" />
                 </div>
               </div>
-              
             </div>
-           
+            
+            <div id="input--form--field">
+              <div className=" form-group flex-column">
+                <div className="prof--input--row flex-row">
+                     <label htmlFor="notificationBell">Notification Bell</label>
+                <CheckboxIOS checked={(formState?.professionalAcc?.notificationBell?.state)} changeInput={onNotificationInputChange} id="notificationBell" name="state" />
+                </div>
+              </div>
+           {
+             formState?.professionalAcc?.notificationBell?.state &&
+              <div>
+              <InputForm
+                  type="select"
+                  changeInput={onNotificationInputChange}
+                  label="notify me on: "
+                  name="type"
+                  options={["New Updates", "New Messages", "Both"]}
+                  submitted={formState?.submitted}
+                  val={formState?.professionalAcc?.notificationBell?.type}
+                />
+              </div>
+           }  
+            </div>
           </Suspense>
           <div className="form--btns flex-row">
             <input

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useContext, Suspense, lazy} from "react";
+import React, { Fragment, useEffect, useContext, Suspense, lazy, useState} from "react";
 import { Switch, Route, useHistory } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { db, auth, changeConnectivityStatus} from "../../Config/firebase";
@@ -12,6 +12,7 @@ import $ from "jquery";
 import Header from "../Header/Header";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
 import * as Consts from "../../Utilities/Consts";
+import notificationSound from "../../Assets/Sounds/NotificationBell.mp3";
 
 //lazy loading
 const UsersModal = lazy(()=> import( "../../Components/UsersModal/UsersModal"));
@@ -50,7 +51,7 @@ const App = () => {
     updateSuggestionsList,
     currentPage,
     changeMainState,
-    returnPassword,
+    // returnPassword,
     suggestionsList,
     modalsState,
     notify,
@@ -64,6 +65,7 @@ const App = () => {
   const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
   const [user,loading] = useAuthState(auth);
   const history = useHistory();
+  const [toggledNotiBell, setNotiBell] = useState(false);
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
@@ -83,7 +85,7 @@ const App = () => {
       } else {
         const recievedAuth = localStorage.getItem("user");
         if (recievedAuth) {
-            //attempting to log in again using local storage data
+            //attempts to log in again using local storage data
           //   debugger
           // const { email, password } = JSON.parse(recievedAuth);
           // auth.signInWithEmailAndPassword(email, returnPassword(password));
@@ -102,12 +104,45 @@ const App = () => {
     };
   }, []);
   useEffect(() => {
+    const notificationBellOption = receivedData?.profileInfo?.professionalAcc?.notificationBell;
+    const notificationBellType = notificationBellOption?.type?.toLowerCase();
+  
+    if(notificationBellOption?.state && notificationBellOption?.type && !toggledNotiBell){
+        const lastUpdate = receivedData?.notifications?.list?.sort((a,b ) => b.date.seconds - a.date.seconds)[0];
+        const lastMessage = receivedData?.messages?.sort((a, b) => b?.lastMsgDate - a?.lastMsgDate)[0];
+        const checkIfTimePassed = (time) => {
+            const twentySecs = 20*1000;
+            const dateNow =  new Date();
+           return dateNow - new Date(time * 1000) < twentySecs;
+        }
+        const diffTimesUpdate = checkIfTimePassed(lastUpdate?.date?.seconds);
+        const diffTimesMsg = checkIfTimePassed(lastMessage?.date?.seconds);
+        // Note to self 1*40*1000 = 1 minute,  5*40*1000 = 5 minutes,  10*40*1000 = 10 minutes ...
+       //checks if latest received element's date is less than a minutes ago
+        const timePassed = notificationBellType === "new updates" ? diffTimesUpdate : notificationBellType === "new messages" ? diffTimesMsg : (diffTimesUpdate || diffTimesMsg);
+         const bellSound = new Audio(notificationSound)
+         if((timePassed && lastUpdate?.uid !== receivedData?.uid)){
+            setNotiBell(true);
+            bellSound.play();
+            const stopBell = setTimeout(() => {
+                setNotiBell(false);
+                const reverseBell = setTimeout(() => {
+                    bellSound.pause();
+                    clearTimeout(reverseBell);
+                    clearTimeout(stopBell);
+                  },3000);
+              },300);
+        }
+    }
+  },[receivedData?.notifications]);
+
+  useEffect(() => {
     $(document).ready(() => {
-      if (isAnyModalOpen) {
+      if (isAnyModalOpen) { //we could also use a ref in here
         $("body").css("overflow", "hidden");
        
       } else {
-        $("body").css("overflow", "auto");
+        $("body").css("overflow", "visible");
       }
     });
   }, [isAnyModalOpen]);
@@ -117,9 +152,10 @@ const App = () => {
     document.title = `${currentPage && currentPage + " • "}${AppConfig.title}`;
     if(!navigator.onLine){
       notify("You are Offline! Please reconnect and try again.", "error");
-      history.push("/auth");
+      history.replace("/auth");
     }
   }, [currentPage]);
+  
   return (
     <Fragment>
       <main>
@@ -139,7 +175,7 @@ const App = () => {
               className="backdrop"
               onClick={() => changeModalState("users", false, "", "")}
             ></div>
-          {loading && <div className="global__loading"></div>}          
+          {loading && <div className="global__loading"><span className="global__loading__inner"></span></div>}          
         </Suspense>
         
         {/* Notifications container */}
@@ -149,7 +185,7 @@ const App = () => {
           <Suspense fallback={<LoadingScreen />}>
             <Switch>
             <Route exact path="/">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              {(user && receivedData && Object.keys(receivedData).length) > 0 ? <Header/> : <LoadingScreen />}
               <MobileHeader />
               <Home />
               <MobileNav />

@@ -119,7 +119,7 @@ const Extra = () => {
                       }  
                     </div>
                  
-                    <div className={classes.root} className="rating--box">
+                    <div className={`rating--box ${classes.root}`}>
 
                               <Rating
                                   name="hover-feedback"

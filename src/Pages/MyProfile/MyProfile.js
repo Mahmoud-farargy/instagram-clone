@@ -8,8 +8,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { GoVerified } from "react-icons/go";
 import { IoMdGrid } from "react-icons/io";
 import { RiLayoutRowLine } from "react-icons/ri";
-import { FaHeart } from "react-icons/fa";
-import { FaComment } from "react-icons/fa";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 import * as Consts from "../../Utilities/Consts";
@@ -18,6 +16,7 @@ import appleStore from "../../Assets/get-app-apple.png";
 import gpStore from "../../Assets/get-app-gp.png";
 import { HiOutlinePlus } from "react-icons/hi";
 import { FiLogOut } from "react-icons/fi";
+import ProfileItem from "../../Components/ProfileItem/ProfileItem";
 
 const MyProfile =(props)=>{
     const [,loading] = useAuthState(auth);
@@ -29,13 +28,16 @@ const MyProfile =(props)=>{
     const openPost = (postId,index) =>{
         if(index !== -1){
               changeMainState("currentPostIndex", { index: index, id: postId });
-            getUsersProfile(uid).then(() => {
-                if((window.innerWidth || document.documentElement.clientWidth) >= 670){
-                    changeModalState("post", true);
-                }else{
-                    props.history.push("/browse-post");
-                }
-            });
+              if(uid){
+                    getUsersProfile(uid).then(() => {
+                    if((window.innerWidth || document.documentElement.clientWidth) >= 670){
+                        changeModalState("post", true);
+                    }else{
+                        props.history.push("/browse-post");
+                    }
+                });
+              }
+
         }
     }
     const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
@@ -197,28 +199,7 @@ const MyProfile =(props)=>{
                 {
                  receivedData?.posts?.length >=1 && !loading ?
                     <div className={grid ? "users--profile--posts" : "users--profile--rowLine flex-column"}>
-                        {receivedData?.posts?.map((post, i)=>{
-                                        return (
-                                            <div key={post?.id+i} className="profile--posts--container">   
-                                                <div className="user--img--container flex-column" onClick={() => openPost(post?.id,i)}>
-                                                       {
-                                                           post?.contentType === "image" ?
-                                                            <img style={{width:"100%"}} loading="lazy"  className="users__profile__image" src={post?.contentURL} alt={`post #${i}`} />
-                                                           : post?.contentType === "video" ?
-                                                           <video disabled muted autoPlay loop src={post?.contentURL} className="users__profile__image" contextMenu="users__profile__image" onContextMenu={() => false} />
-                                                           : <h4>Not found</h4>
-                                                       }
-
-                                                        <div className="user--img--cover">
-                                                                <div className="flex-row">
-                                                                        <span className="mr-3"><FaHeart/> {post?.likes?.people?.length.toLocaleString()}</span>
-                                                                        <span><FaComment/> {post?.comments.length && post?.comments.length?.toLocaleString() } </span>
-                                                                </div>
-                                                        </div>
-                                                </div>                                                
-                                            </div>
-                                        )
-                                })}
+                        {receivedData?.posts?.map((post, index)=> <ProfileItem key={post?.id + index} post={post} openPost={openPost} index={index} />)}
                     </div>
                             : loading ?
                                 (<Skeleton count={10} height={250} width={250} className="mt-4 mr-4 mx-auto"  />)

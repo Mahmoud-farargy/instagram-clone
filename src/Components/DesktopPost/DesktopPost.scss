@@ -1,3 +1,13 @@
+.post--modal--close{
+    position: fixed;
+    top: 7%;
+    right:7%;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index:1800;
+    padding: 1px 8px;
+}
 .desktopPost{
     width:880px;
     height:80%;
@@ -9,6 +19,11 @@
     z-index:1500;
     align-items:center;
     justify-content: center;
+    @media only screen and (max-width:670px){
+        width: 100%;
+        height: 100%;
+    }
+
     .desktop--left{
         min-height: 500px;
         display:flex;
@@ -28,7 +43,6 @@
             .desktop__left__arrow, .desktop__right__arrow{
                 position: absolute;
                 top:50%;
-                
                 svg{
                     width:40px;
                     height:40px;
@@ -36,7 +50,6 @@
                 }
                 cursor:pointer;
                 display:block;
-                
             }
             .desktop__left__arrow{
                 left:0;
@@ -52,6 +65,7 @@
                 background-color: #fff;
                 width:90%;
                 min-height: 500px;
+                max-height: 570px;
                 margin: 0 auto;
                 .post--card--article{
                     width:100%;
@@ -67,9 +81,10 @@
                         }
                     }
                     .post--comments--layout{
-                        min-height:150px;
-                        max-height:240px;
+                        min-height:200px;
+                        max-height:270px;
                         overflow-y:auto !important;
+                        padding:10px 10px 50px;
                     }
                     .desktop--right{
                         height: 100%;
@@ -88,9 +103,6 @@
                             width:100%;
                             border-top:1px solid #efefef;
                         }
-                        .post--comments--layout{
-                            padding: 10px;
-                        }
                     }
                     @media only screen and (max-width: 670px){
                         grid-template-columns: 100% 100%;
@@ -99,17 +111,10 @@
                 }
             }
     }
-    .post--modal--close{
-        position: absolute;
-        top: 0px;
-        right:0px;
-        font-size: 30px;
-        font-weight: bold;
-        cursor: pointer;
-        z-index:1500;
-        padding: 1px 8px;
-    }
-    .d--post--container .desktop__left__arrow svg, .d--post--container .desktop__right__arrow svg, .post--modal--close{
+
+    
+}
+.desktopPost .d--post--container .desktop__left__arrow svg,.desktopPost .d--post--container .desktop__right__arrow svg, .post--modal--close{
         color: rgb(232, 231, 231);
         opacity: 0.9;
         transition: color 0.2s linear;
@@ -117,4 +122,3 @@
             color: #fff;
         }
     }
-}

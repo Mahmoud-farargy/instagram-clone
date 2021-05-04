@@ -32,8 +32,9 @@ const MobileSearch = () => {
     }, [])
     return (
         <Fragment>
+          <div className="desktop-comp">
             <div id="mobileSearch">
-                <div className="desktop-comp">
+               
                     <div className="mobile--search--inner">
                     {/* search */}
                         <div className="mobile--search--box mobile-only">

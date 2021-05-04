@@ -15,14 +15,14 @@ import { withRouter } from "react-router-dom";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 import GetFormattedDate from "../../Utilities/FormatDate";
+import Caption from "../../Components/Generic/Caption/Caption";
 
 const PostPage  = (props) => {
   const context = useContext(AppContext);
-  const {changeMainState, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleFollowing,  handleUserBlocking, modalsState,handleLikingComments, onCommentDeletion } = context;
+  const { changeMainState, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleFollowing,  handleUserBlocking, modalsState,handleLikingComments, onCommentDeletion, deletePost } = context;
   const [compState, setCompState] = useState({
         postLiked: false,
         insertedComment: "",
-        viewFullCaption: false,
         btnClicks: 0,
         doubleLikeClicked: false,
         replayData: {},
@@ -124,7 +124,6 @@ const PostPage  = (props) => {
             receivedData?.userName,
             compState.insertedComment,
             receivedData?.userAvatarUrl,
-            new Date(),
             id,
             postOwnerId,
             contentURL,
@@ -158,54 +157,48 @@ const PostPage  = (props) => {
     });
   }
   const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
-    changeModalState("options", false);
     handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() => props.history.push("/"));
   }
-    // var {
-    //   usersProfileData,
-    //   currentPostIndex,
-    //   uid,
-    //   receivedData,
-    //   handleLikingComments,
-    //   currentPostIndex,
-    //   changeModalState,
-    //   modalsState,
-    // } = this.context;
-    // if (usersProfileData?.posts) {
-    //   var {caption = "",contentType = "",contentURL = "",comments = [],likes = [],location = "",date = "",postOwnerId = ""} = usersProfileData?.posts[currentPostIndex?.index];
-    //   var isVerified = usersProfileData?.isVerified;
-    // }
-    // useEffect(() => {
-        var {caption = "",contentType,contentURL = "",comments = [],likes= {},location = "",date = {},postOwnerId = ""} = usersProfileData?.posts[currentPostIndex?.index];       
-        var isVerified = usersProfileData?.isVerified;
-    // },[usersProfileData]);
-    
+    var {caption = "",contentType,contentURL = "",comments = [],likes= {},location = "",date = {},postOwnerId = ""} = usersProfileData?.posts[currentPostIndex?.index];       
+    var isVerified = usersProfileData?.isVerified;
     const isFollowed = receivedData?.following?.length && receivedData?.following.some((item) => item?.receiverUid === usersProfileData?.uid);
     return (
       <Fragment>
         {
           modalsState?.options &&
           (<OptionsModal>
-              <span className="text-danger font-weight-bold"
-                onClick={() => blockUser(usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, usersProfileData?.profileInfo && usersProfileData.profileInfo?.name ? usersProfileData?.profileInfo?.name : "" )} >
-                {" "}
-                Block user
-              </span>
-              <span className={`text-danger font-weight-bold ${isFollowed ? "text-danger" : "text-primary"}`} onClick={() => handleFollowing(
-                          isFollowed,
-                          usersProfileData?.uid,
-                          usersProfileData?.userName,
-                          usersProfileData?.userAvatarUrl,
-                          uid,
-                          receivedData?.userName,
-                          receivedData?.userAvatarUrl
-                          )}>
-                {isFollowed? "Unfollow" : "Follow"}
-              </span>
-              <span onClick={() => changeModalState("options",false)}>
-                {" "}
-                Cancel
-              </span>
+            <div>
+                {
+                    usersProfileData?.uid === receivedData?.uid ?
+                    <span className="text-danger font-weight-bold" onClick={() => deletePost( usersProfileData?.posts[currentPostIndex?.index]?.id, currentPostIndex?.index, usersProfileData?.posts[currentPostIndex?.index]?.contentName, usersProfileData?.posts[currentPostIndex?.index]?.contentURL )}>
+                            Delete post
+                    </span>
+                    :
+                  <div>
+                      <span className="text-danger font-weight-bold"
+                      onClick={() => blockUser(usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, usersProfileData?.profileInfo && usersProfileData.profileInfo?.name ? usersProfileData?.profileInfo?.name : "" )} >
+                      {" "}
+                      Block this user
+                    </span>
+                    <span className={`font-weight-bold ${isFollowed ? "text-danger" : "text-primary"}`} onClick={() => handleFollowing(
+                                isFollowed,
+                                usersProfileData?.uid,
+                                usersProfileData?.userName,
+                                usersProfileData?.userAvatarUrl,
+                                uid,
+                                receivedData?.userName,
+                                receivedData?.userAvatarUrl
+                                )}>
+                      {isFollowed? "Unfollow" : "Follow"}
+                    </span>
+                    
+                </div>
+              
+              }
+              <span> Cancel </span>
+            </div>
+            
+
            
           </OptionsModal>)
         }
@@ -252,7 +245,7 @@ const PostPage  = (props) => {
                     </span>
                   </div>
                 </header>
-                <span className="post--header--options" onClick={() => usersProfileData?.uid !== receivedData?.uid ? changeModalState("options", true) : null}>
+                <span className="post--header--options" onClick={() => changeModalState("options", true)}>
                   <HiDotsHorizontal />
                 </span>
               </div>
@@ -338,23 +331,8 @@ const PostPage  = (props) => {
                     {likes?.people?.length === 1 ? "like" : "likes"}
                   </div>
                 ) : null}
-                <span className="post__caption flex-row">
-                  <strong>{usersProfileData?.userName}</strong>{" "}
-                  {!compState.viewFullCaption ? (
-                    <p>
-                      <TruncateMarkup
-                        line={4}
-                        ellipsis="...more"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setCompState({...compState,viewFullCaption: true })}
-                      >
-                        {caption && caption}
-                      </TruncateMarkup>
-                    </p>
-                  ) : (
-                    <p className="article__post">{caption && caption}</p>
-                  )}
-                </span>
+                <Caption caption={caption} userName={usersProfileData?.userName}/>
+
                 {comments?.length >= 1 ? (
                   <div className="post--comments--layout" ref={autoScroll}>
                     {comments?.length > 1 ? (
@@ -386,7 +364,6 @@ const PostPage  = (props) => {
                           contentURL={contentURL}
                           changeModalState={changeModalState}
                           deleteComment={onCommentDeletion}
-                          posts={usersProfileData?.posts}
                         />
                       );
                     })}

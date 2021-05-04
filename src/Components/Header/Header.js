@@ -254,6 +254,7 @@ const Header = (props) => {
                   exact
                   to="/"
                   activeClassName={!openNoti ? "active-nav-link" : ""}
+                  aria-label="Home"
                 >
                   <HiHome style={{ fontSize: "26px" }} />
                 </NavLink>
@@ -265,6 +266,7 @@ const Header = (props) => {
                       onClick={() => reverseNotiState("isNewMsg")}
                       to="/messages"
                       activeClassName={!openNoti ? "active-nav-link" : ""}
+                      aria-label="Messages"
                     >
                       <FaFacebookMessenger />
                       {receivedData?.notifications?.isNewMsg &&
@@ -277,6 +279,7 @@ const Header = (props) => {
                     <NavLink
                       to="/explore"
                       activeClassName={!openNoti ? "active-nav-link" : ""}
+                      aria-label="Find People"
                     >
                       <IoIosCompass className="compass__explore__icon" />
                      
@@ -286,6 +289,7 @@ const Header = (props) => {
                     <NavLink
                       to="/add-post"
                       activeClassName={!openNoti ? "active-nav-link" : ""}
+                      aria-label="Add New"
                     >
                       <BsFillPlusCircleFill />
                     </NavLink>

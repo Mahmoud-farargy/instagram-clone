@@ -1,8 +1,11 @@
 #suggestionsPage{
+    .desktop-comp{
+        margin:0 auto;
+    }
     .suggestions--p--inner{
         width: 60%;
         margin: 5px auto;
-        
+        padding: 7px;
         h4{
             font-size:16px;
             font-weight:600;
@@ -15,7 +18,7 @@
             padding:10px;
             margin:0;
             background-color: #fff;
-           
+            width: 100%;
             overflow-y:auto;
             .suggest--item--container{
                 width: 100%;
@@ -31,6 +34,9 @@
                         margin:0;
                         padding: 0;;
                     }
+                }
+                button:focus{
+                    outline: none;
                 }
             }
         }
