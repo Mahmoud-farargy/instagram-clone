@@ -1,5 +1,8 @@
-#mobileSearch{
+#mobileSearch{ 
     .mobile--search--inner{
+        #explore .desktop-comp{
+            padding-top:0 !important;
+        }
         padding: 8px 15px 0 15px ;
         .mobile--search--box{
             width: 100%;

@@ -64,7 +64,8 @@ const AuthPage = (props) => {
       updateUserState,
       notify,
       receivedData,
-      currentUser
+      currentUser,
+      authLogout
     } = context;
     setLoading(true);
     if (authType === "signUp") {
@@ -104,8 +105,8 @@ const AuthPage = (props) => {
                           profileInfo: {
                             bio: "",
                             website: "",
-                            gender: "",
-                            status: "",
+                            gender: "Male",
+                            status: "Single",
                             name: "",
                             phoneNumber: "",
                             professionalAcc: {
@@ -113,8 +114,10 @@ const AuthPage = (props) => {
                               category: "Just For Fun",
                               suggested: true,
                               status: true,
-                              reelsForFollowing: false
+                              reelsForFollowing: false,
+                              notificationBell:{state: true, type: "Both"}
                             },
+                            sort:{sortBy: "Random", sortDirection: "Descending"},
                             accountCreationDate: new Date(),
                             registrationMethod: "email"
                           },
@@ -175,7 +178,7 @@ const AuthPage = (props) => {
             } else {
               setLoading(false);
               notify(
-                "Password should be between 8 to 20 characters and contains at least one number, one lowecase letter and one uppercase letter.",
+                "Password should be between 8 and 20 characters, and contains at least one number, one lowecase letter and one uppercase letter.",
                 "error"
               );
             }
@@ -184,6 +187,7 @@ const AuthPage = (props) => {
             notify("Please type a valid email", "error");
           }
         } else{
+          authLogout(props.history);
           setLoading(false);
         }
       }, 1000);
@@ -250,8 +254,8 @@ const AuthPage = (props) => {
                       profileInfo: {
                         bio: "",
                         website: "",
-                        gender: "",
-                        status: "",
+                        gender: "Male",
+                        status: "Single",
                         name: (given_name || ""),
                         phoneNumber: "",
                         professionalAcc: {
@@ -259,8 +263,10 @@ const AuthPage = (props) => {
                           category: "Just For Fun",
                           suggested: true,
                           status: true,
-                          reelsForFollowing: false
+                          reelsForFollowing: false,
+                          notificationBell:{state: true, type: "Both"}
                         },
+                        sort:{sortBy: "Random", sortDirection: "Descending"},
                         accountCreationDate: new Date(),
                         registrationMethod: "google"
                       },
@@ -324,8 +330,8 @@ const AuthPage = (props) => {
                     profileInfo: {
                       bio: "",
                       website: "",
-                      gender: "",
-                      status: "",
+                      gender: "Male",
+                      status: "Single",
                       name: "",
                       phoneNumber: "",
                       professionalAcc: {
@@ -333,8 +339,10 @@ const AuthPage = (props) => {
                         category: "Just For Fun",
                         suggested: true,
                         status: true,
-                        reelsForFollowing: false
+                        reelsForFollowing: false,
+                        notificationBell:{state: true, type: "Both"}
                       },
+                      sort:{sortBy: "Random", sortDirection: "Descending"},
                       accountCreationDate: new Date(),
                       registrationMethod: "twitter"
                     },
@@ -393,8 +401,8 @@ const AuthPage = (props) => {
                       profileInfo: {
                         bio: bio ? bio : "",
                         website: "",
-                        gender: "",
-                        status: "",
+                        gender: "Male",
+                        status: "Single",
                         name: "",
                         phoneNumber: "",
                         professionalAcc: {
@@ -402,8 +410,10 @@ const AuthPage = (props) => {
                           category: "Just For Fun",
                           suggested: true,
                           status: true,
-                          reelsForFollowing: false
+                          reelsForFollowing: false,
+                          notificationBell:{state: true, type: "Both"}
                         },
+                        sort:{sortBy: "Random", sortDirection: "Descending"},
                         accountCreationDate: new Date(),
                         registrationMethod: "github"
                       },
@@ -618,14 +628,6 @@ const AuthPage = (props) => {
                     >
                       <input
                         required
-                        autoFocus
-                        value={signUpEmail}
-                        onChange={(e) => setSignUpEmail(e.target.value)}
-                        type="email"
-                        placeholder="Email"
-                      />
-                      <input
-                        required
                         value={
                           capitalizeName.charAt(0).toUpperCase() +
                           signUpUsername.slice(1)
@@ -636,6 +638,14 @@ const AuthPage = (props) => {
                         }}
                         type="text"
                         placeholder="Username"
+                      />
+                      <input
+                        required
+                        autoFocus
+                        value={signUpEmail}
+                        onChange={(e) => setSignUpEmail(e.target.value)}
+                        type="email"
+                        placeholder="Email"
                       />
                       <input
                         required

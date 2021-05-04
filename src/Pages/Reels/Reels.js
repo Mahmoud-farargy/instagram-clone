@@ -31,7 +31,7 @@ function Reels(props) {
                         {
                             !loading ?
                            reelsProfile?.reels?.length > 0 && reelsProfile?.reels?.[currentReel?.groupIndex]?.reelItems && reelsProfile?.reels[currentReel?.groupIndex]?.reelItems?.sort((a,b) => b.date.seconds - a.date.seconds ).map((reel, i) => {
-                                return <ReelItem setCurrPlayingReel={setCurrPlayingReel} currentPlayingReel={currentPlayingReel} key={i} groupName={reelsProfile?.reels?.[currentReel?.groupIndex]?.groupName} index={i} item={reel}/>
+                                return <ReelItem setCurrPlayingReel={setCurrPlayingReel} currentPlayingReel={currentPlayingReel} key={i} maxLength={(reelsProfile?.reels?.[currentReel?.groupIndex]?.reelItems?.length ? reelsProfile?.reels?.[currentReel?.groupIndex]?.reelItems?.length : NaN)} groupName={reelsProfile?.reels?.[currentReel?.groupIndex]?.groupName} index={i} item={reel}/>
                                 })
 
                             :

@@ -1,6 +1,6 @@
 #optionsModal {
   position: fixed;
-  z-index: 2500;
+  z-index: 2600;
   top: 50%;
   left: 50%;
   margin: 0;
@@ -9,6 +9,7 @@
   @media only screen and (max-width: 670px) {
     width: 80%;
     margin: 0 auto;
+    z-index: 5800;
   }
   .optionsM--container--inner {
     background-color: #fafafa;

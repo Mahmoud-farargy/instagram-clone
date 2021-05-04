@@ -51,7 +51,7 @@ const EditProfileOption = (props) => {
   let isFormValid = true; //makes sure all fields are filled and at least one of the fields does not match the already existing data
   if (Object.keys(formState).length > 0) {
     isFormValid =
-      Object.keys(formState).every((item) => formState[item]) &&
+      formState?.bio && formState?.name &&
       Object.keys(formState).some(
         (item) => formState[item] !== receivedData?.profileInfo?.[item]
       );
@@ -61,7 +61,7 @@ const EditProfileOption = (props) => {
     e.preventDefault();
     const curr = auth.currentUser;
     setSubmission(true);
-    if (Object.keys(formState).every((item) => formState[item])) {
+    if (formState?.bio && formState?.name) {
       curr.updateProfile({
         displayName: formState.name,
         phoneNumber: formState.phoneNumber,
@@ -79,7 +79,6 @@ const EditProfileOption = (props) => {
     });
   };
   const changePhoto = (process) => {
-    changeModalState("options",false);
     if (process === "update") {
       $("#fileUploader").trigger("click");
     } else if (process === "delete") {
@@ -180,7 +179,7 @@ const EditProfileOption = (props) => {
             Remove current Photo
           </span>
          } 
-          <span onClick={() => changeModalState("options",false)}>Cancel</span>
+          <span>Cancel</span>
         </OptionsModal>
       )}
       <input
@@ -217,7 +216,7 @@ const EditProfileOption = (props) => {
             <InputForm
               type="text"
               changeInput={onInputChange}
-              label="name"
+              label="name *"
               name="name"
               val={formState?.name}
               submitted={submitted}
@@ -305,16 +304,19 @@ const EditProfileOption = (props) => {
             <InputForm
               type="textarea"
               changeInput={onInputChange}
-              label="bio"
+              label="bio *"
               name="bio"
               val={formState?.bio}
               submitted={submitted}
               extraText={
-                <small>
-                  Provide your personal information, even if the account is used
-                  for a business, a pet or something else.
-                  <br /> This won't be a part of your public profile.
-                </small>
+                <div>
+                  <h2>Personal Information</h2>
+                  <small>
+                    Provide your personal information, even if the account is used
+                    for a business, a pet or something else.
+                    <br /> This won't be a part of your public profile.
+                  </small>
+                </div>
               }
             />
 

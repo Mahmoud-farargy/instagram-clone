@@ -13,6 +13,7 @@ import Skeleton from "react-loading-skeleton";
 // import InstagramEmbed from "react-instagram-embed";
 import { BsPlusSquare } from "react-icons/bs";
 import HomeReels from "../../Components/HomeReels/HomeReels";
+import Loader from "react-loader-spinner";
 
 const Home = (props) => {
   let {
@@ -114,22 +115,26 @@ const Home = (props) => {
               )}
 
               {receivedData?.userName ? (
-                <div className="side--user--info flex-row">
-                  <Avatar
-                    src={receivedData?.userAvatarUrl}
-                    alt={receivedData?.userName}
-                    title={receivedData?.userName}
-                  />
-                  <h5
-                    title={receivedData?.userName}
-                    className="flex-row"
-                    onClick={() => props.history.push(`/profile`)}
-                  >
-                    {receivedData?.userName}{" "}
-                    {receivedData?.isVerified ? (
-                      <GoVerified className="verified_icon" />
-                    ) : null}
-                  </h5>
+                <div className="side--user--info--container flex-row">
+                  <div className="side--user--info flex-row">
+                     <Avatar
+                      src={receivedData?.userAvatarUrl}
+                      alt={receivedData?.userName}
+                      title={receivedData?.userName}
+                    />
+                    <h5
+                      title={receivedData?.userName}
+                      className="flex-row"
+                      onClick={() => props.history.push(`/profile`)}
+                    >
+                      {receivedData?.userName}{" "}
+                      {receivedData?.isVerified ? (
+                        <GoVerified className="verified_icon" />
+                      ) : null}
+                    </h5>
+                  </div>
+                      
+                  <button className="txt_follow disabled">Switch</button>
                 </div>
               ) : null}
               {suggestionsList.length >= 1 ? (
@@ -141,7 +146,7 @@ const Home = (props) => {
                   <div className="suggestions--list flex-column">
                     <ul className="flex-column">
                       {suggestionsList &&
-                        suggestionsList.length > 0 ?
+                        suggestionsList.length > 0 &&
                        Array.from(new Set(suggestionsList.map((item) => item.uid))).map((id) => suggestionsList.find((el) => el.uid === id))
                           .filter((item) => (item?.uid !== receivedData?.uid) ).slice(randNum, suggestionsList?.length -1).slice(0,5)
                           .map((user, i) => {
@@ -154,14 +159,23 @@ const Home = (props) => {
                                 userAvatarUrl={user?.userAvatarUrl}
                               />
                             );
-                          }):
-                          <h6>No suggestions yet</h6>
+                          })
                       }
                           
                     </ul>
                   </div>
                 </div>
-              ) : null}
+              ) : 
+              <div className="sugg--loader flex-column">
+                <Loader
+                type="TailSpin"
+                color="var(--secondary-clr)"
+                height={40}
+                width={40}
+                timeout={5000}/>                
+              </div>
+              }
+              
               <div className="instagram--embed--container">
                 {/* <InstagramEmbed
                             url="https://www.instagram.com/p/CGalYyrJNsX/"

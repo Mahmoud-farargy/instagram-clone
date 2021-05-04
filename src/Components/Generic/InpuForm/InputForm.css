@@ -44,6 +44,7 @@
   color: #262626;
   color: #262626;
   border-radius: 3px;
+  cursor: pointer;
 }
 
 #input--form--field .form-group textarea {

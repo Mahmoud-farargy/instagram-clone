@@ -16,6 +16,7 @@ import OptionsModal from "../Generic/OptionsModal/OptionsModal";
 import * as Consts from "../../Utilities/Consts";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import ScrollTrigger from 'react-scroll-trigger';
+import Caption from "../../Components/Generic/Caption/Caption";
 
 class Post extends PureComponent {
   constructor(props) {
@@ -117,7 +118,6 @@ class Post extends PureComponent {
           userName,
           this.state.insertedComment,
           userAvatar,
-          new Date(),
           postId,
           postOwnerId
         );
@@ -129,7 +129,7 @@ class Post extends PureComponent {
     }
   }
 
-  replayFunc(postOwnerName, commentIndex, postIndex, postId, postOwnerId, senderUid) {
+  replayFunc(postOwnerName, commentIndex, postIndex, postId, postOwnerId, senderUid, commentId) {
     this.setState({
       ...this.state,
       showInputForm: true,
@@ -139,7 +139,8 @@ class Post extends PureComponent {
         postIndex,
         postId,
         postOwnerId,
-        senderUid
+        senderUid,
+        commentId
       },
       insertedComment: `@${postOwnerName} `,
     });
@@ -198,7 +199,6 @@ class Post extends PureComponent {
       deletePost,
       index,
       postId,
-      posts
     } = this.props;
     return (
       <Fragment>
@@ -287,7 +287,7 @@ class Post extends PureComponent {
                       draggable="false"
                       controls
                       muted
-                      preload={"none"} 
+                      preload={"none"}
                       onCanPlay={(x) => {this.setState( { ...this.state, buffering: false } ); x.persist()}}
                     />
                   </ScrollTrigger>
@@ -341,24 +341,7 @@ class Post extends PureComponent {
                   {likes?.people?.length === 1 ? "like" : "likes"}
                 </div>
               ) : null}
-              <span className="post__caption flex-row">
-                <strong>{userName}</strong>{" "}
-                {!this.state.viewFullCaption ? (
-                  <p>
-                    <TruncateMarkup
-                      line={4}
-                      ellipsis="...more"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => this.setState({ viewFullCaption: true })}
-                      style={{width: "100%", display:"block"}}
-                    >
-                      {caption}
-                    </TruncateMarkup>
-                  </p>
-                ) : (
-                  <p className="article__post">{caption}</p>
-                )}
-              </span>
+              <Caption caption={caption} userName={userName}  />
               {comments?.length >= 1 ? (
                 <div>
                   {comments?.length > 1 ? (
@@ -399,7 +382,6 @@ class Post extends PureComponent {
                             changeModalState={changeModalState}
                             uid={id}
                             deleteComment={onCommentDeletion}
-                            posts={posts}
                           />
                         );
                       })
@@ -422,7 +404,6 @@ class Post extends PureComponent {
                             changeModalState={changeModalState}
                             uid={id}
                             deleteComment={onCommentDeletion}
-                            posts={posts}
                           />
                         );
                       })}
@@ -470,12 +451,12 @@ class Post extends PureComponent {
             <OptionsModal>
               <span className="text-danger font-weight-bold"
                 onClick={() => {
-                  deletePost(postId, index, contentName);
+                  deletePost( postId, index, contentName, contentURL );
                   this.setState({openOptionsModal:false})
                 }}
               >
                 {" "}
-                Delete
+                Delete post
               </span>
               <span onClick={() => this.setState({openOptionsModal:false})}>
                 {" "}

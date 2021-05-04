@@ -11,8 +11,6 @@ import { RiLayoutRowLine } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
 import { ImBlocked } from "react-icons/im";
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
-import { FaHeart } from "react-icons/fa";
-import { FaComment } from "react-icons/fa";
 import {HiOutlineDotsHorizontal} from "react-icons/hi";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
@@ -22,6 +20,7 @@ import MutualFriendsItem from "./MutualFriendsList/MutualFriendsItem";
 import * as Consts from "../../Utilities/Consts";
 import { firebase } from "../../Config/firebase";
 import Moment from "react-moment";
+import ProfileItem from "../../Components/ProfileItem/ProfileItem";
 
 const UsersProfile = (props) => {
   const [, loading] = useAuthState(auth);
@@ -52,7 +51,7 @@ const UsersProfile = (props) => {
   const message = (uid, username, avatarUrl) => {
     const newIndex = receivedData && receivedData.messages?.map(d => d.uid).indexOf(uid);
     if(newIndex !== -1){
-      changeMainState("currentChatIndex", newIndex);
+      changeMainState("currentChat",{uid, index: newIndex});
     }
     initializeChatDialog(uid, username, avatarUrl);
       props.history.push("/messages");
@@ -104,7 +103,6 @@ const UsersProfile = (props) => {
   }
 
   const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
-    changeModalState("options", false);
     handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() => props.history.push("/"));
   }
 
@@ -196,9 +194,9 @@ const UsersProfile = (props) => {
              <span className="text-danger font-weight-bold"
                onClick={() => blockUser(usersProfileData?.uid, usersProfileData?.userName, usersProfileData?.userAvatarUrl, usersProfileData?.profileInfo && usersProfileData.profileInfo?.name ? usersProfileData?.profileInfo?.name : "" )} >
                {" "}
-               Block user
+               Block this user
              </span>
-             <span onClick={() => changeModalState("options",false)}>
+             <span>
                {" "}
                Cancel
              </span>
@@ -250,7 +248,7 @@ const UsersProfile = (props) => {
                     )}
 
                  {
-                   usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) ?
+                   usersProfileData?.blockList && usersProfileData?.uid !== receivedData?.uid &&  !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) ?
                    receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) ?
                     <button
                       disabled={!usersProfileData?.uid}
@@ -451,42 +449,7 @@ const UsersProfile = (props) => {
                           >
                             {usersProfileData?.posts?.map((post, i) => {
                               return (
-                                <div
-                                  key={post?.id + i}
-                                  className="profile--posts--container "
-                                >
-                                  {/* Posts */}
-                                  <div
-                                    onClick={() => openPost(post?.id,i)}
-                                    className="user--img--container flex-column"
-                                  >
-                                   {
-                                     post?.contentType === "image" ?  
-                                      <img
-                                      loading="lazy"
-                                        style={{ width: "100%" }}
-                                        className="users__profile__image"
-                                        src={post?.contentURL}
-                                        alt={`post #${i}`}
-                                      />
-                                      : post?.contentType === "video" ?
-                                        <video className="users__profile__image" muted disabled autoPlay loop contextMenu="users__profile__image" onContextMenu={() => false}  src={post?.contentURL} />
-                                      : <h4>Not found</h4>
-                                   } 
-                                   
-                                    <div className="user--img--cover">
-                                      <div className="flex-row">
-                                        <span className="mr-3">
-                                          <FaHeart /> {post?.likes?.people?.length.toLocaleString()}
-                                        </span>
-                                        <span>
-                                          <FaComment />{" "}
-                                          {post?.comments?.length && post?.comments?.length.toLocaleString()}{" "}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                               <ProfileItem key={post?.id + i} post={post} openPost={openPost} index={i}/>
                               );
                             })}
                           </div>

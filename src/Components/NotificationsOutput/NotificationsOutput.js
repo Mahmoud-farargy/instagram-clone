@@ -9,12 +9,13 @@ import reelDefaultPic from "../../Assets/reels-instagram-logo-white_1379-5039.jp
 
 const NotificationOutput =(props)=>{
     const [isFollowed, setFollowingState] = useState(false);
-    const {notification, igVideoImg, myData,handleFollowing, browseUser } = props;
+    const {notification, igVideoImg, myData, handleFollowing, browseUser } = props;
+    const {following} = myData;
     useEffect(()=>{
         if(notification?.type === "follow"){
             setFollowingState(myData?.following.some(user => user?.receiverUid === notification?.uid));
         }
-    },[myData?.following]);
+    },[following]);
 
     const redirectMeToPost=(e)=>{
         e.stopPropagation();

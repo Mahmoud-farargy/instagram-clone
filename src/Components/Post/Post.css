@@ -69,9 +69,6 @@
    align-items:center;
    cursor:pointer;
 }
-#post.post--card--container .post--card--article .post--card--header .post--header--options{
-    max-width:60px;
-}
 #post.post--card--container .post--card--article{
     border:1px solid var(--gray);
     border-radius:4px;
@@ -92,6 +89,12 @@
 #post.post--card--container .post--header--options{
     font-size: 20px;
     color:var(--light-black);
+    max-width:60px;
+    padding:2px 8px;
+}
+#post.post--card--container .post--header--options:active{
+    background-color: rgba(211, 225, 233, 0.8);
+    border-radius: 5px;
 }
 #post.post--card--container .post--card--article .post--card--body{
     position:relative;
@@ -219,6 +222,9 @@
 }
 
 @media only screen and (max-width:670px){
+    #post.post--card--container .post--header--options{
+        transform: rotate(90deg);
+    }
     .optionsM--container .optionsM--container--inner{
         width:250px;
     }

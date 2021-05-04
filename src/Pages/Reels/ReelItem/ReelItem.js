@@ -29,8 +29,7 @@ function ReelItem(props) {
   const [commentTxt, setCommentTxt] = useState("");
   const [buffering, setBuffering] = useState(true);
   const [showOptions, setShowingOptions] =useState(false);
-  // const [ doubleClicked, setDoubleClicks ] = useState({state: false, clicks: 0});
-  const { item, index, browseUser, groupName, setCurrPlayingReel, currentPlayingReel } = props;
+  const { item, index, browseUser, groupName, setCurrPlayingReel, currentPlayingReel, maxLength } = props;
   const {
     handleReelsActions,
     receivedData = {},
@@ -124,14 +123,12 @@ function ReelItem(props) {
   //   let currCount = doubleClicked.clicks;
   //   //single click
   //   setDoubleClicks(doubleClicked, {clicks: doubleClicked.clicks ++});
-  //   console.log(doubleClicked);
   //   const resetCounter = () => {
   //     setDoubleClicks({state:false, clicks: 0});
   //   };
   //   onVideoClick();
   //   if (currCount === 1) {
   //     //double click
-  //     console.log("triggered");
   //     handleReels({type: "like", state: true});
   //     resetCounter();
   //     setDoubleClicks(doubleClicked,{state:true});
@@ -277,6 +274,11 @@ function ReelItem(props) {
             </form>
           </footer>
           <div className="interaction--box flex-column">
+            <div className="reel--num">
+                  <span className="reel--num--inner">
+                        {index +1}/{maxLength}
+                  </span>
+            </div>
          {
              uid === receivedData?.uid &&
              <div className="reel--comment reel--action--btn flex-column">
@@ -328,6 +330,7 @@ ReelItem.propTypes = {
   browseUser: PropTypes.func.isRequired,
   groupName: PropTypes.string.isRequired,
   setCurrPlayingReel: PropTypes.func.isRequired,
-  currentPlayingReel: PropTypes.number.isRequired
+  currentPlayingReel: PropTypes.number.isRequired,
+  maxLength: PropTypes.number
 };
 export default withBrowseUser(React.memo(ReelItem));

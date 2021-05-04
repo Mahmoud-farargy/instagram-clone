@@ -16,6 +16,7 @@
         white-space: nowrap;
     }
         .home--reels--ul{
+            box-shadow: inset -5px 0 5px -5px rgba(0,0,0,0.2);
             width:100%;
                 overflow-x:auto;
                 overflow-y: hidden;
@@ -37,41 +38,6 @@
                 .home-reel-container{
                     justify-content:center;
                     align-items: center;
-                    .reel--reel--inner{
-                        position: relative;
-                        border: 2px solid transparent;
-                        margin:auto;
-                        border-radius: 50%;
-                        width: 62px;
-                        height: 62px;
-                        justify-content: center;
-                        align-items:center;
-                        background-clip: padding-box;
-                        $border: 1px;
-                        min-height: 60px;
-                        z-index: 0;
-                        &::before{
-                            content: "";
-                            position: absolute;
-                            top: 0;
-                            bottom: 0;
-                            right:0;
-                            left:0;
-                            background: radial-gradient(circle at 30% 107%, #fdf497 1%,#ffc63f 10% , #fd3358 45%,#bc35d8 60%);
-                            -webkit-text-fill-color: transparent;
-                            border-radius: inherit;
-                            margin: -$border;
-                            z-index: -1;
-                        }
-                        .reels__icon{
-                            position: absolute;
-                            object-fit: contain;
-                            width: 54px;
-                            height: 54px;
-                            min-height: 54px;
-                            background-color: #fafafa;
-                        }   
-                    }
                     .home--reel--user--name{
                         white-space:nowrap;
                         overflow: hidden;
