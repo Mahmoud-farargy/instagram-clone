@@ -6,6 +6,8 @@
 
 <img src="/Screenshots/Capture3.png" />
 
+<img src="/Screenshots/Capture4.png" />
+
 <h2>Description</h2>
 A social media app similar to Instagram that people can actually use.
 <h2>Core Features</h2>
