@@ -1,6 +1,8 @@
+<h2>Description</h2>
+A social media app similar to Instagram that people can actually use.
 
+<h2>Screenshots</h2>
 <img src="/Screenshots/Capture1.png" />
-
 
 <img src="/Screenshots/Capture2.png" />
 
@@ -8,8 +10,6 @@
 
 <img src="/Screenshots/Capture4.png" />
 
-<h2>Description</h2>
-A social media app similar to Instagram that people can actually use.
 <h2>Core Features</h2>
 
  <ul class="bullet--1">
@@ -65,6 +65,7 @@ A social media app similar to Instagram that people can actually use.
                                                 <ul class="bullet--2">
                                                     <li><p>Chat with any user</p></li>
                                                     <li><p>Share images, videos and emojis while chatting</p></li>
+                                                    <li><p>Unsend and copy messages</p></li>
                                                 </ul>
                                             </li>
                                              <li>

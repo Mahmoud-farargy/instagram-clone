@@ -7,6 +7,7 @@ import { withRouter } from "react-router-dom";
 import OptionsModal from "../../../Components/Generic/OptionsModal/OptionsModal";
 import $ from "jquery";
 import { storage, storageRef } from "../../../Config/firebase";
+import { GoVerified } from "react-icons/go";
 
 const InputForm = lazy(() =>
   import("../../../Components/Generic/InpuForm/InputForm")
@@ -198,8 +199,9 @@ const EditProfileOption = (props) => {
             alt={userName}
           />
           <div className="user--pic--container flex-column">
-            <h1 className="user__prof__name">{userName}</h1>
-
+            <div>
+               <h1 className="user__prof__name">{userName}{receivedData?.isVerified && <span><GoVerified className="verified_icon"/></span>}</h1>
+            </div>
             <button
               onClick={() => changeModalState("options", true)}
               className="change__prof__pic"

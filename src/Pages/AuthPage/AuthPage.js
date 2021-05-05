@@ -628,6 +628,7 @@ const AuthPage = (props) => {
                     >
                       <input
                         required
+                        autoFocus
                         value={
                           capitalizeName.charAt(0).toUpperCase() +
                           signUpUsername.slice(1)
@@ -641,7 +642,6 @@ const AuthPage = (props) => {
                       />
                       <input
                         required
-                        autoFocus
                         value={signUpEmail}
                         onChange={(e) => setSignUpEmail(e.target.value)}
                         type="email"

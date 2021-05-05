@@ -17,9 +17,11 @@ import { FaRegHeart } from "react-icons/fa";
 import { storage } from "../../Config/firebase";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { FcLike } from "react-icons/fc";
+import { GoVerified } from "react-icons/go";
 import { withRouter } from 'react-router-dom';
 import Loader from "react-loader-spinner";
 import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen";
+import { trimText } from "../../Utilities/TrimText";
 const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
 const Messages = (props) => {
@@ -101,7 +103,7 @@ const Messages = (props) => {
   const submitMessage = (v) => {
     v.preventDefault();
     if(compState?.inputValue){
-        handleSendingMessage({content:compState.inputValue, uid : currUser?.uid, type: "text", pathname: ""});  
+        handleSendingMessage({content:compState.inputValue, uid: currUser?.uid, type: "text", pathname: ""});  
         setCompState({
           ...compState,
           inputValue: "",
@@ -306,7 +308,7 @@ const Messages = (props) => {
             )}
       </Suspense>
         <section id="messages" className="messages--container">
-          <input id="contentUploader" type ="file" accept={['image/*','video/*']} ref={fileUploadEl} onChange={(x) => onPickingContent(x)} />
+          <input id="contentUploader" type ="file" name="contentUploader" accept={['image/*','video/*']} ref={fileUploadEl} onChange={(x) => onPickingContent(x)} />
           <div className="desktop-comp messages--main--container flex-column">
             <div className="messages--desktop--card flex-row">
               {/* users side */}
@@ -320,7 +322,7 @@ const Messages = (props) => {
                 <div className="messages--top--nav flex-row">
                   <div className="space__between">
                     <h5>private</h5>
-                    <h5>general</h5>
+                    <h5 className="disabled">general</h5>
                   </div>
                 </div>
                 <div className="messages--view--users">
@@ -364,7 +366,7 @@ const Messages = (props) => {
                     <div className="messages--top--nav flex-row">
                       <div className="space__between">
                         <h5>private</h5>
-                        <h5>general</h5>
+                        <h5 className="disabled">general</h5>
                       </div>
                     </div>
                     <div className="messages--view--users">
@@ -392,16 +394,18 @@ const Messages = (props) => {
                   <div className="messages--chatlog--container">
                     <div className="messages--chatbox--header flex-row">
                       {/* -- header */}
-                      <Avatar loading="lazy" src={msg?.userAvatarUrl} alt={msg?.userName} />
-                      <div className="messages--user--info space__between">
-                        <p style={{cursor:"pointer"}} onClick={() => props.browseUser(msg?.uid, msg?.userName)}>
-                          <TruncateMarkup line={1} ellipsis="..">
-                            {msg?.userName}
-                          </TruncateMarkup>{" "}
-                        </p>
-                        <div onClick={() => changeModalState("options", true)}className="msg--info--btn desktop-only">
-                          <FiInfo />
+                      <div className="flex-row">
+                        <Avatar loading="lazy" src={msg?.userAvatarUrl} alt={msg?.userName} />
+                        <div className="messages--user--info space__between">
+                          <p style={{cursor:"pointer"}} onClick={() => props.browseUser(msg?.uid, msg?.userName)}>
+                             {trimText(msg?.userName, 70)}
+                             { msg?.isVerified && <span><GoVerified className="verified_icon"/></span>}
+                          </p>
+
                         </div>
+                      </div>
+                      <div onClick={() => changeModalState("options", true)} style={{fontSize: "22px"}} className="msg--info--btn desktop-only">
+                          <FiInfo />
                       </div>
                       {/* -- */}
                     </div>
