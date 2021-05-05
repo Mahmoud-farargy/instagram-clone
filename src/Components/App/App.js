@@ -109,16 +109,17 @@ const App = () => {
   
     if(notificationBellOption?.state && notificationBellOption?.type && !toggledNotiBell){
         const lastUpdate = receivedData?.notifications?.list?.sort((a,b ) => b.date.seconds - a.date.seconds)[0];
+        console.log(new Date().getTime());
         const lastMessage = receivedData?.messages?.sort((a, b) => b?.lastMsgDate - a?.lastMsgDate)[0];
         const checkIfTimePassed = (time) => {
             const twentySecs = 20*1000;
-            const dateNow =  new Date();
+            const dateNow = new Date();
            return dateNow - new Date(time * 1000) < twentySecs;
         }
         const diffTimesUpdate = checkIfTimePassed(lastUpdate?.date?.seconds);
-        const diffTimesMsg = checkIfTimePassed(lastMessage?.date?.seconds);
+        const diffTimesMsg = checkIfTimePassed(lastMessage);
         // Note to self 1*40*1000 = 1 minute,  5*40*1000 = 5 minutes,  10*40*1000 = 10 minutes ...
-       //checks if latest received element's date is less than a minutes ago
+       //checks if the latest received element's date is less than a minutes ago.If so it fires a bell sound
         const timePassed = notificationBellType === "new updates" ? diffTimesUpdate : notificationBellType === "new messages" ? diffTimesMsg : (diffTimesUpdate || diffTimesMsg);
          const bellSound = new Audio(notificationSound)
          if((timePassed && lastUpdate?.uid !== receivedData?.uid)){

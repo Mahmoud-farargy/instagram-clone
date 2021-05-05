@@ -7,6 +7,7 @@ import firebase from "firebase";
 import { Avatar } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
+import { GoVerified } from "react-icons/go";
 
 const ChangePassNEmail = (props) => {
   const {
@@ -193,7 +194,10 @@ const ChangePassNEmail = (props) => {
             alt={receivedData?.userName}
             src={receivedData?.userAvatarUrl}
           />
-          <h1 className="user__prof__name">{receivedData?.userName}</h1>
+          <div>
+             <h1 className="user__prof__name">{receivedData?.userName} {receivedData?.isVerified && <span><GoVerified className="verified_icon"/></span>}</h1>
+          </div>
+         
         </div>
 
         {/* Modals */}

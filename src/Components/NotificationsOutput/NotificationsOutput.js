@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Auxiliary from "../HOC/Auxiliary";
-import TruncateMarkup from "react-truncate";
-import {Avatar} from "@material-ui/core";
+import { Avatar } from "@material-ui/core";
 import PropTypes from "prop-types";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 import reelDefaultPic from "../../Assets/reels-instagram-logo-white_1379-5039.jpeg"
+import { trimText } from "../../Utilities/TrimText";
+import { GoVerified } from "react-icons/go";
 
 const NotificationOutput =(props)=>{
     const [isFollowed, setFollowingState] = useState(false);
@@ -31,8 +32,8 @@ const NotificationOutput =(props)=>{
                     <div className="flex-row noti--row">
                         <div><Avatar className="noti__user__img" src={notification?.userAvatarUrl} alt={notification?.userName} /></div>
                         <div className="flex-column noti--user--info" onClick={()=> browseUser(notification?.uid, notification?.userName)}>
-                            <h6>{notification?.userName}</h6>
-                        <p className="noti__text"><TruncateMarkup line={2} ellipsis="..">{notification?.notiText}</TruncateMarkup>  <span style={{textOverflow: 'ellipsis'}}><GetFormattedDate date={notification?.date?.seconds} /></span></p>
+                            <h6>{notification?.userName} {notification?.isVerified && <span><GoVerified className="verified_icon"/></span>}</h6>
+                        <p className="noti__text">{trimText(notification?.notiText,200)} <span style={{textOverflow: 'ellipsis'}}><GetFormattedDate date={notification?.date?.seconds} /></span></p>
                         </div> 
                     </div>
                     

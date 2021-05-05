@@ -48,12 +48,12 @@ const UsersProfile = (props) => {
     isUserOnline
   } = context;
 
-  const message = (uid, username, avatarUrl) => {
+  const message = (uid, username, avatarUrl, isVerified) => {
     const newIndex = receivedData && receivedData.messages?.map(d => d.uid).indexOf(uid);
     if(newIndex !== -1){
       changeMainState("currentChat",{uid, index: newIndex});
     }
-    initializeChatDialog(uid, username, avatarUrl);
+    initializeChatDialog(uid, username, avatarUrl, isVerified);
       props.history.push("/messages");
   };
   useEffect(() => {
@@ -239,7 +239,8 @@ const UsersProfile = (props) => {
                           message(
                             usersProfileData?.uid,
                             usersProfileData?.userName,
-                            usersProfileData?.userAvatarUrl
+                            usersProfileData?.userAvatarUrl,
+                            usersProfileData?.isVerified
                           )
                         }
                       >

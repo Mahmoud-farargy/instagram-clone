@@ -425,7 +425,7 @@
 }
 @media only screen and (max-width:670px){
     #mobNav.mobile--nav .header--nav .header--ul{
-     justify-content: space-between;
+     justify-content: space-around;
      flex:1;
      width:100%;
     }
