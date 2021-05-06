@@ -22,6 +22,7 @@ import { withRouter } from 'react-router-dom';
 import Loader from "react-loader-spinner";
 import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen";
 import { trimText } from "../../Utilities/TrimText";
+import { IoIosArrowBack } from "react-icons/io";
 const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
 const Messages = (props) => {
@@ -29,6 +30,7 @@ const Messages = (props) => {
     const autoScroll = useRef(null);
     const fileUploadEl = useRef(null);
     const _isMounted = useRef(true);
+    const radioCheck = useRef(null);
     const context = useContext(AppContext);
     const [compState, setCompState] = useState({
         inputValue: "",
@@ -37,7 +39,12 @@ const Messages = (props) => {
         showEmojis: false,
         loading: {uid: "", state: false, progress: 0}
     })
-  const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, modalsState, changeModalState, deleteChat, handleUserBlocking, handleFollowing } = context;
+  const [newMsgData, setMsgData] = useState({
+    messageText: "",
+    sendTo: {}
+  });
+  const [searchText, setSearchText] = useState("");
+  const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, modalsState, changeModalState, deleteChat, handleUserBlocking, handleFollowing, suggestionsList, initializeChatDialog, searchUsers, searchInfo, confirmPrompt } = context;
   const { messages } = receivedData;
   const currUser = receivedData?.messages[currentChat.index];
   const isFollowed = receivedData?.following && receivedData?.following?.length > 0 &&
@@ -73,6 +80,7 @@ const Messages = (props) => {
       _isMounted.current = false;
       fileUploadEl.current =false;
       autoScroll.current = false;
+      radioCheck.current = false;
     }
   },[]);
   useEffect(() => {
@@ -198,6 +206,12 @@ const Messages = (props) => {
     const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
       handleUserBlocking(true, blockedUid || "", userName || "", userAvatarUrl || "", profileName || "").then(() => history.push("/"));
     }
+    const removeSelectedUser = () => {
+      setMsgData({messageText: "", sendTo: {}});
+      if(radioCheck && radioCheck.current){
+          radioCheck.current.checked = false;
+      }
+    }
     const messagedUsers = (
       <ul id="messagesUL">
                     {messages?.length >= 1 ? (
@@ -260,11 +274,9 @@ const Messages = (props) => {
                                       } 
                                       </span>
                                     </div>
-                                    <p className="messages__user__date">
+                                    <p className="messages__user__date">                             
                                       {user?.chatLog?.length >= 1
-                                        ? <GetFormattedDate date={user?.chatLog[user.chatLog?.length - 1]
-                                          .date.seconds} />
-                                        : null}
+                                        ? <span><span className="messages__user__date__divider">• </span><GetFormattedDate date={user?.chatLog[user.chatLog?.length - 1].date.seconds} /></span> : null}
                                     </p>
                                   </div>
                                 </li>
@@ -287,13 +299,78 @@ const Messages = (props) => {
                     )}
                   </ul>
     )
+    const openNewMsg = () => {
+      changeModalState("newMsg", true);
+      setCompState({...compState, openSidedrawer: false });
+    }
+    const userChangeRadio = (c) => {
+      setMsgData({
+        ...newMsgData,
+        sendTo: c
+      });
+    }
+    const commitMessage = () => {
+      if(Object.keys(newMsgData?.sendTo).length > 0 && newMsgData?.messageText){
+        const {uid, userName, userAvatarUrl, isVerified} = newMsgData?.sendTo;
+         initializeChatDialog(uid, userName, userAvatarUrl, isVerified).then(() => {
+              changeMainState("currentChat", { uid: uid,index: 0 });
+              handleSendingMessage({content: newMsgData?.messageText, uid: uid, type: "text", pathname: ""});
+              changeModalState("newMsg", false);
+              removeSelectedUser();
+              
+         }).catch(() => {
+          notify("Failed to send22","error");
+         });
+      }else{
+        notify("User and message must be defined","error");
+      }
+    }
+    useEffect(() => {
+      if(_isMounted){
+        if(searchText && searchText !== ""){
+          searchUsers(searchText, "regular");
+        }
+      }
+      
+    },[searchText]);
+    
+    const block = (uid, userName, avatarUrl, name) => {
+      const buttons = [
+        {
+          label: "No",
+        },
+        {
+          label: "Yes",
+          onClick: () => {
+            blockUser(uid, userName, avatarUrl, name);
+           }
+          }]
+      confirmPrompt(
+        "Confirmation",
+        buttons,
+        `Block ${userName}?`
+      );
+    }
+    const usersArr = searchText ? searchInfo?.results : suggestionsList;
+    const delChat = () => {
+      deleteChat(currUser?.uid).then(() => {
+        const secondUserUid = receivedData?.messages?.filter(el => !receivedData?.blockList?.some(k => k.blockedUid === el.uid))[1]?.uid;
+        const pickFirstContent = receivedData?.messages?.map(user => user.uid).indexOf(secondUserUid);
+        if(pickFirstContent !== -1){
+          const timeout = setTimeout(() => {
+              changeMainState("currentChat", { uid: secondUserUid,index: 0 });
+              clearTimeout(timeout);
+          },300);
+        }
+      });
+    }
     return (
       <Auxiliary>
         {/* modals */}
         <Suspense fallback={<LoadingScreen />}>
-          {modalsState?.options && (
+          {modalsState?.options ? (
               <OptionsModal>
-              <span className="text-danger font-weight-bold" onClick={() => deleteChat(currUser?.uid)}>Delete Chat</span>
+              <span className="text-danger font-weight-bold" onClick={() => delChat()}>Delete Chat</span>
               <span className={`font-weight-bold ${isFollowed ? "text-danger" : "text-primary"}`} onClick={() => { currUser?.uid && handleFollowing(
                           isFollowed,
                           currUser?.uid,
@@ -302,10 +379,71 @@ const Messages = (props) => {
                           receivedData?.uid, //these data is already available in context (refactor if possible)
                           receivedData?.userName,
               receivedData?.userAvatarUrl)}}>{isFollowed ? "Unfollow" : "Follow"}</span>
-              <span className="text-danger font-weight-bold" onClick={() => blockUser(currUser?.uid, currUser?.userName, currUser?.userAvatarUrl, currUser?.profileInfo?.name)}>Block this user</span>
+              <span className="text-danger font-weight-bold" onClick={() => block(currUser?.uid, currUser?.userName, currUser?.userAvatarUrl, currUser?.profileInfo?.name)}>Block this user</span>
               <span>Cancel</span>
               </OptionsModal>
-            )}
+            ): modalsState?.newMsg ?
+            <div className="new--msg--conainer usersModal--container flex-column">
+              <div className="new--msg--inner usersModal--inner">
+                <div style={{
+                          transform: modalsState?.newMsg ? "translate(0)" : "translate(-150%)"
+                    }} className="usersModal--card">
+                   <div className="new--msg--header flex-row">
+                    <span className="new__msg__close" onClick={() => changeModalState("newMsg", false)}><span className="desktop-only">&times;</span><IoIosArrowBack className="mobile-only" /> </span>
+                    <span className="new__msg__title">New Message</span>
+                    <div><button onClick={() => commitMessage()} disabled={(!newMsgData?.sendTo || !newMsgData?.messageText)} className={`msg__send__btn desktop-only ${(!newMsgData?.sendTo || !newMsgData?.messageText) && "disabled"}`} >Send</button></div>
+                   </div>
+                   <div className="new--msg--send--to flex-row">
+                    <h4>To:</h4>
+                   { Object.keys(newMsgData?.sendTo).length > 0 && <span className="new__msg__username flex-row">{newMsgData?.sendTo.userName}<span onClick={() => removeSelectedUser()} className="new__msg__del__name">&times;</span></span>}
+                    <input autoFocus onChange={(x) => setSearchText(x.target.value)} value={searchText} autoComplete="off" spellCheck={false} name="query box" type="text" placeholder="Search.." className="new__msg__search"/> 
+                   </div>                   
+                    { Object.keys(newMsgData?.sendTo).length > 0 &&
+                    <div className="new--msg--send--to flex-row" style={{borderTop: "none"}}>
+                       <h4>Message body:</h4>
+                      <form onSubmit={(c) => {c.preventDefault(); commitMessage()}}>
+                         <textarea autoFocus spellCheck={false} onChange={(q) => setMsgData({...newMsgData,messageText:q?.target?.value})} value={newMsgData?.messageText} name="message body" type="text" placeholder="Message.." className="new__msg__textarea__body"/> 
+                      </form>
+                    </div>
+                     }
+                   <div className="new--msg--body flex-column">
+                     <h4 className="new__msg__sugg__title">Suggested</h4>
+                     <div className="suggestions--list w-100 flex-column">
+                        {usersArr && usersArr.length > 0 ?
+                          <ul className="flex-column">
+                            {
+                             Array.from(new Set(usersArr.map((item) => item.uid))).map((id) => usersArr.find((el) => el.uid === id))
+                             .filter((item) => (item?.uid !== receivedData?.uid)).slice(0,20)
+                             .map((user, i) =>
+                                  <label htmlFor={user?.uid} key={user?.uid + i} className="suggest--item--container">
+                                      <li className="suggestion--item flex-row">
+                                            <div  title={user?.userName} className="side--user--info flex-row">
+                                                <Avatar src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
+                                                <span className="flex-column">
+                                                      <h5 className="flex-row">{ user?.userName && trimText(user?.userName, 80)}{user?.isVerified ?  <span><GoVerified className="verified_icon"/></span> : null} </h5>  
+                                                      <small>{user?.profileInfo?.name && trimText(user?.profileInfo?.name, 80)}</small>
+                                                </span>                    
+                                              </div>
+                                              <input ref={radioCheck} onChange={() => userChangeRadio(user)} value={newMsgData?.sendTo?.uid || ""} checked={newMsgData?.sendTo?.uid  === user?.uid} type="radio" id={user?.uid} className="new__msg__radio" name="user" />
+                                      </li> 
+                                  </label>
+                                )
+                            }
+                          </ul>
+                              
+                            : <div className="empty--box flex-row">
+                              <h4>No Suggestions currently</h4>
+                            </div>
+                        }
+                      </div>
+                      <button onClick={() => commitMessage()} disabled={(!newMsgData?.sendTo || !newMsgData?.messageText)} className={`prof__btn__unfollowed msg_mobile_btn mobile-only ${(!newMsgData?.sendTo || !newMsgData?.messageText) && "disabled"}`} >Send</button>
+                   </div>
+                </div>
+              </div>
+            </div>
+            : null
+          }
+            
       </Suspense>
         <section id="messages" className="messages--container">
           <input id="contentUploader" type ="file" name="contentUploader" accept={['image/*','video/*']} ref={fileUploadEl} onChange={(x) => onPickingContent(x)} />
@@ -316,7 +454,7 @@ const Messages = (props) => {
                 <div className="users--side--header flex-row">
                   <span className="space__between">
                     <h4>Direct</h4>
-                    <BsPencilSquare className="pen__logo" />
+                    <BsPencilSquare onClick={() => openNewMsg()} className="pen__logo" />
                   </span>
                 </div>
                 <div className="messages--top--nav flex-row">
@@ -353,7 +491,7 @@ const Messages = (props) => {
                   style={{
                     transform: compState.openSidedrawer
                       ? "translate(0)"
-                      : "translate(200vw)",
+                      : "translate(150vw)",
                     transition: "all 0.5s linear",
                     opacity: compState.openSidedrawer ? "1" : "0",
                   }}
@@ -363,6 +501,7 @@ const Messages = (props) => {
                   {" "}
                   {/*mobile */}
                   <div className="messages--users--side mobile-only flex-column">
+                    <div className="pen__logo__container flex-row" ><BsPencilSquare onClick={() => openNewMsg()} className="pen__logo" /></div>
                     <div className="messages--top--nav flex-row">
                       <div className="space__between">
                         <h5>private</h5>
@@ -387,7 +526,7 @@ const Messages = (props) => {
                       <p>
                         Send private photos and messages to a friend or group.
                       </p>
-                      <button>Send message</button>
+                      <button onClick={() => openNewMsg()}>Send message</button>
                     </div>
                   </div>
                 ) : !receivedData?.blockList?.some(el => el?.blockedUid === currentChat.uid) ? (

@@ -194,7 +194,7 @@
     top:45px;
     right:30px;
 }
-#header .empty--box{
+.empty--box{
     align-items: center;
     justify-content:center;
     text-align:center;
@@ -204,7 +204,7 @@
     height: 100%;
     width: 100%;
 }
-#header .empty--box h4{
+.empty--box h4{
     font-size:14px;
     font-weight: 400;
     margin-bottom:0px;
@@ -343,6 +343,9 @@
     flex:0;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+#messages p.messages__user__date .messages__user__date__divider{
+    color: #111;
 }
 .header--nav .header__user__avatar{
     width:25px;

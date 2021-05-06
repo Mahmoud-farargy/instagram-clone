@@ -224,7 +224,7 @@ const Explore = () => {
                             required={true}
                             type="select"
                             name="sortDirection"
-                            label="Sort Direction"
+                            label="Sort Order"
                             options={["Ascending", "Descending"]}
                             val={sortForm?.sortDirection}
                             changeInput={onInputChange}

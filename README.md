@@ -69,9 +69,10 @@ A social media app similar to Instagram that people can actually use.
                                                 </ul>
                                             </li>
                                              <li>
-                                                <p>Explore</p>
+                                                <p>Find people</p>
                                                 <ul class="bullet--2">
                                                     <li><p>Explore other people's posts</p></li>
+                                                    <li><p>Sort these posts by likes count, comments count, date or randomly in both ascending and descending orders</p></li>
                                                 </ul>
                                             </li>
                                             <li>
