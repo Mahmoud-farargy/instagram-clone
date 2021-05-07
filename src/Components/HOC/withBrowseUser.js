@@ -7,15 +7,19 @@ export const withBrowseUser = WrappedComponent => {
     class newComponent extends PureComponent {
       static contextType = AppContext;
        browseUser = (specialUid, name) =>{
-        const { getUsersProfile , notify} =  this.context;
-       if (specialUid && name) {
-              getUsersProfile(specialUid).then(()=>{
-              this.props.history.push(`/user-profile/${name}`);
-              }).catch((err) =>{
-                notify((err && err.message) || "error has occurred. please try again later!", "error");
-              });
-            
-            }
+        const { getUsersProfile , notify, uid} =  this.context;
+          if (specialUid && name) {
+              if(specialUid !== uid){
+                  getUsersProfile(specialUid).then(()=>{
+                    this.props.history.push(`/user-profile/${name}`);
+                  }).catch((err) =>{
+                    notify((err && err.message) || "error has occurred. please try again later!", "error");
+                  });
+                
+              }else{
+                this.props.history.push(`/profile`);
+              }
+          }
       }
       render(){
       

@@ -137,7 +137,6 @@ const DesktopPost = (props) => {
         } else {
           //comment
           handleSubmittingComments(
-            "others",
             currentPostIndex?.index,
             uid,
             receivedData?.userName,

@@ -1703,7 +1703,7 @@ button:active{
 }
 .new__msg__textarea__body{
     width: 100%;
-    max-height: 300px;
+    max-height: 150px;
     resize:none;
     min-height: 90px;
     overflow-y: auto;
@@ -1783,6 +1783,11 @@ a.prof__btn__unfollowed{
 #usersProfile .user--img--container:hover .user--img--cover{
     display:flex;
 }
+#usersProfile .owner--post--name{
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+}
 #usersProfile .user--img--cover{
     position:absolute;
     top:0;
@@ -1797,6 +1802,7 @@ a.prof__btn__unfollowed{
     font-size: 21px;
     cursor:pointer;
     display:none;
+    overflow-x: hidden;
     transition: all 0.5 ease-in;
 }
 #usersProfile.users--profile--container .user--top--info{
@@ -2313,6 +2319,9 @@ a.prof__btn__unfollowed{
     #usersProfile.users--profile--container .MuiAvatar-root{
         width:77px;
         height:77px;
+    }
+    #usersProfile .user--img--cover{
+        font-size: 17px;
     }
     #usersProfile .reels__icon{
         width: 56px;

@@ -30,7 +30,8 @@ const Home = (props) => {
     modalsState,
     onCommentDeletion,
     isUserOnline,
-    homeReels
+    homeReels,
+    loadingState
   } = useContext(AppContext);
   let posts = receivedData?.posts;
   let [user, loading] = useAuthState(auth);
@@ -51,7 +52,7 @@ const Home = (props) => {
           <div className="main--home--inner desktop-comp">
             <div className="home--posts--side flex-column">
               {
-                homeReels && homeReels.length >0 && <HomeReels />
+                homeReels && <HomeReels />
               } 
               {!loading && posts?.length >= 1 ? (
                 posts?.map((post, i) => {
@@ -165,7 +166,7 @@ const Home = (props) => {
                     </ul>
                   </div>
                 </div>
-              ) : 
+              ) : loadingState?.suggList ?
               <div className="sugg--loader flex-column">
                 <Loader
                 type="TailSpin"
@@ -174,7 +175,9 @@ const Home = (props) => {
                 width={40}
                 timeout={5000}/>                
               </div>
-              }
+              :  <div className="empty--box flex-column">
+                  <h4>No suggestions available</h4>
+                </div>}
               
               <div className="instagram--embed--container">
                 {/* <InstagramEmbed

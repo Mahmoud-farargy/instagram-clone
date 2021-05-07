@@ -203,6 +203,7 @@
     color:rgb(142, 142, 142);
     height: 100%;
     width: 100%;
+    min-height: 90px;
 }
 .empty--box h4{
     font-size:14px;
@@ -387,7 +388,10 @@
 .header--nav .header--ul li a:visited,.header--nav .header--ul li a{
     color: var(--main-black);
 }
-
+.header--nav .header--ul li a:active{
+    background-color: rgba(211, 225, 233, 0.4);
+    border-radius: 5px;
+}
 .active--profile--nav img{
     border:2px solid rgb(29, 29, 29);
     border-radius: 50%;
@@ -440,7 +444,7 @@
         border-radius: 5px;
     }
     #mobNav.mobile--nav .header--ul li a{
-        padding: 6px 9px;
+        padding: 13px 11px;
     }
     #mobNav.mobile--nav .header--nav{
         width: 100%;
