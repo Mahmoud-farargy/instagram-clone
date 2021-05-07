@@ -27,7 +27,10 @@ const MyProfile =(props)=>{
     },[]);
     const openPost = (postId,index) =>{
         if(index !== -1){
-              changeMainState("currentPostIndex", { index: index, id: postId });
+            setTimeout(() => {
+                changeMainState("currentPostIndex", { index: index, id: postId });
+            },200);
+              
               if(uid){
                     getUsersProfile(uid).then(() => {
                     if((window.innerWidth || document.documentElement.clientWidth) >= 670){
@@ -37,7 +40,6 @@ const MyProfile =(props)=>{
                     }
                 });
               }
-
         }
     }
     const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
@@ -199,7 +201,7 @@ const MyProfile =(props)=>{
                 {
                  receivedData?.posts?.length >=1 && !loading ?
                     <div className={grid ? "users--profile--posts" : "users--profile--rowLine flex-column"}>
-                        {receivedData?.posts?.map((post, index)=> <ProfileItem key={post?.id + index} post={post} openPost={openPost} index={index} />)}
+                        {receivedData?.posts?.map((post, index)=> ( post && <ProfileItem key={post?.id + index} post={post} openPost={openPost} index={index} />))}
                     </div>
                             : loading ?
                                 (<Skeleton count={10} height={250} width={250} className="mt-4 mr-4 mx-auto"  />)

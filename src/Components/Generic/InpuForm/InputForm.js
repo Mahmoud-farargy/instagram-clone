@@ -66,6 +66,8 @@ const InputForm = (props) => {
                 id={props.label}
                 value={props.val || ""}
                 name={props.label}
+                disabled={props.disabled}
+                autoFocus={props.autoFocus}
                 onChange={(x) => props.changeInput(x.target.value, props.name)}
                 placeholder={props.label}
               >
@@ -104,7 +106,7 @@ const InputForm = (props) => {
                 placeholder={props.label}
               />
               {props.extraText ? props.extraText : null}
-              {/*You can also use props.children with closing tag*/}
+              {/*You can also use props.children within closing tags*/}
               {!props.val && props.submitted && (
                 <div className="text-danger">
                   <p>Required</p>

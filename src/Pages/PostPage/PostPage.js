@@ -118,7 +118,6 @@ const PostPage  = (props) => {
         } else {
           //comment
           handleSubmittingComments(
-            "others",
             currentPostIndex?.index,
             uid,
             receivedData?.userName,

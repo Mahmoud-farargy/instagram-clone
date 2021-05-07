@@ -60,7 +60,8 @@ const App = () => {
     usersProfileData,
     reelsProfile,
     currentPostIndex,
-    explore
+    explore,
+    loadingState
   } = context;
   const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
   const [user,loading] = useAuthState(auth);
@@ -69,10 +70,12 @@ const App = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
+        changeMainState("loadingState", {...loadingState, suggList: true});
         db.collection(Consts.USERS)
           .limit(150)
           .get()
           .then((query) => {
+            changeMainState("loadingState", {...loadingState, suggList: false});
             query.forEach((user) => {
               updateSuggestionsList(user.data());
             });
@@ -109,7 +112,7 @@ const App = () => {
   
     if(notificationBellOption?.state && notificationBellOption?.type && !toggledNotiBell){
         const lastUpdate = receivedData?.notifications?.list?.sort((a,b ) => b.date.seconds - a.date.seconds)[0];
-        console.log(new Date().getTime());
+        // console.log(new Date().getTime());
         const lastMessage = receivedData?.messages?.sort((a, b) => b?.lastMsgDate - a?.lastMsgDate)[0];
         const checkIfTimePassed = (time) => {
             const twentySecs = 20*1000;

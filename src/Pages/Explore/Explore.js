@@ -25,7 +25,8 @@ const Explore = () => {
     modalsState,
     currentPostIndex,
     receivedData,
-    handleChangingSort
+    handleChangingSort,
+    loadingState
   } = context;
   const [newExploreArr, setExploreArr] = useState([]);
   const [sortingModalIsOpen, setSortingModal] = useState(false);
@@ -36,8 +37,9 @@ const Explore = () => {
     "Date"
   ])
   const [sortForm, setSortForm] = useState({
-    sortBy: "Random",
-    sortDirection: "Descending",
+    sortBy: receivedData?.profileInfo?.sort?.sortBy || "Random",
+    sortDirection: receivedData?.profileInfo?.sort?.sortDirection || "Descending",
+    filter: receivedData?.profileInfo?.sort?.filter || "None"
   });
   const [ submitted, setSubmission ] = useState(false);
   const [, loading] = useAuthState(auth);
@@ -81,59 +83,85 @@ const Explore = () => {
       document.body.style.overflow = "visible";
     }
   },[sortingModalIsOpen]);
-  const sortPosts = (sortBy, direction) => {
+  const sortPosts = () => {
+    const {sortBy= "Random", sortDirection = "Descending", filter = "None"} = sortForm;
     const underscoreVal = (val) => val?.toLowerCase()?.split(" ")?.join("_");
     const alteredSortBy = underscoreVal(sortBy);
-    const alteredSortDirection = underscoreVal(direction);
+    const alteredSortDirection = underscoreVal(sortDirection);
+    const alteredSortFilter = underscoreVal(filter);
     if(explore && explore.length > 0){
-      switch (alteredSortBy){
-        case "likes_count":
-          return explore.map(el => {
-            return el.sort((a,b)=> {
-                return b.likes?.people?.length - a.likes?.people?.length;
-              })[0];
-          }).sort((a,b)=> {
-            return  alteredSortDirection === "ascending" ? (a.likes?.people?.length - b.likes?.people?.length) : (b.likes?.people?.length - a.likes?.people?.length) ;
-          });
-          case "comments_count":
-            return explore.map(el => {
-              return el.sort((a,b)=> {
-                  return b.comments?.length - a.comments?.length
-                })[0];
-            }).sort((a,b)=> {
-              return alteredSortDirection === "ascending" ? (a.comments?.length - b.comments?.length) :  (b.comments?.length - a.comments?.length);
-            });
-          case "date":
-            return explore.map(el => {
-              return el.sort((a,b)=> {
-                  return b.date?.seconds- a.date?.seconds;
-                })[0];
-            }).sort((a,b)=> {
-              return  alteredSortDirection === "ascending" ? (a.date?.seconds - b.date?.seconds) : (b.date?.seconds - a.date?.seconds);
-            });
-          case "random":
-           return randomPosts() || [];
-          default :
-          return randomPosts() || [];
+      let exploreAlteredArr;
+      switch(alteredSortFilter){
+        case "posts_by_people_i_follow":
+          exploreAlteredArr = explore?.filter(user => user?.some(post => receivedData?.following?.some(item => item?.receiverUid === post?.postOwnerId)));
+        break;
+        case "images_only":
+          exploreAlteredArr = explore?.map(user => user?.filter(post => {
+           return post?.contentType === "image"
+          }));
+        break;
+        case "videos_only":
+          exploreAlteredArr = explore?.map(user => user?.filter(post => post?.contentType === "video"));
+        break;
+        case "None":
+          exploreAlteredArr = explore;
+        break;
+        default:
+          exploreAlteredArr = explore;
       }
+      if(exploreAlteredArr?.length > 0){
+          switch (alteredSortBy){
+                  case "likes_count":
+                    return exploreAlteredArr.map(el => {
+                      return el.sort((a,b)=> {
+                          return b.likes?.people?.length - a.likes?.people?.length;
+                        })[0];
+                    }).sort((a,b)=> {
+                      return alteredSortDirection === "ascending" ? (a.likes?.people?.length - b.likes?.people?.length) : (b.likes?.people?.length - a.likes?.people?.length) ;
+                    });
+                    case "comments_count":
+                      return exploreAlteredArr.map(el => {
+                        return el.sort((a,b)=> {
+                            return b.comments?.length - a.comments?.length
+                          })[0];
+                      }).sort((a,b)=> {
+                        return alteredSortDirection === "ascending" ? (a.comments?.length - b.comments?.length) :  (b.comments?.length - a.comments?.length);
+                      });
+                    case "date":
+                      return exploreAlteredArr.map(el => {
+                        return el.sort((a,b)=> {
+                            return b.date?.seconds- a.date?.seconds;
+                          })[0];
+                      }).sort((a,b)=> {
+                        return alteredSortDirection === "ascending" ? (a.date?.seconds - b.date?.seconds) : (b.date?.seconds - a.date?.seconds);
+                      });
+                    case "random":
+                    return randomPosts() || [];
+                    default :
+                    return randomPosts() || [];
+                }
+      }
+     
     }else{
       return [];
     }
   }
   const updateSortedElements = () => {
-    setExploreArr(sortPosts(( sortForm?.sortBy || receivedData?.profileInfo?.sort?.sortBy || "Random" ), ( sortForm?.sortDirection || receivedData?.profileInfo?.sort?.sortDirection || "Descending" )) || []);
+    setExploreArr(sortPosts());
   }
   useEffect(() => {
     if (explore && explore.length > 0) {
-      updateSortedElements();
-      if(receivedData?.profileInfo?.sort && Object.keys(receivedData?.profileInfo?.sort).length > 0){
-        updateSortedElements();
-        const sortArr = receivedData?.profileInfo?.sort;
-        Object.keys(sortArr).map(item =>{
-          return setSortForm({[item] : sortArr[item]});
-        })
-       
+      const sortArr = receivedData?.profileInfo?.sort;
+    
+      if(sortArr){
+        const {sortBy, sortDirection, filter} = sortArr; 
+        setSortForm({
+          sortBy,
+          sortDirection,
+          filter
+          });
       }
+      updateSortedElements();
     }
   }, [explore]);
   const openPost = (postId, _ ,uid) => {
@@ -181,7 +209,10 @@ const Explore = () => {
       if(!sortForm?.sortBy){
         sortForm.sortBy = "Random";
       } 
-    if(sortForm?.sortBy && sortForm?.sortDirection){
+      if(!sortForm?.filter){
+        sortForm.filter = "None";
+      } 
+    if(sortForm?.sortBy && sortForm?.sortDirection && sortForm?.filter){
       handleChangingSort(sortForm);
       setSortingModal(false);
       updateSortedElements();
@@ -189,6 +220,14 @@ const Explore = () => {
     }else{
       notify("An option on each field should be selected","error");
     }
+  }
+  let isValid = true;
+  if (sortForm && Object.keys(sortForm).length > 0 && receivedData?.profileInfo?.sort && Object.keys(receivedData?.profileInfo?.sort).length > 0) {
+    isValid =
+    Object.values(sortForm)?.every(item => item && item !== "") &&
+      Object.keys(sortForm).some(
+        (el) => sortForm[el] !== receivedData?.profileInfo?.sort?.[el]
+      );
   }
   return (
     <Fragment>
@@ -210,6 +249,7 @@ const Explore = () => {
           <form onSubmit={(e) => onSettingsSubmission(e)}>
                       <InputForm
                             required={true}
+                            autoFocus={true}
                             type="select"
                             name="sortBy"
                             label="Sort By"
@@ -220,20 +260,33 @@ const Explore = () => {
                       />
                       {
                         sortForm?.sortBy?.toLowerCase() !== "random" &&
-                        <InputForm
+                        <div>
+                            <InputForm
+                              required={true}
+                              type="select"
+                              name="sortDirection"
+                              label="Sort Order"
+                              options={["Ascending", "Descending"]}
+                              val={sortForm?.sortDirection}
+                              changeInput={onInputChange}
+                              submitted={submitted}
+                          />
+                          <InputForm
                             required={true}
                             type="select"
-                            name="sortDirection"
-                            label="Sort Order"
-                            options={["Ascending", "Descending"]}
-                            val={sortForm?.sortDirection}
+                            name="filter"
+                            label="filter"
+                            options={["None", "Posts By People I Follow", "Images Only", "Videos Only" ]}
+                            val={sortForm?.filter}
                             changeInput={onInputChange}
                             submitted={submitted}
-                        />
+                        /> 
+                        </div>
                       } 
+
                       <div className="explore__modal__btns flex-row">
                         <span className="profile__btn explore__close__btn" onClick={() => setSortingModal(false)}>close</span>
-                        <input className="profile__btn prof__btn__followed" type="submit" value="Save"/>
+                        <input disabled={!isValid} className={`profile__btn prof__btn__followed ${!isValid && "disabled"}`} type="submit" value="Save"/>
                       </div>
                      
           </form>
@@ -251,31 +304,36 @@ const Explore = () => {
             <div className="explore--options--btn">
                 <button onClick={()=> setSortingModal(true)}><HiOutlineDotsHorizontal /></button>
             </div>
-          
             {newExploreArr ? (
               explore &&
               explore?.length > 0 &&
               newExploreArr.length >= 1 &&
-              !loading ? (
+               !loading || !loadingState?.suggList ? (
                 <div>
                   <div className="explore--upper--row">
                   {newExploreArr.slice(0,2).map((post, index) => (
-                    <ProfileItem className="explore--upper--row--item" key={post?.id + index} post={post} openPost={openPost} index={index}/>
+                    post &&
+                    <ProfileItem withOwnersName={true} className="explore--upper--row--item" key={post?.id + index} post={post} openPost={openPost} index={index}/>
                   ))}
                   </div>
                   <div className="users--profile--posts">
                     {newExploreArr.slice(2).map((post, index) => (
-                     <ProfileItem key={post?.id + index} post={post} openPost={openPost} index={index}/>
+                      post &&
+                     <ProfileItem withOwnersName={true} key={post?.id + index} post={post} openPost={openPost} index={index}/>
                     ))}
                   </div>
                 </div>
-              ) : loading ? (
-                <Skeleton
-                  count={10}
-                  height={550}
-                  width={550}
-                  className="mt-4 mr-4 mx-auto"
-                />
+              ) : loadingState?.suggList ? (
+                <div className="w-100 flex-row" style={{overflow: "hidden"}}>
+                    <Skeleton
+                    count={8}
+                    height={200}
+                    width={200}
+                    className="m-2"
+                    duration={10}
+                  />
+                </div>
+
               ) : (
                 <div className="empty--posts--container flex-column">
                   <div className="empty--posts--inner mx-auto flex-column">

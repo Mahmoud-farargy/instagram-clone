@@ -448,11 +448,12 @@ const UsersProfile = (props) => {
                                 : "users--profile--rowLine flex-column"
                             }
                           >
-                            {usersProfileData?.posts?.map((post, i) => {
-                              return (
+                            {usersProfileData?.posts?.map((post, i) => 
+                              (
+                                post &&
                                <ProfileItem key={post?.id + i} post={post} openPost={openPost} index={i}/>
-                              );
-                            })}
+                              
+                            ))}
                           </div>
                         ) : loading ? (
                           <Skeleton

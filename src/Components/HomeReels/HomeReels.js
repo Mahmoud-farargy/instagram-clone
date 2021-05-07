@@ -3,12 +3,12 @@ import { AppContext } from "../../Context";
 import "./HomeReels.scss";
 import { auth } from "../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth"; 
-import Loader from "react-loader-spinner";
+import Skeleton from "react-loading-skeleton";
 import HomeReelItem from "./HomeReelItem/HomeReelItem";
 
 const HomeReels = () => {
     const context = useContext(AppContext);
-    const { homeReels } = context;
+    const { homeReels, loadingState } = context;
     const [,loading] = useAuthState(auth);
     const [newReelsArr, setReelsArr] = useState([]);
     const getRandom = (length) => {
@@ -48,7 +48,7 @@ const HomeReels = () => {
     return (
         <Fragment>
            {
-               !loading && newReelsArr.length > 0 ? 
+               (!loading || !loadingState?.suggList) && newReelsArr.length > 0 ? 
                <section id="homeReels">
                 <div className="home--reels--inner">
                     <div className="home--reels--box flex-row">
@@ -59,14 +59,20 @@ const HomeReels = () => {
                     
                 </div>
             </section>
-            : <div className="mx-auto text-align-center mb-3">
-                <Loader
-                    type="Bars"
-                    color="var(--secondary-clr)"
-                    height={40}
-                    width={40}
-                    timeout={3000} />
+            : (loading || loadingState?.suggList) && newReelsArr.length <= 0 ?
+            <div  id="homeReels" >
+                <div className="home--reels--inner">
+                    <div className="home--reels--box flex-row">
+                        <ul className="home--reels--ul flex-row">
+                            <li className="flex-column">
+                                <Skeleton count={7} height={62} width={62} circle={true} className="ml-4" />
+                                <Skeleton count={7} height={7} width={62} className="ml-4 mt-2" />
+                            </li>
+                        </ul>  
+                    </div>
+                </div>
             </div>
+            : null
            }
         </Fragment>
     )

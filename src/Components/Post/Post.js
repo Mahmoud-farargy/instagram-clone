@@ -112,7 +112,6 @@ class Post extends PureComponent {
       } else {
         //regular comment
         handleSubmittingComments(
-          "mine",
           index,
           id,
           userName,

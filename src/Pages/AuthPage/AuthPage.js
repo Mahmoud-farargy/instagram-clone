@@ -117,7 +117,7 @@ const AuthPage = (props) => {
                               reelsForFollowing: false,
                               notificationBell:{state: true, type: "Both"}
                             },
-                            sort:{sortBy: "Random", sortDirection: "Descending"},
+                            sort:{sortBy: "Random", sortDirection: "Descending", filter: "None"},
                             accountCreationDate: new Date(),
                             registrationMethod: "email"
                           },
@@ -266,7 +266,7 @@ const AuthPage = (props) => {
                           reelsForFollowing: false,
                           notificationBell:{state: true, type: "Both"}
                         },
-                        sort:{sortBy: "Random", sortDirection: "Descending"},
+                        sort:{sortBy: "Random", sortDirection: "Descending", filter: "None"},
                         accountCreationDate: new Date(),
                         registrationMethod: "google"
                       },
@@ -342,7 +342,7 @@ const AuthPage = (props) => {
                         reelsForFollowing: false,
                         notificationBell:{state: true, type: "Both"}
                       },
-                      sort:{sortBy: "Random", sortDirection: "Descending"},
+                      sort:{sortBy: "Random", sortDirection: "Descending", filter: "None"},
                       accountCreationDate: new Date(),
                       registrationMethod: "twitter"
                     },
@@ -413,7 +413,7 @@ const AuthPage = (props) => {
                           reelsForFollowing: false,
                           notificationBell:{state: true, type: "Both"}
                         },
-                        sort:{sortBy: "Random", sortDirection: "Descending"},
+                        sort:{sortBy: "Random", sortDirection: "Descending", filter: "None"},
                         accountCreationDate: new Date(),
                         registrationMethod: "github"
                       },
