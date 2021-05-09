@@ -622,7 +622,8 @@ time{
     flex-wrap:wrap;
     list-style:none;
     align-items:center;
-    /* width: 100%; */
+    width: 100%;
+    justify-content: center;
 }
 .auth--footer--ul li{
     color:#00376b;

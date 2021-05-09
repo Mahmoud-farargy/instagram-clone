@@ -17,7 +17,6 @@ import { AiOutlineHome } from "react-icons/ai";
 import { RiVideoAddLine } from "react-icons/ri";
 import { FiEdit, FiSettings } from "react-icons/fi";
 import HomeReels from "../../Components/HomeReels/HomeReels";
-import Loader from "react-loader-spinner";
 import GSCardItem from "./GSCardItem/GSCardItem";
 
 const Home = (props) => {
@@ -181,18 +180,31 @@ const Home = (props) => {
                     </ul>
                   </div>
                 </div>
-              ) : loadingState?.suggList ?
-              <div className="sugg--loader flex-column">
-                <Loader
-                type="TailSpin"
-                color="var(--secondary-clr)"
-                height={40}
-                width={40}
-                timeout={5000}/>                
+              ) : suggestionsList.length < 1 && loadingState?.suggList ?
+              <div className="suggestions--home--container">
+                <div className="suggestions--list">
+                  {
+                      Array.from({length: 5},(_,i) =>(
+                        <li key={i} className="suggestion--item flex-row mb-3">
+                        <div className="side--user--info flex-row">
+                            <Skeleton count={1} circle={true} width={32} height={32} />
+                            <span className="flex-column ml-2">
+                                <Skeleton count={1} width={80} height={13} /> 
+                                <Skeleton count={1} width={150} height={13} />
+                            </span>
+                        </div>
+                        <Skeleton count={1} width={39} height={13} />
+                      </li>
+                      ))  
+                  }
+                  </div>
               </div>
-              :  <div className="empty--box flex-column">
+           
+
+              : <div className="empty--box flex-column">
                   <h4>No suggestions available</h4>
-                </div>}
+                </div>
+              }
               
               <div className="instagram--embed--container">
                 {/* <InstagramEmbed
