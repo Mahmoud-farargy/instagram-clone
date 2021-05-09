@@ -71,22 +71,27 @@ const Notifications = ({ closeNotificationOnClick }) => {
         </div>
       ) : (
         <div className="flex-column w-100 p-2">
-          <div className="flex-row  w-100 mt-2">
-            <Skeleton
-              count={1}
-              circle={true}
-              height={40}
-              width={40}
-              className="mb-4 mr-2"
-            />
-            <div className="space__between  w-100">
-              <div className="flex-column">
-                <Skeleton count={1} height={14} width={80} />
-                <Skeleton count={1} height={15} width={150} />
+
+         {
+           Array.from({length: 3},(_,i) =>(
+                <div key={i} className="flex-row  w-100 mt-2">
+                <Skeleton
+                  count={1}
+                  circle={true}
+                  height={40}
+                  width={40}
+                  className="mb-4 mr-2"
+                />
+                <div className="space__between  w-100">
+                  <div className="flex-column">
+                    <Skeleton count={1} height={14} width={80} />
+                    <Skeleton count={1} height={15} width={150} />
+                  </div>
+                  <Skeleton count={1} height={40} width={40} />
+                </div>
               </div>
-              <Skeleton count={1} height={40} width={40} />
-            </div>
-          </div>
+           ))
+         } 
         </div>
       )}
     </div>
