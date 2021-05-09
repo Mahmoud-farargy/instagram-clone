@@ -295,8 +295,8 @@ const ChangePassNEmail = (props) => {
               className={
                 !formState?.email.regexRules?.test(formState?.email.value) ||
                 formState?.email.value === currentUser?.email
-                  ? "disabled profile__btn prof__btn__followed "
-                  : "profile__btn prof__btn__followed"
+                  ? "disabled profile__btn primary__btn "
+                  : "profile__btn primary__btn"
               }
               value="Change Email"
             />
@@ -315,6 +315,7 @@ const ChangePassNEmail = (props) => {
         <form onSubmit={(p) => onSubmission(p, "password")}>
           <InputForm
             type="text"
+            inputType="password"
             label="old password"
             name="oldPassword"
             submitted={isSubmitted?.passwordForm}
@@ -323,6 +324,7 @@ const ChangePassNEmail = (props) => {
           />
           <InputForm
             type="text"
+            inputType="password"
             label="new password"
             name="newPassword"
             changeInput={onInputChange}
@@ -331,6 +333,7 @@ const ChangePassNEmail = (props) => {
           />
           <InputForm
             type="text"
+            inputType="password"
             label="confirm new password"
             name="confirmPassword"
             changeInput={onInputChange}
@@ -348,8 +351,8 @@ const ChangePassNEmail = (props) => {
                 !formState?.oldPassword.value ||
                 !formState?.newPassword.value ||
                 !formState?.confirmPassword.value
-                  ? "disabled profile__btn prof__btn__followed"
-                  : "profile__btn prof__btn__followed"
+                  ? "disabled profile__btn primary__btn"
+                  : "profile__btn primary__btn"
               }
               type="submit"
               value="Change Password"

@@ -136,6 +136,7 @@ const Explore = () => {
                         return alteredSortDirection === "ascending" ? (a.date?.seconds - b.date?.seconds) : (b.date?.seconds - a.date?.seconds);
                       });
                     case "random":
+                      setSortForm({...sortForm, sortDirection: "Descending", filter: "None"});
                     return randomPosts() || [];
                     default :
                     return randomPosts() || [];
@@ -286,7 +287,7 @@ const Explore = () => {
 
                       <div className="explore__modal__btns flex-row">
                         <span className="profile__btn explore__close__btn" onClick={() => setSortingModal(false)}>close</span>
-                        <input disabled={!isValid} className={`profile__btn prof__btn__followed ${!isValid && "disabled"}`} type="submit" value="Save"/>
+                        <input disabled={!isValid} className={`profile__btn primary__btn ${!isValid && "disabled"}`} type="submit" value="Save"/>
                       </div>
                      
           </form>
@@ -351,7 +352,7 @@ const Explore = () => {
                 </div>
               )
             ) : (
-              <p>loading...</p>
+              <h4 className="text-center">No results found.</h4>
             )}
           </div>
           {/* explore end */}

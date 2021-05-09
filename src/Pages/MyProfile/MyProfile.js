@@ -8,6 +8,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { GoVerified } from "react-icons/go";
 import { IoMdGrid } from "react-icons/io";
 import { RiLayoutRowLine } from "react-icons/ri";
+import { GiCog } from "react-icons/gi";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 import * as Consts from "../../Utilities/Consts";
@@ -16,6 +17,7 @@ import appleStore from "../../Assets/get-app-apple.png";
 import gpStore from "../../Assets/get-app-gp.png";
 import { HiOutlinePlus } from "react-icons/hi";
 import { FiLogOut } from "react-icons/fi";
+import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import ProfileItem from "../../Components/ProfileItem/ProfileItem";
 
 const MyProfile =(props)=>{
@@ -56,6 +58,16 @@ const MyProfile =(props)=>{
             {modalsState?.post && receivedData?.posts[currentPostIndex?.index] &&
                 <PostModal/>
             }
+            { modalsState?.options &&
+                <OptionsModal>
+                    {receivedData?.profileInfo?.registrationMethod === "email" && <span onClick={() => {changeMainState("activeOption", {activeIndex: 2, activeID: "Change_Password_or_Email"}); props.history.push("/edit-profile")}}>Change password or email</span>}
+                    <span onClick={() => {changeMainState("activeOption", {activeIndex: 1, activeID: "Professional_Account"}); props.history.push("/edit-profile")}}>Account settings</span>
+                    <span onClick={() => {changeMainState("activeOption", {activeIndex: receivedData?.profileInfo?.registrationMethod === "email" ? 4 : 3, activeID: "Feedback"}); props.history.push("/edit-profile")}}>Report a problem/Rate app</span>
+                    <span onClick={() => {changeMainState("activeOption", {activeIndex: receivedData?.profileInfo?.registrationMethod === "email" ? 3 : 2, activeID: "Blocked_Users"}); props.history.push("/edit-profile")}}>Manage blocked accounts</span>
+                    <span onClick={()=> authLogout(props.history)}>Log out</span>
+                    <span>Cancel</span>
+                </OptionsModal>
+            }
             <section id="usersProfile" className="users--profile--container ">
                 {/* Header */}
                 {/* upper row */}
@@ -76,8 +88,9 @@ const MyProfile =(props)=>{
                                }
                                 </h5>
                                 <div className="flex-row">
-                                <Link role="button" className="profile__btn prof__btn__unfollowed mr-2" to="/edit-profile" >Edit profile</Link>
+                                <Link role="button" className="profile__btn prof__btn__unfollowed mr-2" to="/edit-profile" onClick={()=> changeMainState("activeOption", {activeIndex: 0, activeID: "Edit_Profile"})} >Edit profile</Link>
                                 <button className="mobile-only profile__btn prof__btn__unfollowed" onClick={()=> authLogout(props.history)}><FiLogOut className="mr-1" /> Log out</button>
+                                <button className="my__settings__btn" onClick={() => changeModalState("options", true)}><GiCog /></button>
                                 </div>
                                 
                             </div>

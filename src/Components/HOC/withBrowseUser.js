@@ -11,7 +11,7 @@ export const withBrowseUser = WrappedComponent => {
           if (specialUid && name) {
               if(specialUid !== uid){
                   getUsersProfile(specialUid).then(()=>{
-                    this.props.history.push(`/user-profile/${name}`);
+                    this.props.history.push(`/user_profile/${name}/${specialUid}`);
                   }).catch((err) =>{
                     notify((err && err.message) || "error has occurred. please try again later!", "error");
                   });

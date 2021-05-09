@@ -12,7 +12,7 @@ const OptionsModal = (props, {args}) => {
   return (
     <Fragment>
       <div {...args} id="optionsModal">
-        <div onClick={(z) => closeModal(z)} className="optionsM--container--inner flex-column">
+        <div onClick={(z) => closeModal(z)} className="optionsM--container--inner modalShow flex-column">
           {props.children}
         </div>
       </div>

@@ -13,7 +13,7 @@ import { BiPowerOff, BiCog, BiInfoCircle } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 import { RiSearchLine } from "react-icons/ri";
 import { TiDelete } from "react-icons/ti";
-import NotificationOutput from "../NotificationsOutput/NotificationsOutput";
+import Notifications from "./Notifications/Notifications";
 import { withRouter } from "react-router-dom";
 import SearchItem from "../SearchItem/SearchItem.js";
 import Loader from "react-loader-spinner";
@@ -42,9 +42,6 @@ const Header = (props) => {
     receivedData,
     closeNotificationAlert,
     authLogout,
-    igVideoImg,
-    handleFollowing,
-    changeMainState,
     searchUsers,
     searchInfo,
   } = context;
@@ -322,31 +319,8 @@ const Header = (props) => {
                     >
                       <div className="noti--popup--arrow"> </div>
                       <div className="noti--popup--inner">
-                        {receivedData?.notifications?.list.length >= 1 ? (
-                          <ul onClick={(s) => closeNotificationOnClick(s)} className="noti--popup--ul flex-column">
-                            {receivedData?.notifications?.list
-                              ?.slice(0, 30).sort((a,b) =>{
-                                return b.date.seconds - a.date.seconds
-                              })
-                              .map((notification, i) => {
-                                return (
-                                    <NotificationOutput
-                                    key={notification?.notiId}
-                                      notification={notification}
-                                      igVideoImg={igVideoImg}
-                                      myData={receivedData}
-                                      handleFollowing={handleFollowing}
-                                      changeMainState={changeMainState}
-                                      postIndex={i}
-                                    />
-                                );
-                              })}
-                          </ul>
-                        ) : (
-                          <div className="empty--box flex-row">
-                            <h4>No notifications available right now</h4>
-                          </div>
-                        )}
+                        {openNoti && <Notifications closeNotificationOnClick={closeNotificationOnClick} />}
+                       
                       </div>
                       <div className="noti__transparent"></div>
                     </div>

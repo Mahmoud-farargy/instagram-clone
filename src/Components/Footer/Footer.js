@@ -1,7 +1,9 @@
 import React, { Fragment } from "react";
 import "../../Pages/Home/Home.css";
 import { IoIosArrowDown } from "react-icons/io";
-const Footer = (props) => (
+import { BsHeartFill } from "react-icons/bs";
+
+const Footer = () => (
     <Fragment>
         <footer id="main--footer">
             <div id="userProfFooter" className="userProfile--footer auth--footer--container desktop-only">
@@ -29,7 +31,7 @@ const Footer = (props) => (
                                             <IoIosArrowDown />
                                         </div>
                                         
-                                        <span> &copy;2020 - {new Date().getFullYear()} Instagram clone made by Mahmoud Farargy</span>
+                                        <span> &copy;2020 - {new Date().getFullYear()} Made with <BsHeartFill /> by Mahmoud Farargy</span>
                                     </div>
                                  
                                 </div>

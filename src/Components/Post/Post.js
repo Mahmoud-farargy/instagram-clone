@@ -339,7 +339,10 @@ class Post extends PureComponent {
                   {likes?.people?.length.toLocaleString()}{" "}
                   {likes?.people?.length === 1 ? "like" : "likes"}
                 </div>
-              ) : null}
+              )  :  (likes?.people?.length <= 0 && postOwnerId !== id) ?
+                    <span className="like__invitation">Be the first to <strong onClick={() => this.handleCurrLikes(true)}>like this</strong> </span>
+                : null
+              }
               <Caption caption={caption} userName={userName}  />
               {comments?.length >= 1 ? (
                 <div>

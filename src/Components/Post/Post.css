@@ -81,6 +81,13 @@
     border-bottom-right-radius:4px;
     overflow-x: hidden;
 }
+.post--card--footer span.like__invitation{
+    font-weight: 400;
+}
+.post--card--footer span.like__invitation strong{
+    font-weight: 600;
+    cursor: pointer;
+}
 #post.post--card--container .MuiAvatar-circle.post__header__avatar{
     margin-right:7px;
     width:32px;

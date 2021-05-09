@@ -1,5 +1,5 @@
 <h2>Description</h2>
-A social media app similar to Instagram that people can actually use.
+A social media platform similar to Instagram that people can actually use.
 
 <h2>Screenshots</h2>
 <img src="/Screenshots/Capture1.png" />
@@ -17,7 +17,7 @@ A social media app similar to Instagram that people can actually use.
                                             <li><p>Custom feed based on who they follow</p></li>
                                             <li><p>Profile screen</p>
                                                 <ul class="bullet--2">
-                                                    <li> <p>Follow / unfollow users
+                                                    <li> <p>Follow/Unfollow users
                                                         <ul>
                                                             <li class="bullet--3"><p>View all followed users on your profile or other's</p></li>
                                                         </ul>
@@ -33,7 +33,7 @@ A social media app similar to Instagram that people can actually use.
                                                         </li>
                                                     <li><p>Account settings</p></li>
                                                      <ul>
-                                                             <li class="bullet--3"><p>Show / hide activity status</p></li>
+                                                             <li class="bullet--3"><p>Show/Hide activity status</p></li>
                                                              <li class="bullet--3"><p>Delete account and more options</p></li>
                                                     </ul>
                                                 </ul>
@@ -41,7 +41,7 @@ A social media app similar to Instagram that people can actually use.
                                             <li><p>Posts</p>
                                                 <ul class="bullet--2">
                                                     <li><p>Users can post pictures and videos from camera or gallery</p></li>
-                                                    <li><p>Like / dislike posts
+                                                    <li><p>Like/Dislike posts
                                                         <ul class="bullet--3">
                                                             <li><p>View all likes on a post and who liked it</p></li>
                                                             <li><p>Nice animation when liking a post</p></li>
@@ -51,7 +51,7 @@ A social media app similar to Instagram that people can actually use.
                                                     <li><p>Comment
                                                             <ul class="bullet--3">
                                                                 <li><p>Comment or reply on someone else'comment</p></li>
-                                                                <li><p>Like / dislike comments and sub-comments</p></li>
+                                                                <li><p>Like/Dislike comments and sub-comments</p></li>
                                                                 <li><p>View all comments and who liked them</p></li>
                                                             </ul>
                                                         </p>
@@ -79,7 +79,7 @@ A social media app similar to Instagram that people can actually use.
                                                 <p>Notification screen of the latest updates</p>
                                             </li>
                                             <li><p>Authentications handling with an ability to retrieve password if it was forgetten</p></li>
-                                            <li><p>Block / unblock users</p></li>
+                                            <li><p>Block/Unblock users</p></li>
                                             <li><p>Share video Reels</p>
                                                        <ul class="bullet--2">
                                                           <li>Like and comment on other people's reels</li>
@@ -102,7 +102,8 @@ A social media app similar to Instagram that people can actually use.
    <ul class="bullet--1">
     <li><p>Stories</p></li>
     <li><p>Ability to put multiple media contents in one post</p></li>
-     <li><p>Ability to send voice messages</p></li>
+    <li><p>Ability to send voice messages</p></li>
+    <li><p>Night/Day themes</p></li>
    </ul>
 
 ## Available Scripts

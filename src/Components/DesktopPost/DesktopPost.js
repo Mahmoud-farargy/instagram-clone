@@ -504,7 +504,10 @@ const DesktopPost = (props) => {
                         {likes?.people?.length.toLocaleString()}{" "}
                         {likes?.people?.length === 1 ? "like" : "likes"}
                       </div>
-                    ) : null}
+                    ) : (likes?.people?.length <= 0 && postOwnerId !== uid) ?
+                          <span className="like__invitation">Be the first to <strong onClick={() => handleCurrLikes(true)}>like this</strong> </span>
+                      : null
+                    }
                   <Caption caption={caption} userName={usersProfileData?.userName} />
 
                     <small className="post__date">

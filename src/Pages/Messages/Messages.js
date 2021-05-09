@@ -12,7 +12,7 @@ import PropTypes from "prop-types";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import Message from "./Message/Message";
-import { AiOutlinePicture } from "react-icons/ai";
+import { AiOutlinePicture,  AiOutlineMessage } from "react-icons/ai";
 import { FaRegHeart } from "react-icons/fa";
 import { storage } from "../../Config/firebase";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
@@ -286,16 +286,15 @@ const Messages = (props) => {
                           );
                         })
                     ) : (
-                      <h4
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "600",
-                          textAlign: "center",
-                        }}
-                      >
-                        Start messaging people from the pen button above. Users
-                        will be here
-                      </h4>
+                      <div className="empty--chat--box">
+                        <div className="empty--card">
+                          <AiOutlineMessage />
+                          <h2>People who you message</h2>
+                            <h4>Start messaging people from the pen button above. Users
+                          will be here</h4>
+                        </div>                        
+                      </div>
+
                     )}
                   </ul>
     )
@@ -384,7 +383,7 @@ const Messages = (props) => {
               </OptionsModal>
             ): modalsState?.newMsg ?
             <div className="new--msg--conainer usersModal--container flex-column">
-              <div className="new--msg--inner usersModal--inner">
+              <div className="new--msg--inner usersModal--inner modalShow">
                 <div style={{
                           transform: modalsState?.newMsg ? "translate(0)" : "translate(-150%)"
                     }} className="usersModal--card">

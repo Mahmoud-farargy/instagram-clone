@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import "./EditProfile.scss";
 import { AppContext } from "../../Context";
-import { updateObject } from "../../Utilities/Utility";
 import { withRouter } from "react-router-dom";
 import fbimg from "../../Assets/f0e27bf15519.png";
 import MenuOption from "./MenuOption";
@@ -20,7 +19,6 @@ class EditProfile extends PureComponent {
       {option:"Blocked Users", id:"Blocked_Users" },
       {option:"Feedback", id: "Feedback"}
     ],
-    active: {activeIndex: 0, activeID: "Edit_Profile"},
   };
   static contextType = AppContext;
   componentDidMount() {
@@ -28,13 +26,17 @@ class EditProfile extends PureComponent {
     const { changeMainState} = this.context;
     changeMainState("currentPage", "Edit profile");
   }
+  componentWillUnmount(){
+    const { changeMainState} = this.context;
+    changeMainState("activeOption", {activeIndex: 0, activeID: "Edit_Profile"});
+  }
   onMenuChange(index, ID) {
-    this.setState(updateObject(this.state, {active: {activeIndex: index, activeID: ID}}));
+    this.context.changeMainState("activeOption", {activeIndex: index, activeID: ID});
     // this.autoScroll && this.autoScroll?.current.scrollIntoView&& this.autoScroll.current.scrollIntoView({behavior: "smooth", block: "start"});
   }
 
   render() {
-    const {receivedData} = this.context;
+    const {receivedData, activeOption} = this.context;
     return (
       <Auxiliary>
         <section id="page">
@@ -44,11 +46,11 @@ class EditProfile extends PureComponent {
                 <ul className="flex-column left--side">
                   {this.state.sideMenuOptions &&
                     this.state.sideMenuOptions.length > 0 &&
-                    this.state.sideMenuOptions.filter((k) => (receivedData?.profileInfo?.registerationMethod !== "email" ? k.id !== "Change_Password_or_Email" : k)).map((item, i) => (
+                    this.state.sideMenuOptions.filter((k) => (receivedData?.profileInfo?.registrationMethod !== "email" ? (k.id !== "Change_Password_or_Email") : k)).map((item, i) => (
                       <MenuOption
                         onClick={() => this.onMenuChange(i, item.id)}
                         className={
-                          this.state.active.activeIndex === i
+                          activeOption.activeIndex === i
                             ? "active__menu__option"
                             : ""
                         }
@@ -66,17 +68,17 @@ class EditProfile extends PureComponent {
                 </ul>
                 {/* end left side */}
                 <div className="flex-column right--side" ref={this.autoScroll}>
-                  {this.state.active.activeID === this.state.sideMenuOptions[0].id ? (
+                  {activeOption.activeID === this.state.sideMenuOptions[0].id ? (
                     <EditProfileOption
                       changeIndex={(i,id) => this.onMenuChange(i, id)}
                     />
-                  ) : this.state.active.activeID === this.state.sideMenuOptions[1].id ? (
+                  ) : activeOption.activeID === this.state.sideMenuOptions[1].id ? (
                     <ProfessionalAccount />
-                  ) : this.state.active.activeID === this.state.sideMenuOptions[2].id ? (
+                  ) : activeOption.activeID === this.state.sideMenuOptions[2].id ? (
                     <ChangePassNEmail />
-                  ) : this.state.active.activeID === this.state.sideMenuOptions[3].id ?
+                  ) : activeOption.activeID === this.state.sideMenuOptions[3].id ?
                     <BlockList context={this.context} />
-                   : this.state.active.activeID === this.state.sideMenuOptions[4].id ? (
+                   : activeOption.activeID === this.state.sideMenuOptions[4].id ? (
                      <Feedback />
                    ): null} 
                 </div>

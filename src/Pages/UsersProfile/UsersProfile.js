@@ -1,7 +1,7 @@
 import React, { useContext, Fragment, useState, useEffect } from "react";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter, Link, useParams } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { auth } from "../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -10,6 +10,7 @@ import { IoMdGrid } from "react-icons/io";
 import { RiLayoutRowLine } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
 import { ImBlocked } from "react-icons/im";
+import { FaUserCheck } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import {HiOutlineDotsHorizontal} from "react-icons/hi";
 import reelsIco from "../../Assets/reels.png";
@@ -26,6 +27,7 @@ const UsersProfile = (props) => {
   const [, loading] = useAuthState(auth);
   const [isFollowed, setFollowingState] = useState(false);
   const [isFollower, setFollowerState] = useState(false);
+  const {userId} = useParams();
   const [grid, setGrid] = useState(true);
   const context = useContext(AppContext);
   const [openSuggestionsBox, setSuggestionsBox] = useState(false);
@@ -45,7 +47,8 @@ const UsersProfile = (props) => {
     handleUserBlocking,
     currentPostIndex,
     updateReelsProfile,
-    isUserOnline
+    isUserOnline,
+    getUsersProfile
   } = context;
 
   const message = (uid, username, avatarUrl, isVerified) => {
@@ -74,7 +77,10 @@ const UsersProfile = (props) => {
   useEffect(() => {
     changeMainState("currentPage", `${usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name ? usersProfileData?.profileInfo?.name+" (" : ""}@${usersProfileData.userName}${usersProfileData?.profileInfo && usersProfileData?.profileInfo?.name ? ")" : ""}` || "User Profile");
   }, [usersProfileData, changeMainState]);
-  useEffect(() => {   
+  useEffect(() => {
+    if(!usersProfileData && userId){
+      getUsersProfile(userId);
+    }
     window.scrollTo(0, 0);
   }, []);
   useEffect(()=> {
@@ -266,7 +272,7 @@ const UsersProfile = (props) => {
                       }
                       className={
                         !isFollowed
-                          ? "profile__btn prof__btn__followed"
+                          ? "profile__btn primary__btn"
                           : "profile__btn prof__btn__unfollowed"
                       }
                     >
@@ -275,17 +281,17 @@ const UsersProfile = (props) => {
                         ? "follow back"
                         : !isFollowed && !isFollower
                         ? "follow"
-                        : "unfollow"}
+                        : <FaUserCheck className="mx-3" />}
                     </button>
                     :
-                    <button onClick={(p) => {handleUserBlocking(false, usersProfileData?.uid, usersProfileData?.userName ); p.stopPropagation()}} className="profile__btn prof__btn__followed">
+                    <button onClick={(p) => {handleUserBlocking(false, usersProfileData?.uid, usersProfileData?.userName ); p.stopPropagation()}} className="profile__btn primary__btn">
                       Unblock
                     </button>
                     : null
                     
                     }
                     <button
-                      className="sugg__btn profile__btn prof__btn__followed"
+                      className="sugg__btn profile__btn primary__btn"
                       style={{
                         backgroundColor: openSuggestionsBox
                           ? "#63baf4"
@@ -373,7 +379,7 @@ const UsersProfile = (props) => {
               <div className="users--suggestions--container">
                 <div className="user--sugg--header flex-row">
                   <span className="user__sugg__title__title">Suggestions</span>
-                  <Link to="/explore/people/suggestions"><span className="user__see__all__btn">see all</span></Link>
+                  <Link to="/explore/people"><span className="user__see__all__btn">see all</span></Link>
                 </div>
                 <div className="suggestions--list--container flex-row">
                   <ul className="suggestion--items flex-row">

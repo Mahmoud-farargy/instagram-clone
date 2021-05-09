@@ -27,6 +27,10 @@
 #upload.post--uploading--container .showing--upladed--content{    
     min-height:300px;
 }
+#upload.post--uploading--container .showing--upladed--content img{
+    min-height: 200px;
+    max-height: 400px;
+}
 #upload.post--uploading--container .post--uploading--inner{
     align-items:center;
 }

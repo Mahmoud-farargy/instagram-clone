@@ -156,8 +156,8 @@ const Extra = () => {
                                       disabled={(!rate || hasRated )}
                                       className={
                                         (!rate || hasRated)
-                                          ? "disabled profile__btn prof__btn__followed mb-2"
-                                          : "profile__btn prof__btn__followed mb-2"
+                                          ? "disabled profile__btn primary__btn mb-2"
+                                          : "profile__btn primary__btn mb-2"
                                       }
                                     />
                                    
