@@ -28,7 +28,7 @@ const ModalListItem =(props)=>{
                 </div>
               {
                   uid !== receivedData.uid ?
-                    <button disabled={!uid} onClick={(k)=> {handleFollowing(isFollowed, uid ,userName, avatarUrl, receivedData?.uid, receivedData?.userName, receivedData?.userAvatarUrl); k.stopPropagation()}} className={ isFollowed ? "profile__btn prof__btn__unfollowed": "profile__btn prof__btn__followed"}> {isFollowed ? "unfollow"  : "follow"}</button>
+                    <button disabled={!uid} onClick={(k)=> {handleFollowing(isFollowed, uid ,userName, avatarUrl, receivedData?.uid, receivedData?.userName, receivedData?.userAvatarUrl); k.stopPropagation()}} className={ isFollowed ? "profile__btn prof__btn__unfollowed": "profile__btn primary__btn"}> {isFollowed ? "unfollow"  : "follow"}</button>
                 : null
               }
             </div>

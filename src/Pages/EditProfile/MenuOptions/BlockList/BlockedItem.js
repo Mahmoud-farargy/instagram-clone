@@ -18,7 +18,7 @@ function BlockedItem(props) {
                     </div>
                     
                 </div>
-                <button className="profile__btn prof__btn__followed px-2" onClick={() => onUnblock(item?.blockedUid, item?.userName)}>
+                <button className="profile__btn primary__btn px-2" onClick={() => onUnblock(item?.blockedUid, item?.userName)}>
                     Unblock
                 </button>
             </li>

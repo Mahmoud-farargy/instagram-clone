@@ -115,16 +115,16 @@ const App = () => {
         // console.log(new Date().getTime());
         const lastMessage = receivedData?.messages?.sort((a, b) => b?.lastMsgDate - a?.lastMsgDate)[0];
         const checkIfTimePassed = (time) => {
-            const twentySecs = 20*1000;
+            const fifteenSecs = 15*1000;
             const dateNow = new Date();
-           return dateNow - new Date(time * 1000) < twentySecs;
+           return dateNow - new Date(time * 1000) < fifteenSecs;
         }
         const diffTimesUpdate = checkIfTimePassed(lastUpdate?.date?.seconds);
         const diffTimesMsg = checkIfTimePassed(lastMessage);
         // Note to self 1*40*1000 = 1 minute,  5*40*1000 = 5 minutes,  10*40*1000 = 10 minutes ...
        //checks if the latest received element's date is less than a minutes ago.If so it fires a bell sound
         const timePassed = notificationBellType === "new updates" ? diffTimesUpdate : notificationBellType === "new messages" ? diffTimesMsg : (diffTimesUpdate || diffTimesMsg);
-         const bellSound = new Audio(notificationSound)
+         const bellSound = new Audio(notificationSound);
          if((timePassed && lastUpdate?.uid !== receivedData?.uid)){
             setNotiBell(true);
             bellSound.play();
@@ -240,7 +240,7 @@ const App = () => {
               <MobileNav />
               <Footer />
             </Route>
-            <Route path="/user-profile">
+            <Route exact path="/user_profile/:name/:userId">
               {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               <MobileHeader />
               {
@@ -312,7 +312,7 @@ const App = () => {
               <MobileNav />
               <Footer />
             </Route>
-            <Route exact path="/explore/people/suggestions">
+            <Route path="/explore/people">
             {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
             <MobileHeader />
             {

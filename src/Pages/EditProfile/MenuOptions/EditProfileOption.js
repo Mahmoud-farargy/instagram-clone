@@ -83,7 +83,7 @@ const EditProfileOption = (props) => {
     if (process === "update") {
       $("#fileUploader").trigger("click");
     } else if (process === "delete") {
-      if(receivedData?.profileInfo?.registerationMethod?.toLowerCase() === "email"){
+      if(receivedData?.profileInfo?.registrationMethod?.toLowerCase() === "email"){
           (async function (myUid){
         return await storageRef
                 .child(`/avatars/${myUid}`)
@@ -274,7 +274,7 @@ const EditProfileOption = (props) => {
               extraText={
                 <small>
                 {
-                  receivedData?.profileInfo?.registerationMethod === "email" &&
+                  receivedData?.profileInfo?.registrationMethod === "email" &&
                     <span
                       className="change__prof__pic"
                       onClick={() => props.changeIndex(2, "Change_Password_or_Email")}
@@ -354,8 +354,8 @@ const EditProfileOption = (props) => {
               value="Submit"
               className={
                 !isFormValid
-                  ? "disabled profile__btn prof__btn__followed mb-2"
-                  : "profile__btn prof__btn__followed mb-2"
+                  ? "disabled profile__btn primary__btn mb-2"
+                  : "profile__btn primary__btn mb-2"
               }
             />
           </div>

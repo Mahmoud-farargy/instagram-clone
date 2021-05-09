@@ -8,7 +8,6 @@ import Loader from "react-loader-spinner";
 import SignInOption from "./SignInOption/SignInOption";
 import * as Consts from "../../Utilities/Consts";
 
-
 import {
   auth,
   db,
@@ -20,10 +19,12 @@ import {
 import { withRouter } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { useAuthState } from "react-firebase-hooks/auth";
+import PasswordInput from "./PasswordInput/PasswordInput";
 
 const AuthPage = (props) => {
   var context = useContext(AppContext);
-  const [,loading] = useAuthState(auth);
+  const [, loading] = useAuthState(auth);
+  //TODO: Organize states by putting only login and signup states with their respective inputs
   //----------- states----------------------
   const [signUpState, switchToSignUp] = useState(false);
   const [signUpEmail, setSignUpEmail] = useState("");
@@ -31,13 +32,12 @@ const AuthPage = (props) => {
   const [signUpUsername, setSignUpUsername] = useState("");
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-  const [reTypedPassword, setRePassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [capitalizeName, setCapitalizedName] = useState("");
   const [inProgress, setLoading] = useState(false);
   const [getPasswordMode, setPasswordMode] = useState(false);
-
   //-----x------ states--------x--------------
-  
+
   useEffect(() => {
     return () => {
       context.changeMainState(
@@ -55,7 +55,6 @@ const AuthPage = (props) => {
     );
   };
   const submitForm = async (event, authType) => {
-    
     event.preventDefault();
     var {
       resetAllData,
@@ -65,14 +64,14 @@ const AuthPage = (props) => {
       notify,
       receivedData,
       currentUser,
-      authLogout
+      authLogout,
+      updatedReceivedData
     } = context;
     setLoading(true);
     if (authType === "signUp") {
       resetAllData(); //clears data before adding new one
-      
-      setTimeout(() => {
 
+      setTimeout(() => {
         if (!isUserOnline) {
           //avoids data overlapping
           if (
@@ -80,17 +79,22 @@ const AuthPage = (props) => {
               signUpEmail
             )
           ) {
-            if (
-              /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/.test(signUpPassword)
-            ) {
-              if (signUpPassword === reTypedPassword) {
+            if (/(?=^.{5,25}$)^[a-zA-Z-]+\s[a-zA-Z-]+$/.test(fullName.trim())) {
+              if (
+                /^(?=[a-zA-Z0-9._-]{6,19}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test(
+                  signUpUsername
+                )
+              ) {
                 if (
-                  /^(?=[a-zA-Z0-9._-]{6,19}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test(
-                    signUpUsername
+                  /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/.test(
+                    signUpPassword
                   )
                 ) {
                   auth
-                    .createUserWithEmailAndPassword(signUpEmail.toLowerCase().trim(), signUpPassword)
+                    .createUserWithEmailAndPassword(
+                      signUpEmail.toLowerCase().trim(),
+                      signUpPassword
+                    )
                     .then((cred) => {
                       setLoading(false);
                       db.collection(Consts.USERS)
@@ -107,7 +111,7 @@ const AuthPage = (props) => {
                             website: "",
                             gender: "Male",
                             status: "Single",
-                            name: "",
+                            name: fullName.trim(),
                             phoneNumber: "",
                             professionalAcc: {
                               show: true,
@@ -115,11 +119,15 @@ const AuthPage = (props) => {
                               suggested: true,
                               status: true,
                               reelsForFollowing: false,
-                              notificationBell:{state: true, type: "Both"}
+                              notificationBell: { state: true, type: "Both" },
                             },
-                            sort:{sortBy: "Random", sortDirection: "Descending", filter: "None"},
+                            sort: {
+                              sortBy: "Random",
+                              sortDirection: "Descending",
+                              filter: "None",
+                            },
                             accountCreationDate: new Date(),
-                            registrationMethod: "email"
+                            registrationMethod: "email",
                           },
                           homePosts: [],
                           reels: [],
@@ -134,7 +142,6 @@ const AuthPage = (props) => {
                           },
                           isVerified: false,
                           userAvatarUrl: "",
-                         
                         })
                         .then(() => {
                           auth.currentUser.updateProfile({
@@ -153,7 +160,10 @@ const AuthPage = (props) => {
                           );
                           setTimeout(() => {
                             props.history.push("/");
-                            notify("Welcome to Voxgram. Start by adding posts to your account.");
+                            updatedReceivedData();
+                            notify(
+                              "Welcome to Voxgram. Start by adding posts to your account."
+                            );
                           }, 150);
                         });
                     })
@@ -164,21 +174,21 @@ const AuthPage = (props) => {
                 } else {
                   setLoading(false);
                   notify(
-                    "Username should be between 6 and 19 characters with no spaces.",
+                    "Password should be between 8 and 20 characters and contains at least one number, one lowercase letter, and one uppercase letter.",
                     "error"
                   );
                 }
               } else {
                 setLoading(false);
                 notify(
-                  "The confirmation password does not match the one above it.",
+                  `Username should be between 6 and 19 characters with no spaces. Underscore, dash and dot characters are allowed but should not be placed at the end.`,
                   "error"
                 );
               }
             } else {
               setLoading(false);
               notify(
-                "Password should be between 8 and 20 characters, and contains at least one number, one lowecase letter and one uppercase letter.",
+                "Full Name should include letters only with a space between each word and should not exceed 25 characters.",
                 "error"
               );
             }
@@ -186,40 +196,46 @@ const AuthPage = (props) => {
             setLoading(false);
             notify("Please type a valid email", "error");
           }
-        } else{
+        } else {
           authLogout(props.history);
           setLoading(false);
         }
       }, 1000);
     } else if (authType === "login") {
       resetAllData();
-      
-      setTimeout(() => {
 
+      setTimeout(() => {
         if (!isUserOnline) {
-         
           //avoids data overlapping
           auth
-            .signInWithEmailAndPassword(loginEmail.toLowerCase().trim(), loginPassword)
+            .signInWithEmailAndPassword(
+              loginEmail.toLowerCase().trim(),
+              loginPassword
+            )
             .then(() => {
               setLoading(false);
               setLoginEmail("");
               setLoginPassword("");
 
               auth.onAuthStateChanged((authUser) => {
-                  updateUserState(true);
-                    updateUID(authUser?.uid);
-                   setLoading(false);
+                updateUserState(true);
+                updateUID(authUser?.uid);
+                setLoading(false);
               });
               localStorage.setItem(
                 "user",
                 JSON.stringify({
                   email: loginEmail.toLowerCase(),
-                  password: decipherPassword(loginPassword)
+                  password: decipherPassword(loginPassword),
                 })
               );
               setTimeout(() => {
-                notify(`Welcome back, ${(receivedData?.userName || currentUser?.displayName || "User")}`);
+                updatedReceivedData();
+                notify(
+                  `Welcome back, ${
+                    receivedData?.userName || currentUser?.displayName || "User"
+                  }`
+                );
                 props.history.push("/");
               }, 150);
             })
@@ -227,7 +243,7 @@ const AuthPage = (props) => {
               setLoading(false);
               notify(err.message, "error");
             });
-        }else{
+        } else {
           setLoading(false);
         }
       }, 1800);
@@ -242,56 +258,245 @@ const AuthPage = (props) => {
           .signInWithPopup(googleProvider)
           .then((cred) => {
             setLoading(false);
-            const {profile:{email,name,picture, given_name}, isNewUser} = cred?.additionalUserInfo;
-              if(isNewUser){
-                  db.collection(Consts.USERS).doc(cred.user.uid).set({
-                      uid: cred.user.uid,
-                      userName: trimUserName(name),
-                      posts: [],
-                      followers: [],
-                      following: [],
-                      messages: [],
-                      profileInfo: {
-                        bio: "",
-                        website: "",
-                        gender: "Male",
-                        status: "Single",
-                        name: (given_name || ""),
-                        phoneNumber: "",
-                        professionalAcc: {
-                          show: true,
-                          category: "Just For Fun",
-                          suggested: true,
-                          status: true,
-                          reelsForFollowing: false,
-                          notificationBell:{state: true, type: "Both"}
-                        },
-                        sort:{sortBy: "Random", sortDirection: "Descending", filter: "None"},
-                        accountCreationDate: new Date(),
-                        registrationMethod: "google"
-                      },
-                      homePosts: [],
-                      reels: [],
-                      latestLikedPosts: [],
-                      savedposts: [],
-                      stories: [],
-                      blockList: [],
-                      notifications: {
-                        isNewMsg: false,
-                        isUpdate: false,
-                        list: [],
-                      },
-                      isVerified: false,
-                      userAvatarUrl: picture,
-                      
-                }).then(() => {
-                  setTimeout(() => {
-                    props.history.push("/");
-                    context.notify("Welcome to Voxgram. Start by adding posts to your account.");
-                  }, 150);
+            const {
+              profile: { email, name, picture, given_name },
+              isNewUser,
+            } = cred?.additionalUserInfo;
+            if (isNewUser) {
+              db.collection(Consts.USERS)
+                .doc(cred.user.uid)
+                .set({
+                  uid: cred.user.uid,
+                  userName: trimUserName(name),
+                  posts: [],
+                  followers: [],
+                  following: [],
+                  messages: [],
+                  profileInfo: {
+                    bio: "",
+                    website: "",
+                    gender: "Male",
+                    status: "Single",
+                    name: given_name || "",
+                    phoneNumber: "",
+                    professionalAcc: {
+                      show: true,
+                      category: "Just For Fun",
+                      suggested: true,
+                      status: true,
+                      reelsForFollowing: false,
+                      notificationBell: { state: true, type: "Both" },
+                    },
+                    sort: {
+                      sortBy: "Random",
+                      sortDirection: "Descending",
+                      filter: "None",
+                    },
+                    accountCreationDate: new Date(),
+                    registrationMethod: "google",
+                  },
+                  homePosts: [],
+                  reels: [],
+                  latestLikedPosts: [],
+                  savedposts: [],
+                  stories: [],
+                  blockList: [],
+                  notifications: {
+                    isNewMsg: false,
+                    isUpdate: false,
+                    list: [],
+                  },
+                  isVerified: false,
+                  userAvatarUrl: picture,
                 })
-              }
-               setLoading(false);
+                .then(() => {
+                  setTimeout(() => {
+                    setLoading(false);
+                    props.history.push("/");
+                    context.updatedReceivedData();
+                    context.notify(
+                      "Welcome to Voxgram. Start by adding posts to your account."
+                    );
+                  }, 150);
+                });
+            }else{
+              setTimeout(() => {
+                setLoading(false);
+                  context.notify(`Welcome back, ${given_name || "User"}.`);
+                  props.history.push("/");
+              }, 150);
+            }
+            localStorage.setItem(
+              "user",
+              JSON.stringify({
+                email: email ? email.toLowerCase() : "",
+                password: decipherPassword(signUpPassword),
+              })
+            );
+          })
+          .catch((err) => {
+            setLoading(false);
+            context.notify(err.message, "error");
+          });
+        break;
+      case "facebookProvider":
+        auth.signInWithPopup(facebookProvider).then((res) => {
+          console.log(res);
+        });
+        break;
+      case "twitterProvider":
+        setLoading(true);
+        auth
+          .signInWithPopup(twitterProvider)
+          .then((cred) => {
+            setLoading(false);
+            const {
+              profile: {
+                name,
+                profile_image_url,
+                profile_image_url_https,
+                screen_name,
+                userName,
+              },
+              isNewUser,
+            } = cred?.additionalUserInfo;
+            if (isNewUser) {
+              db.collection(Consts.USERS)
+                .doc(cred.user.uid)
+                .set({
+                  uid: cred.user.uid,
+                  userName: trimUserName(userName || name || screen_name || ""),
+                  posts: [],
+                  followers: [],
+                  following: [],
+                  messages: [],
+                  profileInfo: {
+                    bio: "",
+                    website: "",
+                    gender: "Male",
+                    status: "Single",
+                    name: "",
+                    phoneNumber: "",
+                    professionalAcc: {
+                      show: true,
+                      category: "Just For Fun",
+                      suggested: true,
+                      status: true,
+                      reelsForFollowing: false,
+                      notificationBell: { state: true, type: "Both" },
+                    },
+                    sort: {
+                      sortBy: "Random",
+                      sortDirection: "Descending",
+                      filter: "None",
+                    },
+                    accountCreationDate: new Date(),
+                    registrationMethod: "twitter",
+                  },
+                  homePosts: [],
+                  reels: [],
+                  latestLikedPosts: [],
+                  savedposts: [],
+                  stories: [],
+                  blockList: [],
+                  notifications: {
+                    isNewMsg: false,
+                    isUpdate: false,
+                    list: [],
+                  },
+                  isVerified: false,
+                  userAvatarUrl:
+                    profile_image_url || profile_image_url_https || "",
+                })
+                .then(() => {
+                  setTimeout(() => {
+                    setLoading(false);
+                    context.updatedReceivedData();
+                    props.history.push("/");
+                    context.notify(
+                      "Welcome to Voxgram. Start by adding posts to your account."
+                    );
+                  }, 150);
+                });
+            }else{
+              setTimeout(() => {
+                setLoading(false);
+                context.notify(`Welcome back, ${name || "User"}.`);
+                props.history.push("/");
+              }, 150);
+            }
+            localStorage.setItem(
+              "user",
+              JSON.stringify({
+                email: "",
+                password: decipherPassword(signUpPassword),
+              })
+            );          
+          })
+          .catch((err) => {
+            setLoading(false);
+            context.notify(err.message, "error");
+          });
+        break;
+      case "githubProvider":
+        setLoading(true);
+        auth
+          .signInWithPopup(githubProvider)
+          .then((cred) => {
+            setLoading(false);
+            const {
+              profile: { email, username, avatar_url, bio, login },
+              isNewUser,
+            } = cred?.additionalUserInfo;
+            if (isNewUser) {
+              db.collection(Consts.USERS)
+                .doc(cred.user.uid)
+                .set({
+                  uid: cred.user.uid,
+                  userName: trimUserName(username || login),
+                  posts: [],
+                  followers: [],
+                  following: [],
+                  messages: [],
+                  profileInfo: {
+                    bio: bio ? bio : "",
+                    website: "",
+                    gender: "Male",
+                    status: "Single",
+                    name: "",
+                    phoneNumber: "",
+                    professionalAcc: {
+                      show: true,
+                      category: "Just For Fun",
+                      suggested: true,
+                      status: true,
+                      reelsForFollowing: false,
+                      notificationBell: { state: true, type: "Both" },
+                    },
+                    sort: {
+                      sortBy: "Random",
+                      sortDirection: "Descending",
+                      filter: "None",
+                    },
+                    accountCreationDate: new Date(),
+                    registrationMethod: "github",
+                  },
+                  homePosts: [],
+                  reels: [],
+                  latestLikedPosts: [],
+                  savedposts: [],
+                  stories: [],
+                  blockList: [],
+                  notifications: {
+                    isNewMsg: false,
+                    isUpdate: false,
+                    list: [],
+                  },
+                  isVerified: false,
+                  userAvatarUrl: avatar_url,
+                })
+                .then(() => {
+                  setLoading(false);
                   localStorage.setItem(
                     "user",
                     JSON.stringify({
@@ -300,177 +505,38 @@ const AuthPage = (props) => {
                     })
                   );
                   setTimeout(() => {
-                    context.notify(`Welcome back, ${given_name || "User"}.`);
+                    context.updatedReceivedData();
                     props.history.push("/");
-                  }, 150);
-          })
-          .catch((err) => {
-            setLoading(false);
-            context.notify(err.message, "error");
-          });
-        break;
-      case "facebookProvider":
-        auth.signInWithPopup(facebookProvider).then((res) =>{
-          console.log(res);
-        });
-        break;
-      case "twitterProvider":
-        setLoading(true);
-        auth.signInWithPopup(twitterProvider).then((cred) => {
-          setLoading(false);
-          const {profile:{name,profile_image_url, profile_image_url_https, screen_name, userName}, isNewUser} = cred?.additionalUserInfo;
-            if(isNewUser){
-                db.collection(Consts.USERS).doc(cred.user.uid).set({
-                    uid: cred.user.uid,
-                    userName: trimUserName((userName || name || screen_name || "")),
-                    posts: [],
-                    followers: [],
-                    following: [],
-                    messages: [],
-                    profileInfo: {
-                      bio: "",
-                      website: "",
-                      gender: "Male",
-                      status: "Single",
-                      name: "",
-                      phoneNumber: "",
-                      professionalAcc: {
-                        show: true,
-                        category: "Just For Fun",
-                        suggested: true,
-                        status: true,
-                        reelsForFollowing: false,
-                        notificationBell:{state: true, type: "Both"}
-                      },
-                      sort:{sortBy: "Random", sortDirection: "Descending", filter: "None"},
-                      accountCreationDate: new Date(),
-                      registrationMethod: "twitter"
-                    },
-                    homePosts: [],
-                    reels: [],
-                    latestLikedPosts: [],
-                    savedposts: [],
-                    stories: [],
-                    blockList: [],
-                    notifications: {
-                      isNewMsg: false,
-                      isUpdate: false,
-                      list: [],
-                    },
-                    isVerified: false,
-                    userAvatarUrl: (profile_image_url || profile_image_url_https || ""),
-                    
-              }).then(() => {
-                setTimeout(() => {
-                  props.history.push("/");
-                  context.notify("Welcome to Voxgram. Start by adding posts to your account.");
-                }, 150);
-              })
-            }
-             setLoading(false);
-                localStorage.setItem(
-                  "user",
-                  JSON.stringify({
-                    email: "",
-                    password: decipherPassword(signUpPassword),
-                  })
-                );
-                setTimeout(() => {
-                  context.notify(`Welcome back, ${name || "User"}.`);
-                  props.history.push("/");
-                }, 150);
-        })
-        .catch((err) => {
-          setLoading(false);
-          context.notify(err.message, "error");
-        });
-        break;
-      case "githubProvider":
-        setLoading(true);
-          auth.signInWithPopup(githubProvider).then((cred) => {
-            setLoading(false);
-            const {profile:{email,username,avatar_url, bio, login}, isNewUser} = cred?.additionalUserInfo;
-              if(isNewUser){
-                  db.collection(Consts.USERS).doc(cred.user.uid).set({
-                      uid: cred.user.uid,
-                      userName: trimUserName(username || login),
-                      posts: [],
-                      followers: [],
-                      following: [],
-                      messages: [],
-                      profileInfo: {
-                        bio: bio ? bio : "",
-                        website: "",
-                        gender: "Male",
-                        status: "Single",
-                        name: "",
-                        phoneNumber: "",
-                        professionalAcc: {
-                          show: true,
-                          category: "Just For Fun",
-                          suggested: true,
-                          status: true,
-                          reelsForFollowing: false,
-                          notificationBell:{state: true, type: "Both"}
-                        },
-                        sort:{sortBy: "Random", sortDirection: "Descending", filter: "None"},
-                        accountCreationDate: new Date(),
-                        registrationMethod: "github"
-                      },
-                      homePosts: [],
-                      reels: [],
-                      latestLikedPosts: [],
-                      savedposts: [],
-                      stories: [],
-                      blockList: [],
-                      notifications: {
-                        isNewMsg: false,
-                        isUpdate: false,
-                        list: [],
-                      },
-                      isVerified: false,
-                      userAvatarUrl: avatar_url,
-                      
-                }).then(() =>{
-                  setLoading(false);
-                  localStorage.setItem(
-                    "user",
-                    JSON.stringify({
-                      email: (email ? email.toLowerCase(): ""),
-                      password: decipherPassword(signUpPassword),
-                    })
-                  );
-                  setTimeout(() => {
-                    props.history.push("/");
-                    context.notify("Welcome to Voxgram. Start by adding posts to your account.");
+                    context.notify(
+                      "Welcome to Voxgram. Start by adding posts to your account."
+                    );
                   }, 150);
                 });
-              }else{
-                setLoading(false);
-                  localStorage.setItem(
-                    "user",
-                    JSON.stringify({
-                      email: (email ? email.toLowerCase(): ""),
-                      password: decipherPassword(signUpPassword),
-                    })
-                  );
-                  setTimeout(() => {
-                    context.notify(`Welcome back, ${(username || login || "User")}.`);
-                    props.history.push("/");
-                  }, 200);
-              }
-               
+            } else {
+              setLoading(false);
+              setTimeout(() => {
+                context.notify(`Welcome back, ${username || login || "User"}.`);
+                props.history.push("/");
+              }, 150);
+            }
+            localStorage.setItem(
+                "user",
+                JSON.stringify({
+                  email: email ? email.toLowerCase() : "",
+                  password: decipherPassword(signUpPassword),
+                })
+              );
           })
           .catch((err) => {
             setLoading(false);
             context.notify(err.message, "error");
           });
-      break;
+        break;
       default:
         context.notify("An error occurred");
     }
   };
-  
+
   const resetEmail = (e) => {
     e.preventDefault();
     const { notify } = context;
@@ -492,10 +558,14 @@ const AuthPage = (props) => {
         );
       });
   };
-  const trimUserName = (fullName) => {
-    const limit= 18;
-    return `${fullName.split("").length > limit ? fullName.split("").slice(0,limit).join("")+".." : fullName}`;
-  }
+  const trimUserName = (txt) => {
+    const limit = 21;
+    return `${
+      txt.split("").length > limit
+        ? txt.split("").slice(0, limit).join("") + ".."
+        : txt
+    }`;
+  };
   return (
     <Auxiliary>
       <section className="auth--main flex-column">
@@ -511,7 +581,9 @@ const AuthPage = (props) => {
                 </span>
                 <h1 className="logoText">Voxgram</h1>
               </div>
-              <small className="insta--warning">Note: this is not the official Instagram website.</small>
+              <small className="insta--warning">
+                Note: this is not the official Instagram website.
+              </small>
 
               {
                 // log in state
@@ -530,48 +602,40 @@ const AuthPage = (props) => {
                           type="text"
                           placeholder="Email"
                         />
-                        <input
-                          required
-                          value={loginPassword}
-                          onChange={(e) => setLoginPassword(e.target.value)}
-                          type="password"
-                          placeholder="Password"
-                          autoComplete="off"
-                        />
-                    {
-                      loading || inProgress ?
-                      <button
-                        className={"disabled loading__btn flex-row"}
-                        disabled={true}
-                      >
-                        <Loader
-                        type="ThreeDots"
-                        color="#fff"
-                        height={15}
-                        width={20}
-                        timeout={5000}
-                      />
-                    </button>
-                      : 
-                      <input
-                          className={
-                            loading ||
-                            !loginEmail ||
-                            !loginPassword ||
-                            inProgress
-                              ? "disabled"
-                              : ""
-                          }
-                          disabled={
-                            loading ||
-                            !loginEmail ||
-                            !loginPassword ||
-                            inProgress
-                          }
-                          type="submit"
-                          value="Log In"
-                        />
-                    }   
+                        <PasswordInput val={loginPassword} onPassChange={setLoginPassword} />
+                        {loading || inProgress ? (
+                          <button
+                            className={"disabled loading__btn flex-row"}
+                            disabled={true}
+                          >
+                            <Loader
+                              type="ThreeDots"
+                              color="#fff"
+                              height={15}
+                              width={20}
+                              timeout={5000}
+                            />
+                          </button>
+                        ) : (
+                          <input
+                            className={
+                              loading ||
+                              !loginEmail ||
+                              !loginPassword ||
+                              inProgress
+                                ? "disabled"
+                                : ""
+                            }
+                            disabled={
+                              loading ||
+                              !loginEmail ||
+                              !loginPassword ||
+                              inProgress
+                            }
+                            type="submit"
+                            value="Log In"
+                          />
+                        )}
                         <span
                           onClick={() => setPasswordMode(true)}
                           className="forgot__pass"
@@ -608,12 +672,28 @@ const AuthPage = (props) => {
                         />
                       </div>
                     )}
-                    <div className="divider--or flex-row"><span className="div__or__start"></span><span className="div__or__middle">or</span><span className="div__or__end"></span></div>
+                    <div className="divider--or flex-row">
+                      <span className="div__or__start"></span>
+                      <span className="div__or__middle">or</span>
+                      <span className="div__or__end"></span>
+                    </div>
                     <div className="signIn--options--box">
-                            <SignInOption method="google"  isLoading={inProgress} signInFunc={(x)=> signInMethods(x)} />
-                            {/* <SignInOption method="facebook" signInFunc={(x)=> signInMethods(x)} /> */}
-                            <SignInOption method="twitter" isLoading={inProgress} signInFunc={(x)=> signInMethods(x)} />
-                            <SignInOption method="github"  isLoading={inProgress} signInFunc={(x)=> signInMethods(x)} />
+                      <SignInOption
+                        method="google"
+                        isLoading={inProgress}
+                        signInFunc={(x) => signInMethods(x)}
+                      />
+                      {/* <SignInOption method="facebook" signInFunc={(x)=> signInMethods(x)} /> */}
+                      <SignInOption
+                        method="twitter"
+                        isLoading={inProgress}
+                        signInFunc={(x) => signInMethods(x)}
+                      />
+                      <SignInOption
+                        method="github"
+                        isLoading={inProgress}
+                        signInFunc={(x) => signInMethods(x)}
+                      />
                     </div>
                   </form>
                 ) : (
@@ -627,8 +707,22 @@ const AuthPage = (props) => {
                       className="auth--input--form flex-column"
                     >
                       <input
-                        required
                         autoFocus
+                        required
+                        value={signUpEmail}
+                        onChange={(e) => setSignUpEmail(e.target.value)}
+                        type="email"
+                        placeholder="Email"
+                      />
+                      <input
+                        required
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        type="text"
+                        placeholder="Full Name"
+                      />
+                      <input
+                        required
                         value={
                           capitalizeName.charAt(0).toUpperCase() +
                           signUpUsername.slice(1)
@@ -640,64 +734,41 @@ const AuthPage = (props) => {
                         type="text"
                         placeholder="Username"
                       />
-                      <input
-                        required
-                        value={signUpEmail}
-                        onChange={(e) => setSignUpEmail(e.target.value)}
-                        type="email"
-                        placeholder="Email"
-                      />
-                      <input
-                        required
-                        value={signUpPassword}
-                        onChange={(e) => setSignUpPassword(e.target.value)}
-                        type="password"
-                        autoComplete="off"
-                        placeholder="Password"
-                      />
-                      <input
-                        required
-                        value={reTypedPassword}
-                        onChange={(e) => setRePassword(e.target.value)}
-                        type="password"
-                        autoComplete="off"
-                        placeholder="Re-type Password"
-                      />
-                   {
-                       loading || inProgress ?
-                       <button
-                         className={"disabled loading__btn flex-row"}
-                         disabled={true}
-                       >
-                         <Loader
-                         type="ThreeDots"
-                         color="#fff"
-                         height={15}
-                         width={20}
-                         timeout={5000}
-                       />
-                     </button>
-                     :
-                     <input
-                        className={
-                          !signUpEmail ||
-                          !signUpPassword ||
-                          !signUpUsername ||
-                          !reTypedPassword
-                            ? "disabled"
-                            : ""
-                        }
-                        disabled={
-                          loading ||
-                          !signUpEmail ||
-                          !signUpPassword ||
-                          !signUpUsername ||
-                          !reTypedPassword
-                        }
-                        type="submit"
-                        value="Sign Up"
-                      />
-                   }   
+                      <PasswordInput val={signUpPassword} onPassChange={setSignUpPassword} />
+                      {loading || inProgress ? (
+                        <button
+                          className={"disabled loading__btn flex-row"}
+                          disabled={true}
+                        >
+                          <Loader
+                            type="ThreeDots"
+                            color="#fff"
+                            height={15}
+                            width={20}
+                            timeout={5000}
+                          />
+                        </button>
+                      ) : (
+                        <input
+                          className={
+                            !signUpEmail ||
+                            !signUpPassword ||
+                            !signUpUsername ||
+                            !fullName
+                              ? "disabled"
+                              : ""
+                          }
+                          disabled={
+                            loading ||
+                            !signUpEmail ||
+                            !signUpPassword ||
+                            !signUpUsername ||
+                            !fullName
+                          }
+                          type="submit"
+                          value="Sign Up"
+                        />
+                      )}
                     </form>
                   </div>
                 )
@@ -740,10 +811,10 @@ const AuthPage = (props) => {
             <li>LANGUAGE</li>
           </ul>
           <div className="auth--copyright flex-column flex-wrap">
-            <span >This app was made for personal use</span>
+            <span>This app was made for personal use</span>
             <span>
-              &copy;2020 - {new Date().getFullYear()} Instagram clone made by Mahmoud
-              Farargy
+              &copy;2020 - {new Date().getFullYear()} Instagram clone made by
+              Mahmoud Farargy
             </span>
           </div>
         </div>

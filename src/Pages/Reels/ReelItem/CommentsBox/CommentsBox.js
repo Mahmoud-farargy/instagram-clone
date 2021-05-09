@@ -58,7 +58,6 @@ const CommentsBox = (props) => {
                         <div className="flex-row w-100 h-100 useModal--empty--users">
                              <h3>No comments yet.<br /> Don't be shy and add a comment.</h3>
                         </div>
-                       
                     }
                 </ul>
                 {/* comment form */}

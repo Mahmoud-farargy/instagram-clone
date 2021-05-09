@@ -41,7 +41,7 @@ const NotificationOutput =(props)=>{
                         {
                             notification?.type === "follow" && notification?.uid !== myData.uid ?
                            
-                                  <button disabled={!notification?.uid} onClick={()=> handleFollowing(isFollowed, notification?.uid , notification?.userName, notification?.userAvatarUrl, myData?.uid, myData?.userName, myData?.userAvatarUrl) } className={ isFollowed ? "profile__btn prof__btn__unfollowed": "profile__btn prof__btn__followed"}> {isFollowed ? "unfollow"  : "follow"}</button>
+                                  <button disabled={!notification?.uid} onClick={()=> handleFollowing(isFollowed, notification?.uid , notification?.userName, notification?.userAvatarUrl, myData?.uid, myData?.userName, myData?.userAvatarUrl) } className={ isFollowed ? "profile__btn prof__btn__unfollowed": "profile__btn primary__btn"}> {isFollowed ? "unfollow"  : "follow"}</button>
                               
                             : null
                         } 

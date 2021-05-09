@@ -92,6 +92,14 @@ input {
 a:visited{
    color:#00376b;
 }
+.modalShow{
+    animation: openModal 0.1s ease-out;
+    -webkit-animation: openModal 0.1s ease-out;
+    animation-fill-mode: none;
+    animation-direction: normal;
+    animation-iteration-count: 1;
+    animation-play-state: running;
+}
 .MuiAvatar-img{
     background-color: rgb(98, 98, 98);
     min-height: 14px;
@@ -219,19 +227,6 @@ a:visited{
 .desktop-only{
     display:flex;
 }
-.useModal--empty--users{
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    overflow: hidden;
-}
-.useModal--empty--users h3{
-    font-size:14px;
-    font-weight:600;
-    margin: 15px 5px;
-    line-height:24px;
-}
-
 .article__post{
     white-space:pre-line;
     word-break: break-word;
@@ -282,7 +277,6 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
 .usersModal--card{
     position: relative;
     height:100%;
-    transform: translateY(-100vh);
     border-radius:12px;
     width:100%;
     transition: all 0.5s linear;
@@ -522,6 +516,23 @@ time{
     margin:10px 0 0;
     flex-wrap: nowrap;
 }
+.auth--main #passInput {
+    position: relative;
+    padding: 0;
+    margin:0 0 7px 0;
+}
+.auth--main #passInput input{
+    margin-bottom:0;
+}
+.auth--main #passInput .password__visibiliry__ico{
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    right: -7px;
+    font-size: 19px;
+    padding: 4px 7px;
+    color: var(--font-black);
+}
 .auth--main .divider--or .div__or__start, .auth--main .divider--or .div__or__end{
     background-color: #dbdbdb;
     background-color: rgb(219, 219, 219);
@@ -591,7 +602,7 @@ time{
     cursor:pointer;
 }
 .auth--footer--container{
-    width:100%;
+    width:95%;
     align-self: center;
     flex-wrap:wrap;
     margin:60px 3vw 35px 4vw;
@@ -625,20 +636,30 @@ time{
 .auth--footer--ul li:active{
     color:#0e60ad;
 }
+.auth--footer--container  .auth--copyright{
+    width: 100%;
+    margin:0;
+    padding:0;
+}
 .auth--footer--container  .auth--copyright, .auth--copyright--inner{
     text-align:center;
     overflow: hidden;
     flex-wrap: wrap;
     justify-content: center;
+    text-transform: uppercase;
+}
+.auth--footer--container  .auth--copyright, .auth--copyright--inner span{
+    font-weight: 600;
+}
+.auth--copyright--inner select{
+        padding:2px 6px 2px 7px;
 }
 .auth--footer--container  .auth--copyright, .auth--copyright--inner select{
     background: transparent;
-    /* padding:2px 8px; */
     border: none;
     font-size: inherit;
     font-weight: inherit;
     color: inherit;
-    padding:2px 6px 2px 7px;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -663,6 +684,7 @@ time{
     color: var(--second--gray);
     line-height: 24px;
     pointer-events:none;
+    width: 98%;
 }
 .auth--footer--ul li:hover{
     text-decoration:underline;
@@ -683,11 +705,13 @@ article, div, footer, header, main, nav, section{
 #main--footer {
     background-color: var(--light-gray);
     padding-bottom: 10px;
+    width: 100%;
 }
 #userProfFooter.userProfile--footer .auth--footer--ul{
     justify-content:center;
     text-align:center;
     margin-bottom:7px;
+    width: 100%;
 }
 button:active{
     outline:none;
@@ -772,7 +796,7 @@ button:active{
     top:0;
     left:0;
     height:3px;
-    z-index:1500;
+    z-index:6000;
     width: 100%;
     background-color: rgb(199, 199, 199);
 }
@@ -928,7 +952,7 @@ button:active{
     margin-bottom:0;
     font-size:22px;
 }   
-#messages.messages--container .users--side--header span .pen__logo:active, .messages--users--side.mobile-only .pen__log:active{
+#messages.messages--container .users--side--header span .pen__logo:active, .messages--users--side.mobile-only .pen__log:active, #usersProfile .my__settings__btn:active{
     background-color: rgb(184, 225, 248);
     border-radius: 5px;
 }
@@ -1319,6 +1343,20 @@ button:active{
 #usersProfile .sugg__btn:focus{
     outline: 0 !important;
 }
+.getting--started--container{
+    width:100%;
+    overflow-x:auto;
+    overflow-y: hidden;
+    max-width: 100%;
+    align-items:center;
+    margin-bottom:0;
+    min-height: 50px;
+    align-content: flex-start;
+    transition: all 0.5 ease-in;
+    white-space: nowrap;
+    display:block;
+    max-width: 614px;
+}
 #usersProfile .suggestions--list--container{
     width:auto;
     -webkit-box-align: stretch;
@@ -1330,12 +1368,58 @@ button:active{
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
-#usersProfile .suggestion--items{
+ul.getting--started--inner li.getting--started--box{
+    min-width: 170px;
+}
+div.suggestion--item-inner{
+    justify-content: space-between;
+    height:100%;
+}
+ul.getting--started--inner li.getting--started--box .plus--icon--container svg{
+    font-size: 27px;
+}
+ul.getting--started--inner li.getting--started--box .plus--icon--container{
+    width: 55px;
+    height: 55px;
+}
+ul.getting--started--inner li.getting--started--box .GSTitle{
+    text-transform: capitalize;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 8px 0;
+    white-space: normal;
+}
+ul.getting--started--inner li.getting--started--box .GSDescription{
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--second--gray);
+    white-space: normal;
+}
+ul.getting--started--inner li.getting--started--box .profile__btn.primary__btn{
+    padding:0 5px !important;
+    background-color: #DD2A7B;
+    border:1px solid #DD2A7B;
+    transition: all 0.2s ease-out;
+}
+ul.getting--started--inner li.getting--started--box .profile__btn.primary__btn:hover{
+    background-color: #d1558d;
+    border:1px solid#d1558d;
+}
+ul.getting--started--inner{
+    overflow-x:auto;
+}
+.voxgram--set--up--conainer{
+    width: 100%;
+    overflow: hidden;
+}
+#usersProfile .suggestion--items, ul.getting--started--inner{
     width:100%;
     padding-left:10px;
     flex-wrap:nowrap;
+    white-space: nowrap;
 }
-#usersProfile .suggestions--list--container ::-webkit-scrollbar, #usersProfile .suggestion--items ::-webkit-scrollbar{
+#usersProfile .suggestions--list--container::-webkit-scrollbar, #usersProfile .suggestion--items::-webkit-scrollbar, ul.getting--started--inner::-webkit-scrollbar{
     width:0px;
     display:none;
 }
@@ -1343,7 +1427,13 @@ button:active{
     max-width: 100%;
     overflow-x: auto;
 }
-#usersProfile .suggestion--item{
+#usersProfile .my__settings__btn{
+    background: transparent;
+    border: none;
+    font-size: 25px;
+    color: var(--font-black);
+}
+#usersProfile .suggestion--item, .getting--started--box{
     padding:20px;
     position: relative;
     border: 1px solid var(--gray);
@@ -1351,7 +1441,7 @@ button:active{
     margin-right: 18px;
     width: 180px;
     height:auto;
-    max-height: 200px;
+    /* max-height: 200px; */
     align-items:center;
     justify-content: center;
     text-align:center;
@@ -1580,8 +1670,8 @@ button:active{
     justify-content:space-between;
 }
 .usersModal--card .new--msg--send--to{
-    border-top: 1px solid var(--second--gray);
-    border-bottom: 1px solid var(--second--gray);
+    border-top: var(--main-border);
+    border-bottom: var(--main-border);
     align-items: center;
     padding: 8px 7px;
     max-height: 250px;
@@ -1624,7 +1714,7 @@ button:active{
 .usersModal--card .new__msg__search::placeholder{
     color: var(--second--gray);
 }
-.usersModal--card .new__msg__search:focus{
+.usersModal--card .new__msg__search:focus, #usersProfile .my__settings__btn:focus{
     outline: none;
 }
 .new--msg--body{
@@ -1731,7 +1821,30 @@ button:active{
 .profile__btn:active{
     outline: none !important;
 }
-.prof__btn__followed{
+.voxgram--greeting{
+    width: 100%;
+    background-color: #fff;
+    padding:20px;
+    border: 1px solid var(--gray);
+    border-radius: 2px;
+}
+.voxgram--greeting .primary__btn{
+    padding: 5px 10px;
+    width: 100%;;
+    margin-top:8px;
+    width: 90%;
+    margin: 10px auto 0 auto;
+    font-size: 15px;
+}
+.voxgram--greeting .empty--card .plus--icon--container svg{
+    margin:0;
+}
+.getting--started--container h4{
+    font-size: 16px;
+    font-weight: 600;
+    margin: 30px 0 15px 0;
+}
+.primary__btn{
     border-radius:3px;
     border:1px solid #0095f6;
     background-color:#0095f6;
@@ -1740,14 +1853,14 @@ button:active{
     color:#fff;
     transition:background-color 0.2s linear ;
 }
-.prof__btn__followed svg{
+.primary__btn svg{
     width: 12px;
     height: 12px;
 }
-.prof__btn__followed:hover{
+.primary__btn:hover{
     background-color:#34a3ee;
 }
-.prof__btn__followed:active{
+.primary__btn:active{
     color:rgb(224, 224, 224);
 }
 .prof__btn__unfollowed{
@@ -1975,6 +2088,8 @@ a.prof__btn__unfollowed{
     text-overflow: ellipsis;
     overflow:hidden;
     max-width: 210px;
+    font-weight: 300;
+    display: block;
 }
 #usersProfile.users--profile--container .desktop--social--row p span{
     font-weight:600;
@@ -2125,6 +2240,7 @@ a.prof__btn__unfollowed{
     width:99%;
     margin:0;
     background-color:#fff !important;
+    border-radius: 12px;
 }
 /* --------x-------------Comments Modal------------x---------- */
 /* ---------------------Empty page------------------ */
@@ -2135,7 +2251,7 @@ a.prof__btn__unfollowed{
    
 }
 .plus--icon--container, .empty--posts--container{
-     justify-content: center;
+    justify-content: center;
     align-items:center;
     text-align:center;
 }
@@ -2158,16 +2274,66 @@ a.prof__btn__unfollowed{
 .empty--posts--container p:hover{
     text-decoration: underline;
 }
-.empty--posts--container .plus--icon--container{
+.usersModal--container .empty--card svg, #messagesUL .empty--chat--box{
+    font-size: 50px;
+    font-weight: bolder;
+    margin-bottom: 8px;
+}
+.usersModal--container .empty--card h2{
+    font-size: 1.3rem;
+}
+.usersModal--container .empty--card h4{
+    font-size: 0.9rem;
+}
+#messagesUL .empty--chat--box{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-items: center;
+    align-items: center;
+    padding-top: 10px;
+}
+.empty--card{
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    justify-content:center;
+    min-height: 100px;
+    text-align:center;
+    padding:16px;
+}
+.empty--card .plus--icon--container{
+    width: 50px;
+    height: 50px;
+    margin-bottom: 8px;
+}
+.empty--card .plus--icon--container svg{
+    font-size: 28px;
+    margin-top: 3px;
+}
+.empty--card h2{
+    font-size: 1.5rem;
+    color: var(--font-black);
+    font-weight: 400;
+    margin-bottom: 14px;
+}
+.empty--card h4{
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--second--gray);
+}
+.plus--icon--container{
     border: 2px solid var(--main-black);
     border-radius:50%;
-    /* padding:7px; */
+    padding:7px;
     color:var(--main-black);
-    width:70px;
-    height:70px;
+    width:60px;
+    height:60px;
     margin:0 auto;
 }
-.empty--posts--container .plus--icon--container .plus__icon{
+.plus--icon--container .plus__icon{
     font-size: 30px;
 }
 .prof--acc--website a{
@@ -2484,6 +2650,10 @@ a.prof__btn__unfollowed{
         align-content: center;
         gap: 2vw;
     }
+    .voxgram--greeting{
+        width: 90%;
+        margin: 10px auto;
+    }
     .usersModal--container, .comments--modal--container{
         top:0;
         left:0;
@@ -2515,6 +2685,10 @@ a.prof__btn__unfollowed{
         border-radius:0;
         height:100vh;
         width:100%;
+        z-index: 5800;
+    }
+    .getting--started--container h4{
+        margin-left:9px;
     }
     .userModal--card--body{
         max-height: 100%;
@@ -2617,6 +2791,39 @@ a.prof__btn__unfollowed{
     }
 }
 /* ----x-- keyframes --x--- */
+@keyframes openModal{
+    0%{
+        transform: scale(1.15);
+    }
+    100%{
+        transform: scale(1);
+    }
+}
+@-moz-keyframes openModal {
+    0%{
+        transform: scale(1.15);
+    }
+    100%{
+        transform: scale(1);
+    }
+}
+@-o-keyframes openModal {
+    0%{
+        transform: scale(1.15);
+    }
+    100%{
+        transform: scale(1);
+    }
+}
+@-webkit-keyframes openModal {
+    0%{
+        transform: scale(1.15);
+    }
+    100%{
+        transform: scale(1);
+    }
+}
+
 @keyframes waveBg {
     0%{background-position:10% 0%}
     50%{background-position:91% 100%}

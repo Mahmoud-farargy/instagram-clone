@@ -11,9 +11,14 @@ import { useAuthState } from "react-firebase-hooks/auth"; //firebase hook
 import { auth } from "../../Config/firebase";
 import Skeleton from "react-loading-skeleton";
 // import InstagramEmbed from "react-instagram-embed";
-import { BsPlusSquare } from "react-icons/bs";
+import { BiMessageEdit } from "react-icons/bi";
+import { VscAccount } from "react-icons/vsc";
+import { AiOutlineHome } from "react-icons/ai";
+import { RiVideoAddLine } from "react-icons/ri";
+import { FiEdit, FiSettings } from "react-icons/fi";
 import HomeReels from "../../Components/HomeReels/HomeReels";
 import Loader from "react-loader-spinner";
+import GSCardItem from "./GSCardItem/GSCardItem";
 
 const Home = (props) => {
   let {
@@ -92,20 +97,30 @@ const Home = (props) => {
                   <Skeleton count={6}height={500} className="mb-5" />
                 </div>
               ) : posts?.length < 1 ? (
-                <div className="empty--posts--container flex-column">
-                  <div className="empty--posts--inner flex-column">
-                    <div className="plus--icon--container flex-column ">
-                      <BsPlusSquare className="plus__icon" />
+                <div className="voxgram--set--up--conainer">
+                <div className="voxgram--greeting">
+                    <div className="empty--card">
+                      <div className="plus--icon--container flex-column">
+                        <AiOutlineHome />
+                      </div>
+                      <h2>Welcome to Voxgram</h2>
+                      <h4> When you follow people, you'll see the photos and videos they post here.</h4>
+                      <button onClick={() => props.history.push("/explore/people")} className="primary__btn">Find People to Follow</button>
                     </div>
-                    <h3>No posts have been made</h3>
-                    <p>
-                      When you share photos and videos, they'll <br /> be appear
-                      on your posts page
-                    </p>
-
-                   <Link to="/add-post"><span>Share your first photo or video</span></Link>
-                  </div>
                 </div>
+                <div className="getting--started--container flex-column">
+                 <h4>Getting Started</h4> 
+                  <ul className="getting--started--inner flex-row">
+                    <GSCardItem title="add posts" goTo="/add-post"  btnTitle="add a post" description="Share photos and videos that people can admire." icon={<RiVideoAddLine />} />
+                    <GSCardItem title="edit your profile" goTo="/edit-profile" btnTitle="edit profile" description="Update your name, bio, status and gender." changeOptionIndex={{activeIndex: 0, activeID: "Edit_Profile"}} icon={<FiEdit />} />
+                    <GSCardItem title="configue your account" goTo="/edit-profile" changeOptionIndex={{activeIndex: 1, activeID:  "Professional_Account"}} description="Set a category and control you account."  btnTitle="configure account" icon={<FiSettings />} />
+                    <GSCardItem title="find more people" goTo="/explore/people" btnTitle="find people"  description="Discover new people."  icon={<VscAccount />} />
+                    <GSCardItem title="message someone" goTo="/messages" btnTitle="start messaging" description="Chat with other users." icon={<BiMessageEdit />} />
+                  
+                  </ul>
+                </div>
+                </div>
+
               ) : null}
             </div>
             <aside className="home--sider flex-column">
@@ -142,7 +157,7 @@ const Home = (props) => {
                 <div className="suggestions--home--container">
                   <div className="suggestions--header flex-row">
                     <h6>Suggestions For you</h6>
-                    <Link to="/explore/people/suggestions"><button className="user__see__all__btn">See all</button></Link>
+                    <Link to="/explore/people"><button className="user__see__all__btn">See all</button></Link>
                   </div>
                   <div className="suggestions--list flex-column">
                     <ul className="flex-column">

@@ -75,10 +75,10 @@
     text-transform :none;
     align-items:center;
     max-width: 100%;
-    overflow-x: hidden;
+    overflow: hidden;
     white-space:nowrap;
     font-weight: 600;
-    display:block;
+    display:inline;
     color: var(--main-black);
     text-overflow: ellipsis;
 }
@@ -88,9 +88,10 @@
 .side--user--info small{
     font-size: 12px;
     font-weight: 400;
-    color: #8e8e8e;
+    color: var(--second--gray);
     line-height: 14px;
     margin: 2px 5px 2px 9px;
+    overflow: hidden;
 }
 .side--user--info .MuiAvatar-root{
     width:56px;

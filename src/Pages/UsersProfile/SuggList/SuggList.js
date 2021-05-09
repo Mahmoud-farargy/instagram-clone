@@ -12,26 +12,29 @@ const SuggList = (props) => {
         <>
                 <li className="suggestion--item flex-column">
                             <div className="suggestion--item-inner">
-                              <Avatar
-                                loading="lazy"
-                                onClick={() => closeBoxAndRedirect()}
-                                src={item?.userAvatarUrl}
-                                alt={item?.userName}
-                                className="mb-2"
-                              />
-                              <span
-                                onClick={() => closeBoxAndRedirect()}
-                                title={item?.userName}
-                                className="acc__name"
-                              >
-                                {item?.userName}
-                              </span>
-                              <span
-                                className="user__name"
-                                title={item?.userName}
-                              >
-                                {item?.profileInfo?.name}
-                              </span>
+                              <div className="w-100">
+                                  <Avatar
+                                  loading="lazy"
+                                  onClick={() => closeBoxAndRedirect()}
+                                  src={item?.userAvatarUrl}
+                                  alt={item?.userName}
+                                  className="mb-2"
+                                />
+                                <span
+                                  onClick={() => closeBoxAndRedirect()}
+                                  title={item?.userName}
+                                  className="acc__name"
+                                >
+                                  {item?.userName}
+                                </span>
+                                <span
+                                  className="user__name mb-2"
+                                  title={item?.userName}
+                                >
+                                  {item?.profileInfo?.name}
+                                </span>
+                              </div>
+
                               <button
                                 className={
                                   receivedData?.following &&
@@ -40,7 +43,7 @@ const SuggList = (props) => {
                                     (q) => q.receiverUid === item?.uid
                                   )
                                     ? "profile__btn prof__btn__unfollowed"
-                                    : "profile__btn prof__btn__followed"
+                                    : "profile__btn primary__btn"
                                 }
                                 color="primary"
                                 onClick={(e) => {

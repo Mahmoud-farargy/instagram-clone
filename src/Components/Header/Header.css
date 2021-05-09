@@ -199,7 +199,7 @@
     justify-content:center;
     text-align:center;
     padding:15px;
-    color:#8e8e8e;
+    color:var(--second--gray);
     color:rgb(142, 142, 142);
     height: 100%;
     width: 100%;
