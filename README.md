@@ -13,8 +13,12 @@ A social media platform similar to Instagram that people can actually use.
 <h2>Core Features</h2>
 
  <ul class="bullet--1">
-                                            <li><p>Users can sign-in with different methods like Google, Twitter, Github or Email and password</p></li>
-                                            <li><p>Custom feed based on who they follow</p></li>
+                                             <li><p>Authentication system</p>
+                                              <ul class="bullet--2">
+                                               <li><p>Users can sign-in with different methods like Google, Twitter, Github or Email and password</p></li>
+                                               <li><p>Ability to retrieve password if it is forgetten</p></li>
+                                              </ul>
+                                               </li>
                                             <li><p>Profile screen</p>
                                                 <ul class="bullet--2">
                                                     <li> <p>Follow/Unfollow users
@@ -40,6 +44,7 @@ A social media platform similar to Instagram that people can actually use.
                                             </li>
                                             <li><p>Posts</p>
                                                 <ul class="bullet--2">
+                                                    <li><p>Feed is based on who the user follows</p></li>
                                                     <li><p>Users can post pictures and videos from camera or gallery</p></li>
                                                     <li><p>Like/Dislike posts
                                                         <ul class="bullet--3">
@@ -73,16 +78,20 @@ A social media platform similar to Instagram that people can actually use.
                                                 <ul class="bullet--2">
                                                     <li><p>Explore other people's posts</p></li>
                                                     <li><p>Sort these posts by likes count, comments count, date or randomly in both ascending and descending orders</p></li>
+                                                    <li>Filter them to show images only, videos only or posts from people you followed only</li>
                                                 </ul>
                                             </li>
                                             <li>
                                                 <p>Notification screen of the latest updates</p>
+                                                <ul class="bullet--2">
+                                                 <li><p>Notifications can self-destruct if the post, reel, like, or comment that based on it got deleted</p></li>
+                                                </ul>
                                             </li>
-                                            <li><p>Authentications handling with an ability to retrieve password if it was forgetten</p></li>
                                             <li><p>Block/Unblock users</p></li>
                                             <li><p>Share video Reels</p>
                                                        <ul class="bullet--2">
-                                                          <li>Like and comment on other people's reels</li>
+                                                          <li><p>Like and comment on other people's reels</p></li>
+                                                          <li><p>Put reels into groups</p></li>
                                                     </ul>
                                             </li>
                                             <li><p>Search users</p></li>
@@ -135,3 +144,4 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 👇 Live Demo - <br/>
 <a href="https://voxgram.netlify.app/">Click here </a> to go to the Live Demo 🔥 🔥
+Give me a star if you like it.
