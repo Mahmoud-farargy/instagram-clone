@@ -16,7 +16,7 @@ A social media platform similar to Instagram that people can actually use.
                                              <li><p>Authentication system</p>
                                               <ul class="bullet--2">
                                                <li><p>Users can sign-in with different methods like Google, Twitter, Github or Email and password</p></li>
-                                               <li><p>Ability to retrieve password if it is forgetten</p></li>
+                                               <li><p>Ability to retrieve password if it is forgotten </p></li>
                                               </ul>
                                                </li>
                                             <li><p>Profile screen</p>
@@ -46,6 +46,8 @@ A social media platform similar to Instagram that people can actually use.
                                                 <ul class="bullet--2">
                                                     <li><p>Feed is based on who the user follows</p></li>
                                                     <li><p>Users can post pictures and videos from camera or gallery</p></li>
+                                                    <li><p>They can also post audio like songs or mini podcasts</p></li>
+                                                     <li><p>Show mutual likes a post</p></li>
                                                     <li><p>Like/Dislike posts
                                                         <ul class="bullet--3">
                                                             <li><p>View all likes on a post and who liked it</p></li>
@@ -58,6 +60,7 @@ A social media platform similar to Instagram that people can actually use.
                                                                 <li><p>Comment or reply on someone else'comment</p></li>
                                                                 <li><p>Like/Dislike comments and sub-comments</p></li>
                                                                 <li><p>View all comments and who liked them</p></li>
+                                                                <li><p>Choose and include emojis among hundreds while commenting<p></li>
                                                             </ul>
                                                         </p>
                                                     </li>
@@ -69,7 +72,7 @@ A social media platform similar to Instagram that people can actually use.
                                                 <p>Chat screen</p>
                                                 <ul class="bullet--2">
                                                     <li><p>Chat with any user</p></li>
-                                                    <li><p>Share images, videos and emojis while chatting</p></li>
+                                                    <li><p>Share images, videos, audio, documents and emojis while chatting</p></li>
                                                     <li><p>Unsend and copy messages</p></li>
                                                 </ul>
                                             </li>
@@ -78,7 +81,7 @@ A social media platform similar to Instagram that people can actually use.
                                                 <ul class="bullet--2">
                                                     <li><p>Explore other people's posts</p></li>
                                                     <li><p>Sort these posts by likes count, comments count, date or randomly in both ascending and descending orders</p></li>
-                                                    <li>Filter them to show images only, videos only or posts from people you followed only</li>
+                                                    <li>Filter them to show images only, videos only, audio only or posts from people you followed only</li>
                                                 </ul>
                                             </li>
                                             <li>
@@ -97,6 +100,7 @@ A social media platform similar to Instagram that people can actually use.
                                             <li><p>Search users</p></li>
                                             <li><p>Suggestions list</p></li>
                                             <li><p>Activity Status</p></li>
+                                            <li><p>Save posts</p></li>
                                         </ul>
  <h2>Used technologies</h2>    
   <ul class="bullet--1">

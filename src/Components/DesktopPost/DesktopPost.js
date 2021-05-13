@@ -18,7 +18,7 @@ import {
   IoIosArrowBack,
   IoIosArrowForward,
 } from "react-icons/io";
-import { RiBookmarkLine } from "react-icons/ri";
+import { RiBookmarkLine, RiBookmarkFill } from "react-icons/ri";
 import { AppContext } from "../../Context";
 import Comment from "../../Components/Comment/Comment";
 import { GoVerified } from "react-icons/go";
@@ -28,6 +28,11 @@ import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import Caption from "../../Components/Generic/Caption/Caption";
+import { insertIntoText } from "../../Utilities/InsertIntoText";
+import EmojiPicker from "../../Components/Generic/EmojiPicker/EmojiPicker";
+import AudioContent from "../../Components/AudioContent/AudioContent";
+import * as Consts from "../../Utilities/Consts";
+import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
 
 const DesktopPost = (props) => {
   const { browseUser, disableArrows } = props;
@@ -48,7 +53,7 @@ const DesktopPost = (props) => {
     onCommentDeletion,
     handleFollowing,
     modalsState,
-    deletePost
+    deletePost,
   } = context;
   const [compState, setCompState] = useState({
     postLiked: false,
@@ -56,9 +61,11 @@ const DesktopPost = (props) => {
     btnClicks: 0,
     doubleLikeClicked: false,
     replayData: {},
+    alsoLiked: []
   });
   const inputField = useRef(null);
-  const isFollowed = receivedData?.following?.some((item) => item?.receiverUid === usersProfileData?.uid);
+  var following = receivedData?.following;
+  const isFollowed = following?.some((item) => item?.receiverUid === usersProfileData?.uid);
   useEffect(() => {
     changeMainState("currentPage", "Post");
   }, []);
@@ -112,6 +119,15 @@ const DesktopPost = (props) => {
       resetCounter();
     }, 1000);
   };
+  const updateUsersWhoLiked = () => {
+    setCompState({
+      ...compState,
+      alsoLiked: following?.filter(user => likes?.people?.some((el) => user?.receiverUid === el?.id)).slice(0,3) 
+    })
+  }
+  useEffect(()=> {
+    updateUsersWhoLiked();
+  },[following]);
   const submitComment = (v) => {
     v.preventDefault();
 
@@ -198,6 +214,9 @@ const DesktopPost = (props) => {
     location = "",
     date = {},
     postOwnerId = "",
+    id= "",
+    contentName= "",
+    userName= "",
   } = usersProfileData?.posts[currentPostIndex?.index];
   
   var isVerified = usersProfileData?.isVerified;
@@ -231,6 +250,14 @@ const DesktopPost = (props) => {
       onPostMovement("right");
     }
   };
+  const onEmojiClick = (e, x) => {
+    e.persist();
+    setCompState({
+      ...compState,
+      insertedComment: insertIntoText(compState?.insertedComment, x.emoji)
+    })
+  }
+  const similarsStr = (likes?.people?.some(el => el?.id === uid) && likes?.people?.length >3) ? (likes?.people?.length?.toLocaleString() -3) : (likes?.people?.length?.toLocaleString() -2);
   return (
     <Fragment> 
         <span
@@ -380,6 +407,8 @@ const DesktopPost = (props) => {
                       />
                       <IoMdVideocam className="video__top__icon" />
                     </div>
+                  ) :  contentType === "audio" ? (
+                      <AudioContent autoPlay url={contentURL} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()}/>
                   ) : null}
                 </div>
                 <div className="desktop--right desktop-only">
@@ -431,9 +460,25 @@ const DesktopPost = (props) => {
                     </span>
                   </div>
 
-                  {comments?.length >= 1 ? (
-                    <div className="post--comments--layout">
-                      {comments?.map((comment, i) => {
+                  
+                    <div className="post--comments--layout"> 
+                      <div className="post--comment--item desktop--caption">
+                            <div className="flex-row post--comment--row">
+                              <Avatar className="comment__user__avatar" loading="lazy" src={usersProfileData?.userAvatarUrl} alt={usersProfileData?.userName} />
+                                  <span title={usersProfileData?.userName} className="post__top__comment">
+                                    <h6 className="comment__text mt-1"> <strong>{usersProfileData?.userName}</strong> 
+                                        <Caption caption={caption} userName="" />
+                                    </h6>
+                                  </span>
+                            </div>
+                            <div className="post--comment--actions flex-row">
+                              <span><GetFormattedDate date={date?.seconds} ago /></span>
+                            </div>
+                      </div>
+                   
+                    {comments?.length >= 1 ? 
+                   
+                      comments?.map((comment, i) => {
                         return (
                           <Comment
                             key={i}
@@ -454,9 +499,10 @@ const DesktopPost = (props) => {
                             deleteComment={onCommentDeletion}
                           />
                         );
-                      })}
+                      })
+                      : null}
                     </div>
-                  ) : null}
+                 
 
                   <div className="post--card--footer flex-column">
                     <div className="post--footer--upper--row flex-row">
@@ -486,29 +532,50 @@ const DesktopPost = (props) => {
                         </span>
                       </div>
                       <div className="bookmark__icon">
-                        <RiBookmarkLine />
+                      {
+                      receivedData?.savedposts?.some(sp => (sp.postOwnerId === postOwnerId && sp.id === id)) ?
+                      <RiBookmarkFill onClick={() => context.handleSavingPosts({boolean:false,data: {postOwnerId, id, userName, contentName, contentURL,contentType, date}})} />
+                      :
+                      <RiBookmarkLine onClick={() => context.handleSavingPosts({boolean:true,data: {postOwnerId, id, userName, contentName, contentURL,contentType, date}})}/>
+                    }
                       </div>
                     </div>
-                    {likes.people?.length >= 1 ? (
-                      <div
-                        className="likes__count"
-                        onClick={() =>
-                          changeModalState(
-                            "users",
-                            true,
-                            likes?.people,
-                            "likes"
-                          )
-                        }
-                      >
-                        {likes?.people?.length.toLocaleString()}{" "}
-                        {likes?.people?.length === 1 ? "like" : "likes"}
-                      </div>
-                    ) : (likes?.people?.length <= 0 && postOwnerId !== uid) ?
-                          <span className="like__invitation">Be the first to <strong onClick={() => handleCurrLikes(true)}>like this</strong> </span>
-                      : null
-                    }
-                  <Caption caption={caption} userName={usersProfileData?.userName} />
+                    {likes?.people?.length >= 1 && compState?.alsoLiked?.length > 0 ?
+                  <div className="people--also--liked flex-row">
+                    <Avatar src={compState?.alsoLiked?.[0]?.receiverAvatarUrl} />
+                        <p onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}>Liked by
+                          <span>
+                            {
+                                compState?.alsoLiked?.map(el => <MutualLikes key={el?.receiverUid}item={el}/> )
+                            }
+                            {
+                              (likes?.people?.some(el => el?.id === uid) ? likes?.people?.length -1 : likes?.people?.length ) > compState?.alsoLiked?.length && similarsStr > 0 &&
+                              <strong className="you--followed">
+                              {likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr} {similarsStr < 2 ? " person" : " others"}</strong>
+                              </strong>
+                            }
+                            {
+                              <strong className="you__followed">
+                                 {likes?.people?.some(el => el?.id === uid) && ", and you"}
+                              </strong>
+                            }
+                          </span>
+
+                        </p>
+                  </div>
+
+              : likes?.people?.length >= 1 && compState?.alsoLiked?.length <= 0 ?(
+                <div
+                  className="likes__count"
+                  onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}
+                >
+                  {likes?.people?.length.toLocaleString()}{" "}
+                  {likes?.people?.length === 1 ? "like" : "likes"}
+                </div>
+              )  :  (likes?.people?.length <= 0 && postOwnerId !== id) ?
+                    <span className="like__invitation">Be the first to <strong onClick={() => handleCurrLikes(true)}>like this</strong> </span>
+                : null
+              }
 
                     <small className="post__date">
                       <GetFormattedDate date={date?.seconds} /> • <time>{new Date(date?.seconds * 1000).toDateString()}</time>
@@ -517,19 +584,24 @@ const DesktopPost = (props) => {
                       onSubmit={(e) => submitComment(e)}
                       className="post--bottom--comment--adding flex-row"
                     >
-                      <input
-                        ref={inputField}
-                        value={compState.insertedComment}
-                        onChange={(event) =>
-                          setCompState({
-                            ...compState,
-                            insertedComment: event.target.value,
-                          })
-                        }
-                        className="post__bottom__input"
-                        type="text"
-                        placeholder="Add a commment.."
-                      />
+                       <div className="form--input--container flex-row">
+                          <div className="form--input--container--inner flex-row">
+                              <EmojiPicker onEmojiClick={onEmojiClick} />
+                              <input
+                                ref={inputField}
+                                value={compState.insertedComment}
+                                onChange={(event) =>
+                                  setCompState({
+                                    ...compState,
+                                    insertedComment: event.target.value,
+                                  })
+                                }
+                                className="post__bottom__input"
+                                type="text"
+                                placeholder="Add a commment.."
+                            />
+                          </div>
+                      </div>
                       <button
                         type="submit"
                         disabled={compState.insertedComment.length < 1}

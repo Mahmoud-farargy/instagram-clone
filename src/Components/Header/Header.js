@@ -13,6 +13,7 @@ import { BiPowerOff, BiCog, BiInfoCircle } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 import { RiSearchLine } from "react-icons/ri";
 import { TiDelete } from "react-icons/ti";
+import { VscBookmark } from "react-icons/vsc";
 import Notifications from "./Notifications/Notifications";
 import { withRouter } from "react-router-dom";
 import SearchItem from "../SearchItem/SearchItem.js";
@@ -44,6 +45,7 @@ const Header = (props) => {
     authLogout,
     searchUsers,
     searchInfo,
+    changeMainState
   } = context;
   const reverseNotiState = (type) => {
     const notiUpdate = receivedData?.notifications?.isUpdate;
@@ -79,7 +81,6 @@ const Header = (props) => {
             headerRef?.current?.classList && headerRef.current.classList.remove("shorter_header");
           }
         }
-        
       })
     }
         
@@ -361,6 +362,16 @@ const Header = (props) => {
                             <li>
                             <span className="prof--item--inner flex-row">
                               <BiCog className="prof__popup" /> <span>Settings</span>
+                              </span>
+                            </li>
+                          </Link>
+                          <Link
+                            onClick={() => {changeMainState("activeProfileSection", {activeIndex: 2, activeID: "saved" }); setProf(false)}}
+                            to="/profile"
+                          >
+                            <li>
+                            <span className="prof--item--inner flex-row">
+                              <VscBookmark className="prof__popup" /> <span>Saved</span>
                               </span>
                             </li>
                           </Link>

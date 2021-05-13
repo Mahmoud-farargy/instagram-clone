@@ -10,7 +10,7 @@ import { GoVerified } from "react-icons/go";
 
 const NotificationOutput =(props)=>{
     const [isFollowed, setFollowingState] = useState(false);
-    const {notification, igVideoImg, myData, handleFollowing, browseUser } = props;
+    const {notification, igVideoImg, igAudioImg, myData, handleFollowing, browseUser } = props;
     const {following} = myData;
     useEffect(()=>{
         if(notification?.type === "follow"){
@@ -47,7 +47,7 @@ const NotificationOutput =(props)=>{
                         } 
                         {
                              notification?.type !== "follow"?
-                             <div onClick={(e)=> redirectMeToPost(e)}><img alt="Post" className="noti__bar__img" src={notification?.contentType ==="image" ? (notification?.contentURL) : notification?.contentType ==="video" ? igVideoImg : notification?.contentType === "reel" ? reelDefaultPic : null } /></div>
+                             <div onClick={(e)=> redirectMeToPost(e)}><img alt="Post" className="noti__bar__img" src={notification?.contentType ==="image" ? (notification?.contentURL) : notification?.contentType ==="video" ? igVideoImg : notification?.contentType === "reel" ? reelDefaultPic : notification?.contentType === "audio" ? igAudioImg: null } /></div>
                                 
                              : null
                         }

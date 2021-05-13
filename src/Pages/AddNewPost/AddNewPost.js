@@ -115,9 +115,9 @@ class AddNewPost extends PureComponent {
               }
               addPost(addedPost, Consts.Post).then(() => {
                 notify("Post has been added");
-                this.props.history.push("/");
                 this.resetState();
                 this.setState(updateObject(this.state, {submitted: false}));
+                this.props.history.push("/");
               }).catch(() =>{
                 notify("Failed to make a post. Please try again later!", "error");
               });              
@@ -146,9 +146,9 @@ class AddNewPost extends PureComponent {
                     }
                     addPost(addedReel, Consts.Reel, {selectedGroup:this.state.selectedReelGroup, newGroupName: this.state.newGroupName}).then(() => {
                       notify(`Reel has been added to ${this.state.selectedReelGroup.toLowerCase() === "new group" ? this.state.newGroupName : this.state.selectedReelGroup}.`);
-                      this.props.history.push("/profile");
                       this.resetState();
                       this.setState(updateObject(this.state, {submitted: false}));
+                      this.props.history.push("/profile");
                     }).catch((err) =>{
                       notify((err?.message || "Failed to post reel. Please try again later!"), "error");
                     });
@@ -177,20 +177,82 @@ class AddNewPost extends PureComponent {
   handleFileChange = (w) => {
     const { receivedData, notify } = this.context;
     let uploadedItem = w[0];
-    const fileName = `${Math.random()}${uploadedItem.name}`;
+    const fileName = `${Math.random()}${uploadedItem?.name}`;
     const metadata = {
       contentType: uploadedItem !== "" ? uploadedItem?.type : "",
     };
-    //post
-    if(this.state.method.toLowerCase() === Consts.Post){
-      if (
-            /(image|video)/g.test(metadata.contentType) &&
+    const itemType = /image/g.test(metadata.contentType) ? "image": /video/g.test(metadata.contentType) ? "video" : "audio";
+    if(receivedData?.uid){
+        //post
+        if(this.state.method.toLowerCase() === Consts.Post){
+          if (
+                /(image|video|audio)/g.test(metadata.contentType) &&
+                uploadedItem.size <= 12378523
+              ) {
+                if (uploadedItem.name.split("").length < 300) {
+                  const uploadContent = storage
+                    .ref(`content/${receivedData?.uid}/${fileName}`)
+                    .put(uploadedItem, metadata);
+                  uploadContent.on(
+                    "state_changed",
+                    (snapshot) => {
+                      //Progress function ..
+                      const progress =
+                        Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                      this.setState({
+                        ...this.state,
+                        uploading: true,
+                        progressBarPercentage: progress,
+                      });
+                    },
+                    (error) => {
+                      notify(error.message, "error");
+                      this.resetState();
+                    },
+                    () => {
+                        // Complete function..
+                        storage
+                          .ref(`content/${receivedData?.uid}`)
+                          .child(fileName)
+                          .getDownloadURL()
+                          .then((url) => {
+                            //post content on db
+                            this.setState({
+                              ...this.state,
+                              contentName: fileName,
+                              uploading: false,
+                              progressBarPercentage: 0,
+                              contentURL: url,
+                              contentType: itemType,
+                            });
+                            uploadedItem = "";
+                          })
+                          .catch((err) => {
+                            notify((err.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
+                          });
+                    }
+                  );
+                } else {
+                  notify(
+                    `The name of the ${itemType} is too long. it should not exceed 300 characters`,
+                    "info"
+                  );
+                }
+              } else {
+                notify(
+                  `Please choose an ${itemType} that doesn't exceed the size of 12MB.`,
+                  "info"
+                );
+              }
+        }else if(this.state.method.toLowerCase() === Consts.Reel) {
+          //reel
+          if (
+            /video/g.test(metadata.contentType) &&
             uploadedItem.size <= 12378523
           ) {
-            const itemType = /image/g.test(metadata.contentType) ? "image" : "video";
-            if (uploadedItem.name.split("").length < 300) {
+            if (uploadedItem.name.split("").length <= 250) {
               const uploadContent = storage
-                .ref(`content/${receivedData?.uid}/${fileName}`)
+                .ref(`reels/${receivedData?.uid}/${fileName}`)
                 .put(uploadedItem, metadata);
               uploadContent.on(
                 "state_changed",
@@ -211,7 +273,7 @@ class AddNewPost extends PureComponent {
                 () => {
                   // Complete function..
                   storage
-                    .ref(`content/${receivedData?.uid}`)
+                    .ref(`reels/${receivedData?.uid}`)
                     .child(fileName)
                     .getDownloadURL()
                     .then((url) => {
@@ -222,91 +284,33 @@ class AddNewPost extends PureComponent {
                         uploading: false,
                         progressBarPercentage: 0,
                         contentURL: url,
-                        contentType: itemType,
+                        contentType: "video",
                       });
                       uploadedItem = "";
                     })
                     .catch((err) => {
-                      notify((err.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
+                      notify((err.message|| `Failed to upload video. Please try again later.`), "error");
                     });
                 }
               );
             } else {
               notify(
-                `The name of the ${itemType} is too long. it should not exceed 300 characters`,
+                `The name of the video is too long. it should not exceed 250 characters`,
                 "info"
               );
             }
           } else {
             notify(
-              "Please choose an image or video that doesn't exceed the size of 12MB.",
+              "Please choose a video that doesn't exceed the size of 12MB.",
               "info"
             );
           }
-    }else if(this.state.method.toLowerCase() === Consts.Reel) {
-      //reel
-      if (
-        /video/g.test(metadata.contentType) &&
-        uploadedItem.size <= 12378523
-      ) {
-        if (uploadedItem.name.split("").length <= 250) {
-          const uploadContent = storage
-            .ref(`reels/${receivedData?.uid}/${fileName}`)
-            .put(uploadedItem, metadata);
-          uploadContent.on(
-            "state_changed",
-            (snapshot) => {
-              //Progress function ..
-              const progress =
-                Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              this.setState({
-                ...this.state,
-                uploading: true,
-                progressBarPercentage: progress,
-              });
-            },
-            (error) => {
-              notify(error.message, "error");
-              this.resetState();
-            },
-            () => {
-              // Complete function..
-              storage
-                .ref(`reels/${receivedData?.uid}`)
-                .child(fileName)
-                .getDownloadURL()
-                .then((url) => {
-                  //post content on db
-                  this.setState({
-                    ...this.state,
-                    contentName: fileName,
-                    uploading: false,
-                    progressBarPercentage: 0,
-                    contentURL: url,
-                    contentType: "video",
-                  });
-                  uploadedItem = "";
-                })
-                .catch((err) => {
-                  notify((err.message|| `Failed to upload video. Please try again later.`), "error");
-                });
-            }
-          );
-        } else {
-          notify(
-            `The name of the video is too long. it should not exceed 250 characters`,
-            "info"
-          );
-        }
-      } else {
-        notify(
-          "Please choose a video that doesn't exceed the size of 12MB.",
-          "info"
-        );
-      }
 
-    }
-    
+        }
+    }else{
+      notify("You are not properly logged in. Please login and try again.","error");
+      this.props.history.push("/auth");
+    }    
   };
   onInputChange =(val, name) => {
     this.setState(updateObject(this.state,{[name]: val}));
@@ -336,8 +340,10 @@ class AddNewPost extends PureComponent {
                     this.state.contentType === "image" ?
                     <img src={this.state.contentURL} alt="" />
                     : this.state.contentType === "video" ? 
-                   <video src={this.state.contentURL} controls > </video>
-                     : null
+                    <video src={this.state.contentURL} controls > </video>
+                    : this.state.contentType === "audio" ? 
+                    <audio src={this.state.contentURL} controls > </audio>
+                    : null
                   }  
                   {
                     this.state.method.toLowerCase() === Consts.Post ?
@@ -403,7 +409,7 @@ class AddNewPost extends PureComponent {
                     <div>
                       <Files
                           className="files__dropzone"
-                          accepts={this.state.method.toLowerCase() === Consts.Post? ['image/*','video/*'] : this.state.method.toLowerCase() === Consts.Reel ?  ['video/*'] : null}
+                          accepts={this.state.method.toLowerCase() === Consts.Post? ['image/*','video/*','audio/*'] : this.state.method.toLowerCase() === Consts.Reel ?  ['video/*'] : null}
                           maxFileSize={12378523}
                           minFileSize={0}
                           clickable
@@ -412,7 +418,10 @@ class AddNewPost extends PureComponent {
                           maxFiles={1}
                           onError={(error)=> notify(error.message, "error")}
                           dragActiveClassName="files-dropzone-active"
-                        >  {`${this.state.method.toLowerCase() === Consts.Post ? "Drop an image or video here to upload " : this.state.method.toLowerCase() === Consts.Reel ?  "Drop a video here to upload" : "Drop a file here or click to upload"}`}</Files>
+                        >  {`${this.state.method.toLowerCase() === Consts.Post ? "Drop an image, video or audio here to upload " : this.state.method.toLowerCase() === Consts.Reel ?  "Drop here a video to upload" : "Drop a file here or click to upload"}`}
+                        <br />
+                        <p className="mt-2">(Should not exceed 12MB)</p>
+                        </Files>
                       <InputForm
                           type="select"
                           options={["Post", "Reel"]}

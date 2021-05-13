@@ -113,6 +113,7 @@ const AuthPage = (props) => {
                             status: "Single",
                             name: fullName.trim(),
                             phoneNumber: "",
+                            birthday: "",
                             professionalAcc: {
                               show: true,
                               category: "Just For Fun",
@@ -279,6 +280,7 @@ const AuthPage = (props) => {
                     status: "Single",
                     name: given_name || "",
                     phoneNumber: "",
+                    birthday: "",
                     professionalAcc: {
                       show: true,
                       category: "Just For Fun",
@@ -377,6 +379,7 @@ const AuthPage = (props) => {
                     status: "Single",
                     name: "",
                     phoneNumber: "",
+                    birthday: "",
                     professionalAcc: {
                       show: true,
                       category: "Just For Fun",
@@ -465,6 +468,7 @@ const AuthPage = (props) => {
                     status: "Single",
                     name: "",
                     phoneNumber: "",
+                    birthday: "",
                     professionalAcc: {
                       show: true,
                       category: "Just For Fun",

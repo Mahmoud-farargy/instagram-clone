@@ -100,6 +100,11 @@ const Explore = () => {
            return post?.contentType === "image"
           }));
         break;
+        case "audio_only":
+          exploreAlteredArr = explore?.map(user => user?.filter(post => {
+           return post?.contentType === "audio"
+          }));
+        break;
         case "videos_only":
           exploreAlteredArr = explore?.map(user => user?.filter(post => post?.contentType === "video"));
         break;
@@ -277,7 +282,7 @@ const Explore = () => {
                             type="select"
                             name="filter"
                             label="filter"
-                            options={["None", "Posts By People I Follow", "Images Only", "Videos Only" ]}
+                            options={["None", "Posts By People I Follow", "Images Only", "Videos Only", "Audio Only"]}
                             val={sortForm?.filter}
                             changeInput={onInputChange}
                             submitted={submitted}
@@ -309,7 +314,7 @@ const Explore = () => {
               explore &&
               explore?.length > 0 &&
               newExploreArr.length >= 1 &&
-               !loading || !loadingState?.suggList ? (
+               (!loading || !loadingState?.suggList) ? (
                 <div>
                   <div className="explore--upper--row">
                   {newExploreArr.slice(0,2).map((post, index) => (

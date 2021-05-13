@@ -22,6 +22,7 @@ const EditProfileOption = (props) => {
     phoneNumber: "",
     gender: "Male",
     status: "Single",
+    birthday: "",
   });
   const [submitted, setSubmission] = useState(false);
   // --x--end of state-x--//
@@ -321,7 +322,20 @@ const EditProfileOption = (props) => {
                 </div>
               }
             />
-
+            <InputForm
+              type="text"
+              inputType="date"
+              changeInput={onInputChange}
+              label="Date of birth"
+              name="birthday"
+              val={formState?.birthday}
+              submitted={submitted}
+              extraText={
+                <small>
+                  This won't appear to anyone except you
+                </small>
+              }
+            />
             <InputForm
               type="text"
               inputType="tel"

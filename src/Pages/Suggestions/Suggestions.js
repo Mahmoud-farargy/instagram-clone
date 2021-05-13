@@ -25,6 +25,7 @@ const Suggestions = () => {
                                         isVerified={user?.isVerified}
                                         userUid={user?.uid}
                                         userAvatarUrl={user?.userAvatarUrl}
+                                        creationDate={user?.profileInfo?.accountCreationDate ? user?.profileInfo?.accountCreationDate : ""}
                                     />
                                     ))
                                     :

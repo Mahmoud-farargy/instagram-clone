@@ -5,9 +5,8 @@ import { Avatar } from "@material-ui/core";
 import { BsPencilSquare, BsFillCameraVideoFill } from "react-icons/bs";
 import TruncateMarkup from "react-truncate";
 import { FiSend, FiInfo } from "react-icons/fi";
-import { VscSmiley } from "react-icons/vsc";
 import { RiMenu4Fill } from "react-icons/ri";
-import { MdClose } from "react-icons/md";
+import { MdClose, MdAudiotrack } from "react-icons/md";
 import PropTypes from "prop-types";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 import GetFormattedDate from "../../Utilities/FormatDate";
@@ -18,11 +17,14 @@ import { storage } from "../../Config/firebase";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { FcLike } from "react-icons/fc";
 import { GoVerified } from "react-icons/go";
+import { CgFileDocument } from "react-icons/cg";
 import { withRouter } from 'react-router-dom';
 import Loader from "react-loader-spinner";
 import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen";
 import { trimText } from "../../Utilities/TrimText";
-import { IoIosArrowBack } from "react-icons/io";
+import { insertIntoText } from "../../Utilities/InsertIntoText";
+import EmojiPicker from "../../Components/Generic/EmojiPicker/EmojiPicker";
+import NewMsgModal from "../../Components/NewMsgModal/NewMsgModal";
 const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
 const Messages = (props) => {
@@ -30,21 +32,14 @@ const Messages = (props) => {
     const autoScroll = useRef(null);
     const fileUploadEl = useRef(null);
     const _isMounted = useRef(true);
-    const radioCheck = useRef(null);
     const context = useContext(AppContext);
     const [compState, setCompState] = useState({
         inputValue: "",
         loadedChatLog: [],
         openSidedrawer: false,
-        showEmojis: false,
         loading: {uid: "", state: false, progress: 0}
     })
-  const [newMsgData, setMsgData] = useState({
-    messageText: "",
-    sendTo: {}
-  });
-  const [searchText, setSearchText] = useState("");
-  const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, modalsState, changeModalState, deleteChat, handleUserBlocking, handleFollowing, suggestionsList, initializeChatDialog, searchUsers, searchInfo, confirmPrompt } = context;
+  const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, modalsState, changeModalState, deleteChat, handleUserBlocking, handleFollowing, confirmPrompt, closeNewMsgNoti } = context;
   const { messages } = receivedData;
   const currUser = receivedData?.messages[currentChat.index];
   const isFollowed = receivedData?.following && receivedData?.following?.length > 0 &&
@@ -80,7 +75,6 @@ const Messages = (props) => {
       _isMounted.current = false;
       fileUploadEl.current =false;
       autoScroll.current = false;
-      radioCheck.current = false;
     }
   },[]);
   useEffect(() => {
@@ -104,7 +98,6 @@ const Messages = (props) => {
           ...compState,
           loadedChatLog: messages[currentChat.index],
           openSidedrawer: false,
-          showEmojis: false,
         });
     }
   },[messages, currentChat, compState.loading.state, _isMounted]);
@@ -124,15 +117,19 @@ const Messages = (props) => {
     const checkIndex = receivedData?.messages?.map(user => user.uid ).indexOf(loadedUid);
     if(checkIndex === loadedIndex && checkIndex !== -1){
        changeMainState("currentChat", { uid: loadedUid ,index: loadedIndex});
+       if(receivedData?.messages?.[checkIndex]?.notification){
+          closeNewMsgNoti(loadedUid);
+       }
     }
   }
 
-  const selectEmoji = (emojiText) => {
+  const selectEmoji = (e, x) => {
+    e.persist();
     setCompState({
       ...compState,
-      inputValue: compState.inputValue + emojiText,
-    });
-  };
+      inputValue: insertIntoText(compState?.inputValue, x.emoji)
+    })
+  }
   const onMessageAction = (type) => {
     if(type === "content"){
       if(_isMounted && fileUploadEl?.current){
@@ -151,52 +148,60 @@ const Messages = (props) => {
             const metadata = {
               contentType: uploadedItem !== "" ? uploadedItem?.type : "",
             }
+          const itemType = /image/g.test(metadata.contentType) ? "picture" : /video/g.test(metadata.contentType) ? "video": /audio/g.test(metadata.contentType) ? "audio" : "document";
           if (
-            /(image|video)/g.test(metadata.contentType) &&
-            uploadedItem.size <= 12378523
+            /(image|video|audio|pdf|plain)/g.test(metadata.contentType)
           ) {
-            const itemType = /image/g.test(metadata.contentType) ? "picture" : "video";
-            if (uploadedItem.name.split("").length < 300) {
-              const uploadContent = storage
-                .ref(`messages/${receivedData?.uid}/${fileName}`)
-                .put(uploadedItem, metadata);
-              uploadContent.on(
-                "state_changed",
-                (snapshot) => {
-                  //Progress function ..
-                  const progress =
-                    Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    setCompState({...compState,loading: {uid: currUser?.uid,state:true, progress: progress }});
-                },
-                (error) => {
-                  notify((error?.message || `Failed to send ${itemType}. Please try again later.`), "error");
-                },
-                () => {
-                  // Complete function..
-                  storage
-                    .ref(`messages/${receivedData?.uid}`)
-                    .child(fileName)
-                    .getDownloadURL()
-                    .then((url) => {
-                      //post content on db
-                    setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
-                      handleSendingMessage({content: url,uid: currUser?.uid,type: itemType, pathname: fileName });
-                      uploadedItem = "";
-                    })
-                    .catch((err) => {
-                      notify((err.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
-                    });
+            if(uploadedItem.size <= 12378523){
+
+                if (uploadedItem.name.split("").length < 300) {
+                  const uploadContent = storage
+                    .ref(`messages/${receivedData?.uid}/${fileName}`)
+                    .put(uploadedItem, metadata);
+                  uploadContent.on(
+                    "state_changed",
+                    (snapshot) => {
+                      //Progress function ..
+                      const progress =
+                        Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        setCompState({...compState,loading: {uid: currUser?.uid,state:true, progress: progress }});
+                    },
+                    (error) => {
+                      notify((error?.message || `Failed to send ${itemType}. Please try again later.`), "error");
+                    },
+                    () => {
+                      // Complete function..
+                      storage
+                        .ref(`messages/${receivedData?.uid}`)
+                        .child(fileName)
+                        .getDownloadURL()
+                        .then((url) => {
+                          //post content on db
+                        setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
+                          handleSendingMessage({content: url,uid: currUser?.uid,type: itemType, pathname: fileName });
+                          uploadedItem = "";
+                        })
+                        .catch((err) => {
+                          notify((err.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
+                        });
+                    }
+                  );
+                } else {
+                  notify(
+                    `The name of the ${itemType} is too long. it should not exceed 250 characters`,
+                    "info"
+                  );
                 }
-              );
-            } else {
+            }else{
               notify(
-                `The name of the ${itemType} is too long. it should not exceed 250 characters`,
+                `${itemType} does not exceed the size of 12MB.`,
                 "info"
               );
             }
+
           } else {
             notify(
-              "Please choose an image or video that doesn't exceed the size of 12MB.",
+              "Only images, videos, audio, txts, and pdfs are accepted.",
               "info"
             );
           }
@@ -205,12 +210,6 @@ const Messages = (props) => {
     }
     const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
       handleUserBlocking(true, blockedUid || "", userName || "", userAvatarUrl || "", profileName || "").then(() => history.push("/"));
-    }
-    const removeSelectedUser = () => {
-      setMsgData({messageText: "", sendTo: {}});
-      if(radioCheck && radioCheck.current){
-          radioCheck.current.checked = false;
-      }
     }
     const messagedUsers = (
       <ul id="messagesUL">
@@ -236,10 +235,11 @@ const Messages = (props) => {
                             {
                               !receivedData?.blockList?.some(el => el?.blockedUid === user?.uid) &&
                                 <li
-                                  className={`messages--user  flex-row ${index === currentChat.index && "active-msg"}`}
+                                  className={`messages--user like__icon__item flex-row ${index === currentChat.index && "active-msg"}`}
                                   
                                   onClick={() => viewUsersMessages(user?.uid, index)}
                                 >
+                                { user?.notification && <div className="like__noti__dot"></div>}
                                 <Avatar loading="lazy" src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
                                   <div className="messages--user--info space__between">
                                     <div style={{ flex: 1, width: "60%" }}>
@@ -269,6 +269,14 @@ const Messages = (props) => {
                                           : user?.chatLog?.[user.chatLog?.length - 1]?.type === "like" ?
                                           <span>
                                             <FcLike />
+                                          </span>
+                                          : user?.chatLog?.[user.chatLog?.length - 1]?.type === "audio" ?
+                                          <span>
+                                            <MdAudiotrack />
+                                          </span>
+                                          : user?.chatLog?.[user.chatLog?.length - 1]?.type === "document" ?
+                                          <span>
+                                            <CgFileDocument />
                                           </span>
                                           : <span>Empty message</span>
                                       } 
@@ -302,36 +310,6 @@ const Messages = (props) => {
       changeModalState("newMsg", true);
       setCompState({...compState, openSidedrawer: false });
     }
-    const userChangeRadio = (c) => {
-      setMsgData({
-        ...newMsgData,
-        sendTo: c
-      });
-    }
-    const commitMessage = () => {
-      if(Object.keys(newMsgData?.sendTo).length > 0 && newMsgData?.messageText){
-        const {uid, userName, userAvatarUrl, isVerified} = newMsgData?.sendTo;
-         initializeChatDialog(uid, userName, userAvatarUrl, isVerified).then(() => {
-              changeMainState("currentChat", { uid: uid,index: 0 });
-              handleSendingMessage({content: newMsgData?.messageText, uid: uid, type: "text", pathname: ""});
-              changeModalState("newMsg", false);
-              removeSelectedUser();
-              
-         }).catch(() => {
-          notify("Failed to send22","error");
-         });
-      }else{
-        notify("User and message must be defined","error");
-      }
-    }
-    useEffect(() => {
-      if(_isMounted){
-        if(searchText && searchText !== ""){
-          searchUsers(searchText, "regular");
-        }
-      }
-      
-    },[searchText]);
     
     const block = (uid, userName, avatarUrl, name) => {
       const buttons = [
@@ -350,7 +328,6 @@ const Messages = (props) => {
         `Block ${userName}?`
       );
     }
-    const usersArr = searchText ? searchInfo?.results : suggestionsList;
     const delChat = () => {
       deleteChat(currUser?.uid).then(() => {
         const secondUserUid = receivedData?.messages?.filter(el => !receivedData?.blockList?.some(k => k.blockedUid === el.uid))[1]?.uid;
@@ -382,70 +359,13 @@ const Messages = (props) => {
               <span>Cancel</span>
               </OptionsModal>
             ): modalsState?.newMsg ?
-            <div className="new--msg--conainer usersModal--container flex-column">
-              <div className="new--msg--inner usersModal--inner modalShow">
-                <div style={{
-                          transform: modalsState?.newMsg ? "translate(0)" : "translate(-150%)"
-                    }} className="usersModal--card">
-                   <div className="new--msg--header flex-row">
-                    <span className="new__msg__close" onClick={() => changeModalState("newMsg", false)}><span className="desktop-only">&times;</span><IoIosArrowBack className="mobile-only" /> </span>
-                    <span className="new__msg__title">New Message</span>
-                    <div><button onClick={() => commitMessage()} disabled={(!newMsgData?.sendTo || !newMsgData?.messageText)} className={`msg__send__btn desktop-only ${(!newMsgData?.sendTo || !newMsgData?.messageText) && "disabled"}`} >Send</button></div>
-                   </div>
-                   <div className="new--msg--send--to flex-row">
-                    <h4>To:</h4>
-                   { Object.keys(newMsgData?.sendTo).length > 0 && <span className="new__msg__username flex-row">{newMsgData?.sendTo.userName}<span onClick={() => removeSelectedUser()} className="new__msg__del__name">&times;</span></span>}
-                    <input autoFocus onChange={(x) => setSearchText(x.target.value)} value={searchText} autoComplete="off" spellCheck={false} name="query box" type="text" placeholder="Search.." className="new__msg__search"/> 
-                   </div>                   
-                    { Object.keys(newMsgData?.sendTo).length > 0 &&
-                    <div className="new--msg--send--to flex-row" style={{borderTop: "none"}}>
-                       <h4>Message body:</h4>
-                      <form onSubmit={(c) => {c.preventDefault(); commitMessage()}}>
-                         <textarea autoFocus spellCheck={false} onChange={(q) => setMsgData({...newMsgData,messageText:q?.target?.value})} value={newMsgData?.messageText} name="message body" type="text" placeholder="Message.." className="new__msg__textarea__body"/> 
-                      </form>
-                    </div>
-                     }
-                   <div className="new--msg--body flex-column">
-                     <h4 className="new__msg__sugg__title">Suggested</h4>
-                     <div className="suggestions--list w-100 flex-column">
-                        {usersArr && usersArr.length > 0 ?
-                          <ul className="flex-column">
-                            {
-                             Array.from(new Set(usersArr.map((item) => item.uid))).map((id) => usersArr.find((el) => el.uid === id))
-                             .filter((item) => (item?.uid !== receivedData?.uid)).slice(0,20)
-                             .map((user, i) =>
-                                  <label htmlFor={user?.uid} key={user?.uid + i} className="suggest--item--container">
-                                      <li className="suggestion--item flex-row">
-                                            <div  title={user?.userName} className="side--user--info flex-row">
-                                                <Avatar src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
-                                                <span className="flex-column">
-                                                      <h5 className="flex-row">{ user?.userName && trimText(user?.userName, 80)}{user?.isVerified ?  <span><GoVerified className="verified_icon"/></span> : null} </h5>  
-                                                      <small>{user?.profileInfo?.name && trimText(user?.profileInfo?.name, 80)}</small>
-                                                </span>                    
-                                              </div>
-                                              <input ref={radioCheck} onChange={() => userChangeRadio(user)} value={newMsgData?.sendTo?.uid || ""} checked={newMsgData?.sendTo?.uid  === user?.uid} type="radio" id={user?.uid} className="new__msg__radio" name="user" />
-                                      </li> 
-                                  </label>
-                                )
-                            }
-                          </ul>
-                              
-                            : <div className="empty--box flex-row">
-                              <h4>No Suggestions currently</h4>
-                            </div>
-                        }
-                      </div>
-                      <button onClick={() => commitMessage()} disabled={(!newMsgData?.sendTo || !newMsgData?.messageText)} className={`prof__btn__unfollowed msg_mobile_btn mobile-only ${(!newMsgData?.sendTo || !newMsgData?.messageText) && "disabled"}`} >Send</button>
-                   </div>
-                </div>
-              </div>
-            </div>
+            <NewMsgModal />
             : null
           }
             
       </Suspense>
         <section id="messages" className="messages--container">
-          <input id="contentUploader" type ="file" name="contentUploader" accept={['image/*','video/*']} ref={fileUploadEl} onChange={(x) => onPickingContent(x)} />
+          <input id="contentUploader" type ="file" name="contentUploader" accept={['image/*','video/*','audio/*','application/pdf','text/plain']} ref={fileUploadEl} onChange={(x) => onPickingContent(x)} />
           <div className="desktop-comp messages--main--container flex-column">
             <div className="messages--desktop--card flex-row">
               {/* users side */}
@@ -572,127 +492,35 @@ const Messages = (props) => {
                      }
                       <span ref={autoScroll}></span>
                     </div>
-                    {compState.showEmojis ? (
-                      <div
-                        style={{
-                          opacity: compState.showEmojis ? "1" : "0",
-                          transition: "all 0.5s ease",
-                        }}
-                        className="chat--emojis--box flex-row"
-                      >
-                        <span
-                          role="img"
-                          aria-label="emoji"
-                          onClick={() => selectEmoji("😍 ")}
-                        >
-                          😍
-                        </span>
-                        <span
-                          role="img"
-                          aria-label="emoji"
-                          onClick={() => selectEmoji("😂 ")}
-                        >
-                          😂
-                        </span>
-                        <span
-                          role="img"
-                          aria-label="emoji"
-                          onClick={() => selectEmoji("😄")}
-                        >
-                          😄
-                        </span>
-                        <span
-                          role="img"
-                          aria-label="emoji"
-                          onClick={() => selectEmoji("😊 ")}
-                        >
-                          😊
-                        </span>
-                        <span
-                          role="img"
-                          aria-label="emoji"
-                          onClick={() => selectEmoji("😘 ")}
-                        >
-                          😘
-                        </span>
-                        <span
-                          role="img"
-                          aria-label="emoji"
-                          onClick={() => selectEmoji("😁 ")}
-                        >
-                          😁
-                        </span>
-                        <span
-                          role="img"
-                          aria-label="emoji"
-                          onClick={() => selectEmoji("😢 ")}
-                        >
-                          😢
-                        </span>
-                        <span
-                          role="img"
-                          aria-label="emoji"
-                          onClick={() => selectEmoji("😎 ")}
-                        >
-                          😎
-                        </span>
-                        <span
-                          role="img"
-                          aria-label="emoji"
-                          onClick={() => selectEmoji("😋 ")}
-                        >
-                          😋
-                        </span>
-                        <span
-                          role="img"
-                          aria-label="emoji"
-                          onClick={() => selectEmoji("😜 ")}
-                        >
-                          😜
-                        </span>
-                        <span
-                          role="img"
-                          aria-label="emoji"
-                          onClick={() => selectEmoji("😫 ")}
-                        >
-                          😫
-                        </span>
-                      </div>
-                    ) : null}
+
                     <div className="messages--bottom--form flex-row">
-                      <form
-                        onSubmit={(v) => submitMessage(v)}
-                        className="flex-row"
-                      >
-                        <VscSmiley
-                          onClick={() =>
-                            setCompState({
-                              ...compState,
-                              showEmojis: !compState.showEmojis,
-                            })
-                          }
-                          className="smiley__icon"
-                        />
-                        <input
-                          onChange={(e) =>
-                            
-                            setCompState({...compState, inputValue: e.target.value })
-                          }
-                          value={compState.inputValue}
-                          className="message__input"
-                          placeholder="Message..."
-                        />
-                        {compState.inputValue ? (
-                          <input type="submit" value="Send" className={`${!compState.inputValue && "disabled"}`} disabled={!compState.inputValue} />
-                        ) : 
-                         <div className="message--mini--toolbox flex-row">
-                          <AiOutlinePicture onClick={() => onMessageAction("content")} className="message--pic--ico" />
-                          <FaRegHeart onClick={() => onMessageAction("like")} className="message--heart--ico"/> 
-                          <HiOutlineDotsHorizontal onClick={() => changeModalState("options", true)} className="mobile-only message--heart--ico" />
-                        </div>
-                        }
-                       
-                      </form>
+                        <form
+                          onSubmit={(v) => submitMessage(v)}
+                          className="flex-row"
+                        >
+                          <div className="form--input--container flex-row">
+                              <div className="form--input--container--inner flex-row">
+                                <EmojiPicker onEmojiClick={selectEmoji} />
+                                  <input
+                                    onChange={(e) =>
+                                      setCompState({...compState, inputValue: e.target.value })
+                                    }
+                                    value={compState.inputValue}
+                                    className="message__input"
+                                    placeholder="Message..."
+                                  />
+                                </div>
+                            </div>
+                              {compState.inputValue ? (
+                                <input type="submit" value="Send" className={`${!compState.inputValue && "disabled"}`} disabled={!compState.inputValue} />
+                              ) : 
+                              <div className="message--mini--toolbox flex-row">
+                                <AiOutlinePicture onClick={() => onMessageAction("content")} className="message--pic--ico" />
+                                <FaRegHeart onClick={() => onMessageAction("like")} className="message--heart--ico"/> 
+                                <HiOutlineDotsHorizontal onClick={() => changeModalState("options", true)} className="mobile-only message--heart--ico" />
+                              </div>
+                              }
+                        </form>
                     </div>
                   </div>
                 ) :

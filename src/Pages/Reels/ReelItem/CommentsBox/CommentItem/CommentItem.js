@@ -14,8 +14,8 @@ const CommentItem = (props) => {
                 <div className="post--comment--item">
                <div className="flex-row post--comment--row">
                 {comment?.userAvatarUrl && <Avatar className="comment__user__avatar" loading="lazy" src={comment?.userAvatarUrl} alt={comment?.userName}/>}
-                <span onClick={() => browseUser( comment?.uid, comment?.userName )} title={comment?.userName} className="post__top__comment flex-row">
-                      <strong>{comment?.userName}</strong> <p className="comment__text w-100">
+                <span onClick={() => browseUser( comment?.uid, comment?.userName )} title={comment?.userName} className="post__top__comment">
+                       <p className="comment__text"><strong>{comment?.userName}</strong>
                           <TruncateMarkup className="w-100" line={1} ellipsis="...">{trimText(comment?.comment, 600)}</TruncateMarkup>
                           </p>
                 </span>   

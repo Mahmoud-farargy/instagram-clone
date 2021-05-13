@@ -7,7 +7,7 @@ import { FiHeart, FiSend } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment , FaRegCommentDots} from "react-icons/fa";
 import { IoMdVideocam } from "react-icons/io";
-import { RiBookmarkLine } from "react-icons/ri"; //install react-instagram-embed
+import { RiBookmarkLine, RiBookmarkFill } from "react-icons/ri"; //install react-instagram-embed
 import Comment from "../../Components/Comment/Comment";
 import { GoVerified } from "react-icons/go";
 import { Link } from "react-router-dom";
@@ -17,14 +17,17 @@ import * as Consts from "../../Utilities/Consts";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import ScrollTrigger from 'react-scroll-trigger';
 import Caption from "../../Components/Generic/Caption/Caption";
-
+import EmojiPicker from "../../Components/Generic/EmojiPicker/EmojiPicker";
+import { insertIntoText } from "../../Utilities/InsertIntoText";
+import AudioContent from "../../Components/AudioContent/AudioContent";
+import NewMsgModal from "../../Components/NewMsgModal/NewMsgModal";
+import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
 class Post extends PureComponent {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
     this.videoPost = React.createRef();
     this.state = {
-      postLiked: false,
       insertedComment: "",
       btnClicks: 0,
       viewFullCaption: false,
@@ -33,24 +36,30 @@ class Post extends PureComponent {
       showInputForm: false,
       replayData: {},
       openOptionsModal: false,
+      openNewMsgModal: false,
       buffering: true,
-      isVidePlaying: false
+      isVidePlaying: false,
+      alsoLiked: []
     };
+    this.similarsStr = (this.props.likes?.people?.some(el => el?.id === this.props.id) && this.props.likes?.people?.length >3) ? (this.props.likes?.people?.length?.toLocaleString() -3) : (this.props.likes?.people?.length?.toLocaleString() -2);
+  }
+  updateUsersWhoLiked = () => {
+    var { likes, following } = this.props;
+    this.setState({
+      ...this.state,
+      alsoLiked: following?.filter(user => likes?.people?.some((el) => user?.receiverUid === el?.id)).slice(0,2) 
+    })
   }
   componentDidMount() {
-    this.likesCheck();
+    this.updateUsersWhoLiked();
   }
+
   componentDidUpdate(prevProps) {
-    if (prevProps.likes !== this.props.likes) {
-      this.likesCheck();
+    if(prevProps.following !== this.props.following){
+       this.updateUsersWhoLiked();
     }
   }
-  likesCheck() {
-    var { likes, id } = this.props;
-    this.setState({
-      postLiked: likes?.people?.some((el) => el.id === id),
-    });
-  }
+
   handleCurrLikes = (boolean) => {
     const { index, handleMyLikes, id, userName, userAvatar } = this.props;
     handleMyLikes(boolean, index, id, userName, userAvatar, true);
@@ -163,10 +172,10 @@ class Post extends PureComponent {
   }
   handleVideoPlaying =(type) => {
     if(this.videoPost && this.videoPost?.current && this.videoPost.current?.play() && !this.state.buffering){
-        if(type.toLowerCase() === "on-view" && !this.state.isVidePlaying){
+        if(type.toLowerCase() === "on-view" && !this.state.isVidePlaying && this.videoPost.current?.currentTime < 0 && this.videoPost.current?.paused && this.videoPost.current?.ended){
           this.videoPost.current.play();
           this.setState({...this.state, isVidePlaying: true });
-        }else if(type.toLowerCase() === "out-of-view"){
+        }else if(type.toLowerCase() === "out-of-view" && this.videoPost.current?.currentTime > 0 && !this.videoPost.current?.paused && !this.videoPost.current?.ended){
           this.videoPost.current.pause();
           this.setState({...this.state, isVidePlaying: false });
         }
@@ -175,6 +184,16 @@ class Post extends PureComponent {
   componentWillUnmount = () => {
     this.videoPost = false;
     this.inputField = false;
+  }
+  onEmojiClick = (e, x) => {
+    e.persist();
+    this.setState({
+      ...this.state,
+      insertedComment: insertIntoText( this.state.insertedComment,x.emoji)
+    });
+  }
+  closeAllModals = () => {
+    this.setState({...this.state, openOptionsModal: false, openNewMsgModal: false });
   }
   render() {
     const {
@@ -198,9 +217,15 @@ class Post extends PureComponent {
       deletePost,
       index,
       postId,
+      handleSavingPosts,
+      savedPosts,
     } = this.props;
     return (
       <Fragment>
+          {
+            this.state.openNewMsgModal &&
+              <NewMsgModal closeModal={this.closeAllModals} />
+          }
         <div id="post" className="post--card--container">
           <article className="post--card--article">
             <div className="post--card--header flex-row">
@@ -293,12 +318,14 @@ class Post extends PureComponent {
                   
                   <IoMdVideocam className="video__top__icon" />
                 </div>
-              ) : null}
+              ) : contentType === "audio" ? (
+                  <AudioContent url={contentURL} userName={userName} doubleClickEvent={() => this.doubleClickEvent()} />
+              ): null}
             </div>
             <div className="post--card--footer flex-column">
               <div className="post--footer--upper--row flex-row">
                 <div className=" flex-row">
-                  {!this.state.postLiked ? (
+                  {!likes?.people?.some((el) => el.id === id) ? (
                     <span onClick={() => this.handleCurrLikes(true)}>
                       <FiHeart />
                     </span>
@@ -306,7 +333,7 @@ class Post extends PureComponent {
                     <span
                       onClick={() => this.handleCurrLikes(false)}
                       style={{
-                        animation: this.state.postLiked
+                        animation: likes?.people?.some((el) => el.id === id)
                           ? "boundHeart 0.5s forwards ease"
                           : null,
                       }}
@@ -324,14 +351,43 @@ class Post extends PureComponent {
                    } 
                   </span>
                   <span>
-                    <FiSend />
+                    <FiSend onClick={() => this.setState({...this.state, openNewMsgModal: true})} />
                   </span>
                 </div>
                 <div className="bookmark__icon">
-                  <RiBookmarkLine />
+                  {
+                    savedPosts?.some(sp => (sp.postOwnerId === postOwnerId && sp.id === postId)) ?
+                    <RiBookmarkFill onClick={() => handleSavingPosts({boolean:false,data: {postOwnerId, id: postId, userName, contentName, contentURL,contentType, postDate}})} />
+                    :
+                    <RiBookmarkLine onClick={() => handleSavingPosts({boolean:true,data: {postOwnerId, id: postId, userName, contentName, contentURL,contentType, postDate}})} />
+                  }
                 </div>
               </div>
-              {likes?.people?.length >= 1 ? (
+              {likes?.people?.length >= 1 && this.state.alsoLiked?.length > 0 ?
+                  <div className="people--also--liked flex-row">
+                    <Avatar src={this.state.alsoLiked?.[0]?.receiverAvatarUrl} />
+                        <p className="flex-row" onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}>Liked by
+                          <span className="flex-row">
+                            {
+                                  this.state.alsoLiked?.map(el => <MutualLikes key={el?.receiverUid}item={el}/> )
+                            }
+                            {
+                              (likes?.people?.some(el => el?.id === id) ? likes?.people?.length -1 : likes?.people?.length ) > this.state.alsoLiked?.length && this.similarsStr > 0 &&
+                              <strong className="you--followed">
+                              {likes?.people?.some(el => el?.id === id) ? "" : " and"}<strong className="other__likers"> {this.similarsStr} {this.similarsStr < 2 ? " person" : " others"}</strong>
+                              </strong>
+                            }
+                            {
+                              <strong className="you__followed">
+                                 {likes?.people?.some(el => el?.id === id) && ", and you"}
+                              </strong>
+                            }
+                          </span>
+
+                        </p>
+                  </div>
+
+              : likes?.people?.length >= 1 && this.state.alsoLiked?.length <= 0 ?(
                 <div
                   className="likes__count"
                   onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}
@@ -421,19 +477,24 @@ class Post extends PureComponent {
                   className="post--bottom--comment--adding flex-row"
                   method="post"
                 >
-                  <input
-                    ref={this.inputField}
-                    value={this.state.insertedComment}
-                    onChange={(event) =>
-                      this.setState({ insertedComment: event.target.value })
-                    }
-                    className="post__bottom__input"
-                    type="text"
-                    placeholder="Add a commment.."
-                    aria-label="Add a commment.."
-                    autoComplete="off"
-                    name="add-comment"
-                  />
+                 <div className="form--input--container w-100 flex-row">
+                    <div className="form--input--container--inner flex-row">
+                      <EmojiPicker onEmojiClick={this.onEmojiClick} />
+                      <input
+                        ref={this.inputField}
+                        value={this.state.insertedComment}
+                        onChange={(event) =>
+                          this.setState({ insertedComment: event.target.value })
+                        }
+                        className="post__bottom__input"
+                        type="text"
+                        placeholder="Add a commment.."
+                        aria-label="Add a commment.."
+                        autoComplete="off"
+                        name="add-comment"
+                      />
+                    </div>
+                 </div>
                   <button
                     type="submit"
                     disabled={this.state.insertedComment.length < 1}
@@ -449,12 +510,13 @@ class Post extends PureComponent {
               )}
             </div>
           </article>
+        {/* Modals */}
           {this.state.openOptionsModal && (
             <OptionsModal>
               <span className="text-danger font-weight-bold"
                 onClick={() => {
                   deletePost( postId, index, contentName, contentURL );
-                  this.setState({openOptionsModal:false})
+                  this.setState({...this.state, openOptionsModal:false})
                 }}
               >
                 {" "}
@@ -468,12 +530,12 @@ class Post extends PureComponent {
           )}
           <div
             style={{
-              opacity: this.state.openOptionsModal ? "1" : "0",
-              display: this.state.openOptionsModal ? "block" : "none",
+              opacity: (this.state.openOptionsModal || this.state.openNewMsgModal) ? "1" : "0",
+              display: (this.state.openOptionsModal || this.state.openNewMsgModal) ? "block" : "none",
               transition: "all 0.5s ease",
             }}
             className="backdrop "
-            onClick={() => this.setState({ openOptionsModal: false })}
+            onClick={() => this.closeAllModals()}
           ></div>
         </div>
       </Fragment>

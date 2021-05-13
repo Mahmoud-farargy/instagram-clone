@@ -645,7 +645,6 @@ time{
 .auth--footer--container  .auth--copyright, .auth--copyright--inner{
     text-align:center;
     overflow: hidden;
-    flex-wrap: wrap;
     justify-content: center;
     text-transform: uppercase;
 }
@@ -690,7 +689,9 @@ time{
 .auth--footer--ul li:hover{
     text-decoration:underline;
 }
-
+.emoji-picker-react .emoji-categories{
+    flex-direction: row !important;
+}
 /*any weird behavior? comment this >>*/
 article, div, footer, header, main, nav, section{ 
     -webkit-box-align:stretch;
@@ -702,6 +703,47 @@ article, div, footer, header, main, nav, section{
     flex-shrink:0;
     padding:0;
     margin:0;
+}
+.people--also--liked{
+    align-items:center;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+.people--also--liked span{
+    padding-left:4px;
+}
+.people--also--liked p{
+    font-size: inherit;
+    font-weight: 400;
+    margin-bottom:0;
+    cursor: pointer;
+}
+.people--also--liked p .similar__followers__item{
+    font-weight: 600;
+    font-size: inherit;
+    cursor: pointer;
+    margin:0 5px 0 0;
+    line-height: inherit;
+}
+.people--also--liked p strong.you--followed, .people--also--liked p strong.you__followed{
+    font-size: inherit;
+    font-weight: inherit !important;
+    line-height: inherit;
+}
+.people--also--liked p strong.you--followed strong.other__likers{
+    font-size: inherit;
+    font-weight: 600;
+}
+
+.people--also--liked p strong.you--followed::before{
+    content: ", ";
+    color: rgb(142, 142, 142);
+}
+.people--also--liked .MuiAvatar-root{
+    width:20px;
+    height: 20px;
+    object-fit: contain;
+    margin-right: 7px;
 }
 #main--footer {
     background-color: var(--light-gray);
@@ -815,13 +857,22 @@ button:active{
     align-items:center;
     white-space:nowrap;
     flex-wrap: nowrap;
-    padding:3px 0 8px 40px;
+    padding:3px 0 0 47px;
     max-width:200px;
 }
 
 .sub--comments--nav{
     list-style:none;
     padding-top:8px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+.sub--comments--nav .post--comment--item{
+    padding:12px 0;
+    width: auto;
+}
+.sub--comments--nav .post--comment--item:last-of-type{
+    padding-bottom: 0;
 }
 .sub--comments--nav li{
     margin-bottom:3px;
@@ -849,7 +900,7 @@ button:active{
 .post__top__comment strong, .sub--comments--nav li strong{
     font-weight:600;
     text-overflow: ellipsis;
-    margin-right:5px;
+    margin-right:7px;
     white-space:nowrap;
     max-width:80%;
     cursor: pointer;
@@ -860,9 +911,26 @@ button:active{
     font-size: 14px;
     text-overflow: ellipsis;
 }
+.desktop--caption .post__top__comment strong{
+    margin:0 0 0 5px;
+    font-weight: 600;
+    font-size: inherit;
+}
+.desktop--caption .post__top__comment .comment__text{
+    font-weight: 400;
+    font-size: 14px;
+}
+.desktop--caption p{
+    display: inline;
+    margin:5px 0 0 1px !important;
+}
+.desktop--caption .post--comment--actions{
+    margin-top:-6px;
+}
 .post__view__replies__btn{
     cursor:pointer;
-    padding:2px 4px 0px 40px;
+    margin-top: 16px;
+    padding:0 4px 0px 40px;
 }
 .post__card__content{
     cursor:pointer;
@@ -1008,7 +1076,14 @@ button:active{
     flex-wrap: wrap;
     background-color: #fff;
     padding:0;
-    margin-top: 40px;
+}
+.saved--posts--container h6{
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--second--gray);
+    margin-top: 32px;
+    margin-bottom:16px;
+    display: block;
 }
 .my-empty--posts--img{
     flex-basis: 40%;
@@ -1057,6 +1132,12 @@ button:active{
 #messages .messages--user .MuiAvatar-root{
     height: 50px;
     width: 50px;
+}
+#messages .messages--user .like__noti__dot{
+    left:8px;
+    top:50%;
+    width:7px;
+    height:7px;
 }
 .messages--user--info div span.last__message{
     color: var(--second--gray);
@@ -1178,7 +1259,32 @@ button:active{
 .message--outer .hidden--backdrop {
     z-index: 100;
 }
-
+.audio--content{
+    height: 100%;
+}
+.audio--content .audio__artwork__cover{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    background-color:rgb(214, 212, 212) ;
+    min-height: 300px;
+}
+.audio--content .post__card__content{
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+.rhap_container div{
+    flex-direction: row;
+}
+.rhap_container .rhap_main{
+    flex-direction: column !important;
+}
+.rhap_container .rhap_volume-bar-area{
+    width: 70%;
+}
 .message--full--screen--ico{
     position: absolute;
     top:5%;
@@ -1213,8 +1319,10 @@ button:active{
  height: 372px;
  min-height: 200px;
  min-width: 210px;
- background-color: var(--second--gray);
  border-radius: 22px;
+}
+.message--video, .message--picture{
+    background-color: var(--second--gray);
 }
 .message--content video, .message--content img{
     width: 100%;
@@ -1222,6 +1330,9 @@ button:active{
     object-fit:contain;
     min-height: 100%;
     border-radius: 22px;
+}
+.message--content.message--document{
+    background-color: rgb(238, 251, 252);
 }
 .message--options{
     position: absolute;
@@ -1240,6 +1351,9 @@ button:active{
 }
 .message--options .message--inner--options, #usersProfile .reel--list--item, #usersProfile .user--img--container, .message--picture{
     position: relative;
+}
+.message--audio audio{
+    width: 200px !important;
 }
 .message--options .message--inner--options .message--option::after{
     content: "";
@@ -1563,6 +1677,9 @@ ul.getting--started--inner{
     z-index:90;
     align-items:center;
 }
+#messages.messages--container .messages--bottom--form .form--input--container{
+    width: 90%;
+}
 #messages.messages--container .messages--bottom--form form:hover{
     box-shadow: 0px 2px 10px rgba(26, 25, 25, 0.1);
 }
@@ -1608,9 +1725,29 @@ ul.getting--started--inner{
 #messages.messages--container .messages--bottom--form .message--mini--toolbox .message--heart--ico{
     font-size:23px;
 }
-#messages.messages--container .messages--bottom--form .smiley__icon{
+.smiley__icon{
     font-size:24px;
     cursor: pointer;
+}
+.form--input--container--inner{
+    position: relative;
+    width: 90%;
+    align-items: center;
+}
+.form--input--container--inner .emoji-picker-react{
+    position: absolute;
+    top: -378px;
+    z-index: 250;
+    left: -10px;
+    margin:0;
+    padding:0;
+}
+.form--input--container{
+    width: 100%;
+    align-items: center;
+}
+.emoji-picker-react ul.skin-tones-list label{
+    width: 15px;
 }
 #contentUploader, #fileUploader {
     display: none;
@@ -1937,21 +2074,24 @@ a.prof__btn__unfollowed{
  font-weight: 500;
  cursor: pointer;
 }
-#usersProfile .similar__followers__item{
+.similar__followers__item{
     margin:0 0 5px 0;
     font-size: inherit; 
     font-weight: inherit;
     color:#262626;   
     cursor: pointer;
 }
-#usersProfile .similar__followers__item:hover{
+.similar__followers__item:hover{
     text-decoration: underline;
 }
-#usersProfile .similar__followers__item::after{
+.similar__followers__item::after{
     content: ",";
     color: rgb(142, 142, 142);
 }
-#usersProfile .similar__followers__item:last-of-type::after{
+.similar__followers__item:last-of-type{
+    margin:0 !important;
+}
+.similar__followers__item:last-of-type::after{
     content: "";
     display: none;
 }
@@ -2064,12 +2204,32 @@ a.prof__btn__unfollowed{
 .users--profile--stripe .profile--stripe--inner{
     margin:0 auto;
     justify-content: space-between;
-    max-width:350px;
+    max-width:380px;
+    align-items: center;
+}
+.users--profile--stripe .profile--section--item{
+    cursor: pointer;
+    font-weight: 600;
+}
+.users--profile--stripe .profile--section--item svg{
+    font-size:14px;
+    font-weight: inherit;
+    
+}
+.users--profile--stripe .profile--section--item strong{
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: inherit;
+    margin-left: 7px;
 }
 .users--profile--stripe .profile--stripe--inner span{
     font-size:30px;
-    padding:7px;
+    padding:10px;
+    height: 52px;
     margin-right:10px;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
 }
 .noti__bar__img{
     width:40px;
@@ -2213,6 +2373,9 @@ a.prof__btn__unfollowed{
 }
 #commentsModal.comments--modal--container .post--comment--item{
     padding:1px 8px;
+}
+.post--comment--item{
+    padding:1px 8px 16px 8px;
 }
 #commentsModal.comments--modal--container .comments--modal--header{
     position: relative;
@@ -2427,8 +2590,11 @@ a.prof__btn__unfollowed{
     .auth .auth--upper--card{
         padding:15px 15px 18px;
     }
-    .backdrop{
-        z-index: 5500;
+    .form--input--container--inner .emoji-picker-react, .usersModal--container, .usersModal--inner .usersModal--card, #commentsModal.comments--modal--container, .desktopPost{
+        z-index: 5800 !important;
+    }
+    .backdrop, .hidden--backdrop{
+        z-index: 5500 !important;
     }
     #usersProfile.users--profile--container .users--action--row,
     #usersProfile.users--profile--container .desktop--social--row p{
@@ -2588,6 +2754,9 @@ a.prof__btn__unfollowed{
         width:100%;
         padding:10px 15px; 
     }
+    .users--profile--stripe .profile--section--item svg{
+        font-size: 22px;
+    }
     #messages.messages--container .chat--emojis--box{
         position: fixed;
         bottom:109px;
@@ -2665,7 +2834,6 @@ a.prof__btn__unfollowed{
     }
     .usersModal--container{
         position:fixed;
-        z-index: 5800;
     }
     .reels--ul{
         padding: 0 0 0 10px;
@@ -2686,7 +2854,6 @@ a.prof__btn__unfollowed{
         border-radius:0;
         height:100vh;
         width:100%;
-        z-index: 5800;
     }
     .getting--started--container h4{
         margin-left:9px;
