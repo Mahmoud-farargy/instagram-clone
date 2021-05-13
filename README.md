@@ -47,7 +47,7 @@ A social media platform similar to Instagram that people can actually use.
                                                     <li><p>Feed is based on who the user follows</p></li>
                                                     <li><p>Users can post pictures and videos from camera or gallery</p></li>
                                                     <li><p>They can also post audio like songs or mini podcasts</p></li>
-                                                     <li><p>Show mutual likes a post</p></li>
+                                                     <li><p>Show mutual likes on a post</p></li>
                                                     <li><p>Like/Dislike posts
                                                         <ul class="bullet--3">
                                                             <li><p>View all likes on a post and who liked it</p></li>
@@ -147,5 +147,5 @@ Your app is ready to be deployed!
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 👇 Live Demo - <br/>
-<a href="https://voxgram.netlify.app/">Click here </a> to go to the Live Demo 🔥 🔥
+<a href="https://voxgram.netlify.app/">Click here </a> to go to the Live Demo 🔥 🔥 <br/>
 Give me a star if you like it.
