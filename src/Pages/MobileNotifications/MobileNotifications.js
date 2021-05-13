@@ -9,6 +9,7 @@ const MobileNotifications = (props) => {
   const  [, loading ] = useAuthState(auth);
   const {
     igVideoImg,
+    igAudioImg,
     handleFollowing,
     changeMainState,
     receivedData,
@@ -40,6 +41,7 @@ const MobileNotifications = (props) => {
                         notification={notification}
                         igVideoImg={igVideoImg}
                         myData={receivedData}
+                        igAudioImg={igAudioImg}
                         handleFollowing={handleFollowing}
                         changeMainState={changeMainState}
                         postIndex={i}

@@ -104,6 +104,14 @@ const Message = (props) => {
                                       <div className="message--like--emoji liked__heart">
                                         <BsFillHeartFill />
                                       </div>
+                                      : message?.type === "audio" ? 
+                                       <div className="message--audio w-100">
+                                         <audio src={message?.contentUrl} controls width="100%" ></audio>
+                                       </div>
+                                      : message?.type === "document" ? 
+                                       <div className=" message--content message--document">
+                                         <iframe src={message?.contentUrl} allowFullScreen={true} title={message?.contentName} loading="lazy" frameBorder="0" width="100%" height="100%" scrolling="auto"></iframe>
+                                       </div>
                                       : <p>Error</p>
                                     }                           
                               </div>

@@ -10,12 +10,13 @@ import Skeleton from "react-loading-skeleton";
 const Notifications = ({ closeNotificationOnClick }) => {
   const {
     igVideoImg,
+    igAudioImg,
     handleFollowing,
     changeMainState,
     receivedData,
   } = useContext(AppContext);
   const [isLoading, setLoading] = useState(true);
-  const [_, loading] = useAuthState(auth);
+  const [, loading] = useAuthState(auth);
   const _isMounted = useRef(true);
   useEffect(() => {
     if (_isMounted) {
@@ -49,6 +50,7 @@ const Notifications = ({ closeNotificationOnClick }) => {
                       notification={notification}
                       igVideoImg={igVideoImg}
                       myData={receivedData}
+                      igAudioImg={igAudioImg}
                       handleFollowing={handleFollowing}
                       changeMainState={changeMainState}
                       postIndex={i}

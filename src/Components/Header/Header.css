@@ -321,7 +321,7 @@
 .like__icon__item{
     position: relative;
 }
-.like__icon__item  .like__noti__dot{
+.like__icon__item .like__noti__dot{
     position: absolute;
     top:30px;
     left:50%;
@@ -378,6 +378,9 @@
 }
 #header .header--nav .header--ul li svg{
     transition: all 0.2s ease-in;
+}
+#profilePopup .prof--item--inner svg{
+        font-size: 21px;
 }
 #header .header--nav .header--ul li svg:hover{
     color: rgb(0, 0, 0);
@@ -457,6 +460,9 @@
     }
     #mobNav.mobile--nav{
         display: flex;
+    }
+    .like__icon__item .like__noti__dot{
+        top:37px;
     }
 }
 @media only screen and (max-width:900px){

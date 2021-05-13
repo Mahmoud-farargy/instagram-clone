@@ -79,7 +79,6 @@
     background-color:#fff;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius:4px;
-    overflow-x: hidden;
 }
 .post--card--footer span.like__invitation{
     font-weight: 400;
@@ -146,6 +145,8 @@
     outline:none;
 }
 .likes__count{
+    display: inline-block;
+    max-width: 180px;
     cursor:pointer;
     font-weight:600;
     margin-bottom:5px;
@@ -176,9 +177,8 @@
 #post.post--card--container .post--card--article .post--card--footer .post__caption p, .post__top__comment p{
     font-size:14px;
     margin-left:7px;
-    width:100%;
+    width:95%;
 }
-
 .post--bottom--comment--adding{
     position:relative;
     width:100%;
@@ -261,9 +261,10 @@
         width:100%;
         background-color: #fff;
         z-index:1200;
-        padding:0;
+        padding:0 9px;
         margin:0;
         height:55px;
+        align-items: center;
     }
 }
 @keyframes boundHeart {

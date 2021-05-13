@@ -31,11 +31,11 @@ const Home = (props) => {
     handleLikingComments,
     changeModalState,
     changeMainState,
-    modalsState,
     onCommentDeletion,
     isUserOnline,
     homeReels,
-    loadingState
+    loadingState,
+    handleSavingPosts
   } = useContext(AppContext);
   let posts = receivedData?.posts;
   let [user, loading] = useAuthState(auth);
@@ -84,10 +84,12 @@ const Home = (props) => {
                       handleLikingComments={handleLikingComments}
                       isVerified={receivedData?.isVerified}
                       changeModalState={changeModalState}
-                      modalsState= {modalsState}
                       deletePost={deletePost}
                       onCommentDeletion={onCommentDeletion}
                       posts={receivedData?.posts}
+                      handleSavingPosts={handleSavingPosts}
+                      savedPosts={receivedData?.savedposts}
+                      following={receivedData?.following}
                     />
                   );
                 })
@@ -172,6 +174,7 @@ const Home = (props) => {
                                 isVerified={user?.isVerified}
                                 userUid={user?.uid}
                                 userAvatarUrl={user?.userAvatarUrl}
+                                creationDate={user?.profileInfo?.accountCreationDate ? user?.profileInfo?.accountCreationDate : ""}
                               />
                             );
                           })

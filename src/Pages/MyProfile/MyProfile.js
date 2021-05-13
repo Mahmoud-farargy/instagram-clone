@@ -9,6 +9,7 @@ import { GoVerified } from "react-icons/go";
 import { IoMdGrid } from "react-icons/io";
 import { RiLayoutRowLine } from "react-icons/ri";
 import { GiCog } from "react-icons/gi";
+import { VscBookmark } from "react-icons/vsc";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 import * as Consts from "../../Utilities/Consts";
@@ -22,43 +23,111 @@ import ProfileItem from "../../Components/ProfileItem/ProfileItem";
 
 const MyProfile =(props)=>{
     const [,loading] = useAuthState(auth);
-    const [grid, setGrid] = useState(true);
-    const {receivedData,changeModalState, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState, updateReelsProfile} = useContext(AppContext);
+    const [profSections] = useState([
+        {sectionId: "grid",title: "grid", logo: <IoMdGrid />},
+        {sectionId: "stacked",title: "stacked", logo: <RiLayoutRowLine/>},
+        {sectionId: "saved", title: "saved", logo: <VscBookmark />}
+    ]);
+    const {receivedData,changeModalState, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState, updateReelsProfile, activeProfileSection, notify, handleSavingPosts} = useContext(AppContext);
     useEffect(()=>{
         changeMainState("currentPage", "Profile");
-    },[]);
-    const openPost = (postId,index) =>{
-        if(index !== -1){
-            setTimeout(() => {
-                changeMainState("currentPostIndex", { index: index, id: postId });
-            },200);
-              
-              if(uid){
-                    getUsersProfile(uid).then(() => {
-                    if((window.innerWidth || document.documentElement.clientWidth) >= 670){
-                        changeModalState("post", true);
-                    }else{
-                        props.history.push("/browse-post");
-                    }
-                });
-              }
+        return () => {
+            changeMainState("activeProfileSection", {activeIndex: 0, activeID: "grid" });
         }
+    },[]);
+    const openPost = (postId, _, postOwnerId) =>{
+        // if(isSavedPost){
+            // if(uid){
+            //     getUsersProfile(uid).then((data) => {
+                    
+            //         if((window.innerWidth || document.documentElement.clientWidth) >= 670){
+            //             changeModalState("post", true);
+            //         }else{
+            //             props.history.push("/browse-post");
+            //         }
+            //     });
+            // }
+        // }else{
+            //   if(index !== -1){
+                    if(postOwnerId){
+                        getUsersProfile(postOwnerId).then((data) => {
+                            const postsCopy = data?.posts;
+                            const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
+                            if(postIndex !== -1){
+                                changeMainState("currentPostIndex", { index:postIndex, id: postId });
+                                if((window.innerWidth || document.documentElement.clientWidth) >= 670){
+                                    changeModalState("post", true);
+                                }else{
+                                    props.history.push("/browse-post");
+                                }
+                            }else{
+                                notify("An error occurred", "error");
+                            }
+                        });
+                    }else{
+                        notify("An error occurred", "error");
+                    }
+            // }
+        // }
+
     }
     const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
         updateReelsProfile(uid).then(() => {
             changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
         });
-    
-       
     }
-    const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0];
+    const onLoadingFail = (postOwnerId, postId ) => {
+        //automatically removes elements that have failed to load denoting they don't exist and got removed from the main source
+        if(postOwnerId){
+            getUsersProfile(postOwnerId).then((data) => {
+                const postsCopy = data?.posts;
+                const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
+                if(postIndex === -1 && navigator.onLine){
+                    handleSavingPosts({boolean:false,data: {id: postId}});
+                }
+            });
+      
+        }
+    }
+    const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0]? receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0] : "" ;
+    const HeaderBottom = (
+        <>
+                                        {receivedData?.profileInfo && receivedData?.profileInfo?.name &&
+                                    <div className="prof--acc--name">
+                                        <h1>
+                                        {receivedData?.profileInfo?.name}
+                                        </h1>
+                                        <br />
+                                    </div>
+                                }
+                                {
+                                receivedData?.profileInfo && receivedData?.profileInfo.professionalAcc && receivedData?.profileInfo.professionalAcc.show &&
+                                    <div className="prof--acc--category">
+                                        <span>{receivedData.profileInfo?.professionalAcc?.category}</span>
+                                        <br />
+                                    </div>
+                                } 
+                                {
+                                    receivedData?.profileInfo && receivedData?.profileInfo?.bio &&
+                                    <div className="bottom--row--user-info flex-column">
+                                        <span>{receivedData?.profileInfo?.bio}</span>
+                                    </div>
+                                }
+                                {
+                                     receivedData?.profileInfo && receivedData?.profileInfo?.website &&
+                                    <div className="prof--acc--website">
+                                        <a rel="noopener noreferrer" target="_blank" href={receivedData?.profileInfo?.website}>{websiteToView}</a>
+                                    </div>
+                                }
+        </>
+    )
      return(
         <Fragment>
             {/* Modals */}
             {modalsState?.post && receivedData?.posts[currentPostIndex?.index] &&
                 <PostModal/>
             }
-            { modalsState?.options &&
+            { modalsState?.options && !modalsState?.post &&
                 <OptionsModal>
                     {receivedData?.profileInfo?.registrationMethod === "email" && <span onClick={() => {changeMainState("activeOption", {activeIndex: 2, activeID: "Change_Password_or_Email"}); props.history.push("/edit-profile")}}>Change password or email</span>}
                     <span onClick={() => {changeMainState("activeOption", {activeIndex: 1, activeID: "Professional_Account"}); props.history.push("/edit-profile")}}>Account settings</span>
@@ -100,72 +169,16 @@ const MyProfile =(props)=>{
                                 <p className="acc-action"  onClick={()=> changeModalState("users",true, receivedData?.following, Consts.FOLLOWING)}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
                             </div>
                             {/* bottom row */}
-                            {/* TODO: refactor this to be only one piece of code */}
                             <div className="desktop-only flex-column">
-                                {receivedData?.profileInfo && receivedData?.profileInfo?.name &&
-                                    <div className="prof--acc--name">
-                                        <h1>
-                                        {receivedData?.profileInfo?.name}
-                                        </h1>
-                                        <br />
-                                    </div>
-                                }
-                                {
-                                receivedData?.profileInfo && receivedData?.profileInfo.professionalAcc && receivedData?.profileInfo.professionalAcc.show &&
-                                    <div className="prof--acc--category">
-                                        <span>{receivedData.profileInfo?.professionalAcc?.category}</span>
-                                        <br />
-                                    </div>
-                                } 
-                                {
-                                    receivedData?.profileInfo && receivedData?.profileInfo?.bio &&
-                                    <div className="bottom--row--user-info flex-column">
-                                        <span>{receivedData?.profileInfo?.bio}</span>
-                                    </div>
-                                }
-                                {
-                                     receivedData?.profileInfo && receivedData?.profileInfo?.website &&
-                                    <div className="prof--acc--website">
-                                        <a rel="noopener noreferrer" target="_blank" href={receivedData?.profileInfo?.website}>{websiteToView}</a>
-                                    </div>
-                                }
-
+                               {HeaderBottom}
                             </div>
 
                     </div>
                     </header>
                      {/* profile info */}
                     <div className="profile--user--info mobile-only flex-column">
-                            {receivedData?.profileInfo && receivedData?.profileInfo?.name &&
-                                <div className="prof--acc--name">
-                                    <h1>
-                                    {receivedData?.profileInfo?.name}
-                                    </h1>
-                                    <br />
-                                </div>
-                            }
-                            {
-                                receivedData?.profileInfo && receivedData?.profileInfo.professionalAcc && receivedData?.profileInfo.professionalAcc.show &&
-                                    <div className="prof--acc--category">
-                                        <span>{receivedData.profileInfo?.professionalAcc?.category}</span>
-                                        <br />
-                                    </div>
-                            } 
-                            {
-                                receivedData?.profileInfo && receivedData?.profileInfo?.bio &&
-                                <div className="bottom--row--user-info flex-column">
-                                    <span>{receivedData?.profileInfo?.bio}</span>
-                                </div>
-                            }
-                               
-                            {
-                                receivedData?.profileInfo && receivedData?.profileInfo?.website &&
-                                <div className="prof--acc--website">
-                                    <a rel="noopener noreferrer" target="_blank" href={receivedData?.profileInfo?.website}>{websiteToView}</a>
-                                </div>
-                            }
-                    </div>
-                                         
+                            {HeaderBottom}
+                    </div>          
                 </div>
                 <ul className="reels--ul flex-row">
                         {
@@ -202,18 +215,24 @@ const MyProfile =(props)=>{
                 {/* body */}
                 <div className="users--profile--stripe flex-row">
                   {
-                      receivedData?.posts?.length >=1 ?
                    <div className="profile--stripe--inner flex-row">
-                        <span onClick={()=> setGrid(true)} style={{color: grid ? "#1d8cd6": "#8e8e8e", borderTop: grid ? "2px solid #363636" : "none"}}><IoMdGrid /></span>
-                        <span onClick={()=> setGrid(false)} style={{color: !grid ? "#1d8cd6": "#8e8e8e",borderTop: !grid ? "2px solid #363636" : "none"}}><RiLayoutRowLine/></span> 
+                       {
+                           profSections?.map((item, index) => {
+                               return(
+                                   <div key={index}>
+                                      <span className="profile--section--item flex-row" style={{color: activeProfileSection?.activeIndex === index ? "#363636": "#8e8e8e", borderTop: activeProfileSection?.activeIndex === index ? "1px solid #363636" : "none"}} onClick={()=> changeMainState("activeProfileSection", {activeIndex: index, activeID: profSections[index].sectionId })} >{item.logo}<strong className="desktop-only">{profSections?.[index].title}</strong></span> 
+                                   </div>
+                               )
+                           })
+                       }
                     </div>
-                    : null
                 } 
                     
                 </div>
                 {
-                 receivedData?.posts?.length >=1 && !loading ?
-                    <div className={grid ? "users--profile--posts" : "users--profile--rowLine flex-column"}>
+                 activeProfileSection?.activeIndex === 0 || activeProfileSection?.activeIndex === 1 ?
+                 (receivedData?.posts?.length >=1 && !loading ?
+                    <div className={activeProfileSection?.activeIndex === 0 ? "users--profile--posts" : "users--profile--rowLine flex-column"}>
                         {receivedData?.posts?.map((post, index)=> ( post && <ProfileItem key={post?.id + index} post={post} openPost={openPost} index={index} />))}
                     </div>
                             : loading ?
@@ -234,6 +253,31 @@ const MyProfile =(props)=>{
                                 </div>
                             </div>
                         )
+                    ): activeProfileSection?.activeIndex === 2 ?
+                    (receivedData?.savedposts?.length >=1 && !loading ?
+                        <div className="saved--posts--container">
+                            <h6>Only you can see what you've saved</h6>
+                            <div className="users--profile--posts" >
+                               
+                                {receivedData?.savedposts?.map((savedItem, index)=> ( savedItem && <ProfileItem isSavedPost={true} onLoadingFail={onLoadingFail} key={savedItem?.id + index} post={savedItem} openPost={openPost} index={index} />))}
+                            </div>  
+                        </div>
+                            : loading ?
+                                    (<Skeleton count={10} height={250} width={250} className="mt-4 mr-4 mx-auto"  />)
+                            :
+                            (
+                                <div className="empty--card mt-5 w-100 col-lg-6 col-md-12 mx-auto">
+                                    <div className="plus--icon--container flex-column">
+                                        <VscBookmark />
+                                    </div>
+                                    <h2>Save</h2>
+                                    <h4>
+                                    Save photos and videos that you want to see again. No one is notified, and only you can see what you've saved.
+                                    </h4>
+                                    </div>
+                            )
+                        )
+                        : <h4 className="text-center">No items found</h4>
                     }
                 </div>
             </section>

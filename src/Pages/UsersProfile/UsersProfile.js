@@ -12,7 +12,7 @@ import { CgProfile } from "react-icons/cg";
 import { ImBlocked } from "react-icons/im";
 import { FaUserCheck } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
-import {HiOutlineDotsHorizontal} from "react-icons/hi";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import reelsIco from "../../Assets/reels.png";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
@@ -177,7 +177,7 @@ const UsersProfile = (props) => {
                       }
                       {
                         similarFollowers.length > 3 && 
-                        <span className="similar__followers__more pl-1">+{ `${similarFollowers.length - 3}`} more</span>
+                        <span className="similar__followers__more pl-1">+{ `${(similarFollowers.length?.toLocaleString() - 3)}`} more</span>
                       }
                         </span></p>
                     }

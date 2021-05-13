@@ -22,7 +22,7 @@ const Caption = ({ caption, userName }) => {
             style={{ cursor: "pointer" }}
             onClick={() => setViewFullCap(true)}
             dangerouslySetInnerHTML={{
-              __html: trimText(findNReplaceHash(caption), 150),
+              __html: trimText(findNReplaceHash(caption), 600),
             }}
           ></p>
         ) : (
