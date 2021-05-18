@@ -190,6 +190,11 @@
     top:40px;
     right:-100px;
 }
+.search--pop--window ul.noti--popup--ul{
+    max-height:360px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
 #notifications .noti--popup--window{
     top:45px;
     right:30px;

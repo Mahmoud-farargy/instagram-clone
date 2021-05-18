@@ -13,6 +13,7 @@
 }
 #post.post--card--container{
     user-select:none;
+    overflow: hidden;
 }
 #post.post--card--container .post--card--article .post--card--header{
     max-height:60px;

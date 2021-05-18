@@ -177,7 +177,7 @@ const UsersProfile = (props) => {
                       }
                       {
                         similarFollowers.length > 3 && 
-                        <span className="similar__followers__more pl-1">+{ `${(similarFollowers.length?.toLocaleString() - 3)}`} more</span>
+                        <span className="similar__followers__more pl-1">+{ `${(similarFollowers.length - 3)}`} more</span>
                       }
                         </span></p>
                     }

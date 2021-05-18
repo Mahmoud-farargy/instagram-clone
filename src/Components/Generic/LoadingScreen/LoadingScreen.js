@@ -12,8 +12,8 @@ const LoadingScreen = () => {
         if(_isMounted){
             document.body.style.overflow = "hidden";
             return() => {
-                document.body.style.overflow = "visible";
                 _isMounted.current = false;
+                document.body.style.overflow = "visible";
             }
         }
     },[]);

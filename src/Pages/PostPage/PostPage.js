@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext , useEffect, useRef} from "react";
+import React, { Fragment, useState, useContext , useEffect, useRef, lazy} from "react";
 import "../../Components/Post/Post.css";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Avatar } from "@material-ui/core";
@@ -17,10 +17,10 @@ import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import Caption from "../../Components/Generic/Caption/Caption";
 import { insertIntoText } from "../../Utilities/InsertIntoText";
-import EmojiPicker from "../../Components/Generic/EmojiPicker/EmojiPicker";
 import AudioContent from "../../Components/AudioContent/AudioContent";
 import * as Consts from "../../Utilities/Consts";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
+const EmojiPicker = lazy(() => import("../../Components/Generic/EmojiPicker/EmojiPicker"))
 
 const PostPage  = (props) => {
   const context = useContext(AppContext);
@@ -167,6 +167,9 @@ const PostPage  = (props) => {
   }
   const onEmojiClick = (e, x) => {
     e.persist();
+    if(inputField && inputField?.current?.blur()){
+      inputField.current.blur();
+    }
     setCompState({
       ...compState,
       insertedComment: insertIntoText(compState?.insertedComment, x.emoji)
@@ -336,7 +339,7 @@ const PostPage  = (props) => {
                         <FaHeart />
                       </span>
                     )}
-                    <span>
+                    <span onClick={() => inputField?.current && inputField.current?.focus()}>
                       <FaRegComment />
                     </span>
                     <span>
@@ -363,7 +366,7 @@ const PostPage  = (props) => {
                             {
                               (likes?.people?.some(el => el?.id === uid) ? likes?.people?.length -1 : likes?.people?.length ) > compState?.alsoLiked?.length && similarsStr > 0 &&
                               <strong className="you--followed">
-                              {likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr} {similarsStr < 2 ? " person" : " others"}</strong>
+                              {likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr !== NaN ? similarsStr : "many"} {similarsStr < 2 ? " person" : " others"}</strong>
                               </strong>
                             }
                             {

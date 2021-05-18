@@ -17,11 +17,11 @@ import * as Consts from "../../Utilities/Consts";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import ScrollTrigger from 'react-scroll-trigger';
 import Caption from "../../Components/Generic/Caption/Caption";
-import EmojiPicker from "../../Components/Generic/EmojiPicker/EmojiPicker";
 import { insertIntoText } from "../../Utilities/InsertIntoText";
 import AudioContent from "../../Components/AudioContent/AudioContent";
 import NewMsgModal from "../../Components/NewMsgModal/NewMsgModal";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
+const EmojiPicker = React.lazy(() =>  import("../../Components/Generic/EmojiPicker/EmojiPicker"));
 class Post extends PureComponent {
   constructor(props) {
     super(props);
@@ -187,6 +187,9 @@ class Post extends PureComponent {
   }
   onEmojiClick = (e, x) => {
     e.persist();
+    if(this.inputField && this.inputField?.current && typeof this.inputField?.current.blur !== undefined){
+        this.inputField.current.blur();
+    }
     this.setState({
       ...this.state,
       insertedComment: insertIntoText( this.state.insertedComment,x.emoji)
@@ -224,7 +227,7 @@ class Post extends PureComponent {
       <Fragment>
           {
             this.state.openNewMsgModal &&
-              <NewMsgModal closeModal={this.closeAllModals} />
+              <NewMsgModal closeModal={this.closeAllModals} sendPostForm={{postOwnerId, userAvatar ,userName, caption, contentType, contentURL, location, postId, isVerified}} />
           }
         <div id="post" className="post--card--container">
           <article className="post--card--article">
@@ -374,7 +377,7 @@ class Post extends PureComponent {
                             {
                               (likes?.people?.some(el => el?.id === id) ? likes?.people?.length -1 : likes?.people?.length ) > this.state.alsoLiked?.length && this.similarsStr > 0 &&
                               <strong className="you--followed">
-                              {likes?.people?.some(el => el?.id === id) ? "" : " and"}<strong className="other__likers"> {this.similarsStr} {this.similarsStr < 2 ? " person" : " others"}</strong>
+                              {likes?.people?.some(el => el?.id === id) ? "" : " and"}<strong className="other__likers"> {this.similarsStr !== NaN ? this.similarsStr : "many"} {this.similarsStr < 2 ? " person" : " others"}</strong>
                               </strong>
                             }
                             {

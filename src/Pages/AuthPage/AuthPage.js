@@ -200,11 +200,11 @@ const AuthPage = (props) => {
         } else {
           authLogout(props.history);
           setLoading(false);
+          notify("It seems like you haven't logged out properly last time. Please try again.","error");
         }
       }, 1000);
     } else if (authType === "login") {
       resetAllData();
-
       setTimeout(() => {
         if (!isUserOnline) {
           //avoids data overlapping
@@ -246,6 +246,8 @@ const AuthPage = (props) => {
             });
         } else {
           setLoading(false);
+          authLogout(props.history);
+          notify("It seems like you haven't logged out properly last time. Please try again.","error");
         }
       }, 1800);
     }

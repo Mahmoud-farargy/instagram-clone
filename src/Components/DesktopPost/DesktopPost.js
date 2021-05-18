@@ -29,10 +29,10 @@ import PropTypes from "prop-types";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import Caption from "../../Components/Generic/Caption/Caption";
 import { insertIntoText } from "../../Utilities/InsertIntoText";
-import EmojiPicker from "../../Components/Generic/EmojiPicker/EmojiPicker";
 import AudioContent from "../../Components/AudioContent/AudioContent";
 import * as Consts from "../../Utilities/Consts";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
+const EmojiPicker = React.lazy(() =>  import("../../Components/Generic/EmojiPicker/EmojiPicker"));
 
 const DesktopPost = (props) => {
   const { browseUser, disableArrows } = props;
@@ -551,7 +551,7 @@ const DesktopPost = (props) => {
                             {
                               (likes?.people?.some(el => el?.id === uid) ? likes?.people?.length -1 : likes?.people?.length ) > compState?.alsoLiked?.length && similarsStr > 0 &&
                               <strong className="you--followed">
-                              {likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr} {similarsStr < 2 ? " person" : " others"}</strong>
+                              {likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr !== NaN ? similarsStr : "many"} {similarsStr < 2 ? " person" : " others"}</strong>
                               </strong>
                             }
                             {

@@ -47,6 +47,7 @@ body, button, input, textarea {
     line-height: normal;
 }
 input {
+    writing-mode: horizontal-tb;
     -webkit-writing-mode: horizontal-tb !important;
     text-rendering: auto;
     color: -internal-light-dark(black, white);
@@ -552,6 +553,7 @@ time{
     color:var(--second--gray);
     color:rgb(142, 142, 142);
     flex-shrink:0;
+    flex-grow:0;
     -webkit-box-flex: 0;
     -webkit-flex-grow:0;
     -webkit-flex-shrink: 0;
@@ -846,7 +848,7 @@ button:active{
 .post--comment--row{
     padding:2px 0;
     justify-content:space-between;
-    align-items:center;
+    align-items:flex-start;
 }
 .post--comment--row .comment__user__avatar{
     width:32px !important;

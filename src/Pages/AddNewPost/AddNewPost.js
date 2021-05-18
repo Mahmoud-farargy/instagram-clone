@@ -115,9 +115,9 @@ class AddNewPost extends PureComponent {
               }
               addPost(addedPost, Consts.Post).then(() => {
                 notify("Post has been added");
+                this.props.history.push("/");
                 this.resetState();
                 this.setState(updateObject(this.state, {submitted: false}));
-                this.props.history.push("/");
               }).catch(() =>{
                 notify("Failed to make a post. Please try again later!", "error");
               });              

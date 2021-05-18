@@ -18,6 +18,7 @@
 #home.main--home--container .home--posts--side, #home.main--home--container .home--sider{
     width:100%;
     overflow-x:hidden;
+    overflow-y: hidden;
 }
 .home--sider::-webkit-scrollbar{
     width:10px;

@@ -15,6 +15,7 @@ const MobileNotifications = (props) => {
     receivedData,
   } = props.context;
   useEffect(() => {
+    window.scrollTo(0,0);
     changeMainState("currentPage", "Notifications");
   }, []);
   return (

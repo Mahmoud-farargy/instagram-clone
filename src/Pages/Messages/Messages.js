@@ -23,8 +23,8 @@ import Loader from "react-loader-spinner";
 import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen";
 import { trimText } from "../../Utilities/TrimText";
 import { insertIntoText } from "../../Utilities/InsertIntoText";
-import EmojiPicker from "../../Components/Generic/EmojiPicker/EmojiPicker";
 import NewMsgModal from "../../Components/NewMsgModal/NewMsgModal";
+const EmojiPicker = lazy(() =>  import("../../Components/Generic/EmojiPicker/EmojiPicker"));
 const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
 const Messages = (props) => {

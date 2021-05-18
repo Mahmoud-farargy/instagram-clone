@@ -8,12 +8,12 @@ import 'firebase/database';    // for realtime database
 import 'firebase/firestore';   // for cloud firestore
 // import 'firebase/messaging';   // for cloud messaging
 import 'firebase/functions';   // for cloud functions
-// import 'firebase/analytics';
+import 'firebase/analytics';
 
 var firebaseConfig = config
   // Initialize Firebase
  const firebaseApp = firebase.initializeApp(firebaseConfig);
-//  firebase.analytics();
+ firebase.analytics();
 
   const db = firebaseApp.firestore();
   const auth = firebase.auth();

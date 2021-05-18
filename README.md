@@ -2,6 +2,7 @@
 A social media platform similar to Instagram that people can actually use.
 
 <h2>Screenshots</h2>
+
 <img src="/Screenshots/Capture1.png" />
 
 <img src="/Screenshots/Capture2.png" />
@@ -9,6 +10,8 @@ A social media platform similar to Instagram that people can actually use.
 <img src="/Screenshots/Capture3.png" />
 
 <img src="/Screenshots/Capture4.png" />
+
+<img src="/Screenshots/Capture5.png" />
 
 <h2>Core Features</h2>
 
@@ -101,6 +104,7 @@ A social media platform similar to Instagram that people can actually use.
                                             <li><p>Suggestions list</p></li>
                                             <li><p>Activity Status</p></li>
                                             <li><p>Save posts</p></li>
+                                            <li><p>Fully responsive on Mobile and tablet devices as well</p></li>
                                         </ul>
  <h2>Used technologies</h2>    
   <ul class="bullet--1">
