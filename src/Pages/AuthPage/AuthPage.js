@@ -79,14 +79,14 @@ const AuthPage = (props) => {
               signUpEmail
             )
           ) {
-            if (/(?=^.{5,25}$)^[a-zA-Z-]+\s[a-zA-Z-]+$/.test(fullName.trim())) {
+            if (/^[a-zA-Z\s]{3,25}$/.test(fullName.trim())) {
               if (
-                /^(?=[a-zA-Z0-9._-]{6,19}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test(
+                /^(?=[a-zA-Z0-9._-]{4,19}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test(
                   signUpUsername
                 )
               ) {
                 if (
-                  /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/.test(
+                  /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{7,20}$/.test(
                     signUpPassword
                   )
                 ) {
@@ -163,11 +163,11 @@ const AuthPage = (props) => {
                             })
                           );
                           setTimeout(() => {
-                            props.history.push("/");
-                            updatedReceivedData();
                             notify(
                               "Welcome to Voxgram. Start by adding posts to your account."
                             );
+                            updatedReceivedData();
+                            props.history.push("/");
                           }, 150);
                         });
                     })
@@ -178,21 +178,21 @@ const AuthPage = (props) => {
                 } else {
                   setLoading(false);
                   notify(
-                    "Password should be between 8 and 20 characters and contains at least one number, one lowercase letter, and one uppercase letter.",
+                    "Password should be between 7 and 20 characters and contains at least one number, one lowercase letter, and one uppercase letter.",
                     "error"
                   );
                 }
               } else {
                 setLoading(false);
                 notify(
-                  `Username should be between 6 and 19 characters with no spaces. Underscore, dash and dot characters are allowed but should not be placed at the end.`,
+                  `Username should be between 4 and 19 characters with no spaces. Underscore, dash and dot characters are allowed but should not be placed at the end.`,
                   "error"
                 );
               }
             } else {
               setLoading(false);
               notify(
-                "Full Name should include letters only with a space between each word and should not exceed 25 characters.",
+                "Full Name should contain only letters and not exceed 25 characters.",
                 "error"
               );
             }
@@ -322,11 +322,11 @@ const AuthPage = (props) => {
                 .then(() => {
                   setTimeout(() => {
                     setLoading(false);
-                    props.history.push("/");
                     context.updatedReceivedData();
                     context.notify(
-                      "Welcome to Voxgram. Start by adding posts to your account."
+                      `Welcome to Voxgram${given_name && ", " +given_name}. Start by adding posts to your account.`
                     );
+                    props.history.push("/");
                   }, 150);
                 });
             }else{
@@ -386,7 +386,7 @@ const AuthPage = (props) => {
                     website: "",
                     gender: "Male",
                     status: "Single",
-                    name: "",
+                    name: name,
                     phoneNumber: "",
                     birthday: "",
                     professionalAcc: {
@@ -426,10 +426,10 @@ const AuthPage = (props) => {
                   setTimeout(() => {
                     setLoading(false);
                     context.updatedReceivedData();
-                    props.history.push("/");
                     context.notify(
-                      "Welcome to Voxgram. Start by adding posts to your account."
+                      `Welcome to Voxgram${name && ", " +name}. Start by adding posts to your account.`
                     );
+                    props.history.push("/");
                   }, 150);
                 });
             }else{
@@ -524,10 +524,10 @@ const AuthPage = (props) => {
                   );
                   setTimeout(() => {
                     context.updatedReceivedData();
-                    props.history.push("/");
                     context.notify(
                       "Welcome to Voxgram. Start by adding posts to your account."
                     );
+                    props.history.push("/");
                   }, 150);
                 });
             } else {
