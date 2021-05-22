@@ -11,7 +11,7 @@ import { trimText } from "../../Utilities/TrimText";
 const SuggestItem =(props)=>{
     const { loadingState, receivedData } = useContext(AppContext);
     const { userName, isVerified, userUid, userAvatarUrl, browseUser, creationDate, followers } = props;
-    const mutuals = receivedData?.following.filter(el => el.receiverUid !== receivedData?.uid && followers?.sort((a,b) => b?.date?.seconds -  a?.date?.seconds).some(item => item?.senderUid === el?.receiverUid)).slice(0,1);
+    const mutuals = receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.filter(el => el.receiverUid !== receivedData?.uid && followers?.sort((a,b) => b?.date?.seconds -  a?.date?.seconds).some(item => item?.senderUid === el?.receiverUid)).slice(0,1);
     return(
         <Fragment>
             <div className="suggest--item--container">
