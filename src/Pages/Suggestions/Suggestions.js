@@ -7,6 +7,7 @@ import SuggestionItem from "../../Components/SuggestItem/SuggestItem";
 const Suggestions = () => {
     const { suggestionsList, uid, changeMainState} = useContext(AppContext);
     useEffect(() => {
+        window.scrollTo(0,0);
         changeMainState("currentPage", "Suggestions");
     }, [])
     return (
@@ -26,6 +27,7 @@ const Suggestions = () => {
                                         userUid={user?.uid}
                                         userAvatarUrl={user?.userAvatarUrl}
                                         creationDate={user?.profileInfo?.accountCreationDate ? user?.profileInfo?.accountCreationDate : ""}
+                                        followers={user?.followers}
                                     />
                                     ))
                                     :

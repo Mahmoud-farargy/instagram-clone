@@ -69,8 +69,8 @@ const EditProfileOption = (props) => {
         phoneNumber: formState.phoneNumber,
       });
       handleEditingProfile(formState, "editProfile");
-      props.history.push("/profile");
       notify("Profile updated", "success");
+      props.history.push("/profile");
     }
   };
 

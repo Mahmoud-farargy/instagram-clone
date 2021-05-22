@@ -4,13 +4,13 @@ import NotificationOutput from "../../Components/NotificationsOutput/Notificatio
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../Config/firebase";
 import PropTypes from "prop-types";
+import FollowRequestsList from "../../Components/FollowRequestsList/FollowRequestsList";
 
 const MobileNotifications = (props) => {
   const  [, loading ] = useAuthState(auth);
   const {
     igVideoImg,
     igAudioImg,
-    handleFollowing,
     changeMainState,
     receivedData,
   } = props.context;
@@ -25,6 +25,7 @@ const MobileNotifications = (props) => {
           <div className="mob--noti--title">
             <h4>Activity</h4>
           </div>
+          <FollowRequestsList />
           {receivedData?.notifications?.list.length >= 1 ? (
             <ul
               id="mobNotifications"
@@ -33,7 +34,7 @@ const MobileNotifications = (props) => {
               {receivedData?.notifications?.list
                 ?.slice(0, 30)
                 .sort((a, b) => {
-                  return b.date.seconds - a.date.seconds;
+                  return b?.date?.seconds - a?.date?.seconds;
                 })
                 .map((notification, i) => {
                   return (
@@ -43,7 +44,6 @@ const MobileNotifications = (props) => {
                         igVideoImg={igVideoImg}
                         myData={receivedData}
                         igAudioImg={igAudioImg}
-                        handleFollowing={handleFollowing}
                         changeMainState={changeMainState}
                         postIndex={i}
                       />

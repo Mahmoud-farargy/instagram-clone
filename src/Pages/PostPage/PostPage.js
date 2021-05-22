@@ -20,11 +20,12 @@ import { insertIntoText } from "../../Utilities/InsertIntoText";
 import AudioContent from "../../Components/AudioContent/AudioContent";
 import * as Consts from "../../Utilities/Consts";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
+import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 const EmojiPicker = lazy(() => import("../../Components/Generic/EmojiPicker/EmojiPicker"))
 
 const PostPage  = (props) => {
   const context = useContext(AppContext);
-  const { changeMainState, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState, handleFollowing,  handleUserBlocking, modalsState,handleLikingComments, onCommentDeletion, deletePost, handleSavingPosts } = context;
+  const { changeMainState, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState,  handleUserBlocking, modalsState,handleLikingComments, onCommentDeletion, deletePost, handleSavingPosts } = context;
   const [compState, setCompState] = useState({
         postLiked: false,
         insertedComment: "",
@@ -188,7 +189,6 @@ const PostPage  = (props) => {
     useEffect(()=> {
       updateUsersWhoLiked();
     },[following]);
-    const isFollowed = following?.length && following.some((item) => item?.receiverUid === usersProfileData?.uid);
     const similarsStr = (likes?.people?.some(el => el?.id === uid) && likes?.people?.length >3) ? (likes?.people?.length?.toLocaleString() -3) : (likes?.people?.length?.toLocaleString() -2);
     return (
       <Fragment>
@@ -208,16 +208,8 @@ const PostPage  = (props) => {
                       {" "}
                       Block this user
                     </span>
-                    <span className={`font-weight-bold ${isFollowed ? "text-danger" : "text-primary"}`} onClick={() => handleFollowing(
-                                isFollowed,
-                                usersProfileData?.uid,
-                                usersProfileData?.userName,
-                                usersProfileData?.userAvatarUrl,
-                                uid,
-                                receivedData?.userName,
-                                receivedData?.userAvatarUrl
-                                )}>
-                      {isFollowed? "Unfollow" : "Follow"}
+                    <span>
+                      <FollowUnfollowBtn shape="quaternary" userData={{userId: usersProfileData?.uid, uName: usersProfileData?.userName, uAvatarUrl: usersProfileData?.userAvatarUrl, isVerified: usersProfileData?.isVerified}} />
                     </span>
                     
                 </div>
@@ -331,7 +323,7 @@ const PostPage  = (props) => {
                         onClick={() => handleCurrLikes(false)}
                         style={{
                           animation: likesCheck()
-                            ? "boundHeart 0.5s forwards ease"
+                            ? "boundHeart 0.5s forwards ease-out"
                             : null,
                         }}
                         className="liked__heart"
@@ -366,7 +358,7 @@ const PostPage  = (props) => {
                             {
                               (likes?.people?.some(el => el?.id === uid) ? likes?.people?.length -1 : likes?.people?.length ) > compState?.alsoLiked?.length && similarsStr > 0 &&
                               <strong className="you--followed">
-                              {likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr !== NaN ? similarsStr : "many"} {similarsStr < 2 ? " person" : " others"}</strong>
+                              {likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr !== isNaN ? similarsStr : "many"} {similarsStr < 2 ? " person" : " others"}</strong>
                               </strong>
                             }
                             {

@@ -20,6 +20,7 @@ import { HiOutlinePlus } from "react-icons/hi";
 import { FiLogOut } from "react-icons/fi";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import ProfileItem from "../../Components/ProfileItem/ProfileItem";
+import { trimText } from "../../Utilities/TrimText";
 
 const MyProfile =(props)=>{
     const [,loading] = useAuthState(auth);
@@ -30,25 +31,13 @@ const MyProfile =(props)=>{
     ]);
     const {receivedData,changeModalState, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState, updateReelsProfile, activeProfileSection, notify, handleSavingPosts} = useContext(AppContext);
     useEffect(()=>{
+        window.scrollTo(0,0);
         changeMainState("currentPage", "Profile");
         return () => {
             changeMainState("activeProfileSection", {activeIndex: 0, activeID: "grid" });
         }
     },[]);
     const openPost = (postId, _, postOwnerId) =>{
-        // if(isSavedPost){
-            // if(uid){
-            //     getUsersProfile(uid).then((data) => {
-                    
-            //         if((window.innerWidth || document.documentElement.clientWidth) >= 670){
-            //             changeModalState("post", true);
-            //         }else{
-            //             props.history.push("/browse-post");
-            //         }
-            //     });
-            // }
-        // }else{
-            //   if(index !== -1){
                     if(postOwnerId){
                         getUsersProfile(postOwnerId).then((data) => {
                             const postsCopy = data?.posts;
@@ -56,7 +45,11 @@ const MyProfile =(props)=>{
                             if(postIndex !== -1){
                                 changeMainState("currentPostIndex", { index:postIndex, id: postId });
                                 if((window.innerWidth || document.documentElement.clientWidth) >= 670){
-                                    changeModalState("post", true);
+                                    const timeout = setTimeout(() => {
+                                        changeModalState("post", true);
+                                        window.clearTimeout(timeout);
+                                    },200);
+                                   
                                 }else{
                                     props.history.push("/browse-post");
                                 }
@@ -67,9 +60,6 @@ const MyProfile =(props)=>{
                     }else{
                         notify("An error occurred", "error");
                     }
-            // }
-        // }
-
     }
     const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
         updateReelsProfile(uid).then(() => {
@@ -149,7 +139,7 @@ const MyProfile =(props)=>{
                         </div>
                     <div className="desktop--inner--info flex-column">
                             <div className="users--action--row w-100 flex-row">
-                                <h5 className="profile__display__name">{receivedData?.userName}
+                                <h5 className="profile__display__name">{trimText(receivedData?.userName, 24)}
                                {
                                    receivedData?.isVerified ?
                                    <GoVerified className="verified_icon"/>
@@ -165,8 +155,8 @@ const MyProfile =(props)=>{
                             </div>
                             <div className="desktop--social--row flex-row">
                                 <p><span>{receivedData?.posts?.length.toLocaleString()}</span> {receivedData?.posts?.length >1 ? "posts": "post"}</p>
-                                <p className="acc-action" onClick={()=> changeModalState("users",true, receivedData?.followers, Consts.FOLLOWERS)}><span>{receivedData?.followers?.length.toLocaleString()}</span> {receivedData?.followers?.length >1 ?"followers": "follower"}</p>
-                                <p className="acc-action"  onClick={()=> changeModalState("users",true, receivedData?.following, Consts.FOLLOWING)}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
+                                <p className="acc-action clickable" onClick={()=> changeModalState("users",true, receivedData?.followers, Consts.FOLLOWERS)}><span>{receivedData?.followers?.length.toLocaleString()}</span> {receivedData?.followers?.length >1 ?"followers": "follower"}</p>
+                                <p className="acc-action clickable"  onClick={()=> changeModalState("users",true, receivedData?.following, Consts.FOLLOWING)}><span>{receivedData?.following?.length.toLocaleString()}</span> following</p>
                             </div>
                             {/* bottom row */}
                             <div className="desktop-only flex-column">

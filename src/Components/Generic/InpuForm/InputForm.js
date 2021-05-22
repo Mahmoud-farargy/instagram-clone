@@ -25,6 +25,7 @@ const InputForm = (props) => {
                 name={props.label}
                 onChange={(x) => props.changeInput(x.target.value, props.name)}
                 placeholder={props.label}
+                autoComplete="off"
               />
               {props.extraText ? props.extraText : null}
               {/*You can also use props.children with closing tag*/}

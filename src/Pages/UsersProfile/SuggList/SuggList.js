@@ -2,8 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Avatar } from "@material-ui/core";
 import { withBrowseUser } from "../../../Components/HOC/withBrowseUser";
+import FollowUnfollowBtn from "../../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
+import { GoVerified } from "react-icons/go";
+import { trimText } from "../../../Utilities/TrimText";
+
 const SuggList = (props) => {
-    const {item, receivedData, setSuggestionsBox, handleFollowing, browseUser} = props;
+    const {item, setSuggestionsBox, browseUser} = props;
     const closeBoxAndRedirect = ( ) => {
       browseUser(item?.uid, item?.userName);
       setSuggestionsBox(false);
@@ -23,9 +27,12 @@ const SuggList = (props) => {
                                 <span
                                   onClick={() => closeBoxAndRedirect()}
                                   title={item?.userName}
-                                  className="acc__name"
+                                  className="acc__name trim__txt"
                                 >
-                                  {item?.userName}
+                                  { trimText(item?.userName, 21)}
+                                  {item?.isVerified && (
+                                    <GoVerified className="verified_icon" />
+                                  )} 
                                 </span>
                                 <span
                                   className="user__name mb-2"
@@ -34,43 +41,7 @@ const SuggList = (props) => {
                                   {item?.profileInfo?.name}
                                 </span>
                               </div>
-
-                              <button
-                                className={
-                                  receivedData?.following &&
-                                  receivedData?.following?.length > 0 &&
-                                  receivedData?.following?.some(
-                                    (q) => q.receiverUid === item?.uid
-                                  )
-                                    ? "profile__btn prof__btn__unfollowed"
-                                    : "profile__btn primary__btn"
-                                }
-                                color="primary"
-                                onClick={(e) => {
-                                  handleFollowing(
-                                    receivedData?.following &&
-                                      receivedData?.following?.length > 0 &&
-                                      receivedData?.following?.some(
-                                        (el) => el?.receiverUid === item?.uid
-                                      ),
-                                    item?.uid,
-                                    item?.userName,
-                                    item?.userAvatarUrl,
-                                    receivedData?.uid,
-                                    receivedData?.userName,
-                                    receivedData?.userAvatarUrl
-                                  ); e.stopPropagation()
-                                    }
-                                }
-                              >
-                                {receivedData?.following &&
-                                receivedData?.following?.length > 0 &&
-                                receivedData?.following?.some(
-                                  (user) => user?.receiverUid === item?.uid
-                                )
-                                  ? "Unfollow"
-                                  : "Follow"}
-                              </button>
+                               <FollowUnfollowBtn shape="secondary" userData={{userId: item?.uid, uName: item?.userName, uAvatarUrl: item?.userAvatarUrl, isVerified: item?.isVerified}} />
                             </div>
                           </li>
         </>
@@ -82,8 +53,6 @@ SuggList.propTypes = {
     receivedData: PropTypes.object.isRequired,
     setSuggestionsBox:PropTypes.func,
     notify: PropTypes.func,
-    handleFollowing: PropTypes.func,
     browseUser: PropTypes.func,
-
 }
 export default withBrowseUser(SuggList);

@@ -32,6 +32,8 @@ import { insertIntoText } from "../../Utilities/InsertIntoText";
 import AudioContent from "../../Components/AudioContent/AudioContent";
 import * as Consts from "../../Utilities/Consts";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
+import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
+import { trimText } from "../../Utilities/TrimText";
 const EmojiPicker = React.lazy(() =>  import("../../Components/Generic/EmojiPicker/EmojiPicker"));
 
 const DesktopPost = (props) => {
@@ -51,7 +53,6 @@ const DesktopPost = (props) => {
     handleUserBlocking,
     handleLikingComments,
     onCommentDeletion,
-    handleFollowing,
     modalsState,
     deletePost,
   } = context;
@@ -65,7 +66,6 @@ const DesktopPost = (props) => {
   });
   const inputField = useRef(null);
   var following = receivedData?.following;
-  const isFollowed = following?.some((item) => item?.receiverUid === usersProfileData?.uid);
   useEffect(() => {
     changeMainState("currentPage", "Post");
   }, []);
@@ -306,16 +306,8 @@ const DesktopPost = (props) => {
                       {" "}
                       Block this user
                     </span>
-                    <span className={`font-weight-bold ${isFollowed ? "text-danger" : "text-primary"}`} onClick={() => handleFollowing(
-                                  isFollowed,
-                                  usersProfileData?.uid,
-                                  usersProfileData?.userName,
-                                  usersProfileData?.userAvatarUrl,
-                                  uid,
-                                  receivedData?.userName,
-                                  receivedData?.userAvatarUrl
-                                  )}>
-                              {isFollowed ? "Unfollow" : "Follow"}
+                    <span>
+                        <FollowUnfollowBtn shape="quaternary" userData={{userId: usersProfileData?.uid, uName: usersProfileData?.userName, uAvatarUrl: usersProfileData?.userAvatarUrl, isVerified: usersProfileData?.isVerified}} />
                     </span>
                 </div>
                } 
@@ -428,17 +420,16 @@ const DesktopPost = (props) => {
                           tabIndex="0"
                           aria-disabled="false"
                           role="button"
-                          className="flex-row"
+                          className="flex-row align-items-center"
                         >
-                          <h5 className="flex-row w-100">
+                          <h5 className="flex-row w-100 trim__txt align-items-center">
                             <TruncateMarkup line={1} ellipsis="...">
-                              {usersProfileData?.userName}
+                              {trimText(usersProfileData?.userName,20)}
                             </TruncateMarkup>
-                            {isVerified ? (
-                              <span>
-                                <GoVerified className="verified_icon" />
-                              </span>
-                            ) : null}{" "}
+                            <span>
+                            {isVerified && (<GoVerified className="verified_icon" />)}
+                             {(usersProfileData?.uid !== receivedData?.uid) && <FollowUnfollowBtn shape="tertiary" userData={{userId: usersProfileData?.uid, uName: usersProfileData?.userName, uAvatarUrl: usersProfileData?.userAvatarUrl, isVerified: usersProfileData?.isVerified}} />}
+                           </span>
                           </h5>
                         </span>
                         <span tabIndex="0" aria-disabled="false" role="button">
@@ -551,7 +542,7 @@ const DesktopPost = (props) => {
                             {
                               (likes?.people?.some(el => el?.id === uid) ? likes?.people?.length -1 : likes?.people?.length ) > compState?.alsoLiked?.length && similarsStr > 0 &&
                               <strong className="you--followed">
-                              {likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr !== NaN ? similarsStr : "many"} {similarsStr < 2 ? " person" : " others"}</strong>
+                              {likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr !== isNaN ? similarsStr : "many"} {similarsStr < 2 ? " person" : " others"}</strong>
                               </strong>
                             }
                             {
