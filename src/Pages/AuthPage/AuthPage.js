@@ -105,6 +105,7 @@ const AuthPage = (props) => {
                           posts: [],
                           followers: [],
                           following: [],
+                          followRequests: {received:[], sent: []},
                           messages: [],
                           profileInfo: {
                             bio: "",
@@ -121,6 +122,8 @@ const AuthPage = (props) => {
                               status: true,
                               reelsForFollowing: false,
                               notificationBell: { state: true, type: "Both" },
+                              private: false,
+                              suggNotFollowed: false
                             },
                             sort: {
                               sortBy: "Random",
@@ -274,6 +277,7 @@ const AuthPage = (props) => {
                   posts: [],
                   followers: [],
                   following: [],
+                  followRequests: {received:[], sent: []},
                   messages: [],
                   profileInfo: {
                     bio: "",
@@ -290,6 +294,8 @@ const AuthPage = (props) => {
                       status: true,
                       reelsForFollowing: false,
                       notificationBell: { state: true, type: "Both" },
+                      private: false,
+                      suggNotFollowed: false
                     },
                     sort: {
                       sortBy: "Random",
@@ -373,6 +379,7 @@ const AuthPage = (props) => {
                   posts: [],
                   followers: [],
                   following: [],
+                  followRequests: {received:[], sent: []},
                   messages: [],
                   profileInfo: {
                     bio: "",
@@ -389,6 +396,8 @@ const AuthPage = (props) => {
                       status: true,
                       reelsForFollowing: false,
                       notificationBell: { state: true, type: "Both" },
+                      private: false,
+                      suggNotFollowed: false
                     },
                     sort: {
                       sortBy: "Random",
@@ -462,6 +471,7 @@ const AuthPage = (props) => {
                   posts: [],
                   followers: [],
                   following: [],
+                  followRequests: {received:[], sent: []},
                   messages: [],
                   profileInfo: {
                     bio: bio ? bio : "",
@@ -478,6 +488,8 @@ const AuthPage = (props) => {
                       status: true,
                       reelsForFollowing: false,
                       notificationBell: { state: true, type: "Both" },
+                      private: false,
+                      suggNotFollowed: false
                     },
                     sort: {
                       sortBy: "Random",

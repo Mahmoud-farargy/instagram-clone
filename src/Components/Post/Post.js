@@ -21,6 +21,7 @@ import { insertIntoText } from "../../Utilities/InsertIntoText";
 import AudioContent from "../../Components/AudioContent/AudioContent";
 import NewMsgModal from "../../Components/NewMsgModal/NewMsgModal";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
+import {AppContext} from "../../Context";
 const EmojiPicker = React.lazy(() =>  import("../../Components/Generic/EmojiPicker/EmojiPicker"));
 class Post extends PureComponent {
   constructor(props) {
@@ -43,6 +44,7 @@ class Post extends PureComponent {
     };
     this.similarsStr = (this.props.likes?.people?.some(el => el?.id === this.props.id) && this.props.likes?.people?.length >3) ? (this.props.likes?.people?.length?.toLocaleString() -3) : (this.props.likes?.people?.length?.toLocaleString() -2);
   }
+  static contextType = AppContext;
   updateUsersWhoLiked = () => {
     var { likes, following } = this.props;
     this.setState({
@@ -64,7 +66,30 @@ class Post extends PureComponent {
     const { index, handleMyLikes, id, userName, userAvatar } = this.props;
     handleMyLikes(boolean, index, id, userName, userAvatar, true);
   };
+  openPost = (postId) => {
+    const { changeMainState,changeModalState, receivedData, notify, getUsersProfile} = this.context
+    if(postId){
+        getUsersProfile(receivedData?.uid).then((data) => {
+          const postsCopy = data?.posts;
+          const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
+          if(postIndex !== -1){
+              changeMainState("currentPostIndex", { index:postIndex, id: postId });
+              if((window.innerWidth || document.documentElement.clientWidth) >= 670){
+                this.props.history.push("/profile");
+                const timeout = setTimeout(() => {
+                     changeModalState("post", true);
+                     window.clearTimeout(timeout);
+                }, 350);
+              }else{
+                  this.props.history.push("/browse-post");
+              }
+          }else{
+              notify("An error occurred", "error");
+          }
+      });
+    }
 
+  };
   doubleClickEvent = () => {
     let currCount = this.state.btnClicks;
     this.setState((prevState) => ({
@@ -294,7 +319,7 @@ class Post extends PureComponent {
                         className="liked__double__click"
                         style={{
                           animation: this.state.doubleLikeClicked
-                            ? "boundHeartOnDouble 0.9s forwards ease"
+                            ? "boundHeartOnDouble 0.9s forwards ease-out"
                             : null,
                         }}
                       >
@@ -377,7 +402,7 @@ class Post extends PureComponent {
                             {
                               (likes?.people?.some(el => el?.id === id) ? likes?.people?.length -1 : likes?.people?.length ) > this.state.alsoLiked?.length && this.similarsStr > 0 &&
                               <strong className="you--followed">
-                              {likes?.people?.some(el => el?.id === id) ? "" : " and"}<strong className="other__likers"> {this.similarsStr !== NaN ? this.similarsStr : "many"} {this.similarsStr < 2 ? " person" : " others"}</strong>
+                              {likes?.people?.some(el => el?.id === id) ? "" : " and"}<strong className="other__likers"> {this.similarsStr !== isNaN ? this.similarsStr : "many"} {this.similarsStr < 2 ? " person" : " others"}</strong>
                               </strong>
                             }
                             {
@@ -524,6 +549,10 @@ class Post extends PureComponent {
               >
                 {" "}
                 Delete post
+              </span>
+              <span
+                onClick={() => this.openPost(postId)} >
+                Go to post
               </span>
               <span onClick={() => this.setState({openOptionsModal:false})}>
                 {" "}

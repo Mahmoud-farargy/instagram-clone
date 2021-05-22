@@ -102,7 +102,7 @@
     max-width: 80%;
 }
 #home.main--home--container .suggestions--home--container{
-    margin:20px 0;
+    margin:20px 0 5px 0;
 }
 #home.main--home--container .suggestions--home--container, #home.main--home--container .side--user--info{
     padding:0px 10px;
@@ -245,7 +245,7 @@
     }
 }
 @media only screen and (min-width: 740px){
-    #home.main--home--container .suggestions--home--container, .side--user--info, .side--user--info--container, .sugg--loader{
+    #home.main--home--container .suggestions--home--container, .side--user--info, .side--user--info--container, .sugg--loader, .home--footer{
         width:65%;
         max-width: 300px;
     }

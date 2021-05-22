@@ -18,10 +18,10 @@ const InputForm = lazy(() =>
 );
 
 const ProfessionalAccount = (props) => {
-  const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser } = useContext(AppContext);
+  const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser, handleFollowRequests } = useContext(AppContext);
   //useState
   const [formState, setForm] = useState({
-    professionalAcc: { category: "", show: true, status: true, suggested: true, reelsForFollowing: false, notificationBell:{state: true, type: "Both"}},
+    professionalAcc: { category: "", show: true, status: true, suggested: true, reelsForFollowing: false, notificationBell:{state: true, type: "Both"}, private: false, suggNotFollowed: false},
     catOptions: CategoryList,
     submitted: false,
   });
@@ -62,6 +62,13 @@ const ProfessionalAccount = (props) => {
     e.preventDefault();
     setForm(updateObject(formState, { submitted: true }));
     if (isFormValid) {
+      // if your acc turned public and you have some previous follow requests, accept them all
+      if(!formState?.professionalAcc?.private && receivedData?.followRequests?.received?.length >0){
+        receivedData.followRequests.received.forEach(item => {
+          const {uid, userName, userAvatarUrl, isVerified} = item;
+          handleFollowRequests({type: "confirm", userId: uid, userAvatarUrl, userName, isVerified});
+        })      
+      }
       handleEditingProfile(formState?.professionalAcc, "professionalAcc");
       props.history.push("/profile");
       notify("Profile updated", "success");
@@ -116,6 +123,16 @@ const ProfessionalAccount = (props) => {
               submitted={formState?.submitted}
               val={formState?.professionalAcc?.category}
             />
+           <div id="input--form--field">
+              <div className=" form-group flex-column">
+                <div className="prof--input--row flex-row">
+                     <label htmlFor="private">Account Privacy</label>
+                <CheckboxIOS checked={(formState?.professionalAcc?.private || false)} changeInput={onInputChange} id="private" name="private" />
+                </div>
+             <small>When your account is private, only people you approve can see your photos, music and videos on Voxgram. Your existing followers won't be affected.</small>
+              </div>
+              
+            </div>
             <div id="input--form--field">
               <div className="form-group flex-column">
                 <div className="prof--input--row  flex-row">
@@ -148,7 +165,17 @@ const ProfessionalAccount = (props) => {
             <div id="input--form--field">
               <div className=" form-group flex-column">
                 <div className="prof--input--row flex-row">
-                     <label htmlFor="reelsForFollowing">Show reels of only people I follow</label>
+                     <label htmlFor="suggNotFollowed">Don't suggest people who I followed</label>
+                <CheckboxIOS checked={(formState?.professionalAcc?.suggNotFollowed || false)} changeInput={onInputChange} id="suggNotFollowed" name="suggNotFollowed" />
+                </div>
+              </div>
+              
+            </div>
+
+            <div id="input--form--field">
+              <div className=" form-group flex-column">
+                <div className="prof--input--row flex-row">
+                     <label htmlFor="reelsForFollowing">Show reels of only people I followed</label>
                 <CheckboxIOS checked={(formState?.professionalAcc?.reelsForFollowing || false)} changeInput={onInputChange} id="reelsForFollowing" name="reelsForFollowing" />
                 </div>
               </div>
@@ -213,10 +240,12 @@ const ProfessionalAccount = (props) => {
                               {new Date(currentUser?.metadata?.lastSignInTime).toDateString() + " "}
                               (<Moment fromNow withTitle>{currentUser?.metadata?.lastSignInTime}</Moment>)
                             </div>
-                            
-                            <div className="account--info--text">
-                              <span>Email: </span>{currentUser?.email}
-                            </div>
+                            {
+                              currentUser?.email &&
+                              <div className="account--info--text">
+                                <span>Email: </span>{currentUser?.email}
+                              </div>
+                            }
                             <div className="account--info--text">
                               <span>UID: </span>{currentUser?.uid}
                             </div>

@@ -45,7 +45,7 @@ const Commment =(props)=>{
                   } 
                       {
                           comment.likes?.length >=1 ?
-                             <span className="acc-action" onClick={()=> changeModalState("users",true, comment?.likes, Consts.LIKES)}>{comment.likes?.length.toLocaleString()} {comment.likes?.length > 1 ? "likes" : "like"}</span>
+                             <span className="acc-action clickable" onClick={()=> changeModalState("users",true, comment?.likes, Consts.LIKES)}>{comment.likes?.length.toLocaleString()} {comment.likes?.length > 1 ? "likes" : "like"}</span>
                           : null
                       } 
                        <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid, comment?.commentId); setSubComments(true)}}> Replay</span>      
@@ -90,7 +90,7 @@ const Commment =(props)=>{
                                                                     } 
                                                                     {
                                                                         subComment?.likes?.length >=1 ?
-                                                                            <span className="acc-action" onClick={()=> changeModalState("users",true, subComment?.likes, Consts.LIKES)}>{subComment?.likes?.length.toLocaleString()} {subComment?.likes?.length > 1 ? "likes" : "like"}</span>
+                                                                            <span className="acc-action clickable" onClick={()=> changeModalState("users",true, subComment?.likes, Consts.LIKES)}>{subComment?.likes?.length.toLocaleString()} {subComment?.likes?.length > 1 ? "likes" : "like"}</span>
                                                                         : null
                                                                     } 
                                                                     <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid, comment?.commentId); setSubComments(true)}}> Replay</span>      

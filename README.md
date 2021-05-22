@@ -39,7 +39,9 @@ A social media platform similar to Instagram that people can actually use.
                                                     <li><p>Account settings</p></li>
                                                      <ul>
                                                              <li class="bullet--3"><p>Show/Hide activity status</p></li>
-                                                             <li class="bullet--3"><p>Delete account and more options</p></li>
+                                                             <li class="bullet--3"><p>Make account public/private </p></li>
+                                                             <li class="bullet--3"><p>Delete account</p></li>
+                                                             <li class="bullet--3"><p> + more options</p></li>
                                                     </ul>
                                                 </ul>
                                             </li>
@@ -75,6 +77,7 @@ A social media platform similar to Instagram that people can actually use.
                                                     <li><p>Chat with any user</p></li>
                                                     <li><p>Share images, videos, audio, documents and emojis while chatting</p></li>
                                                     <li><p>Unsend and copy messages</p></li>
+                                                    <li><p>Delete chat from both sides</p></li>
                                                 </ul>
                                             </li>
                                              <li>
@@ -98,6 +101,7 @@ A social media platform similar to Instagram that people can actually use.
                                                           <li><p>Put reels into groups</p></li>
                                                     </ul>
                                             </li>
+                                            <li><p>Account privacy</p></li>
                                             <li><p>Search users</p></li>
                                             <li><p>Suggestions list</p></li>
                                             <li><p>Activity Status</p></li>

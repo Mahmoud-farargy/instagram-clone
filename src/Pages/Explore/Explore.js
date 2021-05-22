@@ -7,7 +7,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../Config/firebase";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
 import ProfileItem from "../../Components/ProfileItem/ProfileItem";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { MdSort } from "react-icons/md";
 import Modal from "react-modal";
 import InputForm from "../../Components/Generic/InpuForm/InputForm";
 import { BiCog } from "react-icons/bi";
@@ -171,7 +171,7 @@ const Explore = () => {
     }
   }, [explore]);
   const openPost = (postId, _ ,uid) => {
-    if(uid){
+    if(uid, postId){
             getUsersProfile(uid).then((res) => {
         const getPostIndex = res?.posts.map((post) => post?.id).indexOf(postId);
 
@@ -308,7 +308,7 @@ const Explore = () => {
           {/* explore start */}
           <div id="usersProfile" className="users--profile--container ">
             <div className="explore--options--btn">
-                <button onClick={()=> setSortingModal(true)}><HiOutlineDotsHorizontal /></button>
+                <button onClick={()=> setSortingModal(true)}><MdSort /></button>
             </div>
             {newExploreArr ? (
               explore &&

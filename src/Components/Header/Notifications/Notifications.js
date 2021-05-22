@@ -6,12 +6,12 @@ import NotificationOutput from "../../../Components/NotificationsOutput/Notifica
 import { auth } from "../../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Skeleton from "react-loading-skeleton";
+import FollowRequestsList from "../../../Components/FollowRequestsList/FollowRequestsList";
 
 const Notifications = ({ closeNotificationOnClick }) => {
   const {
     igVideoImg,
     igAudioImg,
-    handleFollowing,
     changeMainState,
     receivedData,
   } = useContext(AppContext);
@@ -27,12 +27,14 @@ const Notifications = ({ closeNotificationOnClick }) => {
 
     return () => {
       _isMounted.current = false;
+      setLoading(false);
     };
   }, []);
   return (
     <div>
       {!loading && !isLoading ? (
         <div>
+         <FollowRequestsList />
           {receivedData?.notifications?.list.length >= 1 ? (
             <ul
               onClick={(s) => closeNotificationOnClick(s)}
@@ -51,7 +53,6 @@ const Notifications = ({ closeNotificationOnClick }) => {
                       igVideoImg={igVideoImg}
                       myData={receivedData}
                       igAudioImg={igAudioImg}
-                      handleFollowing={handleFollowing}
                       changeMainState={changeMainState}
                       postIndex={i}
                     />

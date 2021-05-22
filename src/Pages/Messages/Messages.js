@@ -24,6 +24,7 @@ import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen"
 import { trimText } from "../../Utilities/TrimText";
 import { insertIntoText } from "../../Utilities/InsertIntoText";
 import NewMsgModal from "../../Components/NewMsgModal/NewMsgModal";
+import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 const EmojiPicker = lazy(() =>  import("../../Components/Generic/EmojiPicker/EmojiPicker"));
 const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
@@ -39,13 +40,9 @@ const Messages = (props) => {
         openSidedrawer: false,
         loading: {uid: "", state: false, progress: 0}
     })
-  const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, modalsState, changeModalState, deleteChat, handleUserBlocking, handleFollowing, confirmPrompt, closeNewMsgNoti } = context;
+  const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, modalsState, changeModalState, deleteChat, handleUserBlocking, confirmPrompt, closeNewMsgNoti } = context;
   const { messages } = receivedData;
   const currUser = receivedData?.messages[currentChat.index];
-  const isFollowed = receivedData?.following && receivedData?.following?.length > 0 &&
-  receivedData?.following?.some(
-    (el) => el?.receiverUid === currentChat.uid
-  );
   // const isBlocked = 
   useEffect(() =>{
     //if index is not correct then correct it
@@ -142,7 +139,7 @@ const Messages = (props) => {
     const msg = messages ? messages[currentChat.index] : [];
 
     const onPickingContent = (event) => {
-      if(event){
+      if(event && event.target.files[0]){
             let uploadedItem = event.target.files[0];
             const fileName = `${Math.random()}${uploadedItem?.name}`;
             const metadata = {
@@ -347,14 +344,9 @@ const Messages = (props) => {
           {modalsState?.options ? (
               <OptionsModal>
               <span className="text-danger font-weight-bold" onClick={() => delChat()}>Delete Chat</span>
-              <span className={`font-weight-bold ${isFollowed ? "text-danger" : "text-primary"}`} onClick={() => { currUser?.uid && handleFollowing(
-                          isFollowed,
-                          currUser?.uid,
-                          currUser?.userName,
-                          currUser?.userAvatarUrl,
-                          receivedData?.uid, //these data is already available in context (refactor if possible)
-                          receivedData?.userName,
-              receivedData?.userAvatarUrl)}}>{isFollowed ? "Unfollow" : "Follow"}</span>
+              <span>
+                <FollowUnfollowBtn shape="quaternary" userData={{userId: currUser?.uid, uName: currUser?.userName, uAvatarUrl: currUser?.userAvatarUrl, isVerified: currUser?.isVerified}} />
+              </span>
               <span className="text-danger font-weight-bold" onClick={() => block(currUser?.uid, currUser?.userName, currUser?.userAvatarUrl, currUser?.profileInfo?.name)}>Block this user</span>
               <span>Cancel</span>
               </OptionsModal>

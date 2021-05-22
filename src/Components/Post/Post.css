@@ -30,7 +30,7 @@
 }
 #post.post--card--container .post--card--article .post--card--header .post--header--user--info {
     position: relative;
-    max-width:220px;
+    max-width:260px;
 }
 #post.post--card--container .post--card--article .post--card--header .post--header--user--info span h5 a,
 #post.post--card--container .post--card--article .post--card--header .post--header--user--info span p
@@ -45,9 +45,6 @@
 }
 #post.post--card--container .post--card--article .post--card--header .post--header--user--info span{
     margin:0;
-    max-width:400px;
-    display:block;
-    overflow:hidden;
 }
 
 #post.post--card--container .post--card--article .post--card--header .post--header--user--info span > h5{

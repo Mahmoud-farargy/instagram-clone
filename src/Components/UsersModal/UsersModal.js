@@ -11,35 +11,35 @@ const UsersModal =()=>{
         case Consts.FOLLOWERS:
            renderedModal =  usersModalList?.list && usersModalList?.list.map((user, i) =>{
                     return(
-                        <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} date={user?.date}/>
+                        <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} isVerified={user?.isVerified || false} date={user?.date}/>
                     )
                 })
         break;
         case Consts.FOLLOWING:
             renderedModal = usersModalList?.list && usersModalList?.list.map((user, i) =>{
                             return(
-                                <ModalListItem key={user?.receiverUid + i} uid={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} date={user?.date}/>
+                                <ModalListItem key={user?.receiverUid + i} uid={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} isVerified={user?.isVerified || false} date={user?.date}/>
                             )
                 })
         break;
         case Consts.LIKES:
               renderedModal = usersModalList?.list && usersModalList?.list.map((user, i) =>{
                             return(
-                                <ModalListItem key={user?.id + i} uid ={user?.id} userName={user?.userName} avatarUrl={user?.userAvatarUrl} date={user?.date} />
+                                <ModalListItem key={user?.id + i} uid ={user?.id} userName={user?.userName} avatarUrl={user?.userAvatarUrl} date={user?.date} isVerified={user?.isVerified || false} />
                             )
                 })
         break;
         case Consts.MUTUALFRIENDS:
             renderedModal = usersModalList?.list && usersModalList?.list.map((user, i ) => {
                     return(
-                        <ModalListItem key={user?.receiverUid + i} uid ={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} date={user?.date ? user?.date : ""} />
+                        <ModalListItem key={user?.receiverUid + i} uid ={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} isVerified={user?.isVerified || false} date={user?.date ? user?.date : ""} />
                     )
             })
         break;
         default: 
         renderedModal =  usersModalList?.list.map((user, i) =>{
             return(
-                <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} date={user?.date}/>
+                <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} isVerified={user?.isVerified || false} date={user?.date}/>
             )
         });
     }

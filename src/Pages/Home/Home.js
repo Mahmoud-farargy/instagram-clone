@@ -40,6 +40,19 @@ const Home = (props) => {
   let posts = receivedData?.posts;
   let [user, loading] = useAuthState(auth);
   const [randNum, setRandNum] = useState(0);
+  const [footerLinks] = useState([
+    "About",
+    "Help",
+    "Press",
+    "API",
+    "Jobs",
+    "Privacy",
+    "Terms",
+    "Locations",
+    "Top Accounts",
+    "Hashtags",
+    "Language",
+  ]);
   useEffect(() => {
     changeMainState("currentPage", "Home");
     window.scrollTo(0, 0);
@@ -90,6 +103,7 @@ const Home = (props) => {
                       handleSavingPosts={handleSavingPosts}
                       savedPosts={receivedData?.savedposts}
                       following={receivedData?.following}
+                      history={props.history}
                     />
                   );
                 })
@@ -175,6 +189,7 @@ const Home = (props) => {
                                 userUid={user?.uid}
                                 userAvatarUrl={user?.userAvatarUrl}
                                 creationDate={user?.profileInfo?.accountCreationDate ? user?.profileInfo?.accountCreationDate : ""}
+                                followers={user?.followers}
                               />
                             );
                           })
@@ -208,7 +223,20 @@ const Home = (props) => {
                   <h4>No suggestions available</h4>
                 </div>
               }
-              
+              <div className="home--footer desktop-only">
+               <nav>
+                 <ul className="flex-row">
+                   {
+                     footerLinks?.map((link,i) =>(
+                     <li key={link + i}>{link}</li>
+                     ))
+                   }
+                 </ul>
+                 <div className="home--footer--copyright">
+                   &copy; 2020 - {new Date().getFullYear()} not the official Instagram
+                 </div>
+               </nav>
+              </div>
               <div className="instagram--embed--container">
                 {/* <InstagramEmbed
                             url="https://www.instagram.com/p/CGalYyrJNsX/"

@@ -10,7 +10,7 @@ import { IoMdGrid } from "react-icons/io";
 import { RiLayoutRowLine } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
 import { ImBlocked } from "react-icons/im";
-import { FaUserCheck } from "react-icons/fa";
+import { VscLock } from "react-icons/vsc";
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import reelsIco from "../../Assets/reels.png";
@@ -22,11 +22,12 @@ import * as Consts from "../../Utilities/Consts";
 import { firebase } from "../../Config/firebase";
 import Moment from "react-moment";
 import ProfileItem from "../../Components/ProfileItem/ProfileItem";
+import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
+import { trimText } from "../../Utilities/TrimText";
 
 const UsersProfile = (props) => {
   const [, loading] = useAuthState(auth);
   const [isFollowed, setFollowingState] = useState(false);
-  const [isFollower, setFollowerState] = useState(false);
   const {userId} = useParams();
   const [grid, setGrid] = useState(true);
   const context = useContext(AppContext);
@@ -38,8 +39,6 @@ const UsersProfile = (props) => {
     usersProfileData,
     changeMainState,
     initializeChatDialog,
-    uid,
-    handleFollowing,
     receivedData,
     changeModalState,
     modalsState,
@@ -64,12 +63,6 @@ const UsersProfile = (props) => {
       setFollowingState(
         receivedData?.following?.some(
           (item) => item?.receiverUid === usersProfileData?.uid
-        )
-      );
-    receivedData?.followers &&
-      setFollowerState(
-        receivedData?.followers?.some(
-          (item) => item?.senderUid === usersProfileData?.uid
         )
       );
   }, [receivedData, usersProfileData]);
@@ -116,10 +109,11 @@ const UsersProfile = (props) => {
     updateReelsProfile(usersProfileData?.uid).then(() => {
         changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
     });
-}
+  }
   const similarFollowers = (usersProfileData?.uid !== receivedData?.uid) && (receivedData?.blockList?.filter(w => w.blockedUid !== usersProfileData?.uid)) ? receivedData?.following.filter(el => el.receiverUid !== receivedData?.uid && usersProfileData?.followers.some(item => item.senderUid === el.receiverUid)) : [];
   const websiteToView = usersProfileData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?(?:http:\/\/)?/i, "").split("/")[0];
   const notBlockedOrBlockingUser = receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) && usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid);
+  const isPrivate = usersProfileData?.profileInfo?.professionalAcc?.private;
   const userProfileInfo = (
     <div>
        {
@@ -187,6 +181,16 @@ const UsersProfile = (props) => {
     </div>
    
   )
+  const openUsersModal = (list, name) =>{
+    if(isPrivate ? isFollowed : true){
+      changeModalState(
+        "users",
+        true,
+        list,
+        name
+      )
+    }
+  }
   return (
     <Fragment> 
        {/* Modals */}
@@ -231,7 +235,7 @@ const UsersProfile = (props) => {
                     className="profile__display__name"
                     title={usersProfileData?.userName}
                   >
-                    {usersProfileData?.userName}
+                    {trimText(usersProfileData?.userName, 24)}
                     {usersProfileData?.isVerified ? (
                       <GoVerified className="verified_icon" />
                     ) : null}
@@ -257,32 +261,7 @@ const UsersProfile = (props) => {
                  {
                    usersProfileData?.blockList && usersProfileData?.uid !== receivedData?.uid &&  !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) ?
                    receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) ?
-                    <button
-                      disabled={!usersProfileData?.uid}
-                      onClick={(k) =>
-                        {handleFollowing(
-                          isFollowed,
-                          usersProfileData?.uid,
-                          usersProfileData?.userName,
-                          usersProfileData?.userAvatarUrl,
-                          uid,
-                          receivedData?.userName,
-                          receivedData?.userAvatarUrl
-                        ); k.stopPropagation()}
-                      }
-                      className={
-                        !isFollowed
-                          ? "profile__btn primary__btn"
-                          : "profile__btn prof__btn__unfollowed"
-                      }
-                    >
-                      {" "}
-                      {!isFollowed && isFollower
-                        ? "follow back"
-                        : !isFollowed && !isFollower
-                        ? "follow"
-                        : <FaUserCheck className="mx-3" />}
-                    </button>
+                    <FollowUnfollowBtn shape="primary" userData={{userId: usersProfileData?.uid, uAvatarUrl: usersProfileData?.userAvatarUrl, uName: usersProfileData?.userName, isVerified: usersProfileData?.isVerified}}  />
                     :
                     <button onClick={(p) => {handleUserBlocking(false, usersProfileData?.uid, usersProfileData?.userName ); p.stopPropagation()}} className="profile__btn primary__btn">
                       Unblock
@@ -293,11 +272,15 @@ const UsersProfile = (props) => {
                     <button
                       className="sugg__btn profile__btn primary__btn"
                       style={{
-                        backgroundColor: openSuggestionsBox
+                        backgroundColor: isFollowed ?
+                          "transparent"
+                          : openSuggestionsBox
                           ? "#63baf4"
                           : "#0095f6",
                         transition: "all 0.5 linear",
-                        border: openSuggestionsBox ? "#63baf4" : "#0095f6",
+                        border: `1px solid ${isFollowed ? "#dbdbdb" : openSuggestionsBox ? "#63baf4" : "#0095f6"}`,
+                        color: isFollowed ? "#262626" : openSuggestionsBox ? "#fff" : "#fff",
+                        fontSize: "13px"
                       }}
                       onClick={() => setSuggestionsBox(!openSuggestionsBox)}
                     >
@@ -315,11 +298,9 @@ const UsersProfile = (props) => {
                       {usersProfileData?.posts?.length > 1 ? "posts" : "post"}
                     </p>
                     <p
-                      className="acc-action"
+                      className={`acc-action ${(isPrivate ? (isFollowed && "clickable") : "clickable")}`}
                       onClick={() =>
-                        changeModalState(
-                          "users",
-                          true,
+                        openUsersModal(
                           usersProfileData?.followers,
                           "followers"
                         )
@@ -333,11 +314,9 @@ const UsersProfile = (props) => {
                         : "follower"}
                     </p>
                     <p
-                      className="acc-action"
+                      className={`acc-action ${(isPrivate ? (isFollowed && "clickable") : "clickable")}`}
                       onClick={() =>
-                        changeModalState(
-                          "users",
-                          true,
+                        openUsersModal(
                           usersProfileData?.following,
                           "following"
                         )
@@ -389,7 +368,7 @@ const UsersProfile = (props) => {
                           item?.uid !== receivedData?.uid &&
                           item?.uid !== usersProfileData?.uid
                       ).slice(randNum, suggestionsList?.length -1).slice(0,10)
-                      .map((item, i) => <SuggList key={(item?.uid || i)} item={item} receivedData={receivedData} setSuggestionsBox={setSuggestionsBox} handleFollowing={handleFollowing}/>)}
+                      .map((item, i) => <SuggList key={(item?.uid || i)} item={item} receivedData={receivedData} setSuggestionsBox={setSuggestionsBox}/>)}
                   </ul>
                 </div>
               </div>
@@ -399,6 +378,7 @@ const UsersProfile = (props) => {
                   {
                       usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid) &&  usersProfileData?.reels && usersProfileData?.reels.length > 0 && receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) && //find an alternative to make data always updating
                               usersProfileData?.reels &&  usersProfileData?.reels.length > 0 &&
+                              (isPrivate ? isFollowed : true) &&
                               usersProfileData.reels.map((reel, index) => (
                                   <li key={reel?.id + index}>
                                     <Link  onClick={() => loadReels({currentGroupId: reel?.id, currentGroupIndex: index, currentReelIndex: 0, currentReelId: 0})}  to="/reels" className="reel--bubble flex-column">
@@ -419,7 +399,25 @@ const UsersProfile = (props) => {
           {/* body */}
       {
        usersProfileData?.blockList && !receivedData?.blockList.some(x => x.blockedUid === usersProfileData?.uid) ?
-        usersProfileData?.blockList && !usersProfileData?.blockList?.some(f => f.blockedUid === receivedData?.uid) ? 
+        usersProfileData?.blockList && !usersProfileData?.blockList?.some(f => f.blockedUid === receivedData?.uid) ?
+        (isPrivate && !isFollowed) ?
+        <div className="private-acc">
+            <div className="users--profile--stripe flex-row"></div>
+            <div className="empty--posts--container flex-column">
+                              <div className="empty--posts--inner mx-auto flex-column">
+                                <div className="plus--icon--container flex-column">
+                                  <VscLock className="plus__icon" />
+                                </div>
+                                <h3>This Account is Private</h3>
+                                <p>
+                                Follow to see their photos, music and videos.
+                                </p>
+                                <span>Learn more</span>
+
+                              </div>
+            </div>
+        </div>
+        :
         <div>
           <div className="users--profile--stripe flex-row">
                       {usersProfileData?.posts?.length >= 1 ? (
@@ -506,7 +504,7 @@ const UsersProfile = (props) => {
             </div>
         </div> 
         :
-      <div>
+        <div>
           <div className="users--profile--stripe flex-row"></div>
           <div className="empty--posts--container flex-column">
                             <div className="empty--posts--inner mx-auto flex-column">
