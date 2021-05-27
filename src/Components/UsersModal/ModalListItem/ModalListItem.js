@@ -1,16 +1,17 @@
 import React, { useContext } from "react";
 import Auxiliary from "../../HOC/Auxiliary";
 import { Avatar } from "@material-ui/core";
-import ProTypes from "prop-types";
+import PropTypes from "prop-types";
 import { withBrowseUser } from "../../../Components/HOC/withBrowseUser";
 import { AppContext } from "../../../Context";
 import GetFormattedDate from "../../../Utilities/FormatDate";
 import FollowUnfollowBtn from "../../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import { trimText } from "../../../Utilities/TrimText";
 import { GoVerified } from "react-icons/go";
+import * as Consts from "../../../Utilities/Consts";
 
 const ModalListItem =(props)=>{
-    const {uid, userName, avatarUrl, date, isVerified , browseUser} = props;
+    const {uid, userName, avatarUrl, date, isVerified , browseUser, type} = props;
     const {changeModalState, receivedData} = useContext(AppContext);
     const notMyItem = receivedData?.uid !== uid;
     return(
@@ -23,7 +24,7 @@ const ModalListItem =(props)=>{
                       <GoVerified className="verified_icon" />
                     ) }</h3>
                         
-                        <span><GetFormattedDate date={date?.seconds && date?.seconds} /></span>
+                        { type === Consts.BIRTHDAYS ? <span>BD: {date}</span> : date?.seconds && <span> {type === Consts.NEWUSERS && "Joined in: "} <GetFormattedDate date={date?.seconds && date?.seconds} /></span>}
                     </div> 
                 </div>
               {
@@ -36,10 +37,14 @@ const ModalListItem =(props)=>{
     )
 }
 ModalListItem.propTypes = {
-    uid: ProTypes.string.isRequired,
-    userName: ProTypes.string.isRequired,
-    avatarUrl: ProTypes.string.isRequired,
-    date: ProTypes.object,
-    browseUser: ProTypes.func.isRequired
+    uid: PropTypes.string.isRequired,
+    userName: PropTypes.string.isRequired,
+    avatarUrl: PropTypes.string.isRequired,
+    date: PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.string
+    ]),
+    browseUser: PropTypes.func.isRequired,
+    type: PropTypes.string
 }
 export default withBrowseUser(ModalListItem);

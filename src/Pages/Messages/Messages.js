@@ -2,22 +2,18 @@ import React, { useEffect, useState, useContext, useRef, lazy, Suspense} from "r
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
-import { BsPencilSquare, BsFillCameraVideoFill } from "react-icons/bs";
-import TruncateMarkup from "react-truncate";
+import { BsPencilSquare } from "react-icons/bs";
 import { FiSend, FiInfo } from "react-icons/fi";
 import { RiMenu4Fill } from "react-icons/ri";
-import { MdClose, MdAudiotrack } from "react-icons/md";
+import { MdClose } from "react-icons/md";
 import PropTypes from "prop-types";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
-import GetFormattedDate from "../../Utilities/FormatDate";
 import Message from "./Message/Message";
-import { AiOutlinePicture,  AiOutlineMessage } from "react-icons/ai";
+import { AiOutlinePicture } from "react-icons/ai";
 import { FaRegHeart } from "react-icons/fa";
 import { storage } from "../../Config/firebase";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { FcLike } from "react-icons/fc";
 import { GoVerified } from "react-icons/go";
-import { CgFileDocument } from "react-icons/cg";
 import { withRouter } from 'react-router-dom';
 import Loader from "react-loader-spinner";
 import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen";
@@ -25,6 +21,7 @@ import { trimText } from "../../Utilities/TrimText";
 import { insertIntoText } from "../../Utilities/InsertIntoText";
 import NewMsgModal from "../../Components/NewMsgModal/NewMsgModal";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
+import MSGUsers from "./Users/Users";
 const EmojiPicker = lazy(() =>  import("../../Components/Generic/EmojiPicker/EmojiPicker"));
 const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
@@ -40,10 +37,10 @@ const Messages = (props) => {
         openSidedrawer: false,
         loading: {uid: "", state: false, progress: 0}
     })
-  const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, modalsState, changeModalState, deleteChat, handleUserBlocking, confirmPrompt, closeNewMsgNoti } = context;
+  const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, modalsState, changeModalState, deleteChat, handleUserBlocking, confirmPrompt } = context;
   const { messages } = receivedData;
   const currUser = receivedData?.messages[currentChat.index];
-  // const isBlocked = 
+
   useEffect(() =>{
     //if index is not correct then correct it
     if(receivedData?.messages.length >0 ){
@@ -110,15 +107,6 @@ const Messages = (props) => {
 
   }
 
- const viewUsersMessages = (loadedUid, loadedIndex) => {
-    const checkIndex = receivedData?.messages?.map(user => user.uid ).indexOf(loadedUid);
-    if(checkIndex === loadedIndex && checkIndex !== -1){
-       changeMainState("currentChat", { uid: loadedUid ,index: loadedIndex});
-       if(receivedData?.messages?.[checkIndex]?.notification){
-          closeNewMsgNoti(loadedUid);
-       }
-    }
-  }
 
   const selectEmoji = (e, x) => {
     e.persist();
@@ -208,101 +196,7 @@ const Messages = (props) => {
     const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
       handleUserBlocking(true, blockedUid || "", userName || "", userAvatarUrl || "", profileName || "").then(() => history.push("/"));
     }
-    const messagedUsers = (
-      <ul id="messagesUL">
-                    {messages?.length >= 1 ? (
-                      messages
-                        // ?.sort(
-                        //   (a, b) =>
-                        //     new Date(
-                        //       b.chatLog &&
-                        //         b.chatLog[b.chatLog?.length - 1]?.date
-                        //           ?.seconds * 1000
-                        //     ) -
-                        //     new Date(
-                        //       a.chatLog &&
-                        //         a.chatLog[a.chatLog?.length - 1]?.date
-                        //           ?.seconds * 1000
-                        //     )
-                        // )
-                        .map((user, index) => {
-                          return (
-                            //Desktop
-                            <div key={user?.uid + index}>
-                            {
-                              !receivedData?.blockList?.some(el => el?.blockedUid === user?.uid) &&
-                                <li
-                                  className={`messages--user like__icon__item flex-row ${index === currentChat.index && "active-msg"}`}
-                                  
-                                  onClick={() => viewUsersMessages(user?.uid, index)}
-                                >
-                                { user?.notification && <div className="like__noti__dot"></div>}
-                                <Avatar loading="lazy" src={user?.userAvatarUrl} alt={user?.userName} title={user?.userName}/>
-                                  <div className="messages--user--info space__between">
-                                    <div style={{ flex: 1, width: "60%" }}>
-                                      <p>
-                                        <TruncateMarkup line={1} ellipsis="..">
-                                          {user?.userName}
-                                        </TruncateMarkup>{" "}
-                                      </p>
-                                      <span className="last__message">
-                                      
-                                      {
-                                        user?.chatLog?.[user.chatLog?.length - 1]?.type === "text" ?
-                                        <TruncateMarkup line={1} ellipsis=".." style={{textTransform:"none"}}>
-                                            {user?.chatLog?.length >= 1
-                                              ? user?.chatLog?.[user.chatLog?.length - 1]
-                                                  .textMsg
-                                              : null}
-                                          </TruncateMarkup>
-                                          : user?.chatLog?.[user.chatLog?.length - 1]?.type === "picture" ?
-                                          <span>
-                                              <AiOutlinePicture />
-                                          </span>
-                                          : user?.chatLog?.[user.chatLog?.length - 1]?.type === "video" ?
-                                          <span>
-                                            <BsFillCameraVideoFill />
-                                          </span>
-                                          : user?.chatLog?.[user.chatLog?.length - 1]?.type === "like" ?
-                                          <span>
-                                            <FcLike />
-                                          </span>
-                                          : user?.chatLog?.[user.chatLog?.length - 1]?.type === "audio" ?
-                                          <span>
-                                            <MdAudiotrack />
-                                          </span>
-                                          : user?.chatLog?.[user.chatLog?.length - 1]?.type === "document" ?
-                                          <span>
-                                            <CgFileDocument />
-                                          </span>
-                                          : <span>Empty message</span>
-                                      } 
-                                      </span>
-                                    </div>
-                                    <p className="messages__user__date">                             
-                                      {user?.chatLog?.length >= 1
-                                        ? <span><span className="messages__user__date__divider">• </span><GetFormattedDate date={user?.chatLog[user.chatLog?.length - 1].date.seconds} /></span> : null}
-                                    </p>
-                                  </div>
-                                </li>
-                            }   
-                            </div>
-                            
-                          );
-                        })
-                    ) : (
-                      <div className="empty--chat--box">
-                        <div className="empty--card">
-                          <AiOutlineMessage />
-                          <h2>People who you message</h2>
-                            <h4>Start messaging people from the pen button above. Users
-                          will be here</h4>
-                        </div>                        
-                      </div>
-
-                    )}
-                  </ul>
-    )
+    
     const openNewMsg = () => {
       changeModalState("newMsg", true);
       setCompState({...compState, openSidedrawer: false });
@@ -344,7 +238,7 @@ const Messages = (props) => {
           {modalsState?.options ? (
               <OptionsModal>
               <span className="text-danger font-weight-bold" onClick={() => delChat()}>Delete Chat</span>
-              <span>
+              <span className="p-0">
                 <FollowUnfollowBtn shape="quaternary" userData={{userId: currUser?.uid, uName: currUser?.userName, uAvatarUrl: currUser?.userAvatarUrl, isVerified: currUser?.isVerified}} />
               </span>
               <span className="text-danger font-weight-bold" onClick={() => block(currUser?.uid, currUser?.userName, currUser?.userAvatarUrl, currUser?.profileInfo?.name)}>Block this user</span>
@@ -375,7 +269,7 @@ const Messages = (props) => {
                   </div>
                 </div>
                 <div className="messages--view--users">
-                  {messagedUsers}
+                  <MSGUsers />
                 </div>
               </div>
               {/* messages side */}
@@ -420,7 +314,7 @@ const Messages = (props) => {
                       </div>
                     </div>
                     <div className="messages--view--users">
-                      {messagedUsers}
+                      <MSGUsers />
                     </div>
                   </div>
                 </div>

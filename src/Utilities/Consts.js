@@ -8,4 +8,6 @@ export const FOLLOWERS = "followers";
 export const FOLLOWING = "following";
 export const LIKES = "likes";
 export const MUTUALFRIENDS = "mutual friends";
+export const NEWUSERS = "new members";
+export const BIRTHDAYS = "birthdays";
 

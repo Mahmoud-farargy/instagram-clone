@@ -11,35 +11,49 @@ const UsersModal =()=>{
         case Consts.FOLLOWERS:
            renderedModal =  usersModalList?.list && usersModalList?.list.map((user, i) =>{
                     return(
-                        <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} isVerified={user?.isVerified || false} date={user?.date}/>
+                        <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} isVerified={user?.isVerified || false} date={(user?.date ? user?.date : {})} type={usersModalList?.type}/>
                     )
                 })
         break;
         case Consts.FOLLOWING:
             renderedModal = usersModalList?.list && usersModalList?.list.map((user, i) =>{
                             return(
-                                <ModalListItem key={user?.receiverUid + i} uid={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} isVerified={user?.isVerified || false} date={user?.date}/>
+                                <ModalListItem key={user?.receiverUid + i} uid={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} isVerified={user?.isVerified || false} date={(user?.date ? user?.date : {})} type={usersModalList?.type}/>
                             )
                 })
         break;
         case Consts.LIKES:
               renderedModal = usersModalList?.list && usersModalList?.list.map((user, i) =>{
                             return(
-                                <ModalListItem key={user?.id + i} uid ={user?.id} userName={user?.userName} avatarUrl={user?.userAvatarUrl} date={user?.date} isVerified={user?.isVerified || false} />
+                                <ModalListItem key={user?.id + i} uid ={user?.id} userName={user?.userName} avatarUrl={user?.userAvatarUrl} date={(user?.date ? user?.date : {}) } isVerified={user?.isVerified || false} type={usersModalList?.type}/>
                             )
                 })
         break;
         case Consts.MUTUALFRIENDS:
             renderedModal = usersModalList?.list && usersModalList?.list.map((user, i ) => {
                     return(
-                        <ModalListItem key={user?.receiverUid + i} uid ={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} isVerified={user?.isVerified || false} date={user?.date ? user?.date : ""} />
+                        <ModalListItem key={user?.receiverUid + i} uid ={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} isVerified={user?.isVerified || false} date={(user?.date ? user?.date : {})} type={usersModalList?.type}/>
+                    )
+            })
+        break;
+        case Consts.NEWUSERS:
+            renderedModal = usersModalList?.list && usersModalList?.list.map((user, i ) => {
+                    return(
+                        <ModalListItem key={user?.uid + i} uid ={user?.uid} userName={user?.userName} avatarUrl={user?.userAvatarUrl} isVerified={user?.isVerified || false} date={user?.profileInfo?.accountCreationDate || {}} type={usersModalList?.type}/>
+                    )
+            })
+        break;
+        case Consts.BIRTHDAYS:
+            renderedModal = usersModalList?.list && usersModalList?.list.map((user, i ) => {
+                    return(
+                        <ModalListItem key={user?.uid + i} uid ={user?.uid} userName={user?.userName} avatarUrl={user?.userAvatarUrl} isVerified={user?.isVerified || false} date={user?.profileInfo?.birthday || {}} type={usersModalList?.type}/>
                     )
             })
         break;
         default: 
         renderedModal =  usersModalList?.list.map((user, i) =>{
             return(
-                <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} isVerified={user?.isVerified || false} date={user?.date}/>
+                <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} isVerified={user?.isVerified || false} date={(user?.date ? user?.date : {} )} type={usersModalList?.type}/>
             )
         });
     }

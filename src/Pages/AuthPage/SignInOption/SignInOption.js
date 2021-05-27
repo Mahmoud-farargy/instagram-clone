@@ -1,14 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "./SignInOption.scss";
+import { FaUserAlt }  from "react-icons/fa";
 
 const SignInOption = (props) => {
-    const {method, signInFunc} = props;
-    const optionTitle = `Log In with ${method}`;
+    const {method, signInFunc, isLoading} = props;
+    const optionTitle = method === "anonymous" ?  "Log in anonymously" : `Log In with ${method}`;
     return (
         <>
-            <span  onClick={()=> !props.isLoading && signInFunc(`${method}Provider`) } className={`signIn__Btn ${method}__auth ${props.isLoading && "disabled"}`}>
-               <img src={require(`../../../Assets/Sign-In-logos/${method}.svg`)} alt={method+ "logo"} /> {optionTitle}
+            <span onClick={()=> !isLoading && signInFunc(`${method}Provider`) } className={`signIn__Btn ${method}__auth ${isLoading && "disabled"} d-flex`}>
+            { method === "anonymous" ?  <FaUserAlt className="mr-2"/> : <img src={require(`../../../Assets/Sign-In-logos/${method}.svg`)} alt={method+ "logo"} />} <span>{optionTitle}</span>
             </span>
         </>
     )

@@ -3,7 +3,7 @@ import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
 import { withRouter, Link, useParams } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
-import { auth } from "../../Config/firebase";
+import { auth, firebase } from "../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { GoVerified } from "react-icons/go";
 import { IoMdGrid } from "react-icons/io";
@@ -19,7 +19,6 @@ import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import SuggList from "./SuggList/SuggList";
 import MutualFriendsItem from "./MutualFriendsList/MutualFriendsItem";
 import * as Consts from "../../Utilities/Consts";
-import { firebase } from "../../Config/firebase";
 import Moment from "react-moment";
 import ProfileItem from "../../Components/ProfileItem/ProfileItem";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
@@ -47,7 +46,9 @@ const UsersProfile = (props) => {
     currentPostIndex,
     updateReelsProfile,
     isUserOnline,
-    getUsersProfile
+    getUsersProfile,
+    notify,
+    handleSendingMessage
   } = context;
 
   const message = (uid, username, avatarUrl, isVerified) => {
@@ -110,10 +111,12 @@ const UsersProfile = (props) => {
         changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
     });
   }
+
   const similarFollowers = (usersProfileData?.uid !== receivedData?.uid) && (receivedData?.blockList?.filter(w => w.blockedUid !== usersProfileData?.uid)) ? receivedData?.following.filter(el => el.receiverUid !== receivedData?.uid && usersProfileData?.followers.some(item => item.senderUid === el.receiverUid)) : [];
   const websiteToView = usersProfileData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?(?:http:\/\/)?/i, "").split("/")[0];
   const notBlockedOrBlockingUser = receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) && usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid);
   const isPrivate = usersProfileData?.profileInfo?.professionalAcc?.private;
+  const isBirthday = ((usersProfileData?.uid !== receivedData?.uid) && (usersProfileData?.profileInfo?.birthday) && (new Date().getMonth() + 1 === new Date(usersProfileData?.profileInfo?.birthday).getMonth() + 1) && (new Date().getDate() === new Date(usersProfileData?.profileInfo?.birthday).getDate()));
   const userProfileInfo = (
     <div>
        {
@@ -164,7 +167,7 @@ const UsersProfile = (props) => {
                         </div>
                     }
                     {
-                      similarFollowers && similarFollowers.length > 0 &&
+                      similarFollowers && similarFollowers.length > 0 && (isPrivate ? isFollowed : true) &&
                       <p onClick={()=> changeModalState("users",true, similarFollowers, Consts.MUTUALFRIENDS)}  className="similar__followers">Followed by <span>
                         {
                         similarFollowers.slice(0,3).map(q => <MutualFriendsItem key={q?.receiverUid} item={q} />)
@@ -175,6 +178,17 @@ const UsersProfile = (props) => {
                       }
                         </span></p>
                     }
+                    {
+                      isBirthday &&
+                        <div className="prof--acc--name">
+                              <h1>
+                                Today is {(usersProfileData?.profileInfo?.name || usersProfileData?.userName)}'s Birthday 
+                              </h1>
+                              <span className="bd--wish" onClick={() => bdWish()}>Click here to tell {usersProfileData?.profileInfo?.gender?.toLowerCase() === "male" ? "him" : usersProfileData?.profileInfo?.gender?.toLowerCase() === "female" ? "her" : "them"} "Happy Birthday"</span>
+                              <br />
+                        </div>
+                    }
+ 
         </div>
         : null
       }
@@ -190,6 +204,20 @@ const UsersProfile = (props) => {
         name
       )
     }
+  }
+  const bdWish = () =>{
+    const UID = usersProfileData?.uid;
+    initializeChatDialog(UID, usersProfileData?.userName, usersProfileData?.userAvatarUrl, usersProfileData?.isVerified).then(() => {
+      const timeout = setTimeout(() => {
+              changeMainState("currentChat", { uid: UID,index: 0 });
+              handleSendingMessage({content: `Hey, Happy birthday ${(usersProfileData?.profileInfo?.name || usersProfileData?.userName)}. I wish you the best.🎂`, uid: UID, type: "text", pathname: ""});
+              props.history.push("/messages");
+              clearTimeout(timeout);
+          }, 3000);                        
+          changeModalState("newMsg", false);
+    }).catch(() => {
+      notify("Failed to send","error");
+    });
   }
   return (
     <Fragment> 
@@ -355,7 +383,7 @@ const UsersProfile = (props) => {
               </div>
             </header>
             {openSuggestionsBox && (
-              <div className="users--suggestions--container">
+              <div className="users--suggestions--container fadeEffect">
                 <div className="user--sugg--header flex-row">
                   <span className="user__sugg__title__title">Suggestions</span>
                   <Link to="/explore/people"><span className="user__see__all__btn">see all</span></Link>

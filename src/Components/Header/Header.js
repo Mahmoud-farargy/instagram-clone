@@ -222,7 +222,7 @@ const Header = (props) => {
                 transition: "all 0.4s ease",
                 opacity: openSearchBox ? "1" : "0",
               }}
-              className="search--pop--window"
+              className="search--pop--window fadeEffect"
             >
               <div className="search--popup--arrow"> </div>
               <div className="search--popup--inner">
@@ -319,7 +319,7 @@ const Header = (props) => {
                         transition: "all 0.4s ease",
                         opacity: openNoti ? "1" : "0",
                       }}
-                      className="noti--popup--window"
+                      className="noti--popup--window fadeEffect"
                     >
                       <div className="noti--popup--arrow"> </div>
                       <div className="noti--popup--inner">
@@ -346,7 +346,7 @@ const Header = (props) => {
                         opacity: openProf ? "1" : "0",
                       }}
                       id="profilePopup"
-                      className="noti--popup--window"
+                      className="noti--popup--window fadeEffect"
                     >
                       <div className="noti--popup--inner">
                         <div className="noti--popup--arrow"> </div>

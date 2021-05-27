@@ -186,7 +186,6 @@ const App = () => {
         {/* Notifications container */}
         <ToastContainer />
         {/* Routes */}
-       
           <Suspense fallback={<LoadingScreen />}>
             <Switch>
             <Route exact path="/">

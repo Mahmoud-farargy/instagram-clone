@@ -80,6 +80,8 @@ const MyProfile =(props)=>{
         }
     }
     const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0]? receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0] : "" ;
+    const isBirthday = ((receivedData?.profileInfo?.birthday) && (new Date().getMonth() + 1 === new Date(receivedData?.profileInfo?.birthday).getMonth() + 1) && (new Date().getDate() === new Date(receivedData?.profileInfo?.birthday).getDate()));
+
     const HeaderBottom = (
         <>
                                         {receivedData?.profileInfo && receivedData?.profileInfo?.name &&
@@ -109,8 +111,15 @@ const MyProfile =(props)=>{
                                         <a rel="noopener noreferrer" target="_blank" href={receivedData?.profileInfo?.website}>{websiteToView}</a>
                                     </div>
                                 }
+                                {
+                                    isBirthday &&
+                                    <div className="prof--acc--name">
+                                        <h1 style={{textTransform:"uppercase"}}>HAPPY BIRTHDAY TO YOU {(receivedData?.profileInfo?.name || receivedData?.userName)} 🎂</h1>
+                                    </div>
+                                }
         </>
     )
+    const isEmailAndNotAnon = (receivedData?.profileInfo?.registrationMethod === "email" && !receivedData?.uid?.includes("L9nP3dEZpyTg7AMIg8JBkrGQIji2"));
      return(
         <Fragment>
             {/* Modals */}
@@ -119,10 +128,10 @@ const MyProfile =(props)=>{
             }
             { modalsState?.options && !modalsState?.post &&
                 <OptionsModal>
-                    {receivedData?.profileInfo?.registrationMethod === "email" && <span onClick={() => {changeMainState("activeOption", {activeIndex: 2, activeID: "Change_Password_or_Email"}); props.history.push("/edit-profile")}}>Change password or email</span>}
+                    { isEmailAndNotAnon && <span onClick={() => {changeMainState("activeOption", {activeIndex: 2, activeID: "Change_Password_or_Email"}); props.history.push("/edit-profile")}}>Change password or email</span>}
                     <span onClick={() => {changeMainState("activeOption", {activeIndex: 1, activeID: "Professional_Account"}); props.history.push("/edit-profile")}}>Account settings</span>
-                    <span onClick={() => {changeMainState("activeOption", {activeIndex: receivedData?.profileInfo?.registrationMethod === "email" ? 4 : 3, activeID: "Feedback"}); props.history.push("/edit-profile")}}>Report a problem/Rate app</span>
-                    <span onClick={() => {changeMainState("activeOption", {activeIndex: receivedData?.profileInfo?.registrationMethod === "email" ? 3 : 2, activeID: "Blocked_Users"}); props.history.push("/edit-profile")}}>Manage blocked accounts</span>
+                    <span onClick={() => {changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? 4 : 3, activeID: "Feedback"}); props.history.push("/edit-profile")}}>Report a problem/Rate app</span>
+                    <span onClick={() => {changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? 3 : 2, activeID: "Blocked_Users"}); props.history.push("/edit-profile")}}>Manage blocked accounts</span>
                     <span onClick={()=> authLogout(props.history)}>Log out</span>
                     <span>Cancel</span>
                 </OptionsModal>

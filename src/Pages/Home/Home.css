@@ -35,9 +35,6 @@
     width:100%;
     float: left;
 }
-.side--user--info h5,svg {
-    cursor:pointer;
-}
 #home.main--home--container .home--posts--side #post.post--card--container{
     margin-bottom:60px;
     max-width: 614px;
@@ -68,13 +65,22 @@
     justify-content: center;
     align-items:center;
 }
+.online__title{
+    font-size: 13px;
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+.side--user--name{
+     align-items:center !important;
+}
+.side--user--info h5,svg {
+    cursor:pointer;
+}
 .side--user--info h5{
     margin-left:10px;
     font-size:14px;
     text-transform: none;
     margin-bottom:0;
-    text-transform :none;
-    align-items:center;
     max-width: 100%;
     overflow: hidden;
     white-space:nowrap;

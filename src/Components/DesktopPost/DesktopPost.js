@@ -359,7 +359,7 @@ const DesktopPost = (props) => {
             onKeyDown={navigate}
           >
             {/* post start */}
-            <div id="post" className="post--card--container post--page">
+            <div id="post" className="post--card--container fadeEffect post--page">
               <article className="post--card--article">
                 <div className="post--card--body desktop--left">
                   {contentType === "image" ? (
@@ -457,7 +457,7 @@ const DesktopPost = (props) => {
                             <div className="flex-row post--comment--row">
                               <Avatar className="comment__user__avatar" loading="lazy" src={usersProfileData?.userAvatarUrl} alt={usersProfileData?.userName} />
                                   <span title={usersProfileData?.userName} className="post__top__comment">
-                                    <h6 className="comment__text mt-1"> <strong>{usersProfileData?.userName}</strong> 
+                                    <h6  onClick={() => {browseUser(usersProfileData?.uid, usersProfileData?.userName ); changeModalState("users", false, "", "")}} className="comment__text mt-1"> <strong>{usersProfileData?.userName}</strong> 
                                         <Caption caption={caption} userName="" />
                                     </h6>
                                   </span>

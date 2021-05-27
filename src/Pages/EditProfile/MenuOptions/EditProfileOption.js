@@ -53,7 +53,7 @@ const EditProfileOption = (props) => {
   let isFormValid = true; //makes sure all fields are filled and at least one of the fields does not match the already existing data
   if (Object.keys(formState).length > 0) {
     isFormValid =
-      formState?.bio && formState?.name &&
+      formState?.bio && formState?.name && formState?.birthday
       Object.keys(formState).some(
         (item) => formState[item] !== receivedData?.profileInfo?.[item]
       );
@@ -63,7 +63,7 @@ const EditProfileOption = (props) => {
     e.preventDefault();
     const curr = auth.currentUser;
     setSubmission(true);
-    if (formState?.bio && formState?.name) {
+    if (formState?.bio && formState?.name && formState?.birthday) {
       curr.updateProfile({
         displayName: formState.name,
         phoneNumber: formState.phoneNumber,
@@ -326,13 +326,15 @@ const EditProfileOption = (props) => {
               type="text"
               inputType="date"
               changeInput={onInputChange}
-              label="Date of birth"
+              label="Date of birth *"
               name="birthday"
               val={formState?.birthday}
               submitted={submitted}
+              max={`${new Date().getFullYear() -10}-01-01`}
+              min={`${new Date().getFullYear() - 90}-01-01`}
               extraText={
                 <small>
-                  This won't appear to anyone except you
+                  Set your birthday so that your friends get notified when your birthday comes.
                 </small>
               }
             />

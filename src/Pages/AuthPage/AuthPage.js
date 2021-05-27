@@ -7,6 +7,7 @@ import { GrInstagram } from "react-icons/gr";
 import Loader from "react-loader-spinner";
 import SignInOption from "./SignInOption/SignInOption";
 import * as Consts from "../../Utilities/Consts";
+import { anonInfo } from "../../info";
 
 import {
   auth,
@@ -54,16 +55,71 @@ const AuthPage = (props) => {
       })
     );
   };
-  const submitForm = async (event, authType) => {
-    event.preventDefault();
+  const loginWithEmail = (email, password) => {
     var {
-      resetAllData,
-      isUserOnline,
       updateUID,
       updateUserState,
       notify,
       receivedData,
       currentUser,
+      updatedReceivedData,
+      isUserOnline,
+      authLogout
+    } = context;
+    setTimeout(() => {
+      //avoids data overlapping
+      if (!isUserOnline) {
+          auth
+          .signInWithEmailAndPassword(
+            email.toLowerCase().trim(),
+            password
+          )
+          .then(() => {
+          setLoading(false);
+          setLoginEmail("");
+          setLoginPassword("");
+
+          auth.onAuthStateChanged((authUser) => {
+            updateUserState(true);
+            updateUID(authUser?.uid);
+            setLoading(false);
+          });
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              email: email.toLowerCase(),
+              password: decipherPassword(password),
+            })
+          );
+          setTimeout(() => {
+            updatedReceivedData();
+            notify(
+              `Welcome back, ${
+                receivedData?.userName || currentUser?.displayName || "User"
+              }`
+            );
+            props.history.push("/");
+          }, 150);
+        })
+        .catch((err) => {
+          setLoading(false);
+          notify(err.message, "error");
+        });
+
+      } else {
+        setLoading(false);
+        authLogout(props.history);
+        notify("It seems like you haven't logged out properly last time. Please try again.","error");
+      }
+    }, 1000);
+
+  }
+  const submitForm = async (event, authType) => {
+    event.preventDefault();
+    var {
+      resetAllData,
+      isUserOnline,
+      notify,
       authLogout,
       updatedReceivedData
     } = context;
@@ -208,51 +264,7 @@ const AuthPage = (props) => {
       }, 1000);
     } else if (authType === "login") {
       resetAllData();
-      setTimeout(() => {
-        if (!isUserOnline) {
-          //avoids data overlapping
-          auth
-            .signInWithEmailAndPassword(
-              loginEmail.toLowerCase().trim(),
-              loginPassword
-            )
-            .then(() => {
-              setLoading(false);
-              setLoginEmail("");
-              setLoginPassword("");
-
-              auth.onAuthStateChanged((authUser) => {
-                updateUserState(true);
-                updateUID(authUser?.uid);
-                setLoading(false);
-              });
-              localStorage.setItem(
-                "user",
-                JSON.stringify({
-                  email: loginEmail.toLowerCase(),
-                  password: decipherPassword(loginPassword),
-                })
-              );
-              setTimeout(() => {
-                updatedReceivedData();
-                notify(
-                  `Welcome back, ${
-                    receivedData?.userName || currentUser?.displayName || "User"
-                  }`
-                );
-                props.history.push("/");
-              }, 150);
-            })
-            .catch((err) => {
-              setLoading(false);
-              notify(err.message, "error");
-            });
-        } else {
-          setLoading(false);
-          authLogout(props.history);
-          notify("It seems like you haven't logged out properly last time. Please try again.","error");
-        }
-      }, 1800);
+      loginWithEmail(loginEmail, loginPassword);
     }
   };
   const signInMethods = (method) => {
@@ -354,6 +366,11 @@ const AuthPage = (props) => {
           console.log(res);
         });
         break;
+      case "anonymousProvider":
+        setLoading(true);
+        const { email, pass } = anonInfo;
+        loginWithEmail(email, pass);
+      break;
       case "twitterProvider":
         setLoading(true);
         auth
@@ -698,18 +715,23 @@ const AuthPage = (props) => {
                     <div className="signIn--options--box">
                       <SignInOption
                         method="google"
-                        isLoading={inProgress}
+                        isLoading={(loading || inProgress)}
                         signInFunc={(x) => signInMethods(x)}
                       />
                       {/* <SignInOption method="facebook" signInFunc={(x)=> signInMethods(x)} /> */}
-                      <SignInOption
+                      {/* <SignInOption
                         method="twitter"
-                        isLoading={inProgress}
+                        isLoading={(loading || inProgress)}
+                        signInFunc={(x) => signInMethods(x)}
+                      /> */}
+                      <SignInOption
+                        method="github"
+                        isLoading={(loading || inProgress)}
                         signInFunc={(x) => signInMethods(x)}
                       />
                       <SignInOption
-                        method="github"
-                        isLoading={inProgress}
+                        method="anonymous"
+                        isLoading={(loading || inProgress)}
                         signInFunc={(x) => signInMethods(x)}
                       />
                     </div>
@@ -831,7 +853,7 @@ const AuthPage = (props) => {
           <div className="auth--copyright flex-column flex-wrap">
             <span>This app was made for personal use</span>
             <span>
-              &copy;2020 - {new Date().getFullYear()} Instagram clone made by
+              &copy; {new Date().getFullYear()} Instagram clone made by
               Mahmoud Farargy
             </span>
           </div>
