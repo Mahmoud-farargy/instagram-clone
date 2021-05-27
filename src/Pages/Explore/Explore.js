@@ -171,7 +171,7 @@ const Explore = () => {
     }
   }, [explore]);
   const openPost = (postId, _ ,uid) => {
-    if(uid, postId){
+    if(uid && postId){
             getUsersProfile(uid).then((res) => {
         const getPostIndex = res?.posts.map((post) => post?.id).indexOf(postId);
 

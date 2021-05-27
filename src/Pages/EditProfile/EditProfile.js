@@ -60,7 +60,7 @@ class EditProfile extends PureComponent {
                       />
                     ))}
                   <div className="left--bottom--side flex-column">
-                    <img src={fbimg} alt="fb" loading="lazy" />
+                    <img loading="lazy" className="unselectable" src={fbimg} alt="fb" />
                     <span className="change__prof__pic mt-3">
                       Accounts Center
                     </span>

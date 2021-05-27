@@ -38,7 +38,7 @@ const NotificationOutput =(props)=>{
                         } 
                         {
                              notification?.type !== "follow" ?
-                             <div onClick={(e)=> redirectMeToPost(e)}><img alt="Post" className="noti__bar__img" src={notification?.contentType ==="image" ? (notification?.contentURL) : notification?.contentType ==="video" ? igVideoImg : notification?.contentType === "reel" ? reelDefaultPic : notification?.contentType === "audio" ? igAudioImg: null } /></div>
+                             <div onClick={(e)=> redirectMeToPost(e)}><img loading="lazy" alt="Post" className="noti__bar__img unselectable" src={notification?.contentType ==="image" ? (notification?.contentURL) : notification?.contentType ==="video" ? igVideoImg : notification?.contentType === "reel" ? reelDefaultPic : notification?.contentType === "audio" ? igAudioImg: null } /></div>
                                 
                              : null
                         }

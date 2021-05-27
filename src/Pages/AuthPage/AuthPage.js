@@ -606,7 +606,7 @@ const AuthPage = (props) => {
       <section className="auth--main flex-column">
         <div className="auth--inner w-100 flex-row">
           <div className="auth--review--pic flex-column">
-            <img src={instaReview} alt="insta review" />
+            <img loading="lazy" src={instaReview} alt="insta review" className="unselectable" />
           </div>
           <div className="auth flex-column mt-5">
             <div className="auth--upper--card w-100 flex-column">
@@ -830,8 +830,8 @@ const AuthPage = (props) => {
             <p className="auth__get__app">Get the app.</p>
             <div className="auth--available--stores">
               <div className="auth--stores--inner flex-row">
-                <img src={appleStore} className="mb-2" alt="apple store" />
-                <img src={gpStore} alt="google store" />
+                <img src={appleStore} className="mb-2 unselectable"  alt="apple store" />
+                <img src={gpStore} alt="google store" className="unselectable" />
               </div>
             </div>
           </div>

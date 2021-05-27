@@ -3,7 +3,7 @@
     position:fixed;
     top:0;
     left:0;
-    z-index: 2000;
+    z-index: 5800;
     height: 100vh;
     overflow: hidden;
     .loading--backdrop{
@@ -26,7 +26,7 @@
         left: 50%;
         transform: translate(-50%,-50%);
         height:80vh ;
-        z-index: 5000;
+        z-index: 6000;
         border-radius: 10px;
         justify-content:center;
         align-items:center;

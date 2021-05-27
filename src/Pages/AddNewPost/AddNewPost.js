@@ -338,7 +338,7 @@ class AddNewPost extends PureComponent {
                 (<div>
                   {
                     this.state.contentType === "image" ?
-                    <img src={this.state.contentURL} alt="" />
+                    <img loading="lazy" className="unselectable" src={this.state.contentURL} alt="" />
                     : this.state.contentType === "video" ? 
                     <video src={this.state.contentURL} controls > </video>
                     : this.state.contentType === "audio" ? 
