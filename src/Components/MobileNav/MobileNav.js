@@ -1,4 +1,4 @@
-import React,{useContext} from "react";
+import React,{useContext, memo} from "react";
 import Auxiliary from "../HOC/Auxiliary";
 import {NavLink, withRouter} from "react-router-dom";
 import "../Header/Header.css";
@@ -52,4 +52,4 @@ const MobileNav =(props)=>{
         </Auxiliary>
     )
 }
-export default withRouter(MobileNav);
+export default withRouter(memo(MobileNav));

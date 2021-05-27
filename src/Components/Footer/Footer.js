@@ -31,7 +31,7 @@ const Footer = () => (
                                             <IoIosArrowDown />
                                         </div>
                                         
-                                        <span> &copy;2020 - {new Date().getFullYear()} Made with <BsHeartFill /> by Mahmoud Farargy</span>
+                                        <span> &copy; {new Date().getFullYear()} Made with <BsHeartFill /> by Mahmoud Farargy</span>
                                     </div>
                                  
                                 </div>

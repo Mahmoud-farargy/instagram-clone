@@ -16,7 +16,6 @@ import Moment from "react-moment";
 const InputForm = lazy(() =>
   import("../../../Components/Generic/InpuForm/InputForm")
 );
-
 const ProfessionalAccount = (props) => {
   const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser, handleFollowRequests } = useContext(AppContext);
   //useState
@@ -109,6 +108,13 @@ const ProfessionalAccount = (props) => {
       "Are you sure you want to delete your account permanently?"
     );
   };
+  function calculateAge(birthday) {
+    if(birthday && birthday instanceof Date){
+      var ageDifMs = Date.now() - birthday?.getTime();
+      var ageDate = new Date(ageDifMs);
+      return Math.abs(ageDate.getUTCFullYear() - 1970);
+    }
+  }
   return (
     <Fragment>
       <div className="option--container">
@@ -240,6 +246,12 @@ const ProfessionalAccount = (props) => {
                               {new Date(currentUser?.metadata?.lastSignInTime).toDateString() + " "}
                               (<Moment fromNow withTitle>{currentUser?.metadata?.lastSignInTime}</Moment>)
                             </div>
+                            {
+                              receivedData?.profileInfo?.birthday &&
+                              <div className="account--info--text">
+                                <span>Your age is: </span>{calculateAge(new Date(receivedData?.profileInfo?.birthday))} Years old
+                              </div>
+                            }
                             {
                               currentUser?.email &&
                               <div className="account--info--text">

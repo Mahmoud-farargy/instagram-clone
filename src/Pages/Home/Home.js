@@ -18,6 +18,7 @@ import { RiVideoAddLine } from "react-icons/ri";
 import { FiEdit, FiSettings } from "react-icons/fi";
 import HomeReels from "../../Components/HomeReels/HomeReels";
 import GSCardItem from "./GSCardItem/GSCardItem";
+import { GOU } from "../../Utilities/GetOnlineUsers";
 
 const Home = (props) => {
   let {
@@ -40,6 +41,7 @@ const Home = (props) => {
   let posts = receivedData?.posts;
   let [user, loading] = useAuthState(auth);
   const [randNum, setRandNum] = useState(0);
+  const [onlineList, setOnlineList] = useState([]);
   const [footerLinks] = useState([
     "About",
     "Help",
@@ -54,6 +56,9 @@ const Home = (props) => {
     "Language",
   ]);
   useEffect(() => {
+    GOU(uid).then((k) => {
+        setOnlineList(k);
+    });
     changeMainState("currentPage", "Home");
     window.scrollTo(0, 0);
   }, []);
@@ -127,7 +132,7 @@ const Home = (props) => {
                  <h4>Getting Started</h4> 
                   <ul className="getting--started--inner flex-row">
                     <GSCardItem title="add posts" goTo="/add-post"  btnTitle="add a post" description="Share photos and videos that people can admire." icon={<RiVideoAddLine />} />
-                    <GSCardItem title="edit your profile" goTo="/edit-profile" btnTitle="edit profile" description="Update your name, bio, status and gender." changeOptionIndex={{activeIndex: 0, activeID: "Edit_Profile"}} icon={<FiEdit />} />
+                    <GSCardItem title="edit your profile" goTo="/edit-profile" btnTitle="edit profile" description="Update your name, birthday, bio, relationship status and gender." changeOptionIndex={{activeIndex: 0, activeID: "Edit_Profile"}} icon={<FiEdit />} />
                     <GSCardItem title="configue your account" goTo="/edit-profile" changeOptionIndex={{activeIndex: 1, activeID:  "Professional_Account"}} description="Set a category and control you account."  btnTitle="configure account" icon={<FiSettings />} />
                     <GSCardItem title="find more people" goTo="/explore/people" btnTitle="find people"  description="Discover new people."  icon={<VscAccount />} />
                     <GSCardItem title="message someone" goTo="/messages" btnTitle="start messaging" description="Chat with other users." icon={<BiMessageEdit />} />
@@ -190,6 +195,7 @@ const Home = (props) => {
                                 userAvatarUrl={user?.userAvatarUrl}
                                 creationDate={user?.profileInfo?.accountCreationDate ? user?.profileInfo?.accountCreationDate : ""}
                                 followers={user?.followers}
+                                isOnline={onlineList?.some(c => c.uid === user?.uid)}
                               />
                             );
                           })
@@ -233,7 +239,7 @@ const Home = (props) => {
                    }
                  </ul>
                  <div className="home--footer--copyright">
-                   &copy; 2020 - {new Date().getFullYear()} not the official Instagram
+                   &copy; {new Date().getFullYear()} not the official Instagram
                  </div>
                </nav>
               </div>

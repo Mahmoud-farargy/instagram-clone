@@ -7,10 +7,11 @@ import { AppContext } from "../../Context";
 import Skeleton from "react-loading-skeleton";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import { trimText } from "../../Utilities/TrimText";
+import { withinPeriod } from "../../Utilities/WithinPeriod";
 
 const SuggestItem =(props)=>{
     const { loadingState, receivedData } = useContext(AppContext);
-    const { userName, isVerified, userUid, userAvatarUrl, browseUser, creationDate, followers } = props;
+    const { userName, isVerified, userUid, userAvatarUrl, browseUser, creationDate, followers, isOnline } = props;
     const mutuals = receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.filter(el => el.receiverUid !== receivedData?.uid && followers?.sort((a,b) => b?.date?.seconds -  a?.date?.seconds).some(item => item?.senderUid === el?.receiverUid)).slice(0,1);
     return(
         <Fragment>
@@ -34,9 +35,13 @@ const SuggestItem =(props)=>{
                     <div onClick={()=> browseUser(userUid, userName )} title={userName} className="side--user--info flex-row">
                         <Avatar src={userAvatarUrl} alt={userName} title={userName}/>
                         <span className="flex-column">
-                              <h5 className="flex-row">{userName}{isVerified ?  <span><GoVerified className="verified_icon"/></span> : null} </h5>  
+                            <span className="flex-row side--user--name">
+                                <h5>{trimText(userName, 20)}</h5>
+                                {isVerified ?  <span><GoVerified className="verified_icon"/></span> : null} 
+                                { isOnline && <span className="online__user"></span>}
+                            </span>
                             <small>{ //if account creation's date is less than 2 weeks
-                            (creationDate && (new Date() - new Date(creationDate?.seconds * 1000) < 1209600000) ) ? "New to Voxgram"
+                            (creationDate && (withinPeriod({date: creationDate?.seconds, period: 1209600000 }))) ? "New to Voxgram"
                             : mutuals?.length > 0 ?
                                 (<span className="flex-row trim__txt" title={mutuals[0]?.receiverName}> 
                                         {trimText(`followed by ${mutuals[0]?.receiverName}`,20)}
@@ -57,6 +62,7 @@ SuggestItem.propTypes = {
     isVerified: PropTypes.bool.isRequired,
     userUid: PropTypes.string.isRequired,
     followers: PropTypes.array.isRequired,
+    isOnline: PropTypes.bool,
     creationDate: PropTypes.oneOfType([
         PropTypes.object,
         PropTypes.string

@@ -78,7 +78,7 @@ const Message = (props) => {
                                         <HiOutlineDotsHorizontal onClick={() => setOpeningOptions(!openOptions) }/>
                                       {
                                           openOptions &&
-                                          <div className="message--option flex-row">
+                                          <div className="message--option flex-row fadeEffect">
                                                   <span  onClick={() => onOptionClick("unsend")} >unsend</span>
                                                   {message?.type === "text" && <span onClick={()=> onOptionClick("copy")}>copy</span>}
                                           </div>

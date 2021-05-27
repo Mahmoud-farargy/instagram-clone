@@ -101,6 +101,20 @@ a:visited{
     animation-iteration-count: 1;
     animation-play-state: running;
 }
+.fadeEffect{
+    animation: fadeIn 0.1s ease-out;
+    -webkit-animation: fadeIn 0.3s ease-out;
+    animation-fill-mode: none;
+    animation-direction: normal;
+    animation-iteration-count: 1;
+    animation-play-state: running;
+}
+.boundingEffect{
+    animation: boundLoading 1.5s ease-out infinite;
+    -moz-animation: boundLoading 1.5s ease-out infinite;
+    -webkit-animation: boundLoading 1.5s ease-out infinite;
+}
+
 .MuiAvatar-img{
     background-color: rgb(98, 98, 98);
     min-height: 14px;
@@ -2020,6 +2034,7 @@ ul.getting--started--inner{
     cursor: pointer;
     border:none;
     background: transparent;
+    padding:12px 8px;
 }
 .primary__btn svg{
     width: 15px;
@@ -2038,6 +2053,9 @@ ul.getting--started--inner{
     background-color: transparent;
     color:var(--font-black);
 }
+.prof__btn__unfollowed:focus, .primary__btn:focus{
+    outline: none;
+}
 a.prof__btn__unfollowed{
     color:var(--font-black);
 }
@@ -2050,6 +2068,7 @@ a.prof__btn__unfollowed{
 }
 .prof__btn__unfollowed:active{
     color:#424242 !important;
+    background-color: #f1f1f1;
 }
 #usersProfile.users--profile--container .users__profile__image{
     width:100%;
@@ -2125,7 +2144,14 @@ a.prof__btn__unfollowed{
     content: "";
     display: none;
 }
-#usersProfile .activity--container .online__user{
+.bd--wish{
+    font-size: 15px;
+    font-weight: 400;
+    color: rgb(10, 44, 83);
+    margin-top:5px;
+    cursor: pointer;
+}
+.online__user{
     width: 14px;
     height: 14px;
     border-radius: 50%;
@@ -3044,6 +3070,9 @@ a.prof__btn__unfollowed{
     .auth--footer--container{
         justify-content: center;
     }
+    #suggestionsPage .desktop-comp div.suggestions--p--inner{
+        width: 100%;
+    }
 }
 /* ---x------Query less than or equal 9300px---x--------- */
 @media only screen and (max-width: 300px){
@@ -3104,6 +3133,156 @@ a.prof__btn__unfollowed{
     0%{background-position:10% 0%}
     50%{background-position:91% 100%}
     100%{background-position:10% 0%}
+}
+
+@keyframes fadeIn {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+@-webkit-keyframes fadeIn {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+@-o-keyframes fadeIn {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+@-moz-keyframes fadeIn {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+@keyframes boundLoading {
+    0%{
+        transform: scale(1);
+    }
+    10%{
+        transform: scale(1.02);
+    }
+    15%{
+        transform: scale(1.05);
+    }
+    30%{
+        transform: scale(1.1);
+    }
+    50%{
+        transform: scale(1.1);
+    }
+    70%{
+        transform: scale(1.1);
+    }
+    90%{
+        transform: scale(1.05);
+    }
+    95%{
+        transform: scale(1.02);
+    }
+    100%{
+        transform: scale(1);
+    }
+}
+@-webkit-keyframes boundLoading {
+    0%{
+        transform: scale(1);
+    }
+    10%{
+        transform: scale(1.02);
+    }
+    15%{
+        transform: scale(1.05);
+    }
+    30%{
+        transform: scale(1.1);
+    }
+    50%{
+        transform: scale(1.1);
+    }
+    70%{
+        transform: scale(1.1);
+    }
+    90%{
+        transform: scale(1.05);
+    }
+    95%{
+        transform: scale(1.02);
+    }
+    100%{
+        transform: scale(1);
+    }
+}
+@-moz-keyframes boundLoading {
+    0%{
+        transform: scale(1);
+    }
+    10%{
+        transform: scale(1.02);
+    }
+    15%{
+        transform: scale(1.05);
+    }
+    30%{
+        transform: scale(1.1);
+    }
+    50%{
+        transform: scale(1.1);
+    }
+    70%{
+        transform: scale(1.1);
+    }
+    90%{
+        transform: scale(1.05);
+    }
+    95%{
+        transform: scale(1.02);
+    }
+    100%{
+        transform: scale(1);
+    }
+}
+@-o-keyframes boundLoading {
+    0%{
+        transform: scale(1);
+    }
+    10%{
+        transform: scale(1.02);
+    }
+    15%{
+        transform: scale(1.05);
+    }
+    30%{
+        transform: scale(1.1);
+    }
+    50%{
+        transform: scale(1.1);
+    }
+    70%{
+        transform: scale(1.1);
+    }
+    90%{
+        transform: scale(1.05);
+    }
+    95%{
+        transform: scale(1.02);
+    }
+    100%{
+        transform: scale(1);
+    }
 }
 
 @keyframes fakeLoading {

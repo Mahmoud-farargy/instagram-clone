@@ -103,7 +103,13 @@ A social media platform similar to Instagram that people can actually use.
                                             </li>
                                             <li><p>Account privacy</p></li>
                                             <li><p>Search users</p></li>
-                                            <li><p>Suggestions list</p></li>
+                                            <li>
+                                                <p>Suggestions list</p>
+                                                <ul class="bullet--2">
+                                                 <li><p>View new members within the current week</p></li>
+                                                 <li><p>View upcoming birthdays within the current month</p></li>
+                                                </ul>
+                                            </li>
                                             <li><p>Activity Status</p></li>
                                             <li><p>Save posts</p></li>
                                             <li><p>Fully responsive on Mobile and tablet devices as well</p></li>

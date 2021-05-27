@@ -46,7 +46,7 @@ class EditProfile extends PureComponent {
                 <ul className="flex-column left--side">
                   {this.state.sideMenuOptions &&
                     this.state.sideMenuOptions.length > 0 &&
-                    this.state.sideMenuOptions.filter((k) => (receivedData?.profileInfo?.registrationMethod !== "email" ? (k.id !== "Change_Password_or_Email") : k)).map((item, i) => (
+                    this.state.sideMenuOptions.filter((k) => ((receivedData?.profileInfo?.registrationMethod !== "email" || receivedData?.uid === "L9nP3dEZpyTg7AMIg8JBkrGQIji2") ? (k.id !== "Change_Password_or_Email") : k)).map((item, i) => (
                       <MenuOption
                         onClick={() => this.onMenuChange(i, item.id)}
                         className={
