@@ -38,7 +38,7 @@ const ErrorRoute = (props) => {
             </div>
           )}
           <div className="ig--error--error flex-row">
-            <img src={igGrayLogo} alt="ig logo" />
+            <img loading="lazy" className="unselectable" src={igGrayLogo} alt="ig logo" />
           </div>
         </div>
       </section>

@@ -7,20 +7,20 @@ import { AiOutlineReload } from "react-icons/ai";
 const LoadingScreen = () => {
     const _isMounted = useRef(true);
     const [showAnim, setShowingAnim] = useState(false);
-    var timeout;
     useEffect(() => {
         if(_isMounted){
-            timeout = setTimeout(() => {
+           var timeout = setTimeout(() => {
                 setShowingAnim(true);
-                clearTimeout(timeout);
+                window.clearTimeout(timeout);
             },19000);
             document.body.style.overflow = "hidden";
-            return() => {                
-                document.body.style.overflow = "visible";
-                clearTimeout(timeout);
-                _isMounted.current = false;
-            }
         }
+        return() => {                
+            document.body.style.overflow = "visible";
+            window.clearTimeout(timeout);
+            _isMounted.current = false;
+        }
+        
     },[]);
     const reloadPage = () => {
         window.location.reload();
@@ -34,7 +34,7 @@ const LoadingScreen = () => {
                         {
                             !showAnim ?
                             <div className="flex-column loading--screen--inner">
-                                <img loading="lazy" className="boundingEffect" src={loadingImg} alt="Loading..." />
+                                <img loading="lazy" className="boundingEffect unselectable" src={loadingImg} alt="Loading..." />
                             </div> 
                             :
                             <div className="flex-column loading--screen--inner loading--timeout--bg fadeEffect">

@@ -7,7 +7,7 @@ import { FiHeart, FiSend } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment , FaRegCommentDots} from "react-icons/fa";
 import { IoMdVideocam } from "react-icons/io";
-import { RiBookmarkLine, RiBookmarkFill } from "react-icons/ri"; //install react-instagram-embed
+import { RiBookmarkLine, RiBookmarkFill } from "react-icons/ri";
 import Comment from "../../Components/Comment/Comment";
 import { GoVerified } from "react-icons/go";
 import { Link } from "react-router-dom";
@@ -49,7 +49,7 @@ class Post extends PureComponent {
     var { likes, following } = this.props;
     this.setState({
       ...this.state,
-      alsoLiked: following?.filter(user => likes?.people?.some((el) => user?.receiverUid === el?.id)).slice(0,2) 
+      alsoLiked: following?.filter(user => likes?.people?.some((el) => (user?.receiverUid !== this.context.receivedData?.uid) && (user?.receiverUid === el?.id))).slice(0,2) 
     })
   }
   componentDidMount() {

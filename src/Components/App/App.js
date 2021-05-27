@@ -166,6 +166,7 @@ const App = () => {
       <main>
         {/* Modals */}
         {/*  comments modal */}
+        {/* <LoadingScreen /> */}
         <Suspense fallback={<LoadingScreen />}>
             {modalsState?.users && usersModalList && Object.keys(usersModalList).length > 0 ? <UsersModal /> : null}
           {modalsState?.comments ? (

@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext, useEffect } from "react";
+import React, { Fragment, useState, useContext, useEffect, memo } from "react";
 import { VscLoading } from "react-icons/vsc";
 import { AppContext } from "../../Context";
 import { FaUserCheck } from "react-icons/fa";
@@ -32,7 +32,7 @@ const FollowUnfollowBtn = ({shape, userData}) => {
       return () => {
         window.clearTimeout(tOut);
       }
-    })
+    },[tOut]);
     let conditionalClass = "";
     let conditionalText = "";
     switch (shape){
@@ -161,4 +161,4 @@ FollowUnfollowBtn.propTypes = {
     userData: PropTypes.object.isRequired,
     shape: PropTypes.string.isRequired
 }
-export default FollowUnfollowBtn;
+export default memo(FollowUnfollowBtn);

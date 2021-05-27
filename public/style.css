@@ -2000,8 +2000,6 @@ ul.getting--started--inner{
 }
 .voxgram--greeting .primary__btn{
     padding: 5px 10px;
-    width: 100%;;
-    margin-top:8px;
     width: 90%;
     margin: 10px auto 0 auto;
     font-size: 15px;
@@ -2013,6 +2011,13 @@ ul.getting--started--inner{
     font-size: 16px;
     font-weight: 600;
     margin: 30px 0 15px 0;
+}
+.unselectable, .logoText{
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    pointer-events: none;
 }
 .primary__btn{
     border-radius:3px;

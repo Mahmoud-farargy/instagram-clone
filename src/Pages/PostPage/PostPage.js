@@ -183,7 +183,7 @@ const PostPage  = (props) => {
     const updateUsersWhoLiked = () => {
       setCompState({
         ...compState,
-        alsoLiked: following?.filter(user => likes?.people?.some((el) => user?.receiverUid === el?.id)).slice(0,3) 
+        alsoLiked: following?.filter(user => likes?.people?.some((el) => (user?.receiverUid !== receivedData?.uid) && (user?.receiverUid === el?.id))).slice(0,3) 
       })
     }
     useEffect(()=> {

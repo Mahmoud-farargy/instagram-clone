@@ -10,7 +10,6 @@ import { GoVerified } from "react-icons/go";
 import { useAuthState } from "react-firebase-hooks/auth"; //firebase hook
 import { auth } from "../../Config/firebase";
 import Skeleton from "react-loading-skeleton";
-// import InstagramEmbed from "react-instagram-embed";
 import { BiMessageEdit } from "react-icons/bi";
 import { VscAccount } from "react-icons/vsc";
 import { AiOutlineHome } from "react-icons/ai";
@@ -61,7 +60,7 @@ const Home = (props) => {
     });
     changeMainState("currentPage", "Home");
     window.scrollTo(0, 0);
-  }, []);
+  }, [uid]);
   useEffect(()=> {
         setRandNum(Math.floor(Math.random() * suggestionsList?.length -6));
   },[suggestionsList]);
@@ -242,15 +241,6 @@ const Home = (props) => {
                    &copy; {new Date().getFullYear()} not the official Instagram
                  </div>
                </nav>
-              </div>
-              <div className="instagram--embed--container">
-                {/* <InstagramEmbed
-                            url="https://www.instagram.com/p/CGalYyrJNsX/"
-                            // hideCaptions ={false}
-                            containerTagName ="div"
-                            className="instagram__embed"
-                            // maxWidth={320}
-                         /> */}
               </div>
             </aside>
           </div>

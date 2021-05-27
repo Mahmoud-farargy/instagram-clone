@@ -240,7 +240,7 @@ const MyProfile =(props)=>{
                         (
                             <div className="my-empty--posts--container flex-row">
                                 <div className="my-empty--posts--img flex-row">
-                                    <img loading="lazy" style={{backgroundColor: "rgba(255,255,255,0.3)"}} src={emptyPostsImg} alt="logo" />
+                                    <img className="unselectable" loading="lazy" style={{backgroundColor: "rgba(255,255,255,0.3)"}} src={emptyPostsImg} alt="logo" />
                                 </div>
                                 <div className="my-empty--posts--text--container flex-column">
                                     <h2>Start capturing and sharing your moments.</h2>
