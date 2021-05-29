@@ -3,17 +3,25 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { AppContext } from "../../Context";
 
-export const withBrowseUser = WrappedComponent => {    
+export const withBrowseUser = WrappedComponent => {
     class newComponent extends PureComponent {
       static contextType = AppContext;
+      _isMounted = true;
+      componentWillUnmount(){
+        this._isMounted = false;
+      }
        browseUser = (specialUid, name) =>{
         const { getUsersProfile , notify, uid} =  this.context;
           if (specialUid && name) {
               if(specialUid !== uid){
                   getUsersProfile(specialUid).then(()=>{
-                    this.props.history.push(`/user_profile/${name}/${specialUid}`);
+                    if(this._isMounted){
+                      this.props.history.push(`/user_profile/${name}/${specialUid}`);
+                    }
                   }).catch((err) =>{
-                    notify((err && err.message) || "error has occurred. please try again later!", "error");
+                    if(this._isMounted){
+                       notify((err && err.message) || "error has occurred. please try again later!", "error");
+                    }
                   });
                 
               }else{

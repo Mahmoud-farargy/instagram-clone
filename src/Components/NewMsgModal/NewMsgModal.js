@@ -8,18 +8,24 @@ import PropTypes from "prop-types";
 
 const NewMsgModal = ({sendPostForm, closeModal}) => {
     const { receivedData, initializeChatDialog, searchUsers, searchInfo, suggestionsList, notify, changeMainState, changeModalState, handleSendingMessage } = useContext(AppContext);
+    // --------------
+    // REFS
+    // ==============
     const radioCheck = useRef(null);
     const _isMounted = useRef(true);
+    const timeouts = useRef(null);
     useEffect(() => {
         return () => {
-            _isMounted.current = false;
+          window.clearTimeout(timeouts?.current);
+          _isMounted.current = false;
         }
     },[]);
     const [searchText, setSearchText] = useState("");
     const [newMsgData, setMsgData] = useState({
         messageText: "",
-        sendTo: {}
+        sendTo: {},
       });
+    const [isLoading, setLoading] = useState(false);
     const userChangeRadio = (c) => {
         setMsgData({
           ...newMsgData,
@@ -27,7 +33,7 @@ const NewMsgModal = ({sendPostForm, closeModal}) => {
         });
       }
       useEffect(() => {
-        if(_isMounted){
+        if(_isMounted?.current){
           if(searchText && searchText !== ""){
             searchUsers(searchText, "regular");
           }
@@ -36,6 +42,7 @@ const NewMsgModal = ({sendPostForm, closeModal}) => {
     
     const usersArr = searchText ? searchInfo?.results : suggestionsList;
     const commitMessage = () => {
+        setLoading(true);
         if(sendPostForm){
 
         }else{
@@ -43,16 +50,22 @@ const NewMsgModal = ({sendPostForm, closeModal}) => {
                 var {uid, userName, userAvatarUrl, isVerified} = newMsgData?.sendTo;
                 
                 initializeChatDialog(uid, userName, userAvatarUrl, isVerified).then(() => {
-                        const timeout = setTimeout(() => {
-                            // const userIndex = receivedData?.messages.map(user => user?.uid).indexOf(uid);
-                                changeMainState("currentChat", { uid: uid,index: 0 });
-                                handleSendingMessage({content: newMsgData?.messageText, uid: uid, type: "text", pathname: ""});
-                            clearTimeout(timeout);
-                        }, 3000);                        
-                        removeSelectedUser();
-                        changeModalState("newMsg", false);
+                  if(_isMounted?.current){
+                    timeouts.current = setTimeout(() => {
+                            setLoading(false);
+                            changeMainState("currentChat", { uid: uid,index: 0 });
+                            handleSendingMessage({content: newMsgData?.messageText, uid: uid, type: "text", pathname: ""});
+                            window.clearTimeout(timeouts?.current);
+                            changeModalState("newMsg", false);
+                      }, 3000);                        
+                      removeSelectedUser();
+                  }
+                       
                 }).catch(() => {
-                    notify("Failed to send22","error");
+                  if(_isMounted?.current){
+                      setLoading(false);
+                      notify("Failed to send22","error");
+                  }
                 });
             }else{
                 notify("User and message must be defined","error");
@@ -72,7 +85,7 @@ const NewMsgModal = ({sendPostForm, closeModal}) => {
                    <div className="new--msg--header flex-row">
                     <span className="new__msg__close" onClick={() => {changeModalState("newMsg", false); sendPostForm && closeModal() && closeModal()}}><span className="desktop-only">&times;</span><IoIosArrowBack className="mobile-only" /> </span>
                     <span className="new__msg__title">New Message</span>
-                    <div><button onClick={() => commitMessage()} disabled={(!newMsgData?.sendTo || !newMsgData?.messageText)} className={`msg__send__btn desktop-only ${(!newMsgData?.sendTo || !newMsgData?.messageText) && "disabled"}`} >Send</button></div>
+                    <div><button onClick={() => commitMessage()} disabled={(!newMsgData?.sendTo || !newMsgData?.messageText)} className={`msg__send__btn desktop-only ${(!newMsgData?.sendTo || !newMsgData?.messageText) && "disabled"}`} >{ isLoading ? "Sending..." : "Send"}</button></div>
                    </div>
                    <div className="new--msg--send--to flex-row">
                     <h4>To:</h4>
@@ -117,7 +130,7 @@ const NewMsgModal = ({sendPostForm, closeModal}) => {
                             </div>
                         }
                       </div>
-                      <button onClick={() => commitMessage()} disabled={(!newMsgData?.sendTo || !newMsgData?.messageText)} className={`prof__btn__unfollowed msg_mobile_btn mobile-only ${(!newMsgData?.sendTo || !newMsgData?.messageText) && "disabled"}`} >Send</button>
+                      <button onClick={() => commitMessage()} disabled={(!newMsgData?.sendTo || !newMsgData?.messageText)} className={`prof__btn__unfollowed msg_mobile_btn mobile-only ${(!newMsgData?.sendTo || !newMsgData?.messageText) && "disabled"}`} >{ isLoading ? "Sending..." : "Send"}</button>
                    </div>
                 </div>
               </div>

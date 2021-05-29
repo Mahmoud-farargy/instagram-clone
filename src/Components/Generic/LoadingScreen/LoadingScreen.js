@@ -8,7 +8,7 @@ const LoadingScreen = () => {
     const _isMounted = useRef(true);
     const [showAnim, setShowingAnim] = useState(false);
     useEffect(() => {
-        if(_isMounted){
+        if(_isMounted?.current){
            var timeout = setTimeout(() => {
                 setShowingAnim(true);
                 window.clearTimeout(timeout);
@@ -25,7 +25,7 @@ const LoadingScreen = () => {
     const reloadPage = () => {
         window.location.reload();
     }
-    if(_isMounted){
+    if(_isMounted?.current){
         return(
             <Fragment>
                 <div id="loadingScreen" className="flex-column">

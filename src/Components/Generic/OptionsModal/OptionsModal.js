@@ -3,10 +3,14 @@ import "./OptionsModal.scss";
 import {AppContext} from "../../../Context";
 
 const OptionsModal = (props, {args}) => {
-  const {changeModalState} = useContext(AppContext);
+  const { changeModalState, handleUnfollowingUsers } = useContext(AppContext);
   const closeModal = (x) => {
     if(x.target.tagName === "SPAN"){
-      changeModalState("options",false);
+      if(props?.isUnfollowModal){
+        handleUnfollowingUsers({user: {}, state: false});
+      }else{
+        changeModalState("options",false);
+      }
     }
   }
   return (

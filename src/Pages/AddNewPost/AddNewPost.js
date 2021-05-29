@@ -41,12 +41,11 @@ class AddNewPost extends PureComponent {
       submitted: false,
       showReelFieldErr: false,
     };
-    this._isMounted = false;
+    this._isMounted = true;
   }
   //fix memory leak
   static contextType = AppContext;
   componentDidMount = () => {
-    this._isMounted = true;
     if (this._isMounted) {
       const { changeMainState, receivedData } = this.context;
       changeMainState("currentPage", "Add New");
@@ -58,6 +57,10 @@ class AddNewPost extends PureComponent {
     }
   };
   componentWillUnmount = () => {
+    //if content is uploaded and not committed, then delete it from FB
+    if(this.state.contentName && this.state.contentURL){
+      this.context.deleteContentFromFB(this.state.contentName, this.state.method.toLowerCase() === Consts.Post ? "content" : "reels");
+    }
     this._isMounted = false;
   };
   componentDidUpdate = () => {
@@ -114,12 +117,16 @@ class AddNewPost extends PureComponent {
                 contentName: this.state.contentName,
               }
               addPost(addedPost, Consts.Post).then(() => {
-                notify("Post has been added");
-                this.resetState();
-                this.setState(updateObject(this.state, {submitted: false}));
-                this.props.history.push("/");
+                if(this._isMounted){
+                  notify("Post has been added");
+                  this.resetState();
+                  this.setState(updateObject(this.state, {submitted: false}));
+                  this.props.history.push("/");
+                }
               }).catch(() =>{
-                notify("Failed to make a post. Please try again later!", "error");
+                if(this._isMounted){
+                  notify("Failed to make a post. Please try again later!", "error");
+                }
               });              
             } else {
               notify("Content should be inserted", "error");
@@ -145,12 +152,16 @@ class AddNewPost extends PureComponent {
                       contentName: this.state.contentName,
                     }
                     addPost(addedReel, Consts.Reel, {selectedGroup:this.state.selectedReelGroup, newGroupName: this.state.newGroupName}).then(() => {
-                      notify(`Reel has been added to ${this.state.selectedReelGroup.toLowerCase() === "new group" ? this.state.newGroupName : this.state.selectedReelGroup}.`);
-                      this.resetState();
-                      this.setState(updateObject(this.state, {submitted: false}));
-                      this.props.history.push("/profile");
+                      if(this._isMounted){
+                        notify(`Reel has been added to ${this.state.selectedReelGroup.toLowerCase() === "new group" ? this.state.newGroupName : this.state.selectedReelGroup}.`);
+                        this.resetState();
+                        this.setState(updateObject(this.state, {submitted: false}));
+                        this.props.history.push("/profile");
+                      }
                     }).catch((err) =>{
-                      notify((err?.message || "Failed to post reel. Please try again later!"), "error");
+                      if(this._isMounted){
+                        notify((err?.message || "Failed to post reel. Please try again later!"), "error");
+                      }
                     });
                 }else{
                   notify("This group name is aleady exit. Please choose another name.", "error");
@@ -216,19 +227,23 @@ class AddNewPost extends PureComponent {
                           .child(fileName)
                           .getDownloadURL()
                           .then((url) => {
-                            //post content on db
-                            this.setState({
-                              ...this.state,
-                              contentName: fileName,
-                              uploading: false,
-                              progressBarPercentage: 0,
-                              contentURL: url,
-                              contentType: itemType,
-                            });
-                            uploadedItem = "";
+                            if(this._isMounted){
+                              //post content on db
+                              this.setState({
+                                ...this.state,
+                                contentName: fileName,
+                                uploading: false,
+                                progressBarPercentage: 0,
+                                contentURL: url,
+                                contentType: itemType,
+                              });
+                              uploadedItem = ""; 
+                            }
                           })
                           .catch((err) => {
-                            notify((err.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
+                            if(this._isMounted){
+                                notify((err.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
+                            }
                           });
                     }
                   );
@@ -277,19 +292,23 @@ class AddNewPost extends PureComponent {
                     .child(fileName)
                     .getDownloadURL()
                     .then((url) => {
-                      //post content on db
-                      this.setState({
-                        ...this.state,
-                        contentName: fileName,
-                        uploading: false,
-                        progressBarPercentage: 0,
-                        contentURL: url,
-                        contentType: "video",
-                      });
-                      uploadedItem = "";
+                      if(this._isMounted){
+                        //post content on db
+                        this.setState({
+                          ...this.state,
+                          contentName: fileName,
+                          uploading: false,
+                          progressBarPercentage: 0,
+                          contentURL: url,
+                          contentType: "video",
+                        });
+                        uploadedItem = "";
+                      }
                     })
                     .catch((err) => {
-                      notify((err.message|| `Failed to upload video. Please try again later.`), "error");
+                      if(this._isMounted){
+                          notify((err.message|| `Failed to upload video. Please try again later.`), "error");
+                      }
                     });
                 }
               );
@@ -420,7 +439,7 @@ class AddNewPost extends PureComponent {
                           dragActiveClassName="files-dropzone-active"
                         >  {`${this.state.method.toLowerCase() === Consts.Post ? "Drop an image, video or audio here to upload " : this.state.method.toLowerCase() === Consts.Reel ?  "Drop here a video to upload" : "Drop a file here or click to upload"}`}
                         <br />
-                        <p className="mt-2">(Should not exceed 12MB)</p>
+                        <p className="mt-2 text--size--2">(Should not exceed 12MB)</p>
                         </Files>
                       <InputForm
                           type="select"

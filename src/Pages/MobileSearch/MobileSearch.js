@@ -13,7 +13,7 @@ const MobileSearch = () => {
     const _isMounted = useRef(null);
 
     useEffect(() => {
-        if(_isMounted){
+        if(_isMounted?.current){
             if (searchVal && searchVal !== "") {
             searchUsers(searchVal, "regular");
           } else {
@@ -25,7 +25,6 @@ const MobileSearch = () => {
         setSearchVal("");
     };
     useEffect(() => {
-        
         return () => {
           _isMounted.current = false;
         }

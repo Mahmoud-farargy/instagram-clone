@@ -36,12 +36,14 @@ const PostPage  = (props) => {
   });
   //====================== 
   // REFS
+  const _isMounted = useRef(true);
   const inputField = useRef(null);
   const autoScroll = useRef(null);
   //----------------------
   useEffect(() => {
     window.scrollTo(0,0);
     changeMainState("currentPage", "Post");
+    return () => _isMounted.current = false;
   }, []);
 
   const likesCheck = () => {
@@ -164,7 +166,7 @@ const PostPage  = (props) => {
     });
   }
   const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
-    handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() => props.history.push("/"));
+    handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() => _isMounted?.current && props.history.push("/"));
   }
   const onEmojiClick = (e, x) => {
     e.persist();

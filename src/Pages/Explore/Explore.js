@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, Fragment } from "react";
+import React, { useContext, useEffect, useState, Fragment, useRef } from "react";
 import "./Explore.scss";
 import { AppContext } from "../../Context";
 import { useHistory } from "react-router-dom";
@@ -42,6 +42,7 @@ const Explore = () => {
     filter: receivedData?.profileInfo?.sort?.filter || "None"
   });
   const [ submitted, setSubmission ] = useState(false);
+  const _isMounted = useRef(true);
   const [, loading] = useAuthState(auth);
   const history = useHistory();
   const onInputChange =  (val, name) => setSortForm({...sortForm, [name]: val});
@@ -72,6 +73,7 @@ const Explore = () => {
   }
   useEffect(() => {
     changeMainState("currentPage", "Explore");
+    return() => _isMounted.current = false;
   }, []);
   useEffect(() => {
     if(sortingModalIsOpen){
@@ -173,28 +175,29 @@ const Explore = () => {
   const openPost = (postId, _ ,uid) => {
     if(uid && postId){
             getUsersProfile(uid).then((res) => {
-        const getPostIndex = res?.posts.map((post) => post?.id).indexOf(postId);
+            if(_isMounted?.current){
+                const getPostIndex = res?.posts.map((post) => post?.id).indexOf(postId);
 
-        if (getPostIndex !== -1) {
-          changeMainState("currentPostIndex", {
-            index: getPostIndex,
-            id: postId,
-          });
-          if (
-            (window.innerWidth || document.documentElement.clientWidth) >= 670
-          ) {
-            // Desktop
-            changeModalState("post", true);
-          } else {
-            // Mobile
-            history.push("/browse-post");
-          }
-        } else {
-          notify("Post is not available or got removed", "error");
-        }
+                if (getPostIndex !== -1) {
+                  changeMainState("currentPostIndex", {
+                    index: getPostIndex,
+                    id: postId,
+                  });
+                  if (
+                    (window.innerWidth || document.documentElement.clientWidth) >= 670
+                  ) {
+                    // Desktop
+                    changeModalState("post", true);
+                  } else {
+                    // Mobile
+                    history.push("/browse-post");
+                  }
+                } else {
+                  notify("Post is not available or got removed", "error");
+                }
+            }
       });
     }
-
   };
   //reminder: overflow hidden when explore modal is open
   const customStyles = {

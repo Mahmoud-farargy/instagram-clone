@@ -1,35 +1,42 @@
-import React, { Fragment, useState, useContext, useEffect, memo } from "react";
+import React, { Fragment, useState, useContext, useEffect, memo, useRef } from "react";
 import { VscLoading } from "react-icons/vsc";
 import { AppContext } from "../../Context";
 import { FaUserCheck } from "react-icons/fa";
 import PropTypes from "prop-types";
 
-const FollowUnfollowBtn = ({shape, userData}) => {
+const FollowUnfollowBtn = ({shape, userData, confirmed = false, isRequestAuthorized= false}) => {
     const {userId, uName,uAvatarUrl, isVerified = false} = userData;
-    const {receivedData, handleFollowing} = useContext(AppContext);
+    const {receivedData, handleFollowing, handleUnfollowingUsers } = useContext(AppContext);
     const [isFollowLoading, setFollowLoad] = useState(false);
     const isFollower = receivedData?.followers && receivedData?.followers?.some((item) => item?.senderUid === userId );
     const isFollowRequested = receivedData?.followRequests?.sent?.some(d => d.uid === userId);
     const isFollowed = receivedData?.following?.some((item) => item?.receiverUid === userId);
+    const _isMounted = useRef(true);
     let tOut;
     const onFollowing = ( state, senderUid, senderUserName, senderUserAvatarUrl, k ) => {
         k.stopPropagation();
         setFollowLoad(true);
-        handleFollowing(state, senderUid, senderUserName, senderUserAvatarUrl,(isVerified || false), receivedData?.uid,receivedData?.userName, receivedData?.userAvatarUrl)
+        confirmed && handleUnfollowingUsers({user: {}, state: false});
+        handleFollowing(state, senderUid, senderUserName, senderUserAvatarUrl,(isVerified || false), receivedData?.uid,receivedData?.userName, receivedData?.userAvatarUrl, confirmed, isRequestAuthorized)
         .then(() =>{
-          tOut = setTimeout(() => {
-              setFollowLoad(false);
-              window.clearTimeout(tOut);
-          },700);
+          if(_isMounted?.current){
+            tOut = setTimeout(() => {
+                setFollowLoad(false);
+                window.clearTimeout(tOut);
+            },500);
+          }
         }).catch(() => {
-          tOut = setTimeout(() => {
-              setFollowLoad(false);
-              window.clearTimeout(tOut);
-          },700);
+          if(_isMounted?.current){
+            tOut = setTimeout(() => {
+                setFollowLoad(false);
+                window.clearTimeout(tOut);
+            },500);
+          }
         });
       };
     useEffect(() =>{
       return () => {
+        _isMounted.current = false;
         window.clearTimeout(tOut);
       }
     },[tOut]);
@@ -98,19 +105,19 @@ const FollowUnfollowBtn = ({shape, userData}) => {
             );
         break;
         case "quaternary":
-            conditionalClass = `font-weight-bold option__modal__btn ${isFollowed ? "text-danger" : "text-primary"}`;
+            conditionalClass = `font-weight-bold option__modal__btn ${(isFollowed || (isFollowRequested && confirmed))  ? "text-danger" : "text-primary"}`;
             conditionalText = (
                 isFollowLoading ?
                 <VscLoading className="rotate mx-3 follow__loading__ico" />
               :
-                (!isFollowed && isFollowRequested && !isFollowLoading)?
+                (!isFollowed && isFollowRequested && !isFollowLoading && !confirmed)?
                 "Requested"
               : (!isFollowed && !isFollowRequested && !isFollowLoading)
               ? "Follow"
-              : (isFollowed && !isFollowLoading) ?
+              : ((isFollowed && !isFollowLoading) || (isFollowRequested && !isFollowLoading && confirmed)) ?
                 "Unfollow"
               : null
-            );;
+            );
         break;
         default:
           conditionalClass = `profile__btn

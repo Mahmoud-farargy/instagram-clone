@@ -19,7 +19,8 @@ import { withBrowseUser } from "../../../Components/HOC/withBrowseUser";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import OptionsModal from "../../../Components/Generic/OptionsModal/OptionsModal";
 import Loader from "react-loader-spinner";
-
+import { trimText } from "../../../Utilities/TrimText";
+import FollowUnfollowBtn from "../../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 function ReelItem(props) {
   const reelVideo = useRef(null);
   const context = useContext(AppContext);
@@ -236,13 +237,21 @@ function ReelItem(props) {
           </div>)
         }
           <header className="reel--header flex-row">
-            <div className="reel--header--left flex-row">
-              <Avatar loading="lazy" src={reelsProfile?.userAvatarUrl} alt={reelsProfile?.userName} title={ reelsProfile?.userName} />
-              <span className="reel__user__name" onClick={() => browseUser(uid, reelsProfile?.userName)} title={reelsProfile?.userName}>{reelsProfile?.userName}</span>
-              <span className="reel__date">
-                <GetFormattedDate date={item?.date.seconds} />
-              </span>
-            </div>
+                <div className="reel--header--left flex-row">
+                  <Avatar loading="lazy" src={reelsProfile?.userAvatarUrl} alt={reelsProfile?.userName} title={ reelsProfile?.userName} />
+                  <div className="reel--user--info flex-column">
+                    <span className="reel__user__name" onClick={() => browseUser(uid, reelsProfile?.userName)} title={reelsProfile?.userName}>{trimText(reelsProfile?.userName,20)}</span>
+                    {
+                      reelsProfile?.uid !== receivedData?.uid &&
+                      <div className="reel--follow--unfollow">
+                        <FollowUnfollowBtn shape="tertiary" userData={{userId: reelsProfile?.uid, uName: reelsProfile?.userName, uAvatarUrl: reelsProfile?.userAvatarUrl, isVerified: reelsProfile?.isVerified}} />
+                      </div>
+                    }
+                  </div>
+                  <span className="reel__date">
+                    <GetFormattedDate date={item?.date.seconds} />
+                  </span>
+                </div>
             <div className="reel--header--right flex-row">
               {isVideoPlaying ? (
                 <div onClick={() => onVideoClick()}>

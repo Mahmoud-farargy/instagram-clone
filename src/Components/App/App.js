@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useContext, Suspense, lazy, useState} from "react";
+import React, { Fragment, useEffect, useContext, Suspense, lazy, useState, useRef} from "react";
 import { Switch, Route, useHistory } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { db, auth, changeConnectivityStatus} from "../../Config/firebase";
@@ -17,6 +17,7 @@ import notificationSound from "../../Assets/Sounds/NotificationBell.mp3";
 
 //lazy loading
 const UsersModal = lazy(()=> import( "../../Components/UsersModal/UsersModal"));
+const UnfollowModal = lazy(()=> import( "../UnfollowModal/UnfollowModal"));
 const CommentsModal = lazy(( ) => import("../../Components/CommentsModal/CommentsModal"));
 const Home = lazy(() => import("../../Pages/Home/Home"));
 const Footer = lazy(() => import("../../Components/Footer/Footer"));
@@ -58,6 +59,7 @@ const App = () => {
     notify,
     changeModalState,
     usersModalList,
+    unfollowModal,
     usersProfileData,
     reelsProfile,
     currentPostIndex,
@@ -68,6 +70,7 @@ const App = () => {
   const [user,loading] = useAuthState(auth);
   const history = useHistory();
   const [toggledNotiBell, setNotiBell] = useState(false);
+  const _isMounted = useRef(true);
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
@@ -76,10 +79,12 @@ const App = () => {
           .limit(150)
           .get()
           .then((query) => {
-            changeMainState("loadingState", {...loadingState, suggList: false});
-            query.forEach((user) => {
-              updateSuggestionsList(user.data());
-            });
+            if(_isMounted?.current){
+              changeMainState("loadingState", {...loadingState, suggList: false});
+              query.forEach((user) => {
+                updateSuggestionsList(user.data());
+              });
+            }
           });
         changeMainState("currentUser", authUser);
         updateUserState(true);
@@ -105,6 +110,7 @@ const App = () => {
     return () => {
       //performs some clearn up actions
       unsubscribe();
+      _isMounted.current = false;
     };
   }, []);
   useEffect(() => {
@@ -165,10 +171,9 @@ const App = () => {
     <Fragment>
       <main>
         {/* Modals */}
-        {/*  comments modal */}
-        {/* <LoadingScreen /> */}
         <Suspense fallback={<LoadingScreen />}>
-            {modalsState?.users && usersModalList && Object.keys(usersModalList).length > 0 ? <UsersModal /> : null}
+            {modalsState?.users && usersModalList && Object.keys(usersModalList).length > 0 && <UsersModal />}
+            {unfollowModal?.state && unfollowModal?.user && Object.keys(unfollowModal?.user).length > 0 && <UnfollowModal />}
           {modalsState?.comments ? (
             <CommentsModal context={context} />
           ) : null}

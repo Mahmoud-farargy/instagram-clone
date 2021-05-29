@@ -3,7 +3,7 @@ import Auxiliary from "../HOC/Auxiliary";
 import { NavLink, Link } from "react-router-dom";
 import "./Header.css";
 import { HiHome } from "react-icons/hi";
-import { FaHeart , FaFacebookMessenger} from "react-icons/fa";
+import { FaHeart , FaFacebookMessenger } from "react-icons/fa";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import { Avatar } from "@material-ui/core";
 import { AppContext } from "../../Context";
@@ -27,6 +27,7 @@ const Header = (props) => {
   // Refs
   const headerRef = useRef(null);
   const _isMounted = useRef(true);
+  const timeouts = useRef(null);
   // --xx-- //
 
   // state
@@ -58,7 +59,7 @@ const Header = (props) => {
   };
   /// useEffects
   useEffect(() => {
-    if(_isMounted){
+    if(_isMounted?.current){
         if (searchVal && searchVal !== "") {
         searchUsers(searchVal, "regular");
         setSeachBox(true);
@@ -67,10 +68,9 @@ const Header = (props) => {
         setSearchVal("");
       }
     }
-    
   }, [searchVal]);
   useEffect(() => {
-    if(_isMounted){
+    if(_isMounted?.current){
         window.addEventListener("scroll", () =>{
         if(headerRef && headerRef.current){
           if(window.scrollY > 0){
@@ -86,11 +86,12 @@ const Header = (props) => {
         
     return () =>{
       window.removeEventListener("scroll", ()=> {});
-      _isMounted.current = false;
+      window.clearTimeout(timeouts?.current);
       headerRef.current = false;
       setNoti(false);
       setLogoutModal(false);
       setScrollingState(false);
+      _isMounted.current = false;
   }
   }, []);
 // ---xxx-- //
@@ -100,23 +101,27 @@ const Header = (props) => {
   const onLoggingOut = () => {
    setLogoutModal(true);
    setProf(false);
-   const timeout = setTimeout(() => {
-      authLogout(props.history).then(() => {
-        setLogoutModal(false);
-      }).catch(() => {
-        setLogoutModal(false);
-        window.clearTimeout(timeout);
-      });      
-    },1400);
+     
+       timeouts.current = setTimeout(() => {
+        authLogout(props.history).then(() => {
+          if(_isMounted?.current){
+          setLogoutModal(false);
+          }
+        }).catch(() => {
+          if(_isMounted?.current){
+              setLogoutModal(false);
+             window.clearTimeout(timeouts?.current);
+          }
+        });
+      },1400);
   }
   const closeNotificationOnClick = (w) => {
     w.persist();
-    if(w.target.tagName === "H6" && _isMounted){
-      const timeOut = setTimeout(() => {
+    if(w.target.tagName === "H6" && _isMounted?.current){
+      timeouts.current = setTimeout(() => {
         setNoti(false);
-        window.clearTimeout(timeOut);
+        window.clearTimeout(timeouts?.current);
       },100);
-
     }
   }
   return (

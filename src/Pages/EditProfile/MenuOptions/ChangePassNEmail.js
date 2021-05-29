@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import Auxiliary from "../../../Components/HOC/Auxiliary";
 import { AppContext } from "../../../Context";
 import InputForm from "../../../Components/Generic/InpuForm/InputForm";
@@ -17,6 +17,10 @@ const ChangePassNEmail = (props) => {
     confirmPrompt,
     returnPassword,
   } = useContext(AppContext);
+  //ref(s)
+  const _isMounted = useRef(true);
+  //useEffect
+  useEffect(() => () => _isMounted.current= false, []);
   //useState
   const [formState, setForm] = useState({
     email: {
@@ -74,21 +78,31 @@ const ChangePassNEmail = (props) => {
               auth.currentUser
                 .reauthenticateAndRetrieveDataWithCredential(credential)
                 .then(() => {
-                  auth.currentUser
-                    .updatePassword(formState?.newPassword.value)
-                    .then(() => {
-                      notify("Password updated successfully", "success");
-                    })
-                    .catch((error) => {
-                      notify(
-                        error || "An error occurred. Try again later!",
-                        "error"
-                      );
-                    });
-                  setSubmission({ ...isSubmitted, passwordForm: false });
+                  if(_isMounted?.current){
+                      auth.currentUser
+                      .updatePassword(formState?.newPassword.value)
+                      .then(() => {
+                        if(_isMounted?.current){
+                           notify("Password updated successfully", "success");
+                        }
+                      })
+                      .catch((error) => {
+                        if(_isMounted?.current){
+                          notify(
+                            error || "An error occurred. Try again later!",
+                            "error"
+                          );
+                        }
+                       
+                      });
+                    setSubmission({ ...isSubmitted, passwordForm: false }); 
+                  }
+                
                 })
                 .catch(() => {
-                  notify("An error occurred.", "error");
+                  if(_isMounted?.current){
+                    notify("An error occurred.", "error");
+                  }
                 });
             } else {
               notify(
@@ -124,13 +138,17 @@ const ChangePassNEmail = (props) => {
           auth.currentUser
             .sendEmailVerification()
             .then(() => {
+              if(_isMounted?.current){
               notify(
-                "Verification message sent successfully. Please check your email",
-                "success"
-              );
+                  "Verification message sent successfully. Please check your email",
+                  "success"
+                );
+              }
             })
             .catch((err) => {
-              notify(err || "An error occurred. Try again later!", "error");
+              if(_isMounted?.current){
+                 notify(err || "An error occurred. Try again later!", "error");
+              }
             });
         },
       },
@@ -151,37 +169,48 @@ const ChangePassNEmail = (props) => {
           auth.currentUser
             .updateEmail(formState?.email.value)
             .then(() => {
-              notify("Email updated successfully", "success");
-              setModal({ ...openModal, passModal: false });
-              setSubmission({ ...isSubmitted, modalForm: false });
+              if(_isMounted?.current){
+                  notify("Email updated successfully", "success");
+                  setModal({ ...openModal, passModal: false });
+                  setSubmission({ ...isSubmitted, modalForm: false });
+              }
             })
             .catch(() => {
-              notify(
-                "Failed to update email. Please try again later!",
-                "error"
-              );
+              if(_isMounted?.current){
+                notify(
+                  "Failed to update email. Please try again later!",
+                  "error"
+                );
+              }
             });
         })
         .catch(() => {
-          notify("The password you entered is not correct.", "error");
+          if(_isMounted?.current){
+             notify("The password you entered is not correct.", "error");
+          }
         });
     } else if (type === "email") {
       setSubmission({ ...isSubmitted, forgetPassForm: false });
       auth
         .sendPasswordResetEmail(formState?.modalEmail?.value)
         .then(() => {
-          notify(
-            "A password reset config has been send to your email",
-            "success"
-          );
-          setModal({ ...openModal, emailModal: false });
-          setSubmission({ ...isSubmitted, forgetPassForm: false });
+          if(_isMounted?.current){
+            notify(
+              "A password reset config has been send to your email",
+              "success"
+            );
+            setModal({ ...openModal, emailModal: false });
+            setSubmission({ ...isSubmitted, forgetPassForm: false });
+          }
+
         })
         .catch((err) => {
-          notify(
-            `The email you entered does not exist in our database" ${err}`,
-            "error"
-          );
+          if(_isMounted?.current){
+            notify(
+              `The email you entered does not exist in our database" ${err}`,
+              "error"
+            );
+          }
         });
     }
   };

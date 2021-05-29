@@ -151,6 +151,19 @@
                                         height:32px;
                                         margin-right:5px;
                                     }
+                                    .reel--user--info{
+                                        margin-right:7px;
+                                            .reel--follow--unfollow {
+                                                button{
+                                                    background-color: rgba(0, 0, 0,0.3);
+                                                    border-radius:7px;
+                                                }
+                                                .txt_unfollow{
+                                                    color: #fff;
+                                                }
+                                            }
+                                        
+                                    }
                                 }
                                 .reel--header--right{
                                     div{

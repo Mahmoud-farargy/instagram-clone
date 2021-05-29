@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useContext, useState, useEffect } from "react";
+import React, { Suspense, lazy, useContext, useState, useEffect, useRef } from "react";
 import Auxiliary from "../../../Components/HOC/Auxiliary";
 import { Avatar } from "@material-ui/core";
 import { AppContext } from "../../../Context";
@@ -14,6 +14,9 @@ const InputForm = lazy(() =>
 );
 
 const EditProfileOption = (props) => {
+  // refs
+  const _isMounted = useRef(true);
+  // --x--end of refs-x--//
   // state
   const [formState, setForm] = useState({
     name: "",
@@ -36,6 +39,7 @@ const EditProfileOption = (props) => {
     changeModalState,
   } = useContext(AppContext);
   // useEffct
+  useEffect(() => () => _isMounted.current = false, []);
   useEffect(() => {
     if (
       receivedData &&
@@ -53,7 +57,7 @@ const EditProfileOption = (props) => {
   let isFormValid = true; //makes sure all fields are filled and at least one of the fields does not match the already existing data
   if (Object.keys(formState).length > 0) {
     isFormValid =
-      formState?.bio && formState?.name && formState?.birthday
+      formState?.bio && formState?.name &&
       Object.keys(formState).some(
         (item) => formState[item] !== receivedData?.profileInfo?.[item]
       );
@@ -90,11 +94,15 @@ const EditProfileOption = (props) => {
                 .child(`/avatars/${myUid}`)
                 .delete()
                 .then(() => {
-                  changeProfilePic("");
-                  notify("Profile picture removed.", "success"); 
+                  if(_isMounted?.current){
+                    changeProfilePic("");
+                    notify("Profile picture removed.", "success"); 
+                  }
                 })
                 .catch((err) => {
-                  notify((err.message || "Failed to remove picture. Please try again later."), "error");
+                  if(_isMounted?.current){
+                      notify((err.message || "Failed to remove picture. Please try again later."), "error");
+                  }
                 });
           })(receivedData?.uid);
       }else{
@@ -134,13 +142,17 @@ const EditProfileOption = (props) => {
                 .child(receivedData?.uid)
                 .getDownloadURL()
                 .then((url) => {
-                  changeProfilePic(url);
-                  curr.updateProfile({
-                    photoURL: url,
-                  });
-                  notify("Profile picture updated successfully.", "success");
+                  if(_isMounted?.current){
+                    changeProfilePic(url);
+                    curr.updateProfile({
+                      photoURL: url,
+                    });
+                    notify("Profile picture updated successfully.", "success");
+                  }
                 }).catch((err) => {
-                  notify((err.message ||"Failed to upload picture.Please try again later"), "error");
+                  if(_isMounted?.current){
+                    notify((err.message ||"Failed to upload picture.Please try again later"), "error");
+                  }
                 });
             }
           );
@@ -225,6 +237,7 @@ const EditProfileOption = (props) => {
               submitted={submitted}
               extraText={
                 <small>
+                  (Required) <br/>
                   Help people discover your account by using the name you're
                   known by: either your full name, nickname, or business name.
                   <br /> You can only change your name twice within 14 days.
@@ -237,7 +250,7 @@ const EditProfileOption = (props) => {
               label="User Name"
               name="userName"
               disabled={true}
-              submitted={submitted}
+              submitted={false}
               val={userName}
               extraText={
                 <small>
@@ -260,7 +273,7 @@ const EditProfileOption = (props) => {
               label="status"
               name="status"
               val={formState.status}
-              submitted={submitted}
+              submitted={false}
             />
 
             <InputForm
@@ -270,7 +283,7 @@ const EditProfileOption = (props) => {
               label="email"
               name="email"
               disabled={true}
-              submitted={submitted}
+              submitted={false}
               val={currentUser?.email}
               extraText={
                 <small>
@@ -300,7 +313,7 @@ const EditProfileOption = (props) => {
               changeInput={onInputChange}
               label="website"
               name="website"
-              submitted={submitted}
+              submitted={false}
               val={formState?.website}
             />
 
@@ -315,6 +328,7 @@ const EditProfileOption = (props) => {
                 <div>
                   <h2>Personal Information</h2>
                   <small>
+                    (Required) <br/>
                     Provide your personal information, even if the account is used
                     for a business, a pet or something else.
                     <br /> This won't be a part of your public profile.
@@ -334,6 +348,7 @@ const EditProfileOption = (props) => {
               min={`${new Date().getFullYear() - 90}-01-01`}
               extraText={
                 <small>
+                  (Required) <br/>
                   Set your birthday so that your friends get notified when your birthday comes.
                 </small>
               }
@@ -345,7 +360,7 @@ const EditProfileOption = (props) => {
               label="phone number"
               name="phoneNumber"
               val={formState?.phoneNumber}
-              submitted={submitted}
+              submitted={false}
               extraText={
                 <small>
                   This phone number won't be shown to anyone except you.
@@ -360,7 +375,7 @@ const EditProfileOption = (props) => {
               name="gender"
               options={["Male", "Female"]}
               val={formState.gender}
-              submitted={submitted}
+              submitted={false}
             />
           </Suspense>
           <div className="form--btns flex-row">
