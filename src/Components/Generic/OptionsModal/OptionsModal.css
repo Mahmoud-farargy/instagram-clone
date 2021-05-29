@@ -48,6 +48,7 @@
       -ms-flex-pack: center;
           justify-content: center;
   overflow: hidden;
+  min-height: 48px;
 }
 
 #optionsModal .optionsM--container--inner span:active {

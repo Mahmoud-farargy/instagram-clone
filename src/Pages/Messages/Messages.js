@@ -66,9 +66,9 @@ const Messages = (props) => {
     window.scrollTo(0,0);
     changeMainState("currentPage", "Messages");
     return () => {
-      _isMounted.current = false;
       fileUploadEl.current =false;
       autoScroll.current = false;
+      _isMounted.current = false;
     }
   },[]);
   useEffect(() => {
@@ -86,7 +86,7 @@ const Messages = (props) => {
   }, [location, _isMounted]);
 
   useEffect(() =>{
-    if(_isMounted){
+    if(_isMounted?.current){
         autoScroll && autoScroll.current && autoScroll.current?.scrollIntoView && autoScroll.current.scrollIntoView({block: "end"});
         setCompState({
           ...compState,
@@ -117,7 +117,7 @@ const Messages = (props) => {
   }
   const onMessageAction = (type) => {
     if(type === "content"){
-      if(_isMounted && fileUploadEl?.current){
+      if(_isMounted?.current && fileUploadEl?.current){
           fileUploadEl.current && fileUploadEl.current.click();
       }
     }else if(type === "like") {
@@ -161,13 +161,17 @@ const Messages = (props) => {
                         .child(fileName)
                         .getDownloadURL()
                         .then((url) => {
-                          //post content on db
-                        setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
-                          handleSendingMessage({content: url,uid: currUser?.uid,type: itemType, pathname: fileName });
-                          uploadedItem = "";
+                          if(_isMounted?.current){
+                            //post content on db
+                            setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
+                            handleSendingMessage({content: url,uid: currUser?.uid,type: itemType, pathname: fileName });
+                            uploadedItem = "";
+                          }
                         })
                         .catch((err) => {
-                          notify((err.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
+                          if(_isMounted?.current){
+                            notify((err.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
+                          }
                         });
                     }
                   );
@@ -194,7 +198,7 @@ const Messages = (props) => {
         
     }
     const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
-      handleUserBlocking(true, blockedUid || "", userName || "", userAvatarUrl || "", profileName || "").then(() => history.push("/"));
+      handleUserBlocking(true, blockedUid || "", userName || "", userAvatarUrl || "", profileName || "").then(() => _isMounted?.current && history.push("/"));
     }
     
     const openNewMsg = () => {
@@ -221,13 +225,15 @@ const Messages = (props) => {
     }
     const delChat = () => {
       deleteChat(currUser?.uid).then(() => {
-        const secondUserUid = receivedData?.messages?.filter(el => !receivedData?.blockList?.some(k => k.blockedUid === el.uid))[1]?.uid;
-        const pickFirstContent = receivedData?.messages?.map(user => user.uid).indexOf(secondUserUid);
-        if(pickFirstContent !== -1){
-          const timeout = setTimeout(() => {
-              changeMainState("currentChat", { uid: secondUserUid,index: 0 });
-              clearTimeout(timeout);
-          },300);
+        if(_isMounted?.current){
+          const secondUserUid = receivedData?.messages?.filter(el => !receivedData?.blockList?.some(k => k.blockedUid === el.uid))[1]?.uid;
+          const pickFirstContent = receivedData?.messages?.map(user => user.uid).indexOf(secondUserUid);
+          if(pickFirstContent !== -1){
+            const timeout = setTimeout(() => {
+                changeMainState("currentChat", { uid: secondUserUid,index: 0 });
+                clearTimeout(timeout);
+            },300);
+          }
         }
       });
     }

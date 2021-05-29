@@ -65,9 +65,11 @@ const DesktopPost = (props) => {
     alsoLiked: []
   });
   const inputField = useRef(null);
+  const _isMounted = useRef(true);
   var following = receivedData?.following;
   useEffect(() => {
     changeMainState("currentPage", "Post");
+    return () => _isMounted.current = false;
   }, []);
   
   var postLiked = usersProfileData?.posts && usersProfileData?.posts[currentPostIndex?.index]?.likes?.people?.some((el) => el.id === uid);
@@ -203,7 +205,7 @@ const DesktopPost = (props) => {
       userName,
       userAvatarUrl,
       profileName
-    ).then(() => history.push("/"));
+    ).then(() => _isMounted?.current && history.push("/"));
   };
   var {
     caption = "",
@@ -306,7 +308,7 @@ const DesktopPost = (props) => {
                       {" "}
                       Block this user
                     </span>
-                    <span>
+                    <span style={{padding: 0}}>
                         <FollowUnfollowBtn shape="quaternary" userData={{userId: usersProfileData?.uid, uName: usersProfileData?.userName, uAvatarUrl: usersProfileData?.userAvatarUrl, isVerified: usersProfileData?.isVerified}} />
                     </span>
                 </div>

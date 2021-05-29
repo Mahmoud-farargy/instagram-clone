@@ -10,15 +10,12 @@ const Users = () => {
   const { messages } = receivedData;
   const _isMounted = useRef(true);
   useEffect(() => {
-    if (_isMounted) {
       GOU(uid).then((k) => {
-        setOnlineList(k);
+        if (_isMounted?.current) {
+            setOnlineList(k);
+        }
       });
-    }
-
-    return () => {
-      _isMounted.current = false;
-    };
+    return () => _isMounted.current = false;
   }, []);
   return (
     <>

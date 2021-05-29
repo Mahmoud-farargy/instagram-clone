@@ -237,7 +237,7 @@ const ProfessionalAccount = (props) => {
                         <label>Account Information</label>
                         <div className="account--info--box flex-column">
                             <div className="account--info--text">
-                              <span>Created in:</span>
+                              <span>Joined:</span>
                               {new Date(currentUser?.metadata?.creationTime).toDateString() + " "}
                               (<Moment fromNow withTitle>{new Date(currentUser?.metadata?.creationTime).toISOString()}</Moment>)
                             </div>

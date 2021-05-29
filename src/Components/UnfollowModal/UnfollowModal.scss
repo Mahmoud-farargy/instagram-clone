@@ -1,0 +1,33 @@
+#unfollowWindow{
+        #optionsModal{
+            z-index: 7500;
+        }
+        .backdrop{
+            z-index: 7000;
+        }
+        span.uf--btn{
+           border-top: 1px solid #dbdbdb;
+           padding:0 !important;
+           button{
+               padding: 15px 8px;
+           }
+        }
+        .uf--box--inner{
+            width: 100%;
+            .uf--img--container{
+                width: 100%;
+                padding: 32px 16px 16px 16px;
+                align-items: center;
+                justify-content: center;
+                .MuiAvatar-root{
+                    width: 90px;
+                    height: 90px;
+                    margin:2px auto 15px auto;
+                }
+            }
+            .uf--txt--area{
+                text-align:center;
+                align-items: center;
+            }
+        }
+}

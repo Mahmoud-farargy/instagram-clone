@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import appleStore from "../../Assets/get-app-apple.png";
 import gpStore from "../../Assets/get-app-gp.png";
@@ -38,7 +38,9 @@ const AuthPage = (props) => {
   const [inProgress, setLoading] = useState(false);
   const [getPasswordMode, setPasswordMode] = useState(false);
   //-----x------ states--------x--------------
-
+ //----------- ref(s)----------------------
+ const _isMounted = useRef(true);
+ //-----x------ end ref(s)--------x--------------
   useEffect(() => {
     return () => {
       context.changeMainState(
@@ -47,6 +49,9 @@ const AuthPage = (props) => {
       );
     };
   }, [signUpState]);
+  useEffect(()=> {
+   return () => _isMounted.current = false;
+  },[]);
   const decipherPassword = (pass) => {
     return (
       pass &&
@@ -75,35 +80,40 @@ const AuthPage = (props) => {
             password
           )
           .then(() => {
-          setLoading(false);
-          setLoginEmail("");
-          setLoginPassword("");
+          if(_isMounted?.current){
+              setLoading(false);
+              setLoginEmail("");
+              setLoginPassword("");
 
-          auth.onAuthStateChanged((authUser) => {
-            updateUserState(true);
-            updateUID(authUser?.uid);
-            setLoading(false);
-          });
-          localStorage.setItem(
-            "user",
-            JSON.stringify({
-              email: email.toLowerCase(),
-              password: decipherPassword(password),
-            })
-          );
-          setTimeout(() => {
-            updatedReceivedData();
-            notify(
-              `Welcome back, ${
-                receivedData?.userName || currentUser?.displayName || "User"
-              }`
-            );
-            props.history.push("/");
-          }, 150);
+              auth.onAuthStateChanged((authUser) => {
+                updateUserState(true);
+                updateUID(authUser?.uid);
+                setLoading(false);
+              });
+              localStorage.setItem(
+                "user",
+                JSON.stringify({
+                  email: email.toLowerCase(),
+                  password: decipherPassword(password),
+                })
+              );
+              setTimeout(() => {
+                updatedReceivedData();
+                notify(
+                  `Welcome back, ${
+                    receivedData?.userName || currentUser?.displayName || "User"
+                  }`
+                );
+                props.history.push("/");
+              }, 150);
+          }
+
         })
         .catch((err) => {
-          setLoading(false);
-          notify(err.message, "error");
+          if(_isMounted?.current){
+            setLoading(false);
+            notify(err.message, "error");
+          }
         });
 
       } else {
@@ -152,84 +162,90 @@ const AuthPage = (props) => {
                       signUpPassword
                     )
                     .then((cred) => {
-                      setLoading(false);
-                      db.collection(Consts.USERS)
-                        .doc(cred.user.uid)
-                        .set({
-                          uid: cred.user.uid,
-                          userName: signUpUsername,
-                          posts: [],
-                          followers: [],
-                          following: [],
-                          followRequests: {received:[], sent: []},
-                          messages: [],
-                          profileInfo: {
-                            bio: "",
-                            website: "",
-                            gender: "Male",
-                            status: "Single",
-                            name: fullName.trim(),
-                            phoneNumber: "",
-                            birthday: "",
-                            professionalAcc: {
-                              show: true,
-                              category: "Just For Fun",
-                              suggested: true,
-                              status: true,
-                              reelsForFollowing: false,
-                              notificationBell: { state: true, type: "Both" },
-                              private: false,
-                              suggNotFollowed: false
-                            },
-                            sort: {
-                              sortBy: "Random",
-                              sortDirection: "Descending",
-                              filter: "None",
-                            },
-                            accountCreationDate: new Date(),
-                            registrationMethod: "email",
-                          },
-                          homePosts: [],
-                          reels: [],
-                          latestLikedPosts: [],
-                          savedposts: [],
-                          stories: [],
-                          blockList: [],
-                          notifications: {
-                            isNewMsg: false,
-                            isUpdate: false,
-                            list: [],
-                          },
-                          isVerified: false,
-                          userAvatarUrl: "",
-                        })
-                        .then(() => {
-                          auth.currentUser.updateProfile({
-                            displayName: signUpUsername,
-                          });
+                      if(_isMounted?.current){
                           setLoading(false);
-                          setSignUpEmail("");
-                          setSignUpPassword("");
-                          setSignUpUsername("");
-                          localStorage.setItem(
-                            "user",
-                            JSON.stringify({
-                              email: signUpEmail.toLowerCase(),
-                              password: decipherPassword(signUpPassword),
-                            })
-                          );
-                          setTimeout(() => {
-                            notify(
-                              "Welcome to Voxgram. Start by adding posts to your account."
-                            );
-                            updatedReceivedData();
-                            props.history.push("/");
-                          }, 150);
-                        });
+                        db.collection(Consts.USERS)
+                          .doc(cred.user.uid)
+                          .set({
+                            uid: cred.user.uid,
+                            userName: signUpUsername,
+                            posts: [],
+                            followers: [],
+                            following: [],
+                            followRequests: {received:[], sent: []},
+                            messages: [],
+                            profileInfo: {
+                              bio: "",
+                              website: "",
+                              gender: "Male",
+                              status: "Single",
+                              name: fullName.trim(),
+                              phoneNumber: "",
+                              birthday: "",
+                              professionalAcc: {
+                                show: true,
+                                category: "Just For Fun",
+                                suggested: true,
+                                status: true,
+                                reelsForFollowing: false,
+                                notificationBell: { state: true, type: "Both" },
+                                private: false,
+                                suggNotFollowed: false
+                              },
+                              sort: {
+                                sortBy: "Random",
+                                sortDirection: "Descending",
+                                filter: "None",
+                              },
+                              accountCreationDate: new Date(),
+                              registrationMethod: "email",
+                            },
+                            homePosts: [],
+                            reels: [],
+                            latestLikedPosts: [],
+                            savedposts: [],
+                            stories: [],
+                            blockList: [],
+                            notifications: {
+                              isNewMsg: false,
+                              isUpdate: false,
+                              list: [],
+                            },
+                            isVerified: false,
+                            userAvatarUrl: "",
+                          })
+                          .then(() => {
+                            if(_isMounted?.current){
+                              auth.currentUser.updateProfile({
+                                displayName: signUpUsername,
+                              });
+                              setLoading(false);
+                              setSignUpEmail("");
+                              setSignUpPassword("");
+                              setSignUpUsername("");
+                              localStorage.setItem(
+                                "user",
+                                JSON.stringify({
+                                  email: signUpEmail.toLowerCase(),
+                                  password: decipherPassword(signUpPassword),
+                                })
+                              );
+                              setTimeout(() => {
+                                notify(
+                                  "Welcome to Voxgram. Start by adding posts to your account."
+                                );
+                                updatedReceivedData();
+                                props.history.push("/");
+                              }, 150);
+                            }
+                          });
+                      }
                     })
                     .catch((err) => {
-                      setLoading(false);
-                      notify(err.message, "error");
+                      if(_isMounted?.current){
+                        setLoading(false);
+                        notify(err.message, "error");
+                      }
                     });
                 } else {
                   setLoading(false);
@@ -275,95 +291,103 @@ const AuthPage = (props) => {
         auth
           .signInWithPopup(googleProvider)
           .then((cred) => {
-            setLoading(false);
-            const {
-              profile: { email, name, picture, given_name },
-              isNewUser,
-            } = cred?.additionalUserInfo;
-            if (isNewUser) {
-              db.collection(Consts.USERS)
-                .doc(cred.user.uid)
-                .set({
-                  uid: cred.user.uid,
-                  userName: trimUserName(name),
-                  posts: [],
-                  followers: [],
-                  following: [],
-                  followRequests: {received:[], sent: []},
-                  messages: [],
-                  profileInfo: {
-                    bio: "",
-                    website: "",
-                    gender: "Male",
-                    status: "Single",
-                    name: given_name || "",
-                    phoneNumber: "",
-                    birthday: "",
-                    professionalAcc: {
-                      show: true,
-                      category: "Just For Fun",
-                      suggested: true,
-                      status: true,
-                      reelsForFollowing: false,
-                      notificationBell: { state: true, type: "Both" },
-                      private: false,
-                      suggNotFollowed: false
-                    },
-                    sort: {
-                      sortBy: "Random",
-                      sortDirection: "Descending",
-                      filter: "None",
-                    },
-                    accountCreationDate: new Date(),
-                    registrationMethod: "google",
-                  },
-                  homePosts: [],
-                  reels: [],
-                  latestLikedPosts: [],
-                  savedposts: [],
-                  stories: [],
-                  blockList: [],
-                  notifications: {
-                    isNewMsg: false,
-                    isUpdate: false,
-                    list: [],
-                  },
-                  isVerified: false,
-                  userAvatarUrl: picture,
-                })
-                .then(() => {
+            if(_isMounted?.current){
+                setLoading(false);
+                const {
+                  profile: { email, name, picture, given_name },
+                  isNewUser,
+                } = cred?.additionalUserInfo;
+                if (isNewUser) {
+                  db.collection(Consts.USERS)
+                    .doc(cred.user.uid)
+                    .set({
+                      uid: cred.user.uid,
+                      userName: trimUserName(name),
+                      posts: [],
+                      followers: [],
+                      following: [],
+                      followRequests: {received:[], sent: []},
+                      messages: [],
+                      profileInfo: {
+                        bio: "",
+                        website: "",
+                        gender: "Male",
+                        status: "Single",
+                        name: given_name || "",
+                        phoneNumber: "",
+                        birthday: "",
+                        professionalAcc: {
+                          show: true,
+                          category: "Just For Fun",
+                          suggested: true,
+                          status: true,
+                          reelsForFollowing: false,
+                          notificationBell: { state: true, type: "Both" },
+                          private: false,
+                          suggNotFollowed: false
+                        },
+                        sort: {
+                          sortBy: "Random",
+                          sortDirection: "Descending",
+                          filter: "None",
+                        },
+                        accountCreationDate: new Date(),
+                        registrationMethod: "google",
+                      },
+                      homePosts: [],
+                      reels: [],
+                      latestLikedPosts: [],
+                      savedposts: [],
+                      stories: [],
+                      blockList: [],
+                      notifications: {
+                        isNewMsg: false,
+                        isUpdate: false,
+                        list: [],
+                      },
+                      isVerified: false,
+                      userAvatarUrl: picture,
+                    })
+                    .then(() => {
+                      if(_isMounted?.current){
+                        setTimeout(() => {
+                          setLoading(false);
+                          context.updatedReceivedData();
+                          context.notify(
+                            `Welcome to Voxgram${given_name && ", " +given_name}. Start by adding posts to your account.`
+                          );
+                          props.history.push("/");
+                        }, 150);
+                      }
+                    });
+                }else{
                   setTimeout(() => {
                     setLoading(false);
-                    context.updatedReceivedData();
-                    context.notify(
-                      `Welcome to Voxgram${given_name && ", " +given_name}. Start by adding posts to your account.`
-                    );
-                    props.history.push("/");
+                      context.notify(`Welcome back, ${given_name || "User"}.`);
+                      props.history.push("/");
                   }, 150);
-                });
-            }else{
-              setTimeout(() => {
-                setLoading(false);
-                  context.notify(`Welcome back, ${given_name || "User"}.`);
-                  props.history.push("/");
-              }, 150);
+                }
+                localStorage.setItem(
+                  "user",
+                  JSON.stringify({
+                    email: email ? email.toLowerCase() : "",
+                    password: decipherPassword(signUpPassword),
+                  })
+                );
             }
-            localStorage.setItem(
-              "user",
-              JSON.stringify({
-                email: email ? email.toLowerCase() : "",
-                password: decipherPassword(signUpPassword),
-              })
-            );
           })
           .catch((err) => {
-            setLoading(false);
-            context.notify(err.message, "error");
+            if(_isMounted?.current){
+              setLoading(false);
+              context.notify(err.message, "error");
+            }
           });
         break;
       case "facebookProvider":
         auth.signInWithPopup(facebookProvider).then((res) => {
-          console.log(res);
+          if(_isMounted?.current){
+              console.log(res);
+          }
         });
         break;
       case "anonymousProvider":
@@ -376,97 +400,104 @@ const AuthPage = (props) => {
         auth
           .signInWithPopup(twitterProvider)
           .then((cred) => {
-            setLoading(false);
-            const {
-              profile: {
-                name,
-                profile_image_url,
-                profile_image_url_https,
-                screen_name,
-                userName,
-              },
-              isNewUser,
-            } = cred?.additionalUserInfo;
-            if (isNewUser) {
-              db.collection(Consts.USERS)
-                .doc(cred.user.uid)
-                .set({
-                  uid: cred.user.uid,
-                  userName: trimUserName(userName || name || screen_name || ""),
-                  posts: [],
-                  followers: [],
-                  following: [],
-                  followRequests: {received:[], sent: []},
-                  messages: [],
-                  profileInfo: {
-                    bio: "",
-                    website: "",
-                    gender: "Male",
-                    status: "Single",
-                    name: name,
-                    phoneNumber: "",
-                    birthday: "",
-                    professionalAcc: {
-                      show: true,
-                      category: "Just For Fun",
-                      suggested: true,
-                      status: true,
-                      reelsForFollowing: false,
-                      notificationBell: { state: true, type: "Both" },
-                      private: false,
-                      suggNotFollowed: false
-                    },
-                    sort: {
-                      sortBy: "Random",
-                      sortDirection: "Descending",
-                      filter: "None",
-                    },
-                    accountCreationDate: new Date(),
-                    registrationMethod: "twitter",
+            if(_isMounted?.current){
+                setLoading(false);
+                const {
+                  profile: {
+                    name,
+                    profile_image_url,
+                    profile_image_url_https,
+                    screen_name,
+                    userName,
                   },
-                  homePosts: [],
-                  reels: [],
-                  latestLikedPosts: [],
-                  savedposts: [],
-                  stories: [],
-                  blockList: [],
-                  notifications: {
-                    isNewMsg: false,
-                    isUpdate: false,
-                    list: [],
-                  },
-                  isVerified: false,
-                  userAvatarUrl:
-                    profile_image_url || profile_image_url_https || "",
-                })
-                .then(() => {
+                  isNewUser,
+                } = cred?.additionalUserInfo;
+                if (isNewUser) {
+                  db.collection(Consts.USERS)
+                    .doc(cred.user.uid)
+                    .set({
+                      uid: cred.user.uid,
+                      userName: trimUserName(userName || name || screen_name || ""),
+                      posts: [],
+                      followers: [],
+                      following: [],
+                      followRequests: {received:[], sent: []},
+                      messages: [],
+                      profileInfo: {
+                        bio: "",
+                        website: "",
+                        gender: "Male",
+                        status: "Single",
+                        name: name,
+                        phoneNumber: "",
+                        birthday: "",
+                        professionalAcc: {
+                          show: true,
+                          category: "Just For Fun",
+                          suggested: true,
+                          status: true,
+                          reelsForFollowing: false,
+                          notificationBell: { state: true, type: "Both" },
+                          private: false,
+                          suggNotFollowed: false
+                        },
+                        sort: {
+                          sortBy: "Random",
+                          sortDirection: "Descending",
+                          filter: "None",
+                        },
+                        accountCreationDate: new Date(),
+                        registrationMethod: "twitter",
+                      },
+                      homePosts: [],
+                      reels: [],
+                      latestLikedPosts: [],
+                      savedposts: [],
+                      stories: [],
+                      blockList: [],
+                      notifications: {
+                        isNewMsg: false,
+                        isUpdate: false,
+                        list: [],
+                      },
+                      isVerified: false,
+                      userAvatarUrl:
+                        profile_image_url || profile_image_url_https || "",
+                    })
+                    .then(() => {
+                      if(_isMounted?.current){
+                          setTimeout(() => {
+                          setLoading(false);
+                          context.updatedReceivedData();
+                          context.notify(
+                            `Welcome to Voxgram${name && ", " +name}. Start by adding posts to your account.`
+                          );
+                          props.history.push("/");
+                        }, 150);
+                      }
+
+                    });
+                }else{
                   setTimeout(() => {
                     setLoading(false);
-                    context.updatedReceivedData();
-                    context.notify(
-                      `Welcome to Voxgram${name && ", " +name}. Start by adding posts to your account.`
-                    );
+                    context.notify(`Welcome back, ${name || "User"}.`);
                     props.history.push("/");
                   }, 150);
-                });
-            }else{
-              setTimeout(() => {
-                setLoading(false);
-                context.notify(`Welcome back, ${name || "User"}.`);
-                props.history.push("/");
-              }, 150);
-            }
-            localStorage.setItem(
-              "user",
-              JSON.stringify({
-                email: "",
-                password: decipherPassword(signUpPassword),
-              })
-            );          
+                }
+                localStorage.setItem(
+                  "user",
+                  JSON.stringify({
+                    email: "",
+                    password: decipherPassword(signUpPassword),
+                  })
+                );
+            }         
           })
           .catch((err) => {
-            setLoading(false);
-            context.notify(err.message, "error");
+            if(_isMounted?.current){
+              setLoading(false);
+              context.notify(err.message, "error");
+            }
           });
         break;
       case "githubProvider":
@@ -474,97 +505,103 @@ const AuthPage = (props) => {
         auth
           .signInWithPopup(githubProvider)
           .then((cred) => {
-            setLoading(false);
-            const {
-              profile: { email, username, avatar_url, bio, login },
-              isNewUser,
-            } = cred?.additionalUserInfo;
-            if (isNewUser) {
-              db.collection(Consts.USERS)
-                .doc(cred.user.uid)
-                .set({
-                  uid: cred.user.uid,
-                  userName: trimUserName(username || login),
-                  posts: [],
-                  followers: [],
-                  following: [],
-                  followRequests: {received:[], sent: []},
-                  messages: [],
-                  profileInfo: {
-                    bio: bio ? bio : "",
-                    website: "",
-                    gender: "Male",
-                    status: "Single",
-                    name: "",
-                    phoneNumber: "",
-                    birthday: "",
-                    professionalAcc: {
-                      show: true,
-                      category: "Just For Fun",
-                      suggested: true,
-                      status: true,
-                      reelsForFollowing: false,
-                      notificationBell: { state: true, type: "Both" },
-                      private: false,
-                      suggNotFollowed: false
-                    },
-                    sort: {
-                      sortBy: "Random",
-                      sortDirection: "Descending",
-                      filter: "None",
-                    },
-                    accountCreationDate: new Date(),
-                    registrationMethod: "github",
-                  },
-                  homePosts: [],
-                  reels: [],
-                  latestLikedPosts: [],
-                  savedposts: [],
-                  stories: [],
-                  blockList: [],
-                  notifications: {
-                    isNewMsg: false,
-                    isUpdate: false,
-                    list: [],
-                  },
-                  isVerified: false,
-                  userAvatarUrl: avatar_url,
-                })
-                .then(() => {
+            if(_isMounted?.current){
+                setLoading(false);
+                const {
+                  profile: { email, username, avatar_url, bio, login },
+                  isNewUser,
+                } = cred?.additionalUserInfo;
+                if (isNewUser) {
+                  db.collection(Consts.USERS)
+                    .doc(cred.user.uid)
+                    .set({
+                      uid: cred.user.uid,
+                      userName: trimUserName(username || login),
+                      posts: [],
+                      followers: [],
+                      following: [],
+                      followRequests: {received:[], sent: []},
+                      messages: [],
+                      profileInfo: {
+                        bio: bio ? bio : "",
+                        website: "",
+                        gender: "Male",
+                        status: "Single",
+                        name: "",
+                        phoneNumber: "",
+                        birthday: "",
+                        professionalAcc: {
+                          show: true,
+                          category: "Just For Fun",
+                          suggested: true,
+                          status: true,
+                          reelsForFollowing: false,
+                          notificationBell: { state: true, type: "Both" },
+                          private: false,
+                          suggNotFollowed: false
+                        },
+                        sort: {
+                          sortBy: "Random",
+                          sortDirection: "Descending",
+                          filter: "None",
+                        },
+                        accountCreationDate: new Date(),
+                        registrationMethod: "github",
+                      },
+                      homePosts: [],
+                      reels: [],
+                      latestLikedPosts: [],
+                      savedposts: [],
+                      stories: [],
+                      blockList: [],
+                      notifications: {
+                        isNewMsg: false,
+                        isUpdate: false,
+                        list: [],
+                      },
+                      isVerified: false,
+                      userAvatarUrl: avatar_url,
+                    })
+                    .then(() => {
+                      if(_isMounted?.current){
+                        setLoading(false);
+                        localStorage.setItem(
+                          "user",
+                          JSON.stringify({
+                            email: email ? email.toLowerCase() : "",
+                            password: decipherPassword(signUpPassword),
+                          })
+                        );
+                        setTimeout(() => {
+                          context.updatedReceivedData();
+                          context.notify(
+                            "Welcome to Voxgram. Start by adding posts to your account."
+                          );
+                          props.history.push("/");
+                        }, 150);
+                      }
+                    });
+                } else {
                   setLoading(false);
-                  localStorage.setItem(
+                  setTimeout(() => {
+                    context.notify(`Welcome back, ${username || login || "User"}.`);
+                    props.history.push("/");
+                  }, 150);
+                }
+                localStorage.setItem(
                     "user",
                     JSON.stringify({
                       email: email ? email.toLowerCase() : "",
                       password: decipherPassword(signUpPassword),
                     })
-                  );
-                  setTimeout(() => {
-                    context.updatedReceivedData();
-                    context.notify(
-                      "Welcome to Voxgram. Start by adding posts to your account."
-                    );
-                    props.history.push("/");
-                  }, 150);
-                });
-            } else {
-              setLoading(false);
-              setTimeout(() => {
-                context.notify(`Welcome back, ${username || login || "User"}.`);
-                props.history.push("/");
-              }, 150);
+                );
             }
-            localStorage.setItem(
-                "user",
-                JSON.stringify({
-                  email: email ? email.toLowerCase() : "",
-                  password: decipherPassword(signUpPassword),
-                })
-              );
           })
           .catch((err) => {
-            setLoading(false);
-            context.notify(err.message, "error");
+            if(_isMounted?.current){
+              setLoading(false);
+              context.notify(err.message, "error");
+            }
           });
         break;
       default:
@@ -578,19 +615,23 @@ const AuthPage = (props) => {
     setLoading(true);
     auth
       .sendPasswordResetEmail(loginEmail)
-      .then((res) => {
-        setLoading(false);
-        notify(
-          "A password reset config has been send to your email",
-          "success"
-        );
+      .then(() => {
+        if(_isMounted?.current){
+          setLoading(false);
+          notify(
+            "A password reset config has been send to your email",
+            "success"
+          );
+        }
       })
       .catch((err) => {
-        setLoading(false);
-        notify(
-          `The email you entered does not exist in our database" ${err}`,
-          "error"
-        );
+        if(_isMounted?.current){
+          setLoading(false);
+          notify(
+            `The email you entered does not exist in our database" ${err}`,
+            "error"
+          );
+        }
       });
   };
   const trimUserName = (txt) => {

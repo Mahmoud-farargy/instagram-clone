@@ -25,6 +25,7 @@ A social media platform similar to Instagram that people can actually use.
                                                     <li> <p>Follow/Unfollow users
                                                         <ul>
                                                             <li class="bullet--3"><p>View all followed users on your profile or other's</p></li>
+                                                            <li class="bullet--3"><p>Unfollow confirmation modal</p></li>
                                                         </ul>
                                                         </p>
                                                     </li>
@@ -108,6 +109,7 @@ A social media platform similar to Instagram that people can actually use.
                                                 <ul class="bullet--2">
                                                  <li><p>View new members within the current week</p></li>
                                                  <li><p>View upcoming birthdays within the current month</p></li>
+                                                  <li><p>Hover on any user to see their profile in a mini window</p></li>
                                                 </ul>
                                             </li>
                                             <li><p>Activity Status</p></li>

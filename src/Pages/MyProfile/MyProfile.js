@@ -1,4 +1,4 @@
-import React, { useContext, Fragment, useState, useEffect } from "react";
+import React, { useContext, Fragment, useState, useEffect, useRef } from "react";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
 import { withRouter, Link } from "react-router-dom";
@@ -23,6 +23,7 @@ import ProfileItem from "../../Components/ProfileItem/ProfileItem";
 import { trimText } from "../../Utilities/TrimText";
 
 const MyProfile =(props)=>{
+    const isMounted = useRef(true);
     const [,loading] = useAuthState(auth);
     const [profSections] = useState([
         {sectionId: "grid",title: "grid", logo: <IoMdGrid />},
@@ -35,26 +36,29 @@ const MyProfile =(props)=>{
         changeMainState("currentPage", "Profile");
         return () => {
             changeMainState("activeProfileSection", {activeIndex: 0, activeID: "grid" });
+            isMounted.current = false;
         }
     },[]);
     const openPost = (postId, _, postOwnerId) =>{
                     if(postOwnerId){
                         getUsersProfile(postOwnerId).then((data) => {
-                            const postsCopy = data?.posts;
-                            const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
-                            if(postIndex !== -1){
-                                changeMainState("currentPostIndex", { index:postIndex, id: postId });
-                                if((window.innerWidth || document.documentElement.clientWidth) >= 670){
-                                    const timeout = setTimeout(() => {
-                                        changeModalState("post", true);
-                                        window.clearTimeout(timeout);
-                                    },200);
-                                   
-                                }else{
-                                    props.history.push("/browse-post");
-                                }
-                            }else{
-                                notify("An error occurred", "error");
+                            if(isMounted?.current){
+                                    const postsCopy = data?.posts;
+                                    const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
+                                    if(postIndex !== -1){
+                                        changeMainState("currentPostIndex", { index:postIndex, id: postId });
+                                        if((window.innerWidth || document.documentElement.clientWidth) >= 670){
+                                            const timeout = setTimeout(() => {
+                                                changeModalState("post", true);
+                                                window.clearTimeout(timeout);
+                                            },200);
+                                        
+                                        }else{
+                                            props.history.push("/browse-post");
+                                        }
+                                    }else{
+                                        notify("An error occurred", "error");
+                                    }
                             }
                         });
                     }else{
@@ -63,17 +67,19 @@ const MyProfile =(props)=>{
     }
     const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
         updateReelsProfile(uid).then(() => {
-            changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
+            isMounted?.current && changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
         });
     }
     const onLoadingFail = (postOwnerId, postId ) => {
         //automatically removes elements that have failed to load denoting they don't exist and got removed from the main source
         if(postOwnerId){
             getUsersProfile(postOwnerId).then((data) => {
-                const postsCopy = data?.posts;
-                const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
-                if(postIndex === -1 && navigator.onLine){
-                    handleSavingPosts({boolean:false,data: {id: postId}});
+                if(isMounted?.current){
+                    const postsCopy = data?.posts;
+                    const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
+                    if(postIndex === -1 && navigator.onLine){
+                        handleSavingPosts({boolean:false,data: {id: postId}});
+                    }
                 }
             });
       
@@ -158,7 +164,7 @@ const MyProfile =(props)=>{
                                 <div className="flex-row">
                                 <Link role="button" className="profile__btn prof__btn__unfollowed mr-2" to="/edit-profile" onClick={()=> changeMainState("activeOption", {activeIndex: 0, activeID: "Edit_Profile"})} >Edit profile</Link>
                                 <button className="mobile-only profile__btn prof__btn__unfollowed" onClick={()=> authLogout(props.history)}><FiLogOut className="mr-1" /> Log out</button>
-                                <button className="my__settings__btn" onClick={() => changeModalState("options", true)}><GiCog /></button>
+                                <button className="my__settings__btn" onClick={() => changeModalState("options", true)}><GiCog className="rotate__anim"/></button>
                                 </div>
                                 
                             </div>

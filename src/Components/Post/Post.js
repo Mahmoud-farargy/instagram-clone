@@ -42,6 +42,7 @@ class Post extends PureComponent {
       isVidePlaying: false,
       alsoLiked: []
     };
+    this._isMounted = true;
     this.similarsStr = (this.props.likes?.people?.some(el => el?.id === this.props.id) && this.props.likes?.people?.length >3) ? (this.props.likes?.people?.length?.toLocaleString() -3) : (this.props.likes?.people?.length?.toLocaleString() -2);
   }
   static contextType = AppContext;
@@ -55,7 +56,9 @@ class Post extends PureComponent {
   componentDidMount() {
     this.updateUsersWhoLiked();
   }
-
+  componentWillUnmount(){
+    this._isMounted = false;
+  }
   componentDidUpdate(prevProps) {
     if(prevProps.following !== this.props.following){
        this.updateUsersWhoLiked();
@@ -70,21 +73,23 @@ class Post extends PureComponent {
     const { changeMainState,changeModalState, receivedData, notify, getUsersProfile} = this.context
     if(postId){
         getUsersProfile(receivedData?.uid).then((data) => {
-          const postsCopy = data?.posts;
-          const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
-          if(postIndex !== -1){
-              changeMainState("currentPostIndex", { index:postIndex, id: postId });
-              if((window.innerWidth || document.documentElement.clientWidth) >= 670){
-                this.props.history.push("/profile");
-                const timeout = setTimeout(() => {
-                     changeModalState("post", true);
-                     window.clearTimeout(timeout);
-                }, 350);
-              }else{
-                  this.props.history.push("/browse-post");
-              }
-          }else{
-              notify("An error occurred", "error");
+          if(this._isMounted){
+            const postsCopy = data?.posts;
+            const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
+            if(postIndex !== -1){
+                changeMainState("currentPostIndex", { index:postIndex, id: postId });
+                if((window.innerWidth || document.documentElement.clientWidth) >= 670){
+                  this.props.history.push("/profile");
+                  const timeout = setTimeout(() => {
+                      changeModalState("post", true);
+                      window.clearTimeout(timeout);
+                  }, 350);
+                }else{
+                    this.props.history.push("/browse-post");
+                }
+            }else{
+                notify("An error occurred", "error");
+            } 
           }
       });
     }

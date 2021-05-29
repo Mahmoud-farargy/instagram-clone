@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import reelDefaultIco from "../../../Assets/reels.png";
 import { Avatar } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
@@ -54,35 +54,42 @@ import Styled from "styled-components";
 const HomeReelItem = (props) => {
     const { updateReelsProfile, changeMainState, notify } = useContext(AppContext);
     const [isReelLoading, setLoadingReel] = useState(false);
+    const _isMounted = useRef(true);
+    const timeouts = useRef(null);
     const history = useHistory();
-   
+    useEffect(() =>{
+        return ()=> {
+            window.clearTimeout(timeouts.current);
+            _isMounted.current = false;
+        }
+    },[]);
     const openReel = (reelId, groupId , uid ) => {
         setLoadingReel(true);
         updateReelsProfile(uid).then((res) => {
-            setTimeout(() =>{
-                setLoadingReel(false);
-                    //checks indices
-                    const checkGroupIndex = res?.reels?.length > 0 && res?.reels?.map(el => el.id).indexOf(groupId);
-                    if(checkGroupIndex !== -1){ 
-                        const checkReelIndex = res?.reels[checkGroupIndex]?.reelItems?.map(item => item.id).indexOf(reelId);
-                        if(checkReelIndex !== -1){
-                            changeMainState("currentReel", {groupIndex: checkGroupIndex , groupId: groupId, reelIndex: checkReelIndex, reelId: reelId });
-                            history.push("/reels");
+            if(_isMounted?.current){
+                timeouts.current = setTimeout(() =>{
+                    setLoadingReel(false);
+                        //checks indices
+                        const checkGroupIndex = res?.reels?.length > 0 && res?.reels?.map(el => el.id).indexOf(groupId);
+                        if(checkGroupIndex !== -1){ 
+                            const checkReelIndex = res?.reels[checkGroupIndex]?.reelItems?.map(item => item.id).indexOf(reelId);
+                            if(checkReelIndex !== -1){
+                                changeMainState("currentReel", {groupIndex: checkGroupIndex , groupId: groupId, reelIndex: checkReelIndex, reelId: reelId });
+                                history.push("/reels");
+                            }else{
+                                notify("Reel is not available or got deleted","error");
+                            }
                         }else{
                             notify("Reel is not available or got deleted","error");
                         }
-                    
-                    }else{
-                        notify("Reel is not available or got deleted","error");
-                    }
-            },2000);
-            
+                        window.clearTimeout(timeouts?.current);
+                },2000); 
+            }            
         })
     }
     const {reel} = props;
     return(
         <li onClick={()=> {reel?.id && openReel(reel?.id,reel?.groupId ,reel?.reelOwnerId)}} className="home-reel-item flex-column" title={reel?.userName}>
-            {/* {isReelLoading ? "true": "false"} */}
             <div className=" home-reel-container flex-column">
                     <Canvas isReelLoading={isReelLoading} className="reel--reel--inner  flex-column">
                         <Avatar className="reels__icon flex-column" src={(reel?.userAvatarUrl || reelDefaultIco)} alt={reel.userName}/>

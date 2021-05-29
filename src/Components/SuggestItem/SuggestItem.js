@@ -8,10 +8,11 @@ import Skeleton from "react-loading-skeleton";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import { trimText } from "../../Utilities/TrimText";
 import { withinPeriod } from "../../Utilities/WithinPeriod";
+import UserNameComp from "../../Components/UserName/UserName";
 
 const SuggestItem =(props)=>{
     const { loadingState, receivedData } = useContext(AppContext);
-    const { userName, isVerified, userUid, userAvatarUrl, browseUser, creationDate, followers, isOnline } = props;
+    const { userName, isVerified, userUid, userAvatarUrl, browseUser, creationDate, followers, isOnline, user } = props;
     const mutuals = receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.filter(el => el.receiverUid !== receivedData?.uid && followers?.sort((a,b) => b?.date?.seconds -  a?.date?.seconds).some(item => item?.senderUid === el?.receiverUid)).slice(0,1);
     return(
         <Fragment>
@@ -32,11 +33,11 @@ const SuggestItem =(props)=>{
                 :
                 // LOADED CONTENT
                 <li className="suggestion--item flex-row">
-                    <div onClick={()=> browseUser(userUid, userName )} title={userName} className="side--user--info flex-row">
+                    <div onClick={()=> browseUser(userUid, userName)} className="side--user--info flex-row">
                         <Avatar src={userAvatarUrl} alt={userName} title={userName}/>
                         <span className="flex-column">
                             <span className="flex-row side--user--name">
-                                <h5>{trimText(userName, 20)}</h5>
+                                <UserNameComp user={user}  />
                                 {isVerified ?  <span><GoVerified className="verified_icon"/></span> : null} 
                                 { isOnline && <span className="online__user"></span>}
                             </span>

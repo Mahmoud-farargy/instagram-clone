@@ -73,10 +73,10 @@
 .side--user--name{
      align-items:center !important;
 }
-.side--user--info h5,svg {
+.side--user--info h5,svg, .displayed_userName {
     cursor:pointer;
 }
-.side--user--info h5{
+.side--user--info h5, .displayed_userName{
     margin-left:10px;
     font-size:14px;
     text-transform: none;
@@ -89,7 +89,7 @@
     color: var(--main-black);
     text-overflow: ellipsis;
 }
-.side--user--info h5:hover{
+.side--user--info h5:hover, .displayed_userName:hover{
     text-decoration: underline;
 }
 .side--user--info small{

@@ -1,4 +1,4 @@
-import React, {Fragment, useState, useContext, useEffect} from "react";
+import React, {Fragment, useState, useContext, useEffect, useRef} from "react";
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
@@ -54,6 +54,7 @@ const Extra = () => {
     const [isSubmitted, setSubmissionState] = useState(false);
     const [reviewTxt, setReviewTxt] = useState("");
     const [hasRated, setHasRated] = useState(false);
+    const _isMounted = useRef(true);
     const classes = useStyles();
     const isValid = (rate !== 0 || rate);
     const {receivedData, notify}= useContext(AppContext);
@@ -73,27 +74,31 @@ const Extra = () => {
          label: labels[hover !== -1 ? hover : rate],
          date: firebase.database.ServerValue.TIMESTAMP
       }
-      refToDatabase.set(objectToSubmit).then((f) => {
-        setHasRated(true);
-        notify("Thanks for your feedback.","success");
+      refToDatabase.set(objectToSubmit).then(() => {
+        if(_isMounted?.current){
+          setHasRated(true);
+          notify("Thanks for your feedback.","success");
+        }
       });
     }
     useEffect(() => {
       if(receivedData && Object.keys(receivedData).length > 0){
         firebase?.database() &&  firebase.database().ref(`/rating/${receivedData?.uid}`).once('value').then((snapshot) => {
-            if(snapshot.val() && snapshot.val()?.uid){
-               setHasRated(true);
-               setRate( snapshot.val()?.ratingOutOfFive ? snapshot.val()?.ratingOutOfFive : 2 );
-               setReviewTxt( snapshot.val()?.review ? snapshot.val()?.review : "" );
-               
-            }else{
-              setHasRated(false);
-              setRate(0);
-              setReviewTxt("");
-            }
+          if(_isMounted?.current){
+              if(snapshot.val() && snapshot.val()?.uid){
+                setHasRated(true);
+                setRate( snapshot.val()?.ratingOutOfFive ? snapshot.val()?.ratingOutOfFive : 2 );
+                setReviewTxt( snapshot.val()?.review ? snapshot.val()?.review : "" );
+                
+              }else{
+                setHasRated(false);
+                setRate(0);
+                setReviewTxt("");
+              }
+          }
           });
       }
-     
+     return () => _isMounted.current = false;
     },[]);
     return (
         <Fragment >

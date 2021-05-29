@@ -19,7 +19,7 @@ const Notifications = ({ closeNotificationOnClick }) => {
   const [, loading] = useAuthState(auth);
   const _isMounted = useRef(true);
   useEffect(() => {
-    if (_isMounted) {
+    if (_isMounted?.current) {
      var timeout = setTimeout(() => {
         setLoading(false);
         window.clearTimeout(timeout);

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import "./Home.css";
 import Post from "../../Components/Post/Post";
@@ -38,6 +38,7 @@ const Home = (props) => {
     handleSavingPosts
   } = useContext(AppContext);
   let posts = receivedData?.posts;
+  const _isMounted = useRef(true);
   let [user, loading] = useAuthState(auth);
   const [randNum, setRandNum] = useState(0);
   const [onlineList, setOnlineList] = useState([]);
@@ -56,11 +57,14 @@ const Home = (props) => {
   ]);
   useEffect(() => {
     GOU(uid).then((k) => {
-        setOnlineList(k);
+      if(_isMounted?.current){
+         setOnlineList(k);
+      }
     });
     changeMainState("currentPage", "Home");
     window.scrollTo(0, 0);
-  }, [uid]);
+    return () => _isMounted.current = false;
+  }, []);
   useEffect(()=> {
         setRandNum(Math.floor(Math.random() * suggestionsList?.length -6));
   },[suggestionsList]);
@@ -186,6 +190,7 @@ const Home = (props) => {
                           .filter((item) => (item?.uid !== receivedData?.uid) ).slice(randNum, suggestionsList?.length -1).slice(0,5)
                           .map((user, i) => {
                             return (
+                              user && Object.keys(user).length > 0 &&
                               <SuggestItem
                                 key={i}
                                 userName={user?.userName}
@@ -195,6 +200,7 @@ const Home = (props) => {
                                 creationDate={user?.profileInfo?.accountCreationDate ? user?.profileInfo?.accountCreationDate : ""}
                                 followers={user?.followers}
                                 isOnline={onlineList?.some(c => c.uid === user?.uid)}
+                                user={user}
                               />
                             );
                           })

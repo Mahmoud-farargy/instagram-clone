@@ -1,4 +1,4 @@
-import React, { useContext, Fragment, useState, useEffect } from "react";
+import React, { useContext, Fragment, useState, useEffect, useRef } from "react";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
 import { withRouter, Link, useParams } from "react-router-dom";
@@ -50,7 +50,8 @@ const UsersProfile = (props) => {
     notify,
     handleSendingMessage
   } = context;
-
+  const _isMounted = useRef(true);
+  const timeouts = useRef(null);
   const message = (uid, username, avatarUrl, isVerified) => {
     const newIndex = receivedData && receivedData.messages?.map(d => d.uid).indexOf(uid);
     if(newIndex !== -1){
@@ -76,19 +77,24 @@ const UsersProfile = (props) => {
       getUsersProfile(userId);
     }
     window.scrollTo(0, 0);
+    return () => {
+      window.clearTimeout(timeouts?.current);
+      _isMounted.current = false;
+    }
   }, []);
   useEffect(()=> {
     if(isUserOnline){
     firebase?.database() &&  firebase.database().ref(`/status/${usersProfileData?.uid}`).once('value').then((snapshot) => {
-        if(snapshot.val() && snapshot.val()?.state){
-            const {state, last_changed} = snapshot.val();
-            setConnectivityStatus({state, last_changed});
-        }else{
-          setConnectivityStatus({state: "", last_changed: ""});
-        }
+      if(_isMounted?.current){
+          if(snapshot.val() && snapshot.val()?.state){
+              const {state, last_changed} = snapshot.val();
+              setConnectivityStatus({state, last_changed});
+          }else{
+            setConnectivityStatus({state: "", last_changed: ""});
+          }
+      }
       });
     }
-    
     suggestionsList?.length > 0 ? setRandNum(Math.floor(Math.random() * suggestionsList?.length -6)) : setRandNum(0);
   },[suggestionsList, usersProfileData]);
 
@@ -103,12 +109,12 @@ const UsersProfile = (props) => {
   }
 
   const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
-    handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() => props.history.push("/"));
+    handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() =>  _isMounted?.current && props.history.push("/"));
   }
 
   const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
     updateReelsProfile(usersProfileData?.uid).then(() => {
-        changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
+      _isMounted?.current && changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
     });
   }
 
@@ -167,7 +173,7 @@ const UsersProfile = (props) => {
                         </div>
                     }
                     {
-                      similarFollowers && similarFollowers.length > 0 && (isPrivate ? isFollowed : true) &&
+                      similarFollowers && similarFollowers.length > 0 &&
                       <p onClick={()=> changeModalState("users",true, similarFollowers, Consts.MUTUALFRIENDS)}  className="similar__followers">Followed by <span>
                         {
                         similarFollowers.slice(0,3).map(q => <MutualFriendsItem key={q?.receiverUid} item={q} />)
@@ -208,15 +214,19 @@ const UsersProfile = (props) => {
   const bdWish = () =>{
     const UID = usersProfileData?.uid;
     initializeChatDialog(UID, usersProfileData?.userName, usersProfileData?.userAvatarUrl, usersProfileData?.isVerified).then(() => {
-      const timeout = setTimeout(() => {
+      if( _isMounted?.current){
+          timeouts.current = setTimeout(() => {
               changeMainState("currentChat", { uid: UID,index: 0 });
               handleSendingMessage({content: `Hey, Happy birthday ${(usersProfileData?.profileInfo?.name || usersProfileData?.userName)}. I wish you the best.🎂`, uid: UID, type: "text", pathname: ""});
               props.history.push("/messages");
-              clearTimeout(timeout);
+              window.clearTimeout(timeouts?.current);
           }, 3000);                        
           changeModalState("newMsg", false);
+      }
     }).catch(() => {
-      notify("Failed to send","error");
+      if( _isMounted?.current){
+          notify("Failed to send","error");
+      }
     });
   }
   return (

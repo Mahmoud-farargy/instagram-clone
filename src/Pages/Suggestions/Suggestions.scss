@@ -19,7 +19,6 @@
             margin:0;
             background-color: #fff;
             width: 100%;
-            overflow-y:auto;
             .suggest--item--container{
                 width: 100%;
                 .suggestion--item {
@@ -29,7 +28,6 @@
                     padding:10px;
                     justify-content: space-between;
                     .side--user--info{
-                        // width: 100%;
                         max-width: auto;
                         margin:0;
                         padding: 0;;
@@ -42,6 +40,7 @@
         }
         @media only screen and (max-width: 670px){
             width: 100%;
+            overflow-y:auto;
             h4, .online__title{
                 padding-left:10px;
             }
