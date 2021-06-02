@@ -1,7 +1,7 @@
 import React, { useContext, Fragment, useState, useEffect, useRef } from "react";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
-import { withRouter, Link, useParams } from "react-router-dom";
+import { useHistory, Link, useParams } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { auth, firebase } from "../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -24,7 +24,7 @@ import ProfileItem from "../../Components/ProfileItem/ProfileItem";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import { trimText } from "../../Utilities/TrimText";
 
-const UsersProfile = (props) => {
+const UsersProfile = () => {
   const [, loading] = useAuthState(auth);
   const [isFollowed, setFollowingState] = useState(false);
   const {userId} = useParams();
@@ -33,7 +33,7 @@ const UsersProfile = (props) => {
   const [openSuggestionsBox, setSuggestionsBox] = useState(false);
   const [randNum, setRandNum] = useState(0);
   const [connectivityStatus, setConnectivityStatus] = useState({});
-
+  const history = useHistory();
   const {
     usersProfileData,
     changeMainState,
@@ -58,7 +58,7 @@ const UsersProfile = (props) => {
       changeMainState("currentChat",{uid, index: newIndex});
     }
     initializeChatDialog(uid, username, avatarUrl, isVerified);
-      props.history.push("/messages");
+      history.push("/messages");
   };
   useEffect(() => {
     receivedData?.following &&
@@ -103,18 +103,24 @@ const UsersProfile = (props) => {
     if((window.innerWidth || document.documentElement.clientWidth) >= 670){
       changeModalState("post", true);
     }else{
-      props.history.push("/browse-post");
+      history.push("/browse-post");
     }
     
   }
 
   const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
-    handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() =>  _isMounted?.current && props.history.push("/"));
+    handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() =>  _isMounted?.current && history.push("/"));
   }
 
   const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
     updateReelsProfile(usersProfileData?.uid).then(() => {
-      _isMounted?.current && changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
+      if(_isMounted?.current){
+        timeouts.current = setTimeout(() => {
+            changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
+            window.clearTimeout(timeouts?.current);
+            history.push("/reels");
+        },250);
+      } 
     });
   }
 
@@ -218,8 +224,8 @@ const UsersProfile = (props) => {
           timeouts.current = setTimeout(() => {
               changeMainState("currentChat", { uid: UID,index: 0 });
               handleSendingMessage({content: `Hey, Happy birthday ${(usersProfileData?.profileInfo?.name || usersProfileData?.userName)}. I wish you the best.🎂`, uid: UID, type: "text", pathname: ""});
-              props.history.push("/messages");
               window.clearTimeout(timeouts?.current);
+              history.push("/messages");
           }, 3000);                        
           changeModalState("newMsg", false);
       }
@@ -419,7 +425,7 @@ const UsersProfile = (props) => {
                               (isPrivate ? isFollowed : true) &&
                               usersProfileData.reels.map((reel, index) => (
                                   <li key={reel?.id + index}>
-                                    <Link  onClick={() => loadReels({currentGroupId: reel?.id, currentGroupIndex: index, currentReelIndex: 0, currentReelId: 0})}  to="/reels" className="reel--bubble flex-column">
+                                    <span  onClick={() => loadReels({currentGroupId: reel?.id, currentGroupIndex: index, currentReelIndex: 0, currentReelId: 0})} className="reel--bubble flex-column">
                                     <div className="reel--upper--container flex-column">
                                             <div className="reel--upper--inner flex-row" >
                                                 <img className="reels__icon" src={reelsIco} alt="icon"/>
@@ -427,7 +433,7 @@ const UsersProfile = (props) => {
                                       </div>
                                       
                                      <span className="mt-1">{reel.groupName}</span>
-                                    </Link>   
+                                    </span>   
                                 </li>
                               ))
                               
@@ -567,4 +573,4 @@ const UsersProfile = (props) => {
     </Fragment>
   );
 };
-export default withRouter(React.memo(UsersProfile));
+export default React.memo(UsersProfile);

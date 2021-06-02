@@ -1,18 +1,14 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import PropTypes from "prop-types";
 import { AppContext } from "../../../Context";
 import { BsFillHeartFill } from "react-icons/bs";
-import NotificationOutput from "../../../Components/NotificationsOutput/NotificationsOutput";
 import { auth } from "../../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Skeleton from "react-loading-skeleton";
 import FollowRequestsList from "../../../Components/FollowRequestsList/FollowRequestsList";
+import NotificationPeriods from "./NotificationPeriods/NotificationPeriods";
 
 const Notifications = ({ closeNotificationOnClick }) => {
   const {
-    igVideoImg,
-    igAudioImg,
-    changeMainState,
     receivedData,
   } = useContext(AppContext);
   const [isLoading, setLoading] = useState(true);
@@ -38,29 +34,7 @@ const Notifications = ({ closeNotificationOnClick }) => {
         <div>
          <FollowRequestsList />
           {receivedData?.notifications?.list.length >= 1 ? (
-            <ul
-              onClick={(s) => closeNotificationOnClick(s)}
-              className="noti--popup--ul flex-column"
-            >
-              {receivedData?.notifications?.list
-                ?.slice(0, 30)
-                .sort((a, b) => {
-                  return b.date.seconds - a.date.seconds;
-                })
-                .map((notification, i) => {
-                  return (
-                    <NotificationOutput
-                      key={notification?.notiId}
-                      notification={notification}
-                      igVideoImg={igVideoImg}
-                      myData={receivedData}
-                      igAudioImg={igAudioImg}
-                      changeMainState={changeMainState}
-                      postIndex={i}
-                    />
-                  );
-                })}
-            </ul>
+            <NotificationPeriods list={receivedData?.notifications?.list} closeNotificationOnClick={closeNotificationOnClick} />
           ) : (
             <div className="empty--card">
               <div className="plus--icon--container flex-column">
@@ -101,8 +75,5 @@ const Notifications = ({ closeNotificationOnClick }) => {
       )}
     </div>
   );
-};
-Notifications.propTypes = {
-  closeNotificationOnClick: PropTypes.func.isRequired,
 };
 export default Notifications;

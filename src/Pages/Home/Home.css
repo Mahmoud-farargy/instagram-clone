@@ -17,8 +17,6 @@
 }
 #home.main--home--container .home--posts--side, #home.main--home--container .home--sider{
     width:100%;
-    overflow-x:hidden;
-    overflow-y: hidden;
 }
 .home--sider::-webkit-scrollbar{
     width:10px;
@@ -47,8 +45,6 @@
     height:80%;
     z-index:90;
     width:40%;
-    overflow-y: auto;
-    overflow-x: hidden;
     float:right;
 }
 #home.main--home--container .home--sider::-webkit-scrollbar{
@@ -200,6 +196,7 @@
     }
     #home.main--home--container .home--sider{
         position:static;
+        overflow: hidden;
         width:100% !important;
         z-index:100;
         padding:0 !important;

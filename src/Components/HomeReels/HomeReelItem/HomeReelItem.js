@@ -66,7 +66,7 @@ const HomeReelItem = (props) => {
     const openReel = (reelId, groupId , uid ) => {
         setLoadingReel(true);
         updateReelsProfile(uid).then((res) => {
-            if(_isMounted?.current){
+            // if(_isMounted?.current){
                 timeouts.current = setTimeout(() =>{
                     setLoadingReel(false);
                         //checks indices
@@ -84,7 +84,7 @@ const HomeReelItem = (props) => {
                         }
                         window.clearTimeout(timeouts?.current);
                 },2000); 
-            }            
+            // }            
         })
     }
     const {reel} = props;

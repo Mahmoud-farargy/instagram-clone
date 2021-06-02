@@ -15,13 +15,13 @@ export const withBrowseUser = WrappedComponent => {
           if (specialUid && name) {
               if(specialUid !== uid){
                   getUsersProfile(specialUid).then(()=>{
-                    if(this._isMounted){
+                    // if(this._isMounted){
                       this.props.history.push(`/user_profile/${name}/${specialUid}`);
-                    }
+                    // }
                   }).catch((err) =>{
-                    if(this._isMounted){
+                    // if(this._isMounted){
                        notify((err && err.message) || "error has occurred. please try again later!", "error");
-                    }
+                    // }
                   });
                 
               }else{

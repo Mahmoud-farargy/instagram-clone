@@ -43,7 +43,6 @@ class AddNewPost extends PureComponent {
     };
     this._isMounted = true;
   }
-  //fix memory leak
   static contextType = AppContext;
   componentDidMount = () => {
     if (this._isMounted) {
