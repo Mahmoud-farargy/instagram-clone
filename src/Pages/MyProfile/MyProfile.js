@@ -32,7 +32,7 @@ const MyProfile =()=>{
         {sectionId: "stacked",title: "stacked", logo: <RiLayoutRowLine/>},
         {sectionId: "saved", title: "saved", logo: <VscBookmark />}
     ]);
-    const {receivedData,changeModalState, authLogout, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState, updateReelsProfile, activeProfileSection, notify, handleSavingPosts} = useContext(AppContext);
+    const {receivedData,changeModalState, authLogout, usersProfileData, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState, updateReelsProfile, activeProfileSection, notify, handleSavingPosts} = useContext(AppContext);
     useEffect(()=>{
         window.scrollTo(0,0);
         changeMainState("currentPage", "Profile");
@@ -138,7 +138,7 @@ const MyProfile =()=>{
      return(
         <Fragment>
             {/* Modals */}
-            {modalsState?.post && receivedData?.posts[currentPostIndex?.index] &&
+            {modalsState?.post && usersProfileData?.posts?.length > 0 && usersProfileData?.posts[currentPostIndex?.index] &&
                 <PostModal/>
             }
             { modalsState?.options && !modalsState?.post &&

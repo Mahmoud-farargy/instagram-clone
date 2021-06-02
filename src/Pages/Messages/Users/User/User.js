@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useContext } from "react";
+import React, { Fragment, memo, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 import GetFormattedDate from "../../../../Utilities/FormatDate";
 import TruncateMarkup from "react-truncate";
@@ -30,6 +30,17 @@ const User = ({ user, index, isOnline }) => {
       }
     }
   };
+  useEffect(() => {
+    if( index === currentChat.index ){
+      const userId = user?.uid;
+      const checkIndex = receivedData?.messages
+        ?.map((user) => user.uid)
+        .indexOf(userId);
+      if (receivedData?.messages?.[checkIndex]?.notification ) {
+        closeNewMsgNoti(userId);
+      }
+    }
+  }, []);
   return (
     <Fragment>
       <li

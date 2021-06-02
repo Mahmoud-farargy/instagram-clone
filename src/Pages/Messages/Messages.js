@@ -170,7 +170,7 @@ const Messages = (props) => {
                         })
                         .catch((err) => {
                           if(_isMounted?.current){
-                            notify((err.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
+                            notify((err?.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
                           }
                         });
                     }
@@ -183,7 +183,7 @@ const Messages = (props) => {
                 }
             }else{
               notify(
-                `${itemType} does not exceed the size of 12MB.`,
+                `The ${itemType} must not exceed the size of 12MB.`,
                 "info"
               );
             }

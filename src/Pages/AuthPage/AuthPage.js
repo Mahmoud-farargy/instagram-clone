@@ -112,7 +112,7 @@ const AuthPage = (props) => {
         .catch((err) => {
           if(_isMounted?.current){
             setLoading(false);
-            notify(err.message, "error");
+            notify(err?.message, "error");
           }
         });
 
@@ -250,21 +250,21 @@ const AuthPage = (props) => {
                 } else {
                   setLoading(false);
                   notify(
-                    "Password should be between 7 and 20 characters and contains at least one number, one lowercase letter, and one uppercase letter.",
+                    "Password must be between 7 and 20 characters long and contains at least one number, one lowercase letter, and one uppercase letter.",
                     "error"
                   );
                 }
               } else {
                 setLoading(false);
                 notify(
-                  `Username should be between 4 and 19 characters with no spaces. Underscore, dash and dot characters are allowed but should not be placed at the end.`,
+                  `Username must be between 4 and 19 characters with no spaces. Underscore, dash and dot characters are allowed but should not be placed at the end.`,
                   "error"
                 );
               }
             } else {
               setLoading(false);
               notify(
-                "Full Name should contain only letters and not exceed 25 characters.",
+                "Full Name must contain only letters and not exceed 25 characters.",
                 "error"
               );
             }
@@ -496,7 +496,7 @@ const AuthPage = (props) => {
           .catch((err) => {
             if(_isMounted?.current){
               setLoading(false);
-              context.notify(err.message, "error");
+              context.notify(err?.message, "error");
             }
           });
         break;
@@ -600,7 +600,7 @@ const AuthPage = (props) => {
           .catch((err) => {
             if(_isMounted?.current){
               setLoading(false);
-              context.notify(err.message, "error");
+              context.notify(err?.message, "error");
             }
           });
         break;
