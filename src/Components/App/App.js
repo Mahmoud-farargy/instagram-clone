@@ -10,13 +10,13 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import 'react-h5-audio-player/lib/styles.css';
 import $ from "jquery";
-import Header from "../Header/Header";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
 import * as Consts from "../../Utilities/Consts";
 import notificationSound from "../../Assets/Sounds/NotificationBell.mp3";
 
 //lazy loading
-const UsersModal = lazy(()=> import( "../../Components/UsersModal/UsersModal"));
+const Header = lazy(()=> import("../Header/Header"));
+const UsersModal = lazy(()=> import("../../Components/UsersModal/UsersModal"));
 const UnfollowModal = lazy(()=> import( "../UnfollowModal/UnfollowModal"));
 const CommentsModal = lazy(( ) => import("../../Components/CommentsModal/CommentsModal"));
 const Home = lazy(() => import("../../Pages/Home/Home"));

@@ -3,10 +3,12 @@ import "./LoadingStyling.scss";
 import loadingImg from "../../../Assets/2412274-min.png";
 import MobileHeader from "../../../Components/MobileHeader/MobileHeader";
 import { AiOutlineReload } from "react-icons/ai";
+import { useHistory } from "react-router-dom";
 
 const LoadingScreen = () => {
     const _isMounted = useRef(true);
     const [showAnim, setShowingAnim] = useState(false);
+    const history = useHistory();
     useEffect(() => {
         if(_isMounted?.current){
            var timeout = setTimeout(() => {
@@ -23,6 +25,7 @@ const LoadingScreen = () => {
         
     },[]);
     const reloadPage = () => {
+        history.replace("/");
         window.location.reload();
     }
     if(_isMounted?.current){

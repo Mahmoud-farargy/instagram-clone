@@ -121,7 +121,7 @@ const Header = (props) => {
       timeouts.current = setTimeout(() => {
         setNoti(false);
         window.clearTimeout(timeouts?.current);
-      },100);
+      },300);
     }
   }
   return (
@@ -232,7 +232,7 @@ const Header = (props) => {
               <div className="search--popup--arrow"> </div>
               <div className="search--popup--inner">
                 <ul className="noti--popup--ul flex-column">
-                  {searchInfo?.results && searchInfo?.results.length > 0 ? (
+                  {(searchInfo?.results && searchInfo?.results.length > 0 && !searchInfo?.loading) ? (
                     searchInfo?.results?.map((user, i) => {
                       return (
                         <SearchItem
@@ -242,7 +242,19 @@ const Header = (props) => {
                         />
                       );
                     })
-                  ) : (
+                  ):  searchInfo?.loading ?
+                    (
+                      <div className="empty--box flex-row">
+                        <Loader
+                          type="TailSpin"
+                          color="#919191"
+                          height={35}
+                          width={35}
+                          timeout={5000}
+                        />
+                      </div>
+                    )
+                   : (
                     <div className="empty--box flex-row">
                       <h4>No Results found</h4>
                     </div>

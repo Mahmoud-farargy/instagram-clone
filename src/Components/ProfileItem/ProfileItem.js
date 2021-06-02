@@ -38,7 +38,7 @@ const ProfileItem = ({ post, openPost, index, className, withOwnersName, isSaved
             <h4>Not found</h4>
           )}
 
-          <div className="user--img--cover flex-column">
+          <div className="user--img--cover flex-column fadeEffect">
             {
               !isSavedPost &&
               <div className="flex-row">

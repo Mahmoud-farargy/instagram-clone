@@ -32,15 +32,15 @@ A social media platform similar to Instagram that people can actually use.
                                                     <li><p>Show mutual friends</p></li>
                                                     <li><p>Edit profile</p>
                                                             <ul>
-                                                                <li class="bullet--3"><p>Update profile information or avatar picture</p></li>
+                                                                <li class="bullet--3"><p>Update profile information and avatar picture</p></li>
                                                                 <li class="bullet--3"><p>Manage blocked users</p></li>
-                                                                <li class="bullet--3"><p>Change account's Username and Password</p></li>
                                                             </ul>
                                                         </li>
                                                     <li><p>Account settings</p></li>
                                                      <ul>
+                                                             <li class="bullet--3"><p>Change account's Username and Password</p></li>
                                                              <li class="bullet--3"><p>Show/Hide activity status</p></li>
-                                                             <li class="bullet--3"><p>Make account public/private </p></li>
+                                                             <li class="bullet--3"><p>Make account private/public </p></li>
                                                              <li class="bullet--3"><p>Delete account</p></li>
                                                              <li class="bullet--3"><p> + more options</p></li>
                                                     </ul>
@@ -93,6 +93,7 @@ A social media platform similar to Instagram that people can actually use.
                                                 <p>Notification screen of the latest updates</p>
                                                 <ul class="bullet--2">
                                                  <li><p>Notifications can self-destruct if the post, reel, like, or comment that based on it got deleted</p></li>
+                                                  <li><p>Notifications are grouped into multiple sections: Today, Yesterday, This week, This month, and earlier</p></li>
                                                 </ul>
                                             </li>
                                             <li><p>Block/Unblock users</p></li>

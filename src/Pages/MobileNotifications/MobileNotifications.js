@@ -1,16 +1,13 @@
 import React, { useEffect } from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
-import NotificationOutput from "../../Components/NotificationsOutput/NotificationsOutput";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../Config/firebase";
 import PropTypes from "prop-types";
 import FollowRequestsList from "../../Components/FollowRequestsList/FollowRequestsList";
-
+import NotificationPeriods from "../../Components/Header/Notifications/NotificationPeriods/NotificationPeriods";
 const MobileNotifications = (props) => {
   const  [, loading ] = useAuthState(auth);
   const {
-    igVideoImg,
-    igAudioImg,
     changeMainState,
     receivedData,
   } = props.context;
@@ -27,30 +24,7 @@ const MobileNotifications = (props) => {
           </div>
           <FollowRequestsList />
           {receivedData?.notifications?.list.length >= 1 ? (
-            <ul
-              id="mobNotifications"
-              className="noti--popup--ul mob--notifications flex-column"
-            >
-              {receivedData?.notifications?.list
-                ?.slice(0, 30)
-                .sort((a, b) => {
-                  return b?.date?.seconds - a?.date?.seconds;
-                })
-                .map((notification, i) => {
-                  return (
-                    <div key={notification?.notiId}>
-                      <NotificationOutput
-                        notification={notification}
-                        igVideoImg={igVideoImg}
-                        myData={receivedData}
-                        igAudioImg={igAudioImg}
-                        changeMainState={changeMainState}
-                        postIndex={i}
-                      />
-                    </div>
-                  );
-                })}
-            </ul>
+            <NotificationPeriods list={receivedData?.notifications?.list}/>
           ) : (
             <div>
               <h4 style={{ textAlign: "center" }}>

@@ -1,0 +1,14 @@
+.noti__period{
+    border-top: 1px solid #dbdbdb;
+    &:first-of-type{
+        border-top: 0;
+    }
+    .noti__period__title{
+        text-transform: capitalize;
+        margin: 8px 0 0 8px;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 18px;
+        padding: 4px 4px 0 4px;
+    }
+}

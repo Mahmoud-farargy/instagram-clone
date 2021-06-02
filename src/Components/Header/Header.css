@@ -276,12 +276,12 @@
     border-radius:20px;
 }
 .noti--popup--ul{
-    padding:1px 6px;
+    padding:1px 0;
     margin-bottom: 0;
     min-height: 100px;
 }
 .noti--popup--inner .noti--popup--ul .noti--popup-item {
-    padding:12px 12px 13px;
+    padding:12px 11px 12px;
     white-space:normal;
     align-items:center;
     position:relative;
@@ -290,18 +290,7 @@
 .requests--button.noti--popup-item{
     padding:17px 17px 11px;
 }
-.noti--popup--inner .noti--popup--ul .noti--popup-item:after{
-    content:"";
-    position:absolute;
-    border-bottom: 1px solid #dbdbdb;
-    right:12px; 
-    bottom:0;
-    left:58px;
-    height:0;
-}
-.noti--popup--inner .noti--popup--ul > *:last-child:after{
-    border:none;
-}
+
 .noti--popup--inner .noti--popup--ul .noti--popup-item .noti__user__img .MuiAvatar-root{
     width:34px;
     height:34px;

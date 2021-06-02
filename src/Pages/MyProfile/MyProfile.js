@@ -1,7 +1,7 @@
 import React, { useContext, Fragment, useState, useEffect, useRef } from "react";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
-import { withRouter, Link } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { auth } from '../../Config/firebase';
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -22,8 +22,10 @@ import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import ProfileItem from "../../Components/ProfileItem/ProfileItem";
 import { trimText } from "../../Utilities/TrimText";
 
-const MyProfile =(props)=>{
-    const isMounted = useRef(true);
+const MyProfile =()=>{
+    const _isMounted = useRef(true);
+    const timeouts = useRef(null); 
+    const history = useHistory();
     const [,loading] = useAuthState(auth);
     const [profSections] = useState([
         {sectionId: "grid",title: "grid", logo: <IoMdGrid />},
@@ -36,13 +38,14 @@ const MyProfile =(props)=>{
         changeMainState("currentPage", "Profile");
         return () => {
             changeMainState("activeProfileSection", {activeIndex: 0, activeID: "grid" });
-            isMounted.current = false;
+            _isMounted.current = false;
+            window.clearTimeout(timeouts?.current);
         }
     },[]);
     const openPost = (postId, _, postOwnerId) =>{
                     if(postOwnerId){
                         getUsersProfile(postOwnerId).then((data) => {
-                            if(isMounted?.current){
+                            if(_isMounted?.current){
                                     const postsCopy = data?.posts;
                                     const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
                                     if(postIndex !== -1){
@@ -54,7 +57,7 @@ const MyProfile =(props)=>{
                                             },200);
                                         
                                         }else{
-                                            props.history.push("/browse-post");
+                                            history.push("/browse-post");
                                         }
                                     }else{
                                         notify("An error occurred", "error");
@@ -67,14 +70,20 @@ const MyProfile =(props)=>{
     }
     const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
         updateReelsProfile(uid).then(() => {
-            isMounted?.current && changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
+            if(_isMounted?.current){
+                timeouts.current = setTimeout(() => {
+                    changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
+                    window.clearTimeout(timeouts?.current);
+                    history.push("/reels");
+                },250);
+            }
         });
     }
     const onLoadingFail = (postOwnerId, postId ) => {
         //automatically removes elements that have failed to load denoting they don't exist and got removed from the main source
         if(postOwnerId){
             getUsersProfile(postOwnerId).then((data) => {
-                if(isMounted?.current){
+                if(_isMounted?.current){
                     const postsCopy = data?.posts;
                     const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
                     if(postIndex === -1 && navigator.onLine){
@@ -134,11 +143,11 @@ const MyProfile =(props)=>{
             }
             { modalsState?.options && !modalsState?.post &&
                 <OptionsModal>
-                    { isEmailAndNotAnon && <span onClick={() => {changeMainState("activeOption", {activeIndex: 2, activeID: "Change_Password_or_Email"}); props.history.push("/edit-profile")}}>Change password or email</span>}
-                    <span onClick={() => {changeMainState("activeOption", {activeIndex: 1, activeID: "Professional_Account"}); props.history.push("/edit-profile")}}>Account settings</span>
-                    <span onClick={() => {changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? 4 : 3, activeID: "Feedback"}); props.history.push("/edit-profile")}}>Report a problem/Rate app</span>
-                    <span onClick={() => {changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? 3 : 2, activeID: "Blocked_Users"}); props.history.push("/edit-profile")}}>Manage blocked accounts</span>
-                    <span onClick={()=> authLogout(props.history)}>Log out</span>
+                    { isEmailAndNotAnon && <span onClick={() => {changeMainState("activeOption", {activeIndex: 2, activeID: "Change_Password_or_Email"}); history.push("/edit-profile")}}>Change password or email</span>}
+                    <span onClick={() => {changeMainState("activeOption", {activeIndex: 1, activeID: "Professional_Account"}); history.push("/edit-profile")}}>Account settings</span>
+                    <span onClick={() => {changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? 4 : 3, activeID: "Feedback"}); history.push("/edit-profile")}}>Report a problem/Rate app</span>
+                    <span onClick={() => {changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? 3 : 2, activeID: "Blocked_Users"}); history.push("/edit-profile")}}>Manage blocked accounts</span>
+                    <span onClick={()=> authLogout(history)}>Log out</span>
                     <span>Cancel</span>
                 </OptionsModal>
             }
@@ -163,7 +172,7 @@ const MyProfile =(props)=>{
                                 </h5>
                                 <div className="flex-row">
                                 <Link role="button" className="profile__btn prof__btn__unfollowed mr-2" to="/edit-profile" onClick={()=> changeMainState("activeOption", {activeIndex: 0, activeID: "Edit_Profile"})} >Edit profile</Link>
-                                <button className="mobile-only profile__btn prof__btn__unfollowed" onClick={()=> authLogout(props.history)}><FiLogOut className="mr-1" /> Log out</button>
+                                <button className="mobile-only profile__btn prof__btn__unfollowed" onClick={()=> authLogout(history)}><FiLogOut className="mr-1" /> Log out</button>
                                 <button className="my__settings__btn" onClick={() => changeModalState("options", true)}><GiCog className="rotate__anim"/></button>
                                 </div>
                                 
@@ -202,7 +211,7 @@ const MyProfile =(props)=>{
                                 
                                 {receivedData?.reels.map((reel, index) =>
                                 <li key={reel?.id + index} className="reel--list--item">
-                                  <Link  onClick={() => loadReels({currentGroupId: reel?.id, currentGroupIndex: index, currentReelIndex: 0, currentReelId: 0})}  to="/reels" className="reel--bubble flex-column">
+                                  <span  onClick={() => loadReels({currentGroupId: reel?.id, currentGroupIndex: index, currentReelIndex: 0, currentReelId: 0})} className="reel--bubble flex-column">
                                       <div className="reel--upper--container flex-column">
                                             <div className="reel--upper--inner flex-row" >
                                                 <img className="reels__icon" src={reelsIco} alt="icon"/>
@@ -210,7 +219,7 @@ const MyProfile =(props)=>{
                                       </div>
                                       
                                      <span className="mt-1">{reel.groupName}</span>
-                                   </Link>   
+                                   </span>   
                                 </li>
                                 )}
                                </div>         
@@ -251,7 +260,7 @@ const MyProfile =(props)=>{
                                 <div className="my-empty--posts--text--container flex-column">
                                     <h2>Start capturing and sharing your moments.</h2>
                                     <p>Get the app to share your first photo or video.</p>
-                                    <div onClick={() => props.history.push("/add-post")} className="my--empty--posts--get--app flex-row">
+                                    <div onClick={() => history.push("/add-post")} className="my--empty--posts--get--app flex-row">
                                         <img loading="lazy" src={appleStore} alt="apple store" />
                                         <img loading="lazy" src={gpStore} alt="google store" />
                                     </div>
@@ -290,4 +299,4 @@ const MyProfile =(props)=>{
         </Fragment>
     )
 }
-export default withRouter(MyProfile);
+export default MyProfile;
