@@ -241,7 +241,7 @@ class AddNewPost extends PureComponent {
                           })
                           .catch((err) => {
                             if(this._isMounted){
-                                notify((err.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
+                                notify((err?.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
                             }
                           });
                     }
@@ -254,7 +254,7 @@ class AddNewPost extends PureComponent {
                 }
               } else {
                 notify(
-                  `Please choose an ${itemType} that doesn't exceed the size of 12MB.`,
+                  `The ${itemType} should should not exceed the size of 12MB.`,
                   "info"
                 );
               }
@@ -306,7 +306,7 @@ class AddNewPost extends PureComponent {
                     })
                     .catch((err) => {
                       if(this._isMounted){
-                          notify((err.message|| `Failed to upload video. Please try again later.`), "error");
+                          notify((err?.message|| `Failed to upload video. Please try again later.`), "error");
                       }
                     });
                 }

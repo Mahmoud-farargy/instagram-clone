@@ -85,6 +85,8 @@ const App = () => {
                 updateSuggestionsList(user.data());
               });
             }
+          }).catch((err) => {
+            notify((err?.message || "An error occurred"),"error");
           });
         changeMainState("currentUser", authUser);
         updateUserState(true);

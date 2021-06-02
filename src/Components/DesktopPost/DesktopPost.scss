@@ -73,7 +73,7 @@
                     min-height: 500px;
                     display: grid;
                     border:none !important;
-                    grid-template-columns: 55% 45%;
+                    grid-template-columns: 58% 42%;
                     .desktop--left, .desktop--right{
                         height:100%;
                         @media only screen and (max-width: 670px){
@@ -88,12 +88,13 @@
                     }
                     .desktop--right{
                         height: 100%;
+                        width: 335px;
                         position: relative;
                         background-color: #fff;
                         .post--card--header{
                             height:72px;
                             padding:16px;
-                            width:335px;
+                            width:100%;
                             border-bottom:1px solid #efefef;
                         }
                         .post--card--footer {

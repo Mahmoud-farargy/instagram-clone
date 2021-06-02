@@ -20,7 +20,7 @@ export const withBrowseUser = WrappedComponent => {
                     // }
                   }).catch((err) =>{
                     // if(this._isMounted){
-                       notify((err && err.message) || "error has occurred. please try again later!", "error");
+                       notify((err && err?.message) || "error has occurred. please try again later!", "error");
                     // }
                   });
                 

@@ -101,7 +101,7 @@ const EditProfileOption = (props) => {
                 })
                 .catch((err) => {
                   if(_isMounted?.current){
-                      notify((err.message || "Failed to remove picture. Please try again later."), "error");
+                      notify((err?.message || "Failed to remove picture. Please try again later."), "error");
                   }
                 });
           })(receivedData?.uid);
@@ -151,7 +151,7 @@ const EditProfileOption = (props) => {
                   }
                 }).catch((err) => {
                   if(_isMounted?.current){
-                    notify((err.message ||"Failed to upload picture.Please try again later"), "error");
+                    notify((err?.message ||"Failed to upload picture.Please try again later"), "error");
                   }
                 });
             }

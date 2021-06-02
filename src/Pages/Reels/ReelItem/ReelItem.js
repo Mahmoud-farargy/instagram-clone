@@ -96,6 +96,7 @@ function ReelItem(props) {
   };
   const submitComment = (s) => {
       s.preventDefault();
+      s.stopPropagation();
     handleReels({type: "comment", comment: commentTxt});
     setTimeout(() => {
         setCommentTxt("");
