@@ -27,9 +27,12 @@ const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/Op
 
 const Messages = (props) => {
     const { location, history } = props;
+    // refs
     const autoScroll = useRef(null);
     const fileUploadEl = useRef(null);
     const _isMounted = useRef(true);
+    const timeouts = useRef(null);
+    // end refs
     const context = useContext(AppContext);
     const [compState, setCompState] = useState({
         inputValue: "",
@@ -40,6 +43,7 @@ const Messages = (props) => {
   const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, modalsState, changeModalState, deleteChat, handleUserBlocking, confirmPrompt } = context;
   const { messages } = receivedData;
   const currUser = receivedData?.messages[currentChat.index];
+  const unreadedMessagesCount = receivedData?.messages?.filter(user => user?.notification)?.length;
 
   useEffect(() =>{
     //if index is not correct then correct it
@@ -48,9 +52,9 @@ const Messages = (props) => {
             const firstUserUid = receivedData?.messages?.filter(el => !receivedData?.blockList?.some(k => k.blockedUid === el.uid))[0]?.uid;
             const pickFirstContent = receivedData?.messages?.map(user => user.uid).indexOf(firstUserUid);
             if(pickFirstContent !== -1){
-              const timeout = setTimeout(() => {
+              timeouts.current = setTimeout(() => {
                   changeMainState("currentChat", { uid: firstUserUid,index: pickFirstContent });
-                  clearTimeout(timeout);
+                  window.clearTimeout(timeouts?.current);
               },300);
             }
           }
@@ -64,10 +68,10 @@ const Messages = (props) => {
           }
     }
     window.scrollTo(0,0);
-    changeMainState("currentPage", "Messages");
     return () => {
       fileUploadEl.current =false;
       autoScroll.current = false;
+      window.clearTimeout(timeouts?.current);
       _isMounted.current = false;
     }
   },[]);
@@ -94,6 +98,7 @@ const Messages = (props) => {
           openSidedrawer: false,
         });
     }
+    changeMainState("currentPage", `${ (unreadedMessagesCount && unreadedMessagesCount > 0) ? `(${unreadedMessagesCount}) `: ''} Messages`);
   },[messages, currentChat, compState.loading.state, _isMounted]);
   const submitMessage = (v) => {
     v.preventDefault();
@@ -152,6 +157,7 @@ const Messages = (props) => {
                         setCompState({...compState,loading: {uid: currUser?.uid,state:true, progress: progress }});
                     },
                     (error) => {
+                      setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
                       notify((error?.message || `Failed to send ${itemType}. Please try again later.`), "error");
                     },
                     () => {
@@ -170,6 +176,7 @@ const Messages = (props) => {
                         })
                         .catch((err) => {
                           if(_isMounted?.current){
+                            setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
                             notify((err?.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
                           }
                         });
@@ -229,9 +236,9 @@ const Messages = (props) => {
           const secondUserUid = receivedData?.messages?.filter(el => !receivedData?.blockList?.some(k => k.blockedUid === el.uid))[1]?.uid;
           const pickFirstContent = receivedData?.messages?.map(user => user.uid).indexOf(secondUserUid);
           if(pickFirstContent !== -1){
-            const timeout = setTimeout(() => {
+            timeouts.current = setTimeout(() => {
                 changeMainState("currentChat", { uid: secondUserUid,index: 0 });
-                clearTimeout(timeout);
+                window.clearTimeout(timeouts.current);
             },300);
           }
         }

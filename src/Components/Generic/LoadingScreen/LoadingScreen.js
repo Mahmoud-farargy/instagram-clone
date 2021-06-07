@@ -7,22 +7,22 @@ import { useHistory } from "react-router-dom";
 
 const LoadingScreen = () => {
     const _isMounted = useRef(true);
+    const timeouts = useRef(null);
     const [showAnim, setShowingAnim] = useState(false);
     const history = useHistory();
     useEffect(() => {
         if(_isMounted?.current){
-           var timeout = setTimeout(() => {
+            timeouts.current = setTimeout(() => {
                 setShowingAnim(true);
-                window.clearTimeout(timeout);
+                window.clearTimeout(timeouts.current);
             },19000);
             document.body.style.overflow = "hidden";
         }
-        return() => {                
+        return() => {             
             document.body.style.overflow = "visible";
-            window.clearTimeout(timeout);
+            window.clearTimeout(timeouts.current);
             _isMounted.current = false;
         }
-        
     },[]);
     const reloadPage = () => {
         history.replace("/");

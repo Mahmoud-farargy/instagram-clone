@@ -40,6 +40,7 @@ const AuthPage = (props) => {
   //-----x------ states--------x--------------
  //----------- ref(s)----------------------
  const _isMounted = useRef(true);
+ const timeouts = useRef(null);
  //-----x------ end ref(s)--------x--------------
   useEffect(() => {
     return () => {
@@ -50,7 +51,10 @@ const AuthPage = (props) => {
     };
   }, [signUpState]);
   useEffect(()=> {
-   return () => _isMounted.current = false;
+   return () => {
+     window.clearTimeout(timeouts?.current);
+     _isMounted.current = false;
+   }
   },[]);
   const decipherPassword = (pass) => {
     return (
@@ -71,7 +75,7 @@ const AuthPage = (props) => {
       isUserOnline,
       authLogout
     } = context;
-    setTimeout(() => {
+    timeouts.current = setTimeout(() => {
       //avoids data overlapping
       if (!isUserOnline) {
           auth
@@ -97,7 +101,7 @@ const AuthPage = (props) => {
                   password: decipherPassword(password),
                 })
               );
-              setTimeout(() => {
+              timeouts.current = setTimeout(() => {
                 updatedReceivedData();
                 notify(
                   `Welcome back, ${
@@ -137,7 +141,7 @@ const AuthPage = (props) => {
     if (authType === "signUp") {
       resetAllData(); //clears data before adding new one
 
-      setTimeout(() => {
+      timeouts.current = setTimeout(() => {
         if (!isUserOnline) {
           //avoids data overlapping
           if (
@@ -230,7 +234,7 @@ const AuthPage = (props) => {
                                   password: decipherPassword(signUpPassword),
                                 })
                               );
-                              setTimeout(() => {
+                              timeouts.current = setTimeout(() => {
                                 notify(
                                   "Welcome to Voxgram. Start by adding posts to your account."
                                 );
@@ -350,7 +354,7 @@ const AuthPage = (props) => {
                     })
                     .then(() => {
                       if(_isMounted?.current){
-                        setTimeout(() => {
+                        timeouts.current = setTimeout(() => {
                           setLoading(false);
                           context.updatedReceivedData();
                           context.notify(
@@ -361,7 +365,7 @@ const AuthPage = (props) => {
                       }
                     });
                 }else{
-                  setTimeout(() => {
+                  timeouts.current = setTimeout(() => {
                     setLoading(false);
                       context.notify(`Welcome back, ${given_name || "User"}.`);
                       props.history.push("/");
@@ -466,7 +470,7 @@ const AuthPage = (props) => {
                     })
                     .then(() => {
                       if(_isMounted?.current){
-                          setTimeout(() => {
+                        timeouts.current = setTimeout(() => {
                           setLoading(false);
                           context.updatedReceivedData();
                           context.notify(
@@ -478,7 +482,7 @@ const AuthPage = (props) => {
 
                     });
                 }else{
-                  setTimeout(() => {
+                  timeouts.current = setTimeout(() => {
                     setLoading(false);
                     context.notify(`Welcome back, ${name || "User"}.`);
                     props.history.push("/");
@@ -572,7 +576,7 @@ const AuthPage = (props) => {
                             password: decipherPassword(signUpPassword),
                           })
                         );
-                        setTimeout(() => {
+                        timeouts.current = setTimeout(() => {
                           context.updatedReceivedData();
                           context.notify(
                             "Welcome to Voxgram. Start by adding posts to your account."
@@ -583,7 +587,7 @@ const AuthPage = (props) => {
                     });
                 } else {
                   setLoading(false);
-                  setTimeout(() => {
+                  timeouts.current = setTimeout(() => {
                     context.notify(`Welcome back, ${username || login || "User"}.`);
                     props.history.push("/");
                   }, 150);

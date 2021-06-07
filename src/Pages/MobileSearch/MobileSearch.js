@@ -1,16 +1,17 @@
-import React, { Fragment, lazy, useContext,useRef, useEffect,useState} from "react";
+import React, { Fragment, lazy, useContext,useRef, useEffect, useState } from "react";
 import "./MobileSearch.scss";
-import {RiSearchLine} from "react-icons/ri";
+import { RiSearchLine } from "react-icons/ri";
 import Loader from "react-loader-spinner";
-import {AppContext} from "../../Context";
+import { AppContext } from "../../Context";
 import { TiDelete } from "react-icons/ti";
 import SearchItem from "../../Components/SearchItem/SearchItem";
+import { BsMicFill } from "react-icons/bs";
 const Explore = lazy(() => import("../../Pages/Explore/Explore"));
 
 const MobileSearch = () => {
     const {explore, searchUsers, searchInfo} = useContext(AppContext);
     const [searchVal, setSearchVal] = useState("");
-    const _isMounted = useRef(null);
+    const _isMounted = useRef(true);
 
     useEffect(() => {
         if(_isMounted?.current){
@@ -68,7 +69,12 @@ const MobileSearch = () => {
               >
                 <TiDelete />
               </span>
-            ) : null}
+            ) :  <span
+                    onClick={() => console.log("voice search is on the way to mobile")}
+                    className="clear--search--box voice__search__icon"
+                  >
+                  <BsMicFill/>
+              </span>}
 
                     <div
                             style={{

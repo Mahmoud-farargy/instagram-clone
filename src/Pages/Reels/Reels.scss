@@ -308,16 +308,22 @@
                             width:100%;
                             height: 100%;
                             z-index: 2000;
+                            .reel--loading--error{
+                                background-color:rgb(43, 42, 42);
+                                align-items: center;
+                                justify-content: center;
+                                width: 100%;
+                                height: 100%;
+                            }
                         }
                     }
                     
                 } 
                 @media only screen and (max-width: 670px){
-                    height: 100vh;
+                    height: 95vh;
                     width:100%;
                     border-radius: 0px;
-                    max-width: 100%;
-                   
+                    max-width: 100%;                   
                 }  
                 &::-webkit-scrollbar{
                     display:none;
@@ -325,7 +331,8 @@
                 }       
             }
             @media only screen and (max-width: 670px){
-                 margin:0px ;
+                height: auto;
+                margin:0px ;
             }
         }
        .reels-loading{

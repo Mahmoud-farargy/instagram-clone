@@ -14,7 +14,6 @@ import { FiHeart, FiSend } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import {
-  IoMdVideocam,
   IoIosArrowBack,
   IoIosArrowForward,
 } from "react-icons/io";
@@ -34,6 +33,7 @@ import * as Consts from "../../Utilities/Consts";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import { trimText } from "../../Utilities/TrimText";
+import VideoPostComp from "../../Components/VideoPost/VideoPost";
 const EmojiPicker = React.lazy(() =>  import("../../Components/Generic/EmojiPicker/EmojiPicker"));
 
 const DesktopPost = (props) => {
@@ -66,10 +66,15 @@ const DesktopPost = (props) => {
   });
   const inputField = useRef(null);
   const _isMounted = useRef(true);
+  const timeouts = useRef(null);
+  const vidRef = useRef(null);
   var following = receivedData?.following;
   useEffect(() => {
     changeMainState("currentPage", "Post");
-    return () => _isMounted.current = false;
+    return () => {
+      _isMounted.current = false;
+      window.clearTimeout(timeouts.current);
+    };
   }, []);
   
   var postLiked = usersProfileData?.posts && usersProfileData?.posts[currentPostIndex?.index]?.likes?.people?.some((el) => el.id === uid);
@@ -110,15 +115,17 @@ const DesktopPost = (props) => {
         ...compState,
         doubleLikeClicked: true,
       });
-      setTimeout(() => {
+      timeouts.current = setTimeout(() => {
         setCompState({
           ...compState,
           doubleLikeClicked: false,
         });
+        window.clearTimeout(timeouts.current);
       }, 1100);
     }
-    setTimeout(() => {
+    timeouts.current = setTimeout(() => {
       resetCounter();
+      window.clearTimeout(timeouts.current);
     }, 1000);
   };
   const updateUsersWhoLiked = () => {
@@ -391,15 +398,13 @@ const DesktopPost = (props) => {
                       ) : null}
                     </div>
                   ) : contentType === "video" ? (
-                    <div>
-                      <video
-                        className="post__card__content"
+                    <div className="w-100 h-100">
+                      <VideoPostComp
                         src={contentURL}
-                        draggable="false"
-                        controls
-                        autoPlay
-                      />
-                      <IoMdVideocam className="video__top__icon" />
+                        // autoPlay
+                        ref={vidRef}
+                        isVidPlaying={true}
+                        />
                     </div>
                   ) :  contentType === "audio" ? (
                       <AudioContent autoPlay url={contentURL} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()}/>
@@ -424,9 +429,9 @@ const DesktopPost = (props) => {
                           role="button"
                           className="flex-row align-items-center"
                         >
-                          <h5 className="flex-row w-100 trim__txt align-items-center">
+                          <h5 className="flex-row trim__txt align-items-center">
                             <TruncateMarkup line={1} ellipsis="...">
-                              {trimText(usersProfileData?.userName,20)}
+                              {trimText(usersProfileData?.userName,15)}
                             </TruncateMarkup>
                             <span>
                             {isVerified && (<GoVerified className="verified_icon" />)}
@@ -435,7 +440,7 @@ const DesktopPost = (props) => {
                           </h5>
                         </span>
                         <span tabIndex="0" aria-disabled="false" role="button">
-                          <p>
+                          <p style={{minHeight:"20px"}}>
                             <TruncateMarkup line={1} ellipsis="...">
                               {location}
                             </TruncateMarkup>

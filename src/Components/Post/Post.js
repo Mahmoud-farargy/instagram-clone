@@ -6,7 +6,6 @@ import TruncateMarkup from "react-truncate";
 import { FiHeart, FiSend } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment , FaRegCommentDots} from "react-icons/fa";
-import { IoMdVideocam } from "react-icons/io";
 import { RiBookmarkLine, RiBookmarkFill } from "react-icons/ri";
 import Comment from "../../Components/Comment/Comment";
 import { GoVerified } from "react-icons/go";
@@ -22,12 +21,15 @@ import AudioContent from "../../Components/AudioContent/AudioContent";
 import NewMsgModal from "../../Components/NewMsgModal/NewMsgModal";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
 import {AppContext} from "../../Context";
+import VideoPostComp from "../../Components/VideoPost/VideoPost";
 const EmojiPicker = React.lazy(() =>  import("../../Components/Generic/EmojiPicker/EmojiPicker"));
 class Post extends PureComponent {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
     this.videoPost = React.createRef();
+    this.timeouts = React.createRef();
+    this.isVidBuffering = true;
     this.state = {
       insertedComment: "",
       btnClicks: 0,
@@ -38,9 +40,11 @@ class Post extends PureComponent {
       replayData: {},
       openOptionsModal: false,
       openNewMsgModal: false,
-      buffering: true,
-      isVidePlaying: false,
-      alsoLiked: []
+      isVidLoaded: false,
+      isVidEnded: false,
+      isVideoPlaying: false,
+      alsoLiked: [],
+      preLoad: "none"
     };
     this._isMounted = true;
     this.similarsStr = (this.props.likes?.people?.some(el => el?.id === this.props.id) && this.props.likes?.people?.length >3) ? (this.props.likes?.people?.length?.toLocaleString() -3) : (this.props.likes?.people?.length?.toLocaleString() -2);
@@ -57,6 +61,7 @@ class Post extends PureComponent {
     this.updateUsersWhoLiked();
   }
   componentWillUnmount(){
+    // this._isMounted && window.clearTimeout(this.timeouts?.current);
     this._isMounted = false;
   }
   componentDidUpdate(prevProps) {
@@ -80,9 +85,9 @@ class Post extends PureComponent {
                 changeMainState("currentPostIndex", { index:postIndex, id: postId });
                 if((window.innerWidth || document.documentElement.clientWidth) >= 670){
                   this.props.history.push("/profile");
-                  const timeout = setTimeout(() => {
+                  this.timeouts.current = setTimeout(() => {
                       changeModalState("post", true);
-                      window.clearTimeout(timeout);
+                      window.clearTimeout(this.timeouts?.current);
                   }, 350);
                 }else{
                     this.props.history.push("/browse-post");
@@ -111,16 +116,16 @@ class Post extends PureComponent {
       this.setState({
         doubleLikeClicked: true,
       });
-     const timeout1 = setTimeout(() => {
+      this.timeouts.current = setTimeout(() => {
         this.setState({
           doubleLikeClicked: false,
         });
-        clearTimeout(timeout1);
+        window.clearTimeout(this.timeouts?.current);
       }, 1100);
     }
-    const timeout2 = setTimeout(() => {
+    this.timeouts.current = setTimeout(() => {
       resetCounter();
-      clearTimeout(timeout2);
+      window.clearTimeout(this.timeouts?.current);
     }, 1000);
   };
 
@@ -192,22 +197,26 @@ class Post extends PureComponent {
       updateObject(this.state, { showInputForm: !this.state.showInputForm })
     );
 
-    setTimeout(() => {
+   const tOut = setTimeout(() => {
       if (this.state.showInputForm) {
         this.inputField &&
           this.inputField.current &&
           this.inputField.current.focus();
       }
+      window.clearTimeout(tOut);
     }, 150);
   }
   handleVideoPlaying =(type) => {
-    if(this.videoPost && this.videoPost?.current && this.videoPost.current?.play() && !this.state.buffering){
-        if(type.toLowerCase() === "on-view" && !this.state.isVidePlaying && this.videoPost.current?.currentTime < 0 && this.videoPost.current?.paused && this.videoPost.current?.ended){
-          this.videoPost.current.play();
-          this.setState({...this.state, isVidePlaying: true });
-        }else if(type.toLowerCase() === "out-of-view" && this.videoPost.current?.currentTime > 0 && !this.videoPost.current?.paused && !this.videoPost.current?.ended){
-          this.videoPost.current.pause();
-          this.setState({...this.state, isVidePlaying: false });
+    if(this.state.preLoad === "none"){
+      this.setState({...this.state, preLoad: "metadata"});
+    }
+    if(this.videoPost && this.state.isVidLoaded && !this.state.isVidEnded && this.videoPost?.current && this.state.preLoad === "metadata" && !this.isVidBuffering){
+        if(type.toLowerCase() === "on-view" && !this.state.isVideoPlaying && typeof this.videoPost.current?.play === "function"){
+          // this.videoPost.current.play();
+          this.setState({...this.state, isVideoPlaying: true});
+        }else if(type.toLowerCase() === "out-of-view" && this.state.isVideoPlaying){
+          // this.videoPost.current.pause();
+          this.setState({...this.state, isVideoPlaying: false });
         }
     }
   }
@@ -308,7 +317,7 @@ class Post extends PureComponent {
             </div>
             <div className="post--card--body">
               {contentType === "image" ? (
-                <div>
+                <div className="w-100 h-100"> 
                   <img
                     loading="lazy"
                     onClick={() => this.doubleClickEvent()}
@@ -334,22 +343,19 @@ class Post extends PureComponent {
                   ) : null}
                 </div>
               ) : contentType === "video" ? (
-                <div>
+                <div className="w-100 h-100">
                   <ScrollTrigger onEnter={() => this.handleVideoPlaying("on-view")} onExit={() => this.handleVideoPlaying("out-of-view")} >
-                      <video
+                  <VideoPostComp
                       ref={this.videoPost}
-                      onClick={() => this.doubleClickEvent()}
-                      className="post__card__content"
+                      clickEvent={() => this.doubleClickEvent()}
                       src={contentURL}
-                      draggable="false"
-                      controls
-                      muted
-                      preload={"none"}
-                      onCanPlay={(x) => {this.setState( { ...this.state, buffering: false } ); x.persist()}}
-                    />
+                      isMuted={true}
+                      preload={this.state.preLoad}
+                      isVidPlaying={ this.state.isVideoPlaying}
+                      whenLoadedData={()=> this.setState( { ...this.state, isVidLoaded: true })}
+                      whenEnded={()=> this.setState( { ...this.state, isVidEnded: true } )}
+                      whenCanPlay={() => this.isVidBuffering = false} />
                   </ScrollTrigger>
-                  
-                  <IoMdVideocam className="video__top__icon" />
                 </div>
               ) : contentType === "audio" ? (
                   <AudioContent url={contentURL} userName={userName} doubleClickEvent={() => this.doubleClickEvent()} />

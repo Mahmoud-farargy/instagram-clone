@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useContext, Suspense, lazy, useState, useRef} from "react";
 import { Switch, Route, useHistory } from "react-router-dom";
 import { AppContext } from "../../Context";
-import { db, auth, changeConnectivityStatus} from "../../Config/firebase";
+import { auth, changeConnectivityStatus} from "../../Config/firebase";
 import AppConfig from "../../Config/app-config.json";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { ToastContainer } from "react-toastify";
@@ -11,7 +11,6 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import 'react-h5-audio-player/lib/styles.css';
 import $ from "jquery";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
-import * as Consts from "../../Utilities/Consts";
 import notificationSound from "../../Assets/Sounds/NotificationBell.mp3";
 
 //lazy loading
@@ -63,56 +62,45 @@ const App = () => {
     usersProfileData,
     reelsProfile,
     currentPostIndex,
+    testStorageConnection,
     explore,
-    loadingState
   } = context;
   const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
   const [user,loading] = useAuthState(auth);
   const history = useHistory();
   const [toggledNotiBell, setNotiBell] = useState(false);
-  const _isMounted = useRef(true);
+  const stopBellTimeout = useRef(true);
+  const reverseBellTimeout = useRef(true);
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        changeMainState("loadingState", {...loadingState, suggList: true});
-        db.collection(Consts.USERS)
-          .limit(150)
-          .get()
-          .then((query) => {
-            if(_isMounted?.current){
-              changeMainState("loadingState", {...loadingState, suggList: false});
-              query.forEach((user) => {
-                updateSuggestionsList(user.data());
-              });
-            }
-          }).catch((err) => {
-            notify((err?.message || "An error occurred"),"error");
-          });
+        updateSuggestionsList();
         changeMainState("currentUser", authUser);
         updateUserState(true);
         updateUID(authUser?.uid);
         updatedReceivedData();
         changeConnectivityStatus(authUser?.uid);
+        testStorageConnection();
       } else {
-        const recievedAuth = localStorage.getItem("user");
-        if (recievedAuth) {
+        // const recievedAuth = localStorage.getItem("user");
+        // if (recievedAuth) {
             //attempts to log in again using local storage data
           //   debugger
           // const { email, password } = JSON.parse(recievedAuth);
           // auth.signInWithEmailAndPassword(email, returnPassword(password));
-        }else{
+        // }else{
             // user logged out
              history.push("/auth");
              updateUserState(false);
-        }
+        // }
       }
     });
     // ----------------------
-
     return () => {
       //performs some clearn up actions
       unsubscribe();
-      _isMounted.current = false;
+     window.clearTimeout(reverseBellTimeout?.current);
+     window.clearTimeout(stopBellTimeout?.current);
     };
   }, []);
   useEffect(() => {
@@ -124,9 +112,9 @@ const App = () => {
         // console.log(new Date().getTime());
         const lastMessage = receivedData?.messages?.sort((a, b) => b?.lastMsgDate - a?.lastMsgDate)[0];
         const checkIfTimePassed = (time) => {
-            const fifteenSecs = 15*1000;
+            const tenSecs = 10*1000;
             const dateNow = new Date();
-           return dateNow - new Date(time * 1000) < fifteenSecs;
+           return dateNow - new Date(time * 1000) < tenSecs;
         }
         const diffTimesUpdate = checkIfTimePassed(lastUpdate?.date?.seconds);
         const diffTimesMsg = checkIfTimePassed(lastMessage);
@@ -137,12 +125,12 @@ const App = () => {
          if((timePassed && lastUpdate?.uid !== receivedData?.uid)){
             setNotiBell(true);
             bellSound.play();
-            const stopBell = setTimeout(() => {
+            stopBellTimeout.current = setTimeout(() => {
                 setNotiBell(false);
-                const reverseBell = setTimeout(() => {
+                reverseBellTimeout.current = setTimeout(() => {
                     bellSound.pause();
-                    clearTimeout(reverseBell);
-                    clearTimeout(stopBell);
+                    window.clearTimeout(reverseBellTimeout?.current);
+                    window.clearTimeout(stopBellTimeout?.current);
                   },3000);
               },300);
         }
@@ -153,7 +141,6 @@ const App = () => {
     $(document).ready(() => {
       if (isAnyModalOpen) { //we could also use a ref in here
         $("body").css("overflow", "hidden");
-       
       } else {
         $("body").css("overflow", "visible");
       }
@@ -168,7 +155,6 @@ const App = () => {
       history.replace("/auth");
     }
   }, [currentPage]);
-  
   return (
     <Fragment>
       <main>
@@ -194,7 +180,7 @@ const App = () => {
         {/* Notifications container */}
         <ToastContainer />
         {/* Routes */}
-          <Suspense fallback={<LoadingScreen />}>
+          <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div><LoadingScreen /></div>}>
             <Switch>
             <Route exact path="/">
               {(user && receivedData && Object.keys(receivedData).length) > 0 ? <Header/> : <LoadingScreen />}
@@ -211,7 +197,6 @@ const App = () => {
                  : 
                 <ErrorRoute type="403"/>
               }
-             
               <MobileNav />
             </Route>
             <Route exact path="/add-post">
@@ -228,9 +213,7 @@ const App = () => {
                  <MobileNotifications context={context} />
                  :
                 <ErrorRoute type="403"/>
-
               }
-             
               <MobileNav />
             </Route>
             <Route exact path="/profile">
@@ -241,9 +224,7 @@ const App = () => {
                 <MyProfile />
                  :
                 <ErrorRoute type="403"/>
-
               }
-              
               <MobileNav />
               <Footer />
             </Route>
@@ -256,7 +237,6 @@ const App = () => {
                 :
                 <ErrorRoute type="403"/>
               }
-              
               <MobileNav />
               <Footer />
             </Route>
@@ -269,7 +249,6 @@ const App = () => {
                 : 
                 <ErrorRoute type="403"/>
               }
-              
               <MobileNav />
             </Route>
             <Route exact path="/edit-profile">
@@ -281,7 +260,6 @@ const App = () => {
                   :
                   <ErrorRoute type="403"/>
               }
-             
               <MobileNav />
               <Footer />
             </Route>

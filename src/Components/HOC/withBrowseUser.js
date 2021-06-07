@@ -6,20 +6,24 @@ import { AppContext } from "../../Context";
 export const withBrowseUser = WrappedComponent => {
     class newComponent extends PureComponent {
       static contextType = AppContext;
-      _isMounted = true;
-      componentWillUnmount(){
-        this._isMounted = false;
-      }
+      state={ isLoading: false}
+      // _isMounted = true;
+      // componentWillUnmount(){
+      //   this._isMounted = false;
+      // }
        browseUser = (specialUid, name) =>{
         const { getUsersProfile , notify, uid} =  this.context;
+        this.setState({...this.state,isLoading: true});
           if (specialUid && name) {
               if(specialUid !== uid){
                   getUsersProfile(specialUid).then(()=>{
                     // if(this._isMounted){
+                      this.setState({...this.state,isLoading: false});
                       this.props.history.push(`/user_profile/${name}/${specialUid}`);
                     // }
                   }).catch((err) =>{
                     // if(this._isMounted){
+                      this.setState({...this.state,isLoading: false});
                        notify((err && err?.message) || "error has occurred. please try again later!", "error");
                     // }
                   });
@@ -31,7 +35,12 @@ export const withBrowseUser = WrappedComponent => {
       }
       render(){
       
-        return <WrappedComponent {...this.props} browseUser={this.browseUser} />
+        return (
+          <>
+            { this.state.isLoading && <div className="global__loading"><span className="global__loading__inner"></span></div>}
+            <WrappedComponent {...this.props} browseUser={this.browseUser} />
+          </>
+        )
       }
     }
     return withRouter(newComponent);
