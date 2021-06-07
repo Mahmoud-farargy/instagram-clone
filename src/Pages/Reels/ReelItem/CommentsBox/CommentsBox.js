@@ -18,10 +18,11 @@ const CommentsBox = (props) => {
             handleReelsActions("comment",
                 { comment: formState.insertedComment, ownerUid, itemIndex, itemId, groupIndex, groupId, userName, userAvatarUrl }
             );
-            setTimeout(() => {
+            const timeouts = setTimeout(() => {
                 setForm({
                     insertedComment: ""
-                })   
+                })
+                window.clearTimeout(timeouts);
             }, 400);
             
         }else{

@@ -19,8 +19,8 @@ import gpStore from "../../Assets/get-app-gp.png";
 import { HiOutlinePlus } from "react-icons/hi";
 import { FiLogOut } from "react-icons/fi";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
-import ProfileItem from "../../Components/ProfileItem/ProfileItem";
 import { trimText } from "../../Utilities/TrimText";
+import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 
 const MyProfile =()=>{
     const _isMounted = useRef(true);
@@ -32,42 +32,22 @@ const MyProfile =()=>{
         {sectionId: "stacked",title: "stacked", logo: <RiLayoutRowLine/>},
         {sectionId: "saved", title: "saved", logo: <VscBookmark />}
     ]);
-    const {receivedData,changeModalState, authLogout, usersProfileData, changeMainState, uid, getUsersProfile, currentPostIndex, modalsState, updateReelsProfile, activeProfileSection, notify, handleSavingPosts} = useContext(AppContext);
+    const { receivedData,changeModalState, authLogout, usersProfileData, changeMainState, uid, currentPostIndex, modalsState, updateReelsProfile, activeProfileSection, testStorageConnection } = useContext(AppContext);
     useEffect(()=>{
         window.scrollTo(0,0);
         changeMainState("currentPage", "Profile");
+       
         return () => {
             changeMainState("activeProfileSection", {activeIndex: 0, activeID: "grid" });
             _isMounted.current = false;
             window.clearTimeout(timeouts?.current);
         }
     },[]);
-    const openPost = (postId, _, postOwnerId) =>{
-                    if(postOwnerId){
-                        getUsersProfile(postOwnerId).then((data) => {
-                            if(_isMounted?.current){
-                                    const postsCopy = data?.posts;
-                                    const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
-                                    if(postIndex !== -1){
-                                        changeMainState("currentPostIndex", { index:postIndex, id: postId });
-                                        if((window.innerWidth || document.documentElement.clientWidth) >= 670){
-                                            const timeout = setTimeout(() => {
-                                                changeModalState("post", true);
-                                                window.clearTimeout(timeout);
-                                            },200);
-                                        
-                                        }else{
-                                            history.push("/browse-post");
-                                        }
-                                    }else{
-                                        notify("An error occurred", "error");
-                                    }
-                            }
-                        });
-                    }else{
-                        notify("An error occurred", "error");
-                    }
-    }
+    useEffect(() => {
+        if(activeProfileSection?.activeIndex === 2){
+            testStorageConnection();
+        }
+    },[activeProfileSection]);
     const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
         updateReelsProfile(uid).then(() => {
             if(_isMounted?.current){
@@ -78,21 +58,6 @@ const MyProfile =()=>{
                 },250);
             }
         });
-    }
-    const onLoadingFail = (postOwnerId, postId ) => {
-        //automatically removes elements that have failed to load denoting they don't exist and got removed from the main source
-        if(postOwnerId){
-            getUsersProfile(postOwnerId).then((data) => {
-                if(_isMounted?.current){
-                    const postsCopy = data?.posts;
-                    const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
-                    if(postIndex === -1 && navigator.onLine){
-                        handleSavingPosts({boolean:false,data: {id: postId}});
-                    }
-                }
-            });
-      
-        }
     }
     const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0]? receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0] : "" ;
     const isBirthday = ((receivedData?.profileInfo?.birthday) && (new Date().getMonth() + 1 === new Date(receivedData?.profileInfo?.birthday).getMonth() + 1) && (new Date().getDate() === new Date(receivedData?.profileInfo?.birthday).getDate()));
@@ -246,8 +211,8 @@ const MyProfile =()=>{
                 {
                  activeProfileSection?.activeIndex === 0 || activeProfileSection?.activeIndex === 1 ?
                  (receivedData?.posts?.length >=1 && !loading ?
-                    <div className={activeProfileSection?.activeIndex === 0 ? "users--profile--posts" : "users--profile--rowLine flex-column"}>
-                        {receivedData?.posts?.map((post, index)=> ( post && <ProfileItem key={post?.id + index} post={post} openPost={openPost} index={index} />))}
+                    <div >
+                        <ProfilePosts list={receivedData?.posts} parentClass={activeProfileSection?.activeIndex === 0 ? "users--profile--posts" : "users--profile--rowLine flex-column"} />
                     </div>
                             : loading ?
                                 (<Skeleton count={10} height={250} width={250} className="mt-4 mr-4 mx-auto"  />)
@@ -271,9 +236,8 @@ const MyProfile =()=>{
                     (receivedData?.savedposts?.length >=1 && !loading ?
                         <div className="saved--posts--container">
                             <h6>Only you can see what you've saved</h6>
-                            <div className="users--profile--posts" >
-                               
-                                {receivedData?.savedposts?.map((savedItem, index)=> ( savedItem && <ProfileItem isSavedPost={true} onLoadingFail={onLoadingFail} key={savedItem?.id + index} post={savedItem} openPost={openPost} index={index} />))}
+                            <div>
+                               <ProfilePosts list={receivedData?.savedposts} isSavedPost={true} parentClass="users--profile--posts" />
                             </div>  
                         </div>
                             : loading ?

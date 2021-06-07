@@ -2,7 +2,7 @@
         .form-group{
         width:90%;
         justify-content: space-between;
-        @media only screen and (max-width: 800px){
+        @media only screen and (max-width: 670px){
             flex-direction: column !important;
         }
         label{

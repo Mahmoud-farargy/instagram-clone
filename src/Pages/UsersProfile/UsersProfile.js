@@ -20,9 +20,9 @@ import SuggList from "./SuggList/SuggList";
 import MutualFriendsItem from "./MutualFriendsList/MutualFriendsItem";
 import * as Consts from "../../Utilities/Consts";
 import Moment from "react-moment";
-import ProfileItem from "../../Components/ProfileItem/ProfileItem";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import { trimText } from "../../Utilities/TrimText";
+import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 
 const UsersProfile = () => {
   const [, loading] = useAuthState(auth);
@@ -97,16 +97,6 @@ const UsersProfile = () => {
     }
     suggestionsList?.length > 0 ? setRandNum(Math.floor(Math.random() * suggestionsList?.length -6)) : setRandNum(0);
   },[suggestionsList, usersProfileData]);
-
-  const openPost = (postId, index) =>{
-    changeMainState("currentPostIndex", { index: index, id: postId });
-    if((window.innerWidth || document.documentElement.clientWidth) >= 670){
-      changeModalState("post", true);
-    }else{
-      history.push("/browse-post");
-    }
-    
-  }
 
   const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
     handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() =>  _isMounted?.current && history.push("/"));
@@ -489,19 +479,9 @@ const UsersProfile = () => {
                     </div>
                 {
                     usersProfileData?.posts?.length >= 1 && !loading ? (
-                                    <div
-                            className={
-                              grid
-                                ? "users--profile--posts"
-                                : "users--profile--rowLine flex-column"
-                            }
-                          >
-                            {usersProfileData?.posts?.map((post, i) => 
-                              (
-                                post &&
-                               <ProfileItem key={post?.id + i} post={post} openPost={openPost} index={i}/>
-                              
-                            ))}
+                      <div>
+                          <ProfilePosts list={usersProfileData?.posts} parentClass={ grid ?"users--profile--posts" : "users--profile--rowLine flex-column"}/>
+                            
                           </div>
                         ) : loading ? (
                           <Skeleton

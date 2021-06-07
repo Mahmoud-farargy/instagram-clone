@@ -1,6 +1,6 @@
 .post--modal--close{
     position: fixed;
-    top: 7%;
+    top: 5%;
     right:7%;
     font-size: 30px;
     font-weight: bold;
@@ -9,9 +9,9 @@
     padding: 1px 8px;
 }
 .desktopPost{
-    width:880px;
-    height:80%;
-    max-width: 1000px;
+    width:1000px;
+    height:90%;
+    max-width: 1100px;
     position:fixed;
     left:50%;
     top:50%;
@@ -23,9 +23,12 @@
         width: 100%;
         height: 100%;
     }
+    @media only screen and (min-width:670px) and (max-width: 940px){
+        width: 95%;
+    }
 
     .desktop--left{
-        min-height: 500px;
+        min-height: 570px;
         display:flex;
         flex-direction: column;
         justify-content: center;
@@ -64,16 +67,16 @@
             .d--post--box{
                 background-color: #fff;
                 width:90%;
-                min-height: 500px;
-                max-height: 570px;
+                height: 570px;
+                // max-height: 570px;
                 margin: 0 auto;
                 .post--card--article{
                     width:100%;
-                    height: 100%;
-                    min-height: 500px;
+                    // height: 100%;
+                    height: 570px;
                     display: grid;
                     border:none !important;
-                    grid-template-columns: 58% 42%;
+                    grid-template-columns: 62% 35%;
                     .desktop--left, .desktop--right{
                         height:100%;
                         @media only screen and (max-width: 670px){
@@ -81,14 +84,13 @@
                         }
                     }
                     .post--comments--layout{
-                        min-height:200px;
-                        max-height:270px;
+                        height:320px;
                         overflow-y:auto !important;
-                        padding:10px 10px 50px;
+                        padding:10px 10px 20px;
                     }
                     .desktop--right{
                         height: 100%;
-                        width: 335px;
+                        width: 340px;
                         position: relative;
                         background-color: #fff;
                         .post--card--header{
@@ -105,7 +107,7 @@
                             border-top:1px solid #efefef;
                         }
                     }
-                    @media only screen and (max-width: 670px){
+                    @media only screen and (max-width: 780px){
                         grid-template-columns: 100% 100%;
                     }
                     

@@ -6,7 +6,6 @@ import TruncateMarkup from "react-truncate";
 import { FiHeart, FiSend } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
-import { IoMdVideocam } from "react-icons/io";
 import { RiBookmarkLine, RiBookmarkFill } from "react-icons/ri";
 import { AppContext } from "../../Context";
 import Comment from "../../Components/Comment/Comment";
@@ -21,6 +20,7 @@ import AudioContent from "../../Components/AudioContent/AudioContent";
 import * as Consts from "../../Utilities/Consts";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
+import VideoPostComp from "../../Components/VideoPost/VideoPost";
 const EmojiPicker = lazy(() => import("../../Components/Generic/EmojiPicker/EmojiPicker"))
 
 const PostPage  = (props) => {
@@ -39,11 +39,16 @@ const PostPage  = (props) => {
   const _isMounted = useRef(true);
   const inputField = useRef(null);
   const autoScroll = useRef(null);
+  const timeouts = useRef(null);
+  const vidRef = useRef(null);
   //----------------------
   useEffect(() => {
     window.scrollTo(0,0);
     changeMainState("currentPage", "Post");
-    return () => _isMounted.current = false;
+    return () => {
+      window.clearTimeout(timeouts?.current);
+      _isMounted.current = false;
+    }
   }, []);
 
   const likesCheck = () => {
@@ -92,15 +97,17 @@ const PostPage  = (props) => {
         ...compState,
         doubleLikeClicked: true,
       });
-      setTimeout(() => {
+      timeouts.current = setTimeout(() => {
         setCompState({
           ...compState,
           doubleLikeClicked: false,
         });
+        window.clearTimeout(timeouts?.current);
       }, 1100);
     }
-    setTimeout(() => {
+    timeouts.current = setTimeout(() => {
       resetCounter();
+      window.clearTimeout(timeouts?.current);
     }, 1000);
   };
   const submitComment = (v) => {
@@ -299,15 +306,12 @@ const PostPage  = (props) => {
                     ) : null}
                   </div>
                 ) : contentType === "video" ? (
-                  <div>
-                    <video
-                      className="post__card__content"
+                  <div className="w-100 h-100">
+                    <VideoPostComp
                       src={contentURL}
-                      draggable="false"
-                      controls
-                      autoPlay
-                    />
-                    <IoMdVideocam className="video__top__icon" />
+                      isVidPlaying={true}
+                      ref={vidRef}
+                       />
                   </div>
                 ) : contentType === "audio" ? (
                   <AudioContent autoPlay url={contentURL} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()} />

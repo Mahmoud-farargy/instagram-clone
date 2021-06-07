@@ -11,16 +11,14 @@ import { auth } from "../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { BiPowerOff, BiCog, BiInfoCircle } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
-import { RiSearchLine } from "react-icons/ri";
-import { TiDelete } from "react-icons/ti";
 import { RiBookmarkLine } from "react-icons/ri";
 import Notifications from "./Notifications/Notifications";
 import { withRouter } from "react-router-dom";
-import SearchItem from "../SearchItem/SearchItem.js";
 import Loader from "react-loader-spinner";
 import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen";
 import HeaderLogo from "../../Assets/instagram-icon-logo.c1dbcbd5.svg";
 import {IoIosCompass} from "react-icons/io";
+import DeskTopSearch from "../../Components/DesktopSearch/DesktopSearch";
 const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
 const Header = (props) => {
@@ -36,7 +34,6 @@ const Header = (props) => {
   const [openProf, setProf] = useState(false);
   const [openSearchBox, setSeachBox] = useState(false);
   const [user] = useAuthState(auth);
-  const [searchVal, setSearchVal] = useState("");
   const [openLogoutModal, setLogoutModal] = useState(false);
   const [scrolled, setScrollingState] = useState(false);
    // --xx--//
@@ -44,8 +41,6 @@ const Header = (props) => {
     receivedData,
     closeNotificationAlert,
     authLogout,
-    searchUsers,
-    searchInfo,
     changeMainState
   } = context;
   const reverseNotiState = (type) => {
@@ -58,17 +53,6 @@ const Header = (props) => {
     }
   };
   /// useEffects
-  useEffect(() => {
-    if(_isMounted?.current){
-        if (searchVal && searchVal !== "") {
-        searchUsers(searchVal, "regular");
-        setSeachBox(true);
-      } else {
-        setSeachBox(false);
-        setSearchVal("");
-      }
-    }
-  }, [searchVal]);
   useEffect(() => {
     if(_isMounted?.current){
         window.addEventListener("scroll", () =>{
@@ -95,9 +79,6 @@ const Header = (props) => {
   }
   }, []);
 // ---xxx-- //
-  const clearSearchBox = () => {
-    setSearchVal("");
-  };
   const onLoggingOut = () => {
    setLogoutModal(true);
    setProf(false);
@@ -186,85 +167,8 @@ const Header = (props) => {
               <h1 className="logoText">Voxgram</h1>
             </Link> 
           </div>
-
-         
-
-          <div className="search--bar--container">
-            <input
-              value={searchVal}
-              onChange={(e) => setSearchVal(e.target.value)}
-              type="text"
-              className="search__input"
-              aria-label="search bar"
-              placeholder="Search"
-              autoCapitalize="none"
-            />
-            <span className="search__icon">
-              <RiSearchLine />
-            </span>
-            {searchInfo?.loading ? (
-              <span className="loading--search--box">
-                <Loader
-                  type="Puff"
-                  color="#919191"
-                  height={19}
-                  width={19}
-                  timeout={5000}
-                />
-              </span>
-            ) : searchVal ? (
-              <span
-                onClick={() => clearSearchBox()}
-                className="clear--search--box"
-              >
-                <TiDelete />
-              </span>
-            ) : null}
-
-            <div
-              style={{
-                display: openSearchBox ? "flex" : "none",
-                transition: "all 0.4s ease",
-                opacity: openSearchBox ? "1" : "0",
-              }}
-              className="search--pop--window fadeEffect"
-            >
-              <div className="search--popup--arrow"> </div>
-              <div className="search--popup--inner">
-                <ul className="noti--popup--ul flex-column">
-                  {(searchInfo?.results && searchInfo?.results.length > 0 && !searchInfo?.loading) ? (
-                    searchInfo?.results?.map((user, i) => {
-                      return (
-                        <SearchItem
-                          key={user?.uid || i}
-                          user={user}
-                          closeSearchBox={setSeachBox}
-                        />
-                      );
-                    })
-                  ):  searchInfo?.loading ?
-                    (
-                      <div className="empty--box flex-row">
-                        <Loader
-                          type="TailSpin"
-                          color="#919191"
-                          height={35}
-                          width={35}
-                          timeout={5000}
-                        />
-                      </div>
-                    )
-                   : (
-                    <div className="empty--box flex-row">
-                      <h4>No Results found</h4>
-                    </div>
-                  )}
-                  <div className="noti__transparent"></div>
-                </ul>
-              </div>
-            </div>
-          </div>
-
+          
+         <DeskTopSearch controlSearchBox={(state) => setSeachBox(state)} openSearchBox={openSearchBox}  />
           <nav className="header--nav flex-row">
             <ul className="header--ul flex-row">
               <li title="Home">

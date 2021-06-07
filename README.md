@@ -104,7 +104,11 @@ A social media platform similar to Instagram that people can actually use.
                                                     </ul>
                                             </li>
                                             <li><p>Account privacy</p></li>
-                                            <li><p>Search users</p></li>
+                                            <li><p>Search users</p>
+                                                <ul class="bullet--2">
+                                                 <li><p>Hands-free Voice Search or search by typing</p></li>
+                                                </ul>
+                                            </li>
                                             <li>
                                                 <p>Suggestions list</p>
                                                 <ul class="bullet--2">

@@ -1,25 +1,22 @@
 import React, { useContext, useEffect, useState, Fragment, useRef } from "react";
 import "./Explore.scss";
 import { AppContext } from "../../Context";
-import { useHistory } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../Config/firebase";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
-import ProfileItem from "../../Components/ProfileItem/ProfileItem";
 import { MdSort } from "react-icons/md";
 import Modal from "react-modal";
 import InputForm from "../../Components/Generic/InpuForm/InputForm";
 import { BiCog } from "react-icons/bi";
 import { CgUnavailable } from "react-icons/cg";
+import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 
 const Explore = () => {
   const context = useContext(AppContext);
   const {
     explore,
     changeMainState,
-    changeModalState,
-    getUsersProfile,
     usersProfileData,
     notify,
     modalsState,
@@ -44,7 +41,6 @@ const Explore = () => {
   const [ submitted, setSubmission ] = useState(false);
   const _isMounted = useRef(true);
   const [, loading] = useAuthState(auth);
-  const history = useHistory();
   const onInputChange =  (val, name) => setSortForm({...sortForm, [name]: val});
 
   const getRandom = (length) => {
@@ -160,7 +156,6 @@ const Explore = () => {
   useEffect(() => {
     if (explore && explore.length > 0) {
       const sortArr = receivedData?.profileInfo?.sort;
-    
       if(sortArr){
         const {sortBy, sortDirection, filter} = sortArr; 
         setSortForm({
@@ -172,33 +167,6 @@ const Explore = () => {
       updateSortedElements();
     }
   }, [explore]);
-  const openPost = (postId, _ ,uid) => {
-    if(uid && postId){
-            getUsersProfile(uid).then((res) => {
-            if(_isMounted?.current){
-                const getPostIndex = res?.posts.map((post) => post?.id).indexOf(postId);
-
-                if (getPostIndex !== -1) {
-                  changeMainState("currentPostIndex", {
-                    index: getPostIndex,
-                    id: postId,
-                  });
-                  if (
-                    (window.innerWidth || document.documentElement.clientWidth) >= 670
-                  ) {
-                    // Desktop
-                    changeModalState("post", true);
-                  } else {
-                    // Mobile
-                    history.push("/browse-post");
-                  }
-                } else {
-                  notify("Post is not available or got removed", "error");
-                }
-            }
-      });
-    }
-  };
   //reminder: overflow hidden when explore modal is open
   const customStyles = {
     content : {
@@ -319,17 +287,11 @@ const Explore = () => {
               newExploreArr.length >= 1 &&
                (!loading || !loadingState?.suggList) ? (
                 <div>
-                  <div className="explore--upper--row">
-                  {newExploreArr.slice(0,2).map((post, index) => (
-                    post &&
-                    <ProfileItem withOwnersName={true} className="explore--upper--row--item" key={post?.id + index} post={post} openPost={openPost} index={index}/>
-                  ))}
+                  <div>
+                   {newExploreArr?.length > 0 && <ProfilePosts list={ newExploreArr.slice(0,2) } className="explore--upper--row--item" withOwnersName={true} parentClass="explore--upper--row"/>}
                   </div>
-                  <div className="users--profile--posts">
-                    {newExploreArr.slice(2).map((post, index) => (
-                      post &&
-                     <ProfileItem withOwnersName={true} key={post?.id + index} post={post} openPost={openPost} index={index}/>
-                    ))}
+                  <div>
+                      {newExploreArr?.length >= 2 && <ProfilePosts list={ newExploreArr.slice(2) } parentClass="users--profile--posts"/>}
                   </div>
                 </div>
               ) : loadingState?.suggList ? (

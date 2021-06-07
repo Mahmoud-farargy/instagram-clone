@@ -23,6 +23,7 @@ import { trimText } from "../../../Utilities/TrimText";
 import FollowUnfollowBtn from "../../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 function ReelItem(props) {
   const reelVideo = useRef(null);
+  const timeouts = useRef(null);
   const context = useContext(AppContext);
   const [isVideoPlaying, setVideoPlaying] = useState(false);
   const [muteVolume, setVolumeState] = useState(false);
@@ -30,6 +31,7 @@ function ReelItem(props) {
   const [commentTxt, setCommentTxt] = useState("");
   const [buffering, setBuffering] = useState(true);
   const [showOptions, setShowingOptions] =useState(false);
+  const [hasError, setErrorState] = useState(false);
   const { item, index, browseUser, groupName, setCurrPlayingReel, currentPlayingReel, maxLength } = props;
   const {
     handleReelsActions,
@@ -98,9 +100,10 @@ function ReelItem(props) {
       s.preventDefault();
       s.stopPropagation();
     handleReels({type: "comment", comment: commentTxt});
-    setTimeout(() => {
+    timeouts.current = setTimeout(() => {
         setCommentTxt("");
         notify("Sent");
+        window.clearTimeout(timeouts?.current);
     },500);
    
   }
@@ -120,30 +123,7 @@ function ReelItem(props) {
       setVideoPlaying(false);
     }
   },[currentPlayingReel, index]);
-
-  // const doubleClickEvent = () => {
-  //   let currCount = doubleClicked.clicks;
-  //   //single click
-  //   setDoubleClicks(doubleClicked, {clicks: doubleClicked.clicks ++});
-  //   const resetCounter = () => {
-  //     setDoubleClicks({state:false, clicks: 0});
-  //   };
-  //   onVideoClick();
-  //   if (currCount === 1) {
-  //     //double click
-  //     handleReels({type: "like", state: true});
-  //     resetCounter();
-  //     setDoubleClicks(doubleClicked,{state:true});
-  //    const timeout1 = setTimeout(() => {
-  //     setDoubleClicks(doubleClicked,{state:false});
-  //       clearTimeout(timeout1);
-  //     }, 1100);
-  //   }
-  //   const timeout2 = setTimeout(() => {
-  //     resetCounter();
-  //     clearTimeout(timeout2);
-  //   }, 1000);
-  // };
+  useEffect(() => () => window.clearTimeout(timeouts?.current),[]);
   return (
     <Fragment>
       {/* Modal(s) */}
@@ -166,6 +146,12 @@ function ReelItem(props) {
          {
            buffering &&
            <div className="buffer--loading">
+             {
+               hasError ?
+               <div className="reel--loading--error flex-column">
+                 <h4 className="loading__error">Failed to load Video. Please come back later.</h4>
+               </div>
+              :
               <div className="reels-loading w-100 h-100 flex-column">
                     <Loader
                       type="TailSpin"
@@ -174,6 +160,7 @@ function ReelItem(props) {
                       width={60}
                       timeout={5000}/>
               </div>
+             }
            </div> 
          }  
          <video
@@ -183,6 +170,7 @@ function ReelItem(props) {
               src={item?.contentURL}
               loop
               onCanPlay={(k) => detectBuffering(k)}
+              onError={() => setErrorState(true)}
             />
         {
           showOptions &&

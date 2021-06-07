@@ -156,6 +156,39 @@ a:visited{
     color: var(--font-black);
     text-decoration: none;
 }
+h4.loading__error{
+    font-weight: 400;
+    font-size: 16px;
+    color:#dc3545!important;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin:5px;
+    text-align: center;
+}
+span.clear--search--box.voice__search__icon{
+    font-size: 18px;
+}
+.voice__search__btn{
+    width: 60px;
+    height: 60px;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.1);
+    color:#606060;
+    border-radius:50%;
+    font-size: 13px;
+}
+.voice__search__option{
+    width: 100%;
+    align-items: center;
+    text-align: center;
+}
+.voice__speach__listening{
+    margin-top:10px;
+    font-size: 16px;
+    color: var(--second--gray);
+    min-height: 30px;
+}
 .reel--bubble .reel--upper--container{
     position: relative;
     width:77px;
@@ -275,7 +308,7 @@ a:visited{
     left:0;
     width:100%;
     height: 100vh;
-    background-color: rgba(0,0,0,.65);
+    background-color: rgba(0,0,0,.5);
     z-index:1300;
     overflow-x: hidden;
 }
@@ -789,6 +822,30 @@ article, div, footer, header, main, nav, section{
 }
 button:active{
     outline:none;
+}
+.profile--posts--container .buffererror{
+    z-index: 4;
+}
+.buffererror{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content:center;
+    z-index: 150;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+}
+.ReactModal__Overlay{
+    z-index: 2000;
+}
+.load__failed__ico{
+    font-size: 30px;
+}
+.blurry_img{
+    backdrop-filter: saturate(190%) blur(20px);
+    opacity: 0.9;
 }
 .logoText{
     font-family:"instalogo";
@@ -1698,7 +1755,7 @@ ul.getting--started--inner{
     padding:20px;
     align-items:center;
     background-color:#fff;
-    z-index: 1100;
+    z-index: 100;
 }
 #messages.messages--container .messages--bottom--form form{
     width:100%;
@@ -2097,6 +2154,7 @@ a.prof__btn__unfollowed{
 }
 #usersProfile .user--img--container:hover .user--img--cover{
     display:flex;
+    z-index: 6;
 }
 #usersProfile .owner--post--name{
     font-size: 16px;
@@ -2228,6 +2286,9 @@ a.prof__btn__unfollowed{
     align-items:center;
     margin:0 auto;
     gap:10px;
+}
+.users--profile--rowLine{
+    width: 70%;
 }
 .message--pic--fullScreen{
     z-index: 2000;
@@ -2774,6 +2835,9 @@ a.prof__btn__unfollowed{
     .global__loading{
         z-index: 6000;
     }
+    .users--profile--rowLine .profile--posts--container{
+        width: 90%;
+    }
     #usersProfile.users--profile--container .MuiAvatar-root{
         width:77px;
         height:77px;
@@ -2843,6 +2907,9 @@ a.prof__btn__unfollowed{
     }
     #messages.messages--container{
         background-color:#fff;
+    }
+    #messages.messages--container .messages--bottom--form{
+        z-index: 1100;
     }
     #messages.messages--container .messages--desktop--card{
         min-height:100%;

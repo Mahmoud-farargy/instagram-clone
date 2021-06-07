@@ -88,6 +88,8 @@
     z-index:2;
     color: #919191;
     font-size:20px;
+    width: 20px;
+    height: 20px;
 }
 #header .compass__explore__icon{
     font-size: 27px;
@@ -279,6 +281,7 @@
     padding:1px 0;
     margin-bottom: 0;
     min-height: 100px;
+    overflow-x: hidden;
 }
 .noti--popup--inner .noti--popup--ul .noti--popup-item {
     padding:12px 11px 12px;
@@ -367,7 +370,6 @@
     margin-right:10px;
     transition: transform 0.3s ease;
     font-size:23px;
-    
     cursor:pointer;
     display:flex;
     align-items:center;
@@ -443,7 +445,10 @@
         border-radius: 5px;
     }
     #mobNav.mobile--nav .header--ul li a{
-        padding: 13px 11px;
+        padding: 13px 15px;
+    }
+    #mobNav.mobile--nav .header--nav .header--ul li{
+        margin:0;
     }
     #mobNav.mobile--nav .header--nav{
         width: 100%;

@@ -17,7 +17,7 @@ const InputForm = lazy(() =>
   import("../../../Components/Generic/InpuForm/InputForm")
 );
 const ProfessionalAccount = (props) => {
-  const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser, handleFollowRequests } = useContext(AppContext);
+  const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser, handleFollowRequests, updateSuggestionsList } = useContext(AppContext);
   //useState
   const [formState, setForm] = useState({
     professionalAcc: { category: "", show: true, status: true, suggested: true, reelsForFollowing: false, notificationBell:{state: true, type: "Both"}, private: false, suggNotFollowed: false},
@@ -69,8 +69,9 @@ const ProfessionalAccount = (props) => {
         })      
       }
       handleEditingProfile(formState?.professionalAcc, "professionalAcc");
-      props.history.push("/profile");
+      updateSuggestionsList();
       notify("Profile updated", "success");
+      props.history.push("/profile");
     }
   };
   const onDeleteAccount = (x) => {
