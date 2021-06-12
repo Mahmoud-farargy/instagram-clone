@@ -86,7 +86,7 @@ const AuthPage = (props) => {
   }, [signUpState]);
   useEffect(()=> {
   var silderInterval = setInterval(slide, 4000);
-  setGreeting(context?.isDayTime ? "Good morning": "Good evening");
+  setGreeting(context?.currentHour > 12 ? "Good evening": "Good morning");
    return () => {
      window.clearInterval(silderInterval);
      window.clearTimeout(timeouts?.current);
@@ -211,6 +211,7 @@ const AuthPage = (props) => {
                               name: formState.fullName?.val.trim(),
                               phoneNumber: "",
                               birthday: "",
+                              theme: "lightMode",
                               professionalAcc: {
                                 show: true,
                                 category: "Just For Fun",
@@ -343,6 +344,7 @@ const AuthPage = (props) => {
                         name: given_name || "",
                         phoneNumber: "",
                         birthday: "",
+                        theme: "lightMode",
                         professionalAcc: {
                           show: true,
                           category: "Just For Fun",
@@ -458,6 +460,7 @@ const AuthPage = (props) => {
                         name: name,
                         phoneNumber: "",
                         birthday: "",
+                        theme: "lightMode",
                         professionalAcc: {
                           show: true,
                           category: "Just For Fun",
@@ -557,6 +560,7 @@ const AuthPage = (props) => {
                         name: "",
                         phoneNumber: "",
                         birthday: "",
+                        theme: "lightMode",
                         professionalAcc: {
                           show: true,
                           category: "Just For Fun",
@@ -707,7 +711,7 @@ const AuthPage = (props) => {
                     {!getPasswordMode ? (
                       <div className="flex-column">
                         <AuthInput inputType="text" type="email" val={formState.loginEmail?.val} title="Email" name="loginEmail" required autoFocus onInputChange={onInputChange} isValid={formState.loginEmail?.isValid} isSubmitted={isSubmitted}/>
-                         <AuthInput inputType="password" val={formState.loginPassword?.val} required title="Password" name="loginPassword" autoFocus onInputChange={onInputChange} isValid={formState.loginPassword?.isValid} isSubmitted={isSubmitted}/>
+                         <AuthInput inputType="password" val={formState.loginPassword?.val} required title="Password" name="loginPassword" onInputChange={onInputChange} isValid={formState.loginPassword?.isValid} isSubmitted={isSubmitted}/>
                         {loading || inProgress ? (
                           <button
                             className={"disabled loading__btn flex-row"}

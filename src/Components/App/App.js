@@ -64,7 +64,7 @@ const App = () => {
     currentPostIndex,
     testStorageConnection,
     explore,
-    isDayTime
+    currentHour
   } = context;
   const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
   const [user,loading] = useAuthState(auth);
@@ -153,7 +153,7 @@ const App = () => {
 
         if( currTheme){
           if(currTheme === "lightDarkAuto"){
-           changeBodyClass(isDayTime? "lightMode" : "darkMode");
+           changeBodyClass( currentHour > 6 && currentHour < 20 ? "lightMode" : "darkMode");
           }else{
             changeBodyClass(currTheme);
           }

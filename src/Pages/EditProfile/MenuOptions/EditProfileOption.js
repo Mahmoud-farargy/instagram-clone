@@ -26,6 +26,7 @@ const EditProfileOption = (props) => {
     gender: "Male",
     status: "Single",
     birthday: "",
+    theme: "lightMode"
   });
   const [submitted, setSubmission] = useState(false);
   // --x--end of state-x--//
