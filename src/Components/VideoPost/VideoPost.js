@@ -117,7 +117,7 @@ const VideoPost = React.forwardRef(
                         <div className="vid--buffer">
                             <Loader
                             type="TailSpin"
-                            color="#111"
+                            color="var(--light-black)"
                             height={60}
                             width={60}
                             timeout={5000}/>  
@@ -132,11 +132,13 @@ const VideoPost = React.forwardRef(
                 {vid.isPlaying && <FaPlay onClick={(s) => handleVideo("play", s)} className="video__play__icon fadeEffect" />}
                 {!vid?.hasMuted ? (
                     <ImVolumeMedium
+                    data-cy="vid-unmuted"
                     onClick={(l) => handleVideo("mute", l)}
                     className="video__volume__icon"
                     />
                 ) : (
                     <FaVolumeMute
+                    data-cy="vid-muted"
                     onClick={(l) => handleVideo("mute", l)}
                     className="video__volume__icon"
                     />

@@ -309,11 +309,11 @@ const UsersProfile = () => {
                         backgroundColor: isFollowed ?
                           "transparent"
                           : openSuggestionsBox
-                          ? "#63baf4"
-                          : "#0095f6",
+                          ? "var(--sugg-btn-clr)"
+                          : "var(--secondary-clr)",
                         transition: "all 0.5 linear",
-                        border: `1px solid ${isFollowed ? "#dbdbdb" : openSuggestionsBox ? "#63baf4" : "#0095f6"}`,
-                        color: isFollowed ? "#262626" : openSuggestionsBox ? "#fff" : "#fff",
+                        border: `1px solid ${isFollowed ? "var(--gray)" : openSuggestionsBox ? "var(--sugg-btn-clr)" : "var(--secondary-clr)"}`,
+                        color: isFollowed ? "var(--font-black)" : openSuggestionsBox ? "var(--white)" : "var(--white)",
                         fontSize: "13px"
                       }}
                       onClick={() => setSuggestionsBox(!openSuggestionsBox)}
@@ -459,8 +459,8 @@ const UsersProfile = () => {
                           <span
                             onClick={() => setGrid(true)}
                             style={{
-                              color: grid ? "#1d8cd6" : "#8e8e8e",
-                              borderTop: grid ? "2px solid #363636" : "none",
+                              color: grid ? "#1d8cd6" : "var(--second--gray)",
+                              borderTop: grid ? "2px solid var(--main-black)" : "none",
                             }}
                           >
                             <IoMdGrid />
@@ -468,8 +468,8 @@ const UsersProfile = () => {
                           <span
                             onClick={() => setGrid(false)}
                             style={{
-                              color: !grid ? "#1d8cd6" : "#8e8e8e",
-                              borderTop: !grid ? "2px solid #363636" : "none",
+                              color: !grid ? "#1d8cd6" : "var(--second--gray)",
+                              borderTop: !grid ? "2px solid var(--main-black)" : "none",
                             }}
                           >
                             <RiLayoutRowLine />

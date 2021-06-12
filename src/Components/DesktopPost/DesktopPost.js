@@ -370,7 +370,7 @@ const DesktopPost = (props) => {
             {/* post start */}
             <div id="post" className="post--card--container fadeEffect post--page">
               <article className="post--card--article">
-                <div className="post--card--body desktop--left">
+              <div className="post--card--body desktop--left">
                   {contentType === "image" ? (
                     <div>
                       <img
@@ -506,11 +506,12 @@ const DesktopPost = (props) => {
                     <div className="post--footer--upper--row flex-row">
                       <div className=" flex-row">
                         {!postLiked ? (
-                          <span onClick={() => handleCurrLikes(true)}>
+                          <span data-cy="like" className="post--like--icon" onClick={() => handleCurrLikes(true)}>
                             <FiHeart />
                           </span>
                         ) : (
                           <span
+                            data-cy="like"
                             onClick={() => handleCurrLikes(false)}
                             style={{
                               animation: postLiked

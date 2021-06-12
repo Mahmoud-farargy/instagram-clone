@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useContext, Suspense, lazy, useState, useRef} from "react";
+import React, { Fragment, useEffect, useContext, Suspense, lazy, useRef} from "react";
 import { Switch, Route, useHistory } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { auth, changeConnectivityStatus} from "../../Config/firebase";
@@ -11,7 +11,7 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import 'react-h5-audio-player/lib/styles.css';
 import $ from "jquery";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
-import notificationSound from "../../Assets/Sounds/NotificationBell.mp3";
+// import notificationSound from "../../Assets/Sounds/NotificationBell.mp3";
 
 //lazy loading
 const Header = lazy(()=> import("../Header/Header"));
@@ -64,11 +64,12 @@ const App = () => {
     currentPostIndex,
     testStorageConnection,
     explore,
+    isDayTime
   } = context;
   const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
   const [user,loading] = useAuthState(auth);
   const history = useHistory();
-  const [toggledNotiBell, setNotiBell] = useState(false);
+  // const [toggledNotiBell, setNotiBell] = useState(false);
   const stopBellTimeout = useRef(true);
   const reverseBellTimeout = useRef(true);
   useEffect(() => {
@@ -103,39 +104,39 @@ const App = () => {
      window.clearTimeout(stopBellTimeout?.current);
     };
   }, []);
-  useEffect(() => {
-    const notificationBellOption = receivedData?.profileInfo?.professionalAcc?.notificationBell;
-    const notificationBellType = notificationBellOption?.type?.toLowerCase();
+  // useEffect(() => {
+  //   const notificationBellOption = receivedData?.profileInfo?.professionalAcc?.notificationBell;
+  //   const notificationBellType = notificationBellOption?.type?.toLowerCase();
   
-    if(notificationBellOption?.state && notificationBellOption?.type && !toggledNotiBell){
-        const lastUpdate = receivedData?.notifications?.list?.sort((a,b ) => b.date.seconds - a.date.seconds)[0];
-        // console.log(new Date().getTime());
-        const lastMessage = receivedData?.messages?.sort((a, b) => b?.lastMsgDate - a?.lastMsgDate)[0];
-        const checkIfTimePassed = (time) => {
-            const tenSecs = 10*1000;
-            const dateNow = new Date();
-           return dateNow - new Date(time * 1000) < tenSecs;
-        }
-        const diffTimesUpdate = checkIfTimePassed(lastUpdate?.date?.seconds);
-        const diffTimesMsg = checkIfTimePassed(lastMessage);
-        // Note to self 1*40*1000 = 1 minute,  5*40*1000 = 5 minutes,  10*40*1000 = 10 minutes ...
-       //checks if the latest received element's date is less than a minutes ago.If so it fires a bell sound
-        const timePassed = notificationBellType === "new updates" ? diffTimesUpdate : notificationBellType === "new messages" ? diffTimesMsg : (diffTimesUpdate || diffTimesMsg);
-         const bellSound = new Audio(notificationSound);
-         if((timePassed && lastUpdate?.uid !== receivedData?.uid)){
-            setNotiBell(true);
-            bellSound.play();
-            stopBellTimeout.current = setTimeout(() => {
-                setNotiBell(false);
-                reverseBellTimeout.current = setTimeout(() => {
-                    bellSound.pause();
-                    window.clearTimeout(reverseBellTimeout?.current);
-                    window.clearTimeout(stopBellTimeout?.current);
-                  },3000);
-              },300);
-        }
-    }
-  },[receivedData?.notifications]);
+  //   if(notificationBellOption?.state && notificationBellOption?.type && !toggledNotiBell){
+  //       const lastUpdate = receivedData?.notifications?.list?.sort((a,b ) => b.date.seconds - a.date.seconds)[0];
+  //       // console.log(new Date().getTime());
+  //       const lastMessage = receivedData?.messages?.sort((a, b) => b?.lastMsgDate - a?.lastMsgDate)[0];
+  //       const checkIfTimePassed = (time) => {
+  //           const tenSecs = 10*1000;
+  //           const dateNow = new Date();
+  //          return dateNow - new Date(time * 1000) < tenSecs;
+  //       }
+  //       const diffTimesUpdate = checkIfTimePassed(lastUpdate?.date?.seconds);
+  //       const diffTimesMsg = checkIfTimePassed(lastMessage);
+  //       // Note to self 1*40*1000 = 1 minute,  5*40*1000 = 5 minutes,  10*40*1000 = 10 minutes ...
+  //      //checks if the latest received element's date is less than a minutes ago.If so it fires a bell sound
+  //       const timePassed = notificationBellType === "new updates" ? diffTimesUpdate : notificationBellType === "new messages" ? diffTimesMsg : (diffTimesUpdate || diffTimesMsg);
+  //        const bellSound = new Audio(notificationSound);
+  //        if((timePassed && lastUpdate?.uid !== receivedData?.uid)){
+  //           setNotiBell(true);
+  //           bellSound.play();
+  //           stopBellTimeout.current = setTimeout(() => {
+  //               setNotiBell(false);
+  //               reverseBellTimeout.current = setTimeout(() => {
+  //                   bellSound.pause();
+  //                   window.clearTimeout(reverseBellTimeout?.current);
+  //                   window.clearTimeout(stopBellTimeout?.current);
+  //                 },3000);
+  //             },300);
+  //       }
+  //   }
+  // },[receivedData?.notifications]);
 
   useEffect(() => {
     $(document).ready(() => {
@@ -146,7 +147,18 @@ const App = () => {
       }
     });
   }, [isAnyModalOpen]);
+  useEffect(() => {
+    const currTheme = receivedData?.profileInfo?.theme;
+    const changeBodyClass  = newClass => document.body.setAttribute("class",newClass );
 
+        if( currTheme){
+          if(currTheme === "lightDarkAuto"){
+           changeBodyClass(isDayTime? "lightMode" : "darkMode");
+          }else{
+            changeBodyClass(currTheme);
+          }
+       }
+  },[receivedData?.profileInfo?.theme]);
   useEffect(() => {
     //<<make cleanup work here
     document.title = `${currentPage && currentPage + " • "}${AppConfig.title}`;

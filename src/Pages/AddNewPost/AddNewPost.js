@@ -426,6 +426,7 @@ class AddNewPost extends PureComponent {
                : this.state.contentType === "" ? (
                     <div>
                       <Files
+                          data-cy="upload_file"
                           className="files__dropzone"
                           accepts={this.state.method.toLowerCase() === Consts.Post? ['image/*','video/*','audio/*'] : this.state.method.toLowerCase() === Consts.Reel ?  ['video/*'] : null}
                           maxFileSize={12378523}
@@ -436,7 +437,7 @@ class AddNewPost extends PureComponent {
                           maxFiles={1}
                           onError={(error)=> notify(error.message, "error")}
                           dragActiveClassName="files-dropzone-active"
-                        >  {`${this.state.method.toLowerCase() === Consts.Post ? "Drop an image, video or audio here to upload " : this.state.method.toLowerCase() === Consts.Reel ?  "Drop here a video to upload" : "Drop a file here or click to upload"}`}
+                        >  {`${this.state.method.toLowerCase() === Consts.Post ? "Drop an image, video or audio here to upload " : this.state.method.toLowerCase() === Consts.Reel ?  "Drop a video here to upload" : "Drop a file here or click to upload"}`}
                         <br />
                         <p className="mt-2 text--size--2">(Should not exceed 12MB)</p>
                         </Files>

@@ -17,14 +17,14 @@
   #editProfile .right--side {
     padding: 5px;
     width: 100%;
-    border-top: 1px solid #dbdbdb;
+    border-top: 1px solid var(--gray);
   }
 }
 
 #editProfile .edit--box {
-  background-color: #fff;
-  border: 1px solid #dbdbdb;
-  border: 1px solid #dbdbdb;
+  background-color: var(--white);
+  border: 1px solid var(--gray);
+  border: 1px solid var(--gray);
   border-radius: 3px;
   margin: 30px auto 0;
   overflow: hidden;
@@ -48,7 +48,7 @@
   padding: 0;
   margin: 0;
   height: 100%;
-  border-right: 1px solid #dbdbdb;
+  border-right: 1px solid var(--gray);
 }
 
 @media only screen and (max-width: 670px) {
@@ -59,7 +59,7 @@
 }
 
 #editProfile .active__menu__option {
-  border-left: 2px solid #262626 !important;
+  border-left: 2px solid var(--font-black) !important;
   font-weight: 600;
 }
 
@@ -67,7 +67,7 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  border-top: 1px solid #dbdbdb;
+  border-top: 1px solid var(--gray);
   padding: 25px 14px;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
@@ -99,8 +99,8 @@
 }
 
 #editProfile .edit--box .left--side li:hover {
-  background-color: #fafafa;
-  border-left: 2px solid #dbdbdb;
+  background-color: var(--light-gray);
+  border-left: 2px solid var(--gray);
 }
 
 #editProfile .edit--box .left--side li:active {
@@ -141,7 +141,7 @@
   padding: 2px 2px 0;
   margin-bottom: 3px;
   font-size: 20px;
-  color: #262626;
+  color: var(--font-black);
   line-height: 22px;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -157,7 +157,7 @@
 }
 
 #editProfile .change__prof__pic {
-  color: #0095f6;
+  color: var(--secondary-clr);
   font-size: 14px;
   padding: 0;
   text-align: left;

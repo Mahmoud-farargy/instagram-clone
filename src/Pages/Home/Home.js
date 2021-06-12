@@ -131,7 +131,7 @@ const Home = (props) => {
                       <button onClick={() => props.history.push("/explore/people")} className="primary__btn">Find People to Follow</button>
                     </div>
                 </div>
-                <div className="getting--started--container flex-column">
+                <div className="getting--started--container mb-4 flex-column">
                  <h4>Getting Started</h4> 
                   <ul className="getting--started--inner flex-row">
                     <GSCardItem title="add posts" goTo="/add-post"  btnTitle="add a post" description="Share photos and videos that people can admire." icon={<RiVideoAddLine />} />

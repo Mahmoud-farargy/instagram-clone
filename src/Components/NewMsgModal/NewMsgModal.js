@@ -53,11 +53,19 @@ const NewMsgModal = ({sendPostForm, closeModal}) => {
                   if(_isMounted?.current){
                     timeouts.current = setTimeout(() => {
                             setLoading(false);
-                            changeMainState("currentChat", { uid: uid,index: 0 });
-                            handleSendingMessage({content: newMsgData?.messageText, uid: uid, type: "text", pathname: ""});
-                            window.clearTimeout(timeouts?.current);
-                            changeModalState("newMsg", false);
-                      }, 3000);                        
+                            changeMainState("currentChat", { uid: uid,index: 0 }).then(() => {
+                                handleSendingMessage({content: newMsgData?.messageText, uid: uid, type: "text", pathname: ""}).then(() => {
+                                      const newIndex = receivedData && receivedData.messages?.map(d => d.uid).indexOf(uid);
+                                          changeMainState("currentChat",{uid, index: newIndex !== -1 ? newIndex : 0}).then(() => {
+                                            changeModalState("newMsg", false);                              
+                                          });
+                                     window.clearTimeout(timeouts?.current);
+                                }).catch(() => {
+                                  changeModalState("newMsg", false);
+                                  window.clearTimeout(timeouts?.current);
+                                });
+                            });
+                    }, 3000);
                       removeSelectedUser();
                   }
                        
@@ -78,6 +86,10 @@ const NewMsgModal = ({sendPostForm, closeModal}) => {
             radioCheck.current.checked = false;
         }
       }
+    const sendMsg = (c) => {
+      c.preventDefault();
+      commitMessage();
+    }
     return (
         <div className="new--msg--conainer usersModal--container flex-column">
               <div className="new--msg--inner usersModal--inner modalShow">
@@ -95,7 +107,7 @@ const NewMsgModal = ({sendPostForm, closeModal}) => {
                     { Object.keys(newMsgData?.sendTo).length > 0 &&
                     <div className="new--msg--send--to flex-row" style={{borderTop: "none"}}>
                        <h4>Message body:</h4>
-                      <form onSubmit={(c) => {c.preventDefault(); commitMessage()}}>
+                      <form onSubmit={(c) => sendMsg(c)}>
                          <textarea autoFocus spellCheck={false} onChange={(q) => setMsgData({...newMsgData,messageText:q?.target?.value})} value={newMsgData?.messageText} name="message body" type="text" placeholder="Message.." className="new__msg__textarea__body"/> 
                       </form>
                     </div>

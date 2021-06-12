@@ -12,7 +12,7 @@
       @media only screen and (max-width:670px){
        padding:5px;
        width:100%;
-       border-top: 1px solid #dbdbdb;
+       border-top: 1px solid var(--gray);
     }
     #feedback {
       padding: 30px 0 25px 0;
@@ -36,9 +36,9 @@
         -webkit-user-select: none;
         .rating__edit__btn{
           border:none;
-          background: #fff;
+          background: var(--white);
           border-radius: 8px;
-          border: 1px solid #fff;
+          border: 1px solid var(--white);
           color: var(--secondary-clr);
           cursor: pointer;
           &:focus{
@@ -71,9 +71,8 @@
     }
   }
   .edit--box {
-    background-color: #fff;
-    border: 1px solid rgb(219, 219, 219);
-    border: 1px solid #dbdbdb;
+    background-color: var(--white);
+    border: 1px solid var(--gray);
     border-radius: 3px;
     margin: 30px auto 0;
     overflow: hidden;
@@ -90,14 +89,14 @@
     padding:0;
     margin: 0; 
     height: 100%;
-    border-right: 1px solid #dbdbdb;
+    border-right: 1px solid var(--gray);
     @media only screen and (max-width: 670px){
       width:100%;
       min-height:200px;
     }
   }
   .active__menu__option{
-    border-left: 2px solid #262626 !important;
+    border-left: 2px solid var(--font-black) !important;
     font-weight:600;
     
   }
@@ -105,7 +104,7 @@
     position: absolute;
     bottom: 0;
     left:0;
-    border-top: 1px solid #dbdbdb;
+    border-top: 1px solid var(--gray);
     padding: 25px 14px;
     justify-content: center;
     width:100;
@@ -127,8 +126,8 @@
     cursor: pointer;
     text-align: -webkit-match-parent;
     &:hover{
-      background-color: #fafafa;
-      border-left: 2px solid #dbdbdb;
+      background-color: var(--light-gray);
+      border-left: 2px solid var(--gray);
     }
     &:active{
       color: #b9b9b9 !important;
@@ -157,7 +156,7 @@
     padding:2px 2px 0;
     margin-bottom:3px;
     font-size:20px;
-    color: #262626;
+    color: var(--font-black);
     line-height: 22px;
     white-space:nowrap;
     text-overflow: ellipsis;
@@ -174,7 +173,7 @@
     }
   }
   .change__prof__pic{
-      color: #0095f6;
+      color: var(--secondary-clr);
       font-size:14px;
       padding: 4px 5px 4px 0px;
       text-align:left;
@@ -218,7 +217,7 @@
       width: 100%;
       .account--info--text{
         display: block;
-        color: rgb(70, 70, 70);
+        color: var(--light-black);
         font-weight:300;
         margin-bottom: 4px;
         line-height: 20px;
@@ -279,5 +278,7 @@
         }
       }
   }
-  
+  #theme{
+    padding-top:30px;
+  }
 }

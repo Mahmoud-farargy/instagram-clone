@@ -34,7 +34,7 @@
         justify-content: center;
         align-items: center;
         background: radial-gradient(circle at 30% 107%, rgba(253, 244, 151,0.3) 1%,rgba(255, 198, 63,0.3) 10% , rgba(253, 51, 88,0.3) 45%,rgba(189, 54, 217,0.3) 60%);
-        border-right: 1px solid rgb(240, 240, 240);
+        border-right: 1px solid var(--shadow-white);
     }
     
     .d--post--container{
@@ -90,21 +90,21 @@
                     }
                     .desktop--right{
                         height: 100%;
-                        width: 340px;
+                        width: 343px;
                         position: relative;
-                        background-color: #fff;
+                        background-color: var(--white);
                         .post--card--header{
                             height:72px;
                             padding:16px;
                             width:100%;
-                            border-bottom:1px solid #efefef;
+                            border-bottom:1px solid var(--shadow-white);
                         }
                         .post--card--footer {
                             position:absolute;
                             bottom:0;
                             left:0;
                             width:100%;
-                            border-top:1px solid #efefef;
+                            border-top:1px solid var(--shadow-white);
                         }
                     }
                     @media only screen and (max-width: 780px){
@@ -122,6 +122,6 @@
         opacity: 0.9;
         transition: color 0.2s linear;
         &:hover{
-            color: #fff;
+            color: var(--white);
         }
     }

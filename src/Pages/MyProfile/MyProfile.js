@@ -59,6 +59,10 @@ const MyProfile =()=>{
             }
         });
     }
+    const isEmailAndNotAnon = (receivedData?.profileInfo?.registrationMethod === "email" && !receivedData?.uid?.includes("L9nP3dEZpyTg7AMIg8JBkrGQIji2"));
+    const changeDirection = (index, id) => {
+        changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? index : index - 1, activeID:  id}); history.push("/edit-profile")
+    }
     const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0]? receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0] : "" ;
     const isBirthday = ((receivedData?.profileInfo?.birthday) && (new Date().getMonth() + 1 === new Date(receivedData?.profileInfo?.birthday).getMonth() + 1) && (new Date().getDate() === new Date(receivedData?.profileInfo?.birthday).getDate()));
 
@@ -99,7 +103,6 @@ const MyProfile =()=>{
                                 }
         </>
     )
-    const isEmailAndNotAnon = (receivedData?.profileInfo?.registrationMethod === "email" && !receivedData?.uid?.includes("L9nP3dEZpyTg7AMIg8JBkrGQIji2"));
      return(
         <Fragment>
             {/* Modals */}
@@ -108,10 +111,12 @@ const MyProfile =()=>{
             }
             { modalsState?.options && !modalsState?.post &&
                 <OptionsModal>
-                    { isEmailAndNotAnon && <span onClick={() => {changeMainState("activeOption", {activeIndex: 2, activeID: "Change_Password_or_Email"}); history.push("/edit-profile")}}>Change password or email</span>}
-                    <span onClick={() => {changeMainState("activeOption", {activeIndex: 1, activeID: "Professional_Account"}); history.push("/edit-profile")}}>Account settings</span>
-                    <span onClick={() => {changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? 4 : 3, activeID: "Feedback"}); history.push("/edit-profile")}}>Report a problem/Rate app</span>
-                    <span onClick={() => {changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? 3 : 2, activeID: "Blocked_Users"}); history.push("/edit-profile")}}>Manage blocked accounts</span>
+                     <span onClick={() => changeDirection(1, "Professional_Account")}>Account settings</span>
+                    {isEmailAndNotAnon &&<span onClick={() => changeDirection(2, "Change_Password_or_Email")}>Change password or email</span>}
+                   
+                    <span onClick={() => changeDirection(3, "Blocked_Users")}>Manage blocked accounts</span>
+                    <span onClick={() =>  changeDirection(5, "Themes")}>Change Theme</span>
+                    <span onClick={() =>  changeDirection(4, "Feedback") }>Report a problem/Rate app</span>
                     <span onClick={()=> authLogout(history)}>Log out</span>
                     <span>Cancel</span>
                 </OptionsModal>
@@ -199,7 +204,7 @@ const MyProfile =()=>{
                            profSections?.map((item, index) => {
                                return(
                                    <div key={index}>
-                                      <span className="profile--section--item flex-row" style={{color: activeProfileSection?.activeIndex === index ? "#363636": "#8e8e8e", borderTop: activeProfileSection?.activeIndex === index ? "1px solid #363636" : "none"}} onClick={()=> changeMainState("activeProfileSection", {activeIndex: index, activeID: profSections[index].sectionId })} >{item.logo}<strong className="desktop-only">{profSections?.[index].title}</strong></span> 
+                                      <span className="profile--section--item flex-row" style={{color: activeProfileSection?.activeIndex === index ? "var(--main-black)": "var(--second--gray)", borderTop: activeProfileSection?.activeIndex === index ? "1px solid var(--main-black)" : "none"}} onClick={()=> changeMainState("activeProfileSection", {activeIndex: index, activeID: profSections[index].sectionId })} >{item.logo}<strong className="desktop-only">{profSections?.[index].title}</strong></span> 
                                    </div>
                                )
                            })

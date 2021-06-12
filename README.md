@@ -1,7 +1,7 @@
 <h2>Description</h2>
 A social media platform similar to Instagram that people can actually use.
 
-<h2>Screenshots</h2>
+<h2>Preview</h2>
 
 <img src="/Screenshots/Capture1.png" />
 
@@ -77,6 +77,8 @@ A social media platform similar to Instagram that people can actually use.
                                                 <ul class="bullet--2">
                                                     <li><p>Chat with any user</p></li>
                                                     <li><p>Share images, videos, audio, documents, and emojis while chatting</p></li>
+                                                    <li><p>Get notified when the other person is typing</p></li>
+                                                    <li><p>Get notified when the other person enters the chat you are in</p></li>
                                                     <li><p>Unsend and copy messages</p></li>
                                                     <li><p>Delete chat from both sides</p></li>
                                                 </ul>
@@ -119,6 +121,8 @@ A social media platform similar to Instagram that people can actually use.
                                             </li>
                                             <li><p>Activity Status</p></li>
                                             <li><p>Save posts</p></li>
+                                            <li><p>Dark/light, Iced Coffee, Snorkel Blue, Blue Izis, Butter Cup and honeysucle themes</p></li>
+                                            <li><p>Passed multiple automated tests on different functionalites using Cypress.io</p></li>
                                             <li><p>Fully responsive on mobile and tablet devices as well</p></li>
                                         </ul>
  <h2>Used technologies</h2>    
@@ -135,7 +139,6 @@ A social media platform similar to Instagram that people can actually use.
     <li><p>Stories</p></li>
     <li><p>Ability to put multiple media contents in one post</p></li>
     <li><p>Ability to send voice messages</p></li>
-    <li><p>Night/Day themes</p></li>
    </ul>
 
 ## Available Scripts
@@ -155,6 +158,9 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+### `npm run cypress`
+
+Launch end to end testing with Cypress.io
 ### `npm run build`
 
 Builds the app for production to the `build` folder.<br />

@@ -17,7 +17,7 @@
         ul.suggestions--p--ul{
             padding:10px;
             margin:0;
-            background-color: #fff;
+            background-color: var(--white);
             width: 100%;
             .suggest--item--container{
                 width: 100%;
@@ -50,6 +50,6 @@
         }
     }
     @media screen and (max-width:670px) {
-        background-color: #fff;
+        background-color: var(--white);
     }
 }

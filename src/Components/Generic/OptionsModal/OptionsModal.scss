@@ -12,7 +12,7 @@
     z-index: 5800;
   }
   .optionsM--container--inner {
-    background-color: #fafafa;
+    background-color: var(--light-gray);
     border-radius: 12px;
     height: auto;
     @media only screen and (min-width: 670px) {
@@ -26,7 +26,7 @@
     text-align: center;
     user-select: none;
     vertical-align: middle;
-    border-bottom: 1px solid #dbdbdb;
+    border-bottom: 1px solid var(--gray);
     line-height: 1.5;
 
     cursor: pointer;
@@ -35,7 +35,7 @@
     justify-content: center;
     overflow: hidden;
     &:active {
-      background-color: rgb(217, 217, 217);
+      background-color: var(--light-gray);
     }
   }
   .optionsM--container--inner > *:first-child {

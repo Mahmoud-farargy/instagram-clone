@@ -30,10 +30,10 @@ const labels = {
     root: {
       width:"90%",
       '& label.Mui-focused': {
-        color: '#0095f6',
+        color: 'var(--secondary-clr)',
       },
       '& .MuiInput-underline:after': {
-        borderBottomColor: '#0095f6',
+        borderBottomColor: 'var(--secondary-clr)',
       },
       '& .MuiOutlinedInput-root': {
         '& fieldset': {
@@ -43,7 +43,7 @@ const labels = {
           borderColor: 'yellow',
         },
         '&.Mui-focused fieldset': {
-          borderColor: '#0095f6',
+          borderColor: 'var(--secondary-clr)',
         },
       },
     },
@@ -57,7 +57,7 @@ const Extra = () => {
     const _isMounted = useRef(true);
     const classes = useStyles();
     const isValid = (rate !== 0 || rate);
-    const {receivedData, notify}= useContext(AppContext);
+    const {receivedData, notify, handleRealTimeState}= useContext(AppContext);
 
     const onRatingSubmission = (d) => {
       d.preventDefault();
@@ -82,22 +82,19 @@ const Extra = () => {
       });
     }
     useEffect(() => {
-      if(receivedData && Object.keys(receivedData).length > 0){
-        firebase?.database() &&  firebase.database().ref(`/rating/${receivedData?.uid}`).once('value').then((snapshot) => {
-          if(_isMounted?.current){
-              if(snapshot.val() && snapshot.val()?.uid){
-                setHasRated(true);
-                setRate( snapshot.val()?.ratingOutOfFive ? snapshot.val()?.ratingOutOfFive : 2 );
-                setReviewTxt( snapshot.val()?.review ? snapshot.val()?.review : "" );
-                
-              }else{
-                setHasRated(false);
-                setRate(0);
-                setReviewTxt("");
-              }
-          }
-          });
-      }
+      handleRealTimeState(`/rating/${receivedData?.uid}`).then((returnedData) => {
+        if(_isMounted?.current){
+                if(returnedData && returnedData?.uid){
+                    setHasRated(true);
+                    setRate( returnedData?.ratingOutOfFive ? returnedData?.ratingOutOfFive : 2 );
+                    setReviewTxt( returnedData?.review ? returnedData?.review : "" );
+                }else{
+                    setHasRated(false);
+                    setRate(0);
+                    setReviewTxt("");
+                }
+        }
+      });
      return () => _isMounted.current = false;
     },[]);
     return (
@@ -106,7 +103,7 @@ const Extra = () => {
                   <div className="option--container flex-column">
                   <form onSubmit={(z) => onRatingSubmission(z)}
                   style={{
-                    backgroundColor: hasRated ? "rgb(245, 245, 245)" : "inherit",
+                    backgroundColor: hasRated ? "var(--shadow-white)" : "inherit",
                     // opacity: hasRated ? "0.5" : "1"
                   }} className="feedback--section flex-column">
                    { hasRated && <button title="Edit" onClick={() => setHasRated(false)} className="rating__edit__btn"><BiEdit /></button> } 

@@ -16,7 +16,8 @@ import Notifications from "./Notifications/Notifications";
 import { withRouter } from "react-router-dom";
 import Loader from "react-loader-spinner";
 import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen";
-import HeaderLogo from "../../Assets/instagram-icon-logo.c1dbcbd5.svg";
+import HeaderLogoLight from "../../Assets/instagram-icon-logo.c1dbcbd5.svg";
+import HeaderLogoDark from "../../Assets/instagram-icon-logo-loading.e195cbde.svg";
 import {IoIosCompass} from "react-icons/io";
 import DeskTopSearch from "../../Components/DesktopSearch/DesktopSearch";
 const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
@@ -41,7 +42,8 @@ const Header = (props) => {
     receivedData,
     closeNotificationAlert,
     authLogout,
-    changeMainState
+    changeMainState,
+    isDayTime
   } = context;
   const reverseNotiState = (type) => {
     const notiUpdate = receivedData?.notifications?.isUpdate;
@@ -117,7 +119,7 @@ const Header = (props) => {
                   <p>You need to log back in.</p>
                   <Loader
                     type="Oval"
-                            color="#0095f6"
+                            color="var(--secondary-clr)"
                             height={18}
                             width={18}
                             timeout={5000}
@@ -153,7 +155,7 @@ const Header = (props) => {
               // animationDelay: "0.5s"
             }}
             onClick={() => props.history.push("/")} className="ig--logo--img" >
-              <img src={HeaderLogo} alt="Instagram Logo" />
+              <img src={receivedData?.profileInfo?.theme === "lightMode" ? HeaderLogoLight : (receivedData?.profileInfo?.theme === "darkMode" || receivedData?.profileInfo?.theme === "blueIzis" || (receivedData?.profileInfo?.theme === "lightDarkAuto" && !isDayTime)) || receivedData?.profileInfo?.theme === "snorkelBlue" || receivedData?.profileInfo?.theme === "icedCoffee" ? HeaderLogoDark : HeaderLogoLight } alt="Instagram Logo" />
             </div>
             <div style={{
               opacity: scrolled ? "0" : "1",
@@ -227,7 +229,7 @@ const Header = (props) => {
                   >
                     <span className="like__icon__item">
                       <FaHeart
-                        style={{ color: openNoti ? "#0095f6" : "#363636" }}
+                        style={{ color: openNoti ? "var(--secondary-clr)" : "var(--main-black)" }}
                       />
                       {receivedData?.notifications?.isUpdate &&
                       receivedData.notifications?.list?.length >= 1 ? (
@@ -254,7 +256,7 @@ const Header = (props) => {
                     <span title={receivedData?.userName} onClick={() => setProf(true)}>
                       <Avatar
                         loading="lazy"
-                        style={{border: (openProf || props.location.pathname?.toLowerCase() === "/profile" || props.location.pathname?.toLowerCase() === "/edit-profile") ? "2px solid #111" : ""}}
+                        style={{border: (openProf || props.location.pathname?.toLowerCase() === "/profile" || props.location.pathname?.toLowerCase() === "/edit-profile") ? "2px solid var(--light-black)" : ""}}
                         src={receivedData?.userAvatarUrl}
                         alt={receivedData?.userName}
                         className="header__user__avatar flex-column"

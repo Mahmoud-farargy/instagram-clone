@@ -7,6 +7,8 @@ const InputForm = (props) => {
   useEffect(() => {
     props.className && classes.push(props.className);
   }, [props.className, classes]);
+  const isInvalid = !props.val && props.submitted;
+  const classItems = `${props.disabled && "disabled"} ${isInvalid && "invalid__input"}`;
   return (
     <Fragment>
       <div id="input--form--field">
@@ -15,7 +17,7 @@ const InputForm = (props) => {
             <label htmlFor={props.label}>{props.label}</label>
             <div className="form--input--side">
               <input
-                className={`${props.disabled && "disabled" } ${!props.val && props.submitted && "test"}`}
+                className={classItems}
                 id={props.label}
                 type={props.inputType ? props.inputType : "text"}
                 value={props.val || ""}
@@ -31,7 +33,7 @@ const InputForm = (props) => {
               />
               {props.extraText ? props.extraText : null}
               {/*You can also use props.children with closing tag*/}
-              {!props.val && props.submitted && (
+              {isInvalid && (
                 <div className="text-danger">
                   <p>Required</p>
                 </div>
@@ -43,7 +45,7 @@ const InputForm = (props) => {
             <label htmlFor={props.label}>{props.label}</label>
             <div className="form--input--side">
               <textarea
-                className={props.disabled && "disabled"}
+                className={classItems}
                 id={props.label}
                 name={props.label}
                 disabled={props.disabled}
@@ -53,7 +55,7 @@ const InputForm = (props) => {
                 defaultValue={props.val || ""}
               />
               {props.extraText ? props.extraText : null}
-              {!props.val && props.submitted && (
+              {isInvalid && (
                 <div className="text-danger">
                   <p>Required</p>
                 </div>
@@ -65,7 +67,7 @@ const InputForm = (props) => {
             <label htmlFor={props.label}>{props.label}</label>
             <div className="form--input--side">
               <select
-                className={props.disabled && "disabled"}
+                className={classItems}
                 id={props.label}
                 value={props.val || ""}
                 name={props.label}
@@ -83,7 +85,7 @@ const InputForm = (props) => {
               </select>
               {props.extraText ? props.extraText : null}
               {/*You can also use props.children with closing tag*/}
-              {!props.val && props.submitted && (
+              {isInvalid && (
                 <div className="text-danger">
                   <p>Required</p>
                 </div>
@@ -100,7 +102,7 @@ const InputForm = (props) => {
             <label htmlFor={props.label}>{props.label}</label>
             <div className="form--input--side">
               <input
-                className={props.disabled && "disabled"}
+                className={classItems}
                 id={props.label}
                 value={props.val || ""}
                 type={props.inputType}
@@ -110,7 +112,7 @@ const InputForm = (props) => {
               />
               {props.extraText ? props.extraText : null}
               {/*You can also use props.children within closing tags*/}
-              {!props.val && props.submitted && (
+              {isInvalid && (
                 <div className="text-danger">
                   <p>Required</p>
                 </div>

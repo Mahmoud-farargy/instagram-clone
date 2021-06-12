@@ -23,12 +23,11 @@
         margin: 8px 0;
         min-width:100px;  
         width:100%;  
-        border: 1px solid #dbdbdb;
+        border: 1px solid var(--gray);
         font-size: 16px;
         height: 32px;
         padding: 0 10px;
-        color: #262626;
-        color: rgb(38, 38, 38);
+        color: var(--font-black);
         border-radius: 3px;
         
         }

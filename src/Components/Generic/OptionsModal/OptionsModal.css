@@ -16,7 +16,7 @@
 }
 
 #optionsModal .optionsM--container--inner {
-  background-color: #fafafa;
+  background-color: var(--light-gray);
   border-radius: 12px;
   height: auto;
 }
@@ -37,7 +37,7 @@
       -ms-user-select: none;
           user-select: none;
   vertical-align: middle;
-  border-bottom: 1px solid #dbdbdb;
+  border-bottom: 1px solid var(--gray);
   line-height: 1.5;
   cursor: pointer;
   color: inherit;
@@ -89,7 +89,7 @@
 }
 
 #optionsModal #logoutModal span {
-  border-top: 1px solid #dbdbdb;
+  border-top: 1px solid var(--gray);
   border-bottom: none;
 }
 /*# sourceMappingURL=OptionsModal.css.map */

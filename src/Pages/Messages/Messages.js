@@ -3,15 +3,16 @@ import Auxiliary from "../../Components/HOC/Auxiliary";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
 import { BsPencilSquare } from "react-icons/bs";
-import { FiSend, FiInfo } from "react-icons/fi";
+import { FiSend, FiInfo, FiEye } from "react-icons/fi";
 import { RiMenu4Fill } from "react-icons/ri";
+import { TiMessageTyping } from "react-icons/ti";
 import { MdClose } from "react-icons/md";
 import PropTypes from "prop-types";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 import Message from "./Message/Message";
 import { AiOutlinePicture } from "react-icons/ai";
 import { FaRegHeart } from "react-icons/fa";
-import { storage } from "../../Config/firebase";
+import { storage, database, firebase } from "../../Config/firebase";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { GoVerified } from "react-icons/go";
 import { withRouter } from 'react-router-dom';
@@ -40,14 +41,32 @@ const Messages = (props) => {
         openSidedrawer: false,
         loading: {uid: "", state: false, progress: 0}
     })
+  const [userInfo, setUserInfo] = useState({
+    last_changed:0,
+    state: "offline",
+    typingTo: "",
+    viewing: "",
+  });
   const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, modalsState, changeModalState, deleteChat, handleUserBlocking, confirmPrompt } = context;
   const { messages } = receivedData;
   const currUser = receivedData?.messages[currentChat.index];
   const unreadedMessagesCount = receivedData?.messages?.filter(user => user?.notification)?.length;
+  const msg = messages ? messages[currentChat.index] : [];
 
+  const updateRealTimeData = (objName, newVal) => {
+    const refToDatabase = database.ref("/status/" + receivedData?.uid);
+    const objectToSubmit = {
+      [objName]: newVal
+    }
+    refToDatabase.update(objectToSubmit);
+  }
   useEffect(() =>{
+    var unsubscribe = firebase.database().ref(`/status/${msg?.uid}`).on('value', snapshot =>{
+        setUserInfo(snapshot?.val());
+    });
     //if index is not correct then correct it
-    if(receivedData?.messages.length >0 ){
+    if(receivedData?.messages.length >0 && _isMounted){
+
         const makeADefaultSelection = () => {
             const firstUserUid = receivedData?.messages?.filter(el => !receivedData?.blockList?.some(k => k.blockedUid === el.uid))[0]?.uid;
             const pickFirstContent = receivedData?.messages?.map(user => user.uid).indexOf(firstUserUid);
@@ -69,10 +88,12 @@ const Messages = (props) => {
     }
     window.scrollTo(0,0);
     return () => {
+      typeof unsubscribe === "function" && unsubscribe();
       fileUploadEl.current =false;
       autoScroll.current = false;
       window.clearTimeout(timeouts?.current);
       _isMounted.current = false;
+      updateRealTimeData("viewing", "");
     }
   },[]);
   useEffect(() => {
@@ -97,9 +118,10 @@ const Messages = (props) => {
           loadedChatLog: messages[currentChat.index],
           openSidedrawer: false,
         });
+        updateRealTimeData("viewing", msg?.uid ? msg?.uid : "");
     }
     changeMainState("currentPage", `${ (unreadedMessagesCount && unreadedMessagesCount > 0) ? `(${unreadedMessagesCount}) `: ''} Messages`);
-  },[messages, currentChat, compState.loading.state, _isMounted]);
+  },[messages, currentChat, compState.loading.state, _isMounted, userInfo]);
   const submitMessage = (v) => {
     v.preventDefault();
     if(compState?.inputValue){
@@ -129,7 +151,6 @@ const Messages = (props) => {
       handleSendingMessage({content: "", uid: currUser?.uid, type: "like", pathname: ""});
     }
   }
-    const msg = messages ? messages[currentChat.index] : [];
 
     const onPickingContent = (event) => {
       if(event && event.target.files[0]){
@@ -244,6 +265,9 @@ const Messages = (props) => {
         }
       });
     }
+    const typing = (state) => {
+      updateRealTimeData("typingTo",  state ? msg?.uid : "");
+    }
     return (
       <Auxiliary>
         {/* modals */}
@@ -355,8 +379,12 @@ const Messages = (props) => {
                         <Avatar loading="lazy" src={msg?.userAvatarUrl} alt={msg?.userName} />
                         <div className="messages--user--info space__between">
                           <p style={{cursor:"pointer"}} onClick={() => props.browseUser(msg?.uid, msg?.userName)}>
-                             {trimText(msg?.userName, 70)}
+                             {trimText(msg?.userName, 17)}
                              { msg?.isVerified && <span><GoVerified className="verified_icon"/></span>}
+                             {
+                               userInfo?.viewing === receivedData?.uid &&
+                               <span className="user_on_chat"><FiEye /></span>
+                             }
                           </p>
 
                         </div>
@@ -372,6 +400,16 @@ const Messages = (props) => {
                           <Message key={message?.uid + index} user={{ uid: msg?.uid }} openSidedrawer={compState.openSidedrawer} receivedData={receivedData} message={message} index={index} />
                         );
                       })}
+                      {
+                        userInfo?.typingTo === receivedData?.uid &&
+                        <div className="user--typing--row flex-row fadeEffect">
+                          <Avatar loading="lazy" src={msg?.userAvatarUrl} className="messsage--sender--img" alt={msg?.userName} />
+                          <span className="user_typing flex-row">
+                            <TiMessageTyping className="user__typing__icon" />
+                            <h5>Typing...</h5>
+                          </span>
+                        </div>
+                      }
                      {
                       compState.loading.state && currUser?.uid === compState.loading.uid &&
                        <div className="loading--message--container flex-row">
@@ -379,7 +417,7 @@ const Messages = (props) => {
                          <Loader
                             className="loading--message--anim"
                             type="TailSpin"
-                            color="#fff"
+                            color="var(--white)"
                             height={60}
                             width={60}
                             timeout={100000}
@@ -407,6 +445,8 @@ const Messages = (props) => {
                                     value={compState.inputValue}
                                     className="message__input"
                                     placeholder="Message..."
+                                    onFocus={() => typing(true)}
+                                    onBlur={() => typing(false)}
                                   />
                                 </div>
                             </div>
@@ -415,7 +455,7 @@ const Messages = (props) => {
                               ) : 
                               <div className="message--mini--toolbox flex-row">
                                 <AiOutlinePicture onClick={() => onMessageAction("content")} className="message--pic--ico" />
-                                <FaRegHeart onClick={() => onMessageAction("like")} className="message--heart--ico"/> 
+                                <FaRegHeart onClick={() => onMessageAction("like")} data-cy="heart_emoji" className="message--heart--ico"/> 
                                 <HiOutlineDotsHorizontal onClick={() => changeModalState("options", true)} className="mobile-only message--heart--ico" />
                               </div>
                               }
