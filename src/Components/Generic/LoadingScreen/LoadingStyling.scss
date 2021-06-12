@@ -11,7 +11,7 @@
         top:0;
         left:0;
         width:100%;
-        background-color: #fff;
+        background-color: var(--white);
         overflow-x: hidden;
         opacity: 0.5;
         backdrop-filter: saturate(180%) blur(20px);
@@ -45,7 +45,7 @@
          background-color: rgba(219, 219, 219, 0.6);
          button.prof__btn__unfollowed{
             background-color:rgba(41, 37, 38, 0.8);
-            color: #fff;
+            color: var(--white);
             padding:3px 12px;
             transition: 0.2s linear;
             margin-top: 20px;

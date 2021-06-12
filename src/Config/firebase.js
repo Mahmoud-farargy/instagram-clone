@@ -31,11 +31,15 @@ var firebaseConfig = config
       var userStatusDatabaseRef = firebase.database().ref('/status/' + uid);
       var isOfflineForDatabase = {
           state: 'offline',
+          typingTo:"",
+          viewing: "",
           last_changed: firebase.database.ServerValue.TIMESTAMP,
       };
     
       var isOnlineForDatabase = {
           state: 'online',
+          typingTo:"",
+          viewing: "",
           last_changed: firebase.database.ServerValue.TIMESTAMP,
       };
       firebase.database().ref('.info/connected').on('value', function(snapshot) {

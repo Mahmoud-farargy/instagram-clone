@@ -155,7 +155,7 @@ function ReelItem(props) {
               <div className="reels-loading w-100 h-100 flex-column">
                     <Loader
                       type="TailSpin"
-                      color="#fff"
+                      color="var(--white)"
                       height={60}
                       width={60}
                       timeout={5000}/>
@@ -288,11 +288,12 @@ function ReelItem(props) {
          } 
             <div className="reel--likes reel--action--btn flex-column">
               {!reelLiked ? (
-                <span onClick={() => handleReels({type: "like", state: true})}>
+                <span data-cy="like" className="post--like--icon" onClick={() => handleReels({type: "like", state: true})}>
                   <FiHeart />
                 </span>
               ) : (
                 <span
+                  data-cy="like"
                   onClick={() => handleReels({type: "like", state:false})}
                   style={{
                     animation: reelLiked && "boundHeart 0.5s forwards ease",

@@ -19,12 +19,12 @@
         }
         .about-section-inner h2{
             text-align:center;
-            color:rgb(18, 18, 18);
+            color: var(--font-black);;
             font-weight:bolder;
             letter-spacing: 3px;
         }
         .about-section-inner p{
-            color: rgb(139, 139, 139);
+            color:var(--second--gray);
             margin-top: 15px;
         }
         .about-section-inner p a{
@@ -50,7 +50,7 @@
                     padding: 13px;
                     text-align:center;
                     svg{
-                        color: #111;
+                        color: var(--light-black);
                         transition: color 0.3s linear;
                         &:hover{
                             color: var(--secondary-clr);

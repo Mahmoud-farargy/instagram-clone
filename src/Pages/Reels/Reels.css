@@ -273,6 +273,6 @@
           justify-content: center;
   text-align: center;
   border-radius: 8px;
-  border: 1px solid #000;
+  border: 1px solid var(--ultimate-black);
 }
 /*# sourceMappingURL=Reels.css.map */

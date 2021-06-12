@@ -6,7 +6,7 @@
         left:0;
         width: 390px;
         min-height: 200px;
-        background-color: #fff;
+        background-color: var(--white);
         border-radius: 12px;
         z-index: 2000;
         display: block;
@@ -67,7 +67,7 @@
                 font-weight: 400;
                 h5{
                     font-weight: 600;
-                    color :#262626;
+                    color :var(--font-black);
                 }
             }
         }

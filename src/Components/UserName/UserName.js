@@ -89,7 +89,7 @@ class UserName extends PureComponent {
                                 </div>
                             </header>
                             <div className="mini--window--media--counters flex-row">
-                                <span>
+                                <span data-cy="postsCount">
                                     <h5>{posts?.length.toLocaleString()}</h5>
                                     Posts
                                 </span>

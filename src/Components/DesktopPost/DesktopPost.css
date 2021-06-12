@@ -53,7 +53,7 @@
 }
 
 .desktopPost .d--post--container .d--post--box {
-  background-color: #fff;
+  background-color: var(--white);
   width: 90%;
   min-height: 300px;
   margin: 0 auto;
@@ -87,14 +87,14 @@
 
 .desktopPost .d--post--container .d--post--box .post--card--article .desktop--right {
   position: relative;
-  background-color: #fff;
+  background-color: var(--white);
 }
 
 .desktopPost .d--post--container .d--post--box .post--card--article .desktop--right .post--card--header {
   height: 72px;
   padding: 16px;
   width: 335px;
-  border-bottom: 1px solid #efefef;
+  border-bottom: 1px solid var(--shadow-white);
 }
 
 .desktopPost .d--post--container .d--post--box .post--card--article .desktop--right .post--card--footer {
@@ -102,7 +102,7 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  border-top: 1px solid #efefef;
+  border-top: 1px solid var(--shadow-white);
 }
 
 .desktopPost .d--post--container .d--post--box .post--card--article .desktop--right .post--comments--layout {
@@ -135,6 +135,6 @@
 }
 
 .desktopPost .d--post--container .desktop__left__arrow svg:hover, .desktopPost .d--post--container .desktop__right__arrow svg:hover, .desktopPost .post--modal--close:hover {
-  color: #fff;
+  color: var(--white);
 }
 /*# sourceMappingURL=DesktopPost.css.map */

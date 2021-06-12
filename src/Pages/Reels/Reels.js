@@ -38,7 +38,7 @@ function Reels(props) {
                             <div className="reels-loading flex-column">
                                 <Loader
                                 type="TailSpin"
-                                color="#fff"
+                                color="var(--white)"
                                 height={50}
                                 width={50}
                                 timeout={5000}/>

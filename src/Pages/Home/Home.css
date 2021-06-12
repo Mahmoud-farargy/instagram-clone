@@ -118,8 +118,7 @@
     margin-bottom:5px;
 }
 #home.main--home--container .suggestions--header h6{
-    color: #8e8e8e;
-    color: rgb(142, 142, 142);
+    color: var(--second--gray);
     font-size:14px;
     font-weight:600;
     line-height: 18px;
@@ -164,7 +163,7 @@
     }
     #home.main--home--container{
         padding: 55px 0 0 0;
-        background: #fff;
+        background: var(--white);
     }
     .post--card--container{
         position: relative;

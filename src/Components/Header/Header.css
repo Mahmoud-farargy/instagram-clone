@@ -5,7 +5,7 @@
     left:0px;
     z-index:300;
     margin:0;
-    background-color:#fff;
+    background-color:var(--white);
     border-bottom: 1px solid var(--gray);
     align-items:center;
     padding:6px var(--padding-sides);
@@ -19,7 +19,7 @@
 #header.main--header .header--inner .header--logo--box .logo--verti--divider{
     width: 1.2%;
     height: 27px;
-    border-right: 1px solid #111;
+    border-right: 1px solid var(--light-black);
     margin-right: 13px;
 }
 #header.main--header .header--inner .header--logo--box .ig--logo--img{
@@ -55,10 +55,9 @@
     height:28px;
 }
 .search--bar--container .search__input{
-    border: 1px solid #dbdbdb;
+    border: 1px solid var(--gray);
     -webkit-appearance: none;
-    background-color: #fafafa;
-    background-color: rgb(250, 250, 250);
+    background-color: var(--light-gray);
     font-size: 14px;
     width:100%;
     border-radius:3px;
@@ -66,14 +65,16 @@
     padding: 3px 10px 3px 26px;
     z-index:2.5;
     height:100%;
+    color:var(--font-black);
 }
 #header ::-webkit-input-placeholder, #header ::placeholder,#header ::-webkit-input-placeholder {
     text-align:center;
     margin-left: 12px;
+    color: var(--second--gray)
 }
 .search--bar--container .search__icon{
     font-size:13px;
-    color: #8e8e8e;
+    color: var(--second--gray);
     margin-right: 7px;
     position: absolute;
     z-index: 2;
@@ -86,7 +87,7 @@
     top:4px;
     right:4px;
     z-index:2;
-    color: #919191;
+    color: var(--second--gray);
     font-size:20px;
     width: 20px;
     height: 20px;
@@ -141,7 +142,7 @@
     border-bottom: 1px solid#ebebeb;
 }
 #profilePopup .prof--popup--ul li:hover{
-    background-color: #fafafa;
+    background-color: var(--light-gray);
 }
 #profilePopup .prof--popup--ul > *:last-child{
     border-bottom:none;
@@ -167,13 +168,13 @@
     border-left: 1px solid var(--gray);
     border-top: 1px solid var(--gray);
     /* border: 1px solid rgba(255,255,255,1); */
-    background-color:#fff;
+    background-color:var(--white);
     z-index:9;
 }
 .noti--popup--window, .search--pop--window{
     position: absolute;
     border-radius:6px;
-    background:#fff;
+    background:var(--white);
     z-index:400;
     box-shadow: 0 0 5px 1px rgba(0,0,0,0.0979);
     -webkit-box-shadow: 0 0 5px 1px rgba(0,0,0,0.0979);
@@ -207,7 +208,6 @@
     text-align:center;
     padding:15px;
     color:var(--second--gray);
-    color:rgb(142, 142, 142);
     height: 100%;
     width: 100%;
     min-height: 90px;
@@ -222,8 +222,7 @@
     cursor: pointer;
 }
 #header .search--result--item:hover{
-    background-color: #fafafa;
-    background-color: rgb(250, 250, 250);
+    background-color: var(--light-gray);
 }
 #header .search--item--inner{
     padding: 8px 16px;
@@ -244,7 +243,7 @@
     font-size: 12px;
 }
 #header.main--header .user--search--name{
-    color:#262626;
+    color:var(--font-black);
     font-weight: 600;
     font-size: 14px;
     line-height: 18px;
@@ -253,7 +252,7 @@
     padding-right: 2px;
 }
 #header.main--header .user--search--info{
-    color:#8e8e8e;
+    color:var(--second--gray);
     font-size:14px;
     font-weight:400;
     line-height: 18px;
@@ -269,7 +268,7 @@
     margin-right: 10px;
 }
 .noti__transparent{
-    background:linear-gradient(to bottom,rgba(255,255,255,1), rgb(212, 209, 209,0.2));
+    background:linear-gradient(to bottom,var(--white), rgb(212, 209, 209,0.2));
     width:100%;
     height:20px;
     position: absolute;
@@ -345,7 +344,7 @@
     white-space: nowrap;
 }
 #messages p.messages__user__date .messages__user__date__divider{
-    color: #111;
+    color: var(--light-black);
 }
 .header--nav .header__user__avatar{
     width:25px;
@@ -381,7 +380,7 @@
         font-size: 21px;
 }
 #header .header--nav .header--ul li svg:hover{
-    color: rgb(0, 0, 0);
+    color: var(--font-black);
 }   
 .header--ul li svg:active{
     transform: scale(0.97);
@@ -419,8 +418,8 @@
     width:100%;
     left:0px;
     z-index:5000;
-    background-color:#fff;
-    border-top: 1px solid rgb(245, 245, 245);
+    background-color:var(--white);
+    border-top: 1px solid var(--shadow-white);
     align-items:center;
     height:50px;
 }

@@ -64,7 +64,7 @@ const Message = (props) => {
               <div className="message--outer" >
                   {/* {openOptions && <div className="hidden--backdrop" onClick={() => setOpeningOptions(false)}></div> } */}
                                   <div
-                                  style={{backgroundColor: (message.type === "text" && isSender) && "#efefef", border: (message.type === "text") && "1px solid #efefef"}}
+                                  style={{backgroundColor: (message.type === "text" && isSender) && "var(--shadow-white)", border: (message.type === "text") && "1px solid var(--shadow-white)"}}
                                     className={`
                                       ${isSender
                                         ? "sender"

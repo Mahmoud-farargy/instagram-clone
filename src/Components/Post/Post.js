@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, Suspense } from "react";
 import "./Post.css";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Avatar } from "@material-ui/core";
@@ -61,7 +61,7 @@ class Post extends PureComponent {
     this.updateUsersWhoLiked();
   }
   componentWillUnmount(){
-    // this._isMounted && window.clearTimeout(this.timeouts?.current);
+    window.clearTimeout(this.timeouts?.current);
     this._isMounted = false;
   }
   componentDidUpdate(prevProps) {
@@ -363,13 +363,14 @@ class Post extends PureComponent {
             </div>
             <div className="post--card--footer flex-column">
               <div className="post--footer--upper--row flex-row">
-                <div className=" flex-row">
+                <div className="flex-row">
                   {!likes?.people?.some((el) => el.id === id) ? (
-                    <span onClick={() => this.handleCurrLikes(true)}>
+                    <span data-cy="like" className="post--like--icon" onClick={() => this.handleCurrLikes(true)}>
                       <FiHeart />
                     </span>
                   ) : (
                     <span
+                    data-cy="like"
                       onClick={() => this.handleCurrLikes(false)}
                       style={{
                         animation: likes?.people?.some((el) => el.id === id)
@@ -381,7 +382,7 @@ class Post extends PureComponent {
                       <FaHeart />
                     </span>
                   )}
-                  <span onClick={() => this.onCommentBtnClick()}>
+                  <span data-cy="comment" onClick={() => this.onCommentBtnClick()}>
                    {
                      this.state.showInputForm ?
                      <FaRegCommentDots />
@@ -518,7 +519,9 @@ class Post extends PureComponent {
                 >
                  <div className="form--input--container w-100 flex-row">
                     <div className="form--input--container--inner flex-row">
-                      <EmojiPicker onEmojiClick={this.onEmojiClick} />
+                      <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div></div>}>
+                         <EmojiPicker onEmojiClick={this.onEmojiClick} />
+                      </Suspense>
                       <input
                         ref={this.inputField}
                         value={this.state.insertedComment}

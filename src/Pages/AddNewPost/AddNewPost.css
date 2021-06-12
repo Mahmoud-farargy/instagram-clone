@@ -6,7 +6,7 @@
 
 #upload.post--uploading--container .post--uploading--card{
     width:320px;
-    background-color: #fff;
+    background-color: var(--white);
     padding:20px;
     border: 1px solid var(--gray);
     border-radius:30px;
@@ -22,7 +22,7 @@
 #upload.post--uploading--container .share--btn{
     background: linear-gradient(225deg,#ffc63f 0%,#fd3358 49%,#bc35d8 100%);
     font-weight: bold;
-    color: #fff;
+    color: var(--white);
 }
 #upload.post--uploading--container .showing--upladed--content{    
     min-height:300px;
@@ -39,7 +39,7 @@
  object-fit:contain;
 }
 #upload.post--uploading--container .files__dropzone{
-    border: 1px dashed #000;
+    border: 1px dashed var(--ultimate-black);
     padding:10px;
     margin:-2px  0 15px 0;
     width:100%;
@@ -53,9 +53,9 @@
     cursor: pointer;
 }
 #upload.post--uploading--container .files-dropzone-active{
-    background-color: #0095f6;
-    color: #fff;
-    border: 1px dashed #fff;
+    background-color: var(--secondary-clr);
+    color: var(--white);
+    border: 1px dashed var(--white);
 }
 @media only screen and (max-width: 670px){
     #upload.post--uploading--container .post--uploading--card form{

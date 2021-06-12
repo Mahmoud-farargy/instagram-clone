@@ -40,7 +40,7 @@ import Styled from "styled-components";
             width: 54px;
             height: 54px;
             min-height: 54px;
-            background-color: #fff;
+            background-color: var(--white);
             padding:2px;
             justify-content:center;
             text-align:center;

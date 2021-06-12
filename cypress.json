@@ -1,0 +1,14 @@
+{
+    "componentFolder": "src",
+    "testFiles": "**/*.spec.{js,ts,jsx,tsx}",
+    "baseUrl": "http://localhost:3000",
+    "integrationFolder": "cypress/integration",
+    "pluginsFile": "cypress/plugins/index.js",
+    "fixturesFolder": "cypress/fixtures",
+    "viewportHeight": 1080,
+    "viewportWidth": 1920,
+    "env": {
+      "email": "user2@gmail.com",
+      "password": "123456"
+    }
+}

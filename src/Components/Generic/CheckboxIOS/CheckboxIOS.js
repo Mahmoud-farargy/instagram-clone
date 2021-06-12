@@ -26,7 +26,7 @@ const CheckboxIos = (props) => {
           },
           '&$focusVisible $thumb': {
             color: '#52d869',
-            border: '6px solid #fff',
+            border: '6px solid var(--white)',
           },
         },
         thumb: {

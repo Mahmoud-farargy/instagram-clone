@@ -17,7 +17,7 @@
 }
 #post.post--card--container .post--card--article .post--card--header{
     max-height:60px;
-    background-color:#fff;
+    background-color:var(--white);
     padding:0;
     width:100%;
     border-top-right-radius:4px;
@@ -74,7 +74,7 @@
 
 #post.post--card--container .post--card--footer{
     padding: 0 16px 6px 16px;
-    background-color:#fff;
+    background-color:var(--white);
     border-bottom-left-radius: 4px;
     border-bottom-right-radius:4px;
 }
@@ -92,7 +92,7 @@
 }
 #post.post--card--container .post--header--options{
     font-size: 20px;
-    color:var(--light-black);
+    color:var(--main-black);
     max-width:60px;
     padding:2px 8px;
 }
@@ -115,7 +115,7 @@
 #post.post--card--container .post--card--article .post--card--body .post__card__content{
     max-height:600px;
     min-height:300px;
-    background-color: rgb(214, 212, 212);
+    background-color: var(--gray);
     margin:0;
     padding:0;
     object-fit:cover;
@@ -161,14 +161,14 @@
     color: var(--main-black);
 }
 #post.post--card--container .post--card--article .post--card--footer .post__comments__count{
-    color: #8e8e8e;
+    color: var(--second--gray);
     font-weight:500;
     font-size: 14px;
     margin-bottom:4px;
     cursor:pointer;
 }
 #post.post--card--container .post--card--article .post--card--footer .post__date{
-    color: #8e8e8e;
+    color: var(--second--gray);
     font-size:13px;
     margin-top:4px;
 }
@@ -181,7 +181,7 @@
     position:relative;
     width:100%;
     margin-top:10px;
-    border-top: 1px solid rgb(233, 233, 233);
+    border-top: 1px solid var(--light-gray);
     height:45px;
     align-items:center;
     justify-content: space-between;
@@ -210,7 +210,7 @@
     top:10px;
     border:none;
     background-color:  transparent;
-    color:#0095f6;
+    color:var(--secondary-clr);
     font-weight:bold;
     font-size:14px;
 }
@@ -249,6 +249,9 @@
     #post.post--card--container .post--card--article .post--card--body .post__card__content{
         max-height:75vh;
     }
+    #post.post--card--container .post--card--article .desktop--left .post__card__content{
+        max-height: 100%;
+    }
     #post.post--card--container .post--card--article .post--card--footer .post--footer--upper--row span:active, .bookmark__icon:active{
         background-color:inherit !important;
     }
@@ -257,7 +260,7 @@
         bottom:50px;
         left:0;
         width:100%;
-        background-color: #fff;
+        background-color: var(--white);
         z-index:1200;
         padding:0 9px;
         margin:0;

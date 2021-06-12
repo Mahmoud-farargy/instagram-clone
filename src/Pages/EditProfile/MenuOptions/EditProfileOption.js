@@ -227,7 +227,7 @@ const EditProfileOption = (props) => {
           className="flex-column edit--prof--form"
           onSubmit={(e) => submitForm(e)}
         >
-          <Suspense fallback={<h1>Loading...</h1>}>
+           <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div></div>}>
             <InputForm
               type="text"
               changeInput={onInputChange}

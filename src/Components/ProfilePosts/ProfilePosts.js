@@ -95,7 +95,7 @@ const ProfilePosts = ({ list = [], parentClass = "users--profile--posts", isSave
            {
                finalLimit > 0 &&
                <section id="profilePosts">
-                    <div  className={ parentClass }>
+                    <div id="userPosts" className={ parentClass }>
                         {
                             list?.slice(0,currLimit)?.map((post, index)=> {
                                 if( currLimit === index + 1 ){

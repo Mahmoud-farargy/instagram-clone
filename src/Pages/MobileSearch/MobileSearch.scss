@@ -7,7 +7,7 @@
         .mobile--search--box{
             width: 100%;
             padding: 0;
-            background-color: #fff;
+            background-color: var(--white);
             .search--bar--container{
                 width: 100%;
                 margin: 0 auto;
@@ -41,12 +41,12 @@
                         }
                         .search--user--img{
                             margin-right:9px;
-                            background-color: rgb(236, 236, 236);
+                            background-color:var(--gray);
                             overflow: hidden;
                         }
                     }
                     &:hover{
-                        background-color: rgb(228, 228, 228);
+                        background-color: var(--light-gray);;
                     }
                 }
             }

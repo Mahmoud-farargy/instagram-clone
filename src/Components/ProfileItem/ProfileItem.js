@@ -88,7 +88,7 @@ const ProfileItem = React.forwardRef(({ post, openPost, index, className, withOw
                         <div className="vid--buffer">
                             <Loader
                             type="ThreeDots"
-                            color="#111"
+                            color="var(--light-black)"
                             height={30}
                             width={30}
                             timeout={5000}/>  

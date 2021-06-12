@@ -1,15 +1,19 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, Suspense, lazy } from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import "./EditProfile.scss";
 import { AppContext } from "../../Context";
 import { withRouter } from "react-router-dom";
 import fbimg from "../../Assets/f0e27bf15519.png";
 import MenuOption from "./MenuOption";
-import EditProfileOption from "./MenuOptions/EditProfileOption";
-import ProfessionalAccount from "./MenuOptions/ProfessionalAccount";
-import ChangePassNEmail from "./MenuOptions/ChangePassNEmail";
-import BlockList from "./MenuOptions/BlockList/BlockList";
-import Feedback from "./MenuOptions/Feedback";
+
+// ------------lazy loading-------------
+const EditProfileOption = lazy(() => import("./MenuOptions/EditProfileOption"));
+const ProfessionalAccount = lazy(() => import("./MenuOptions/ProfessionalAccount"));
+const ChangePassNEmail = lazy(() => import("./MenuOptions/ChangePassNEmail"));
+const BlockList = lazy(() => import("./MenuOptions/BlockList/BlockList"));
+const Feedback = lazy(() => import("./MenuOptions/Feedback"));
+const Themes = lazy(() => import("./MenuOptions/Themes"));
+// -------x---- lazy loading --------x------
 class EditProfile extends PureComponent {
   state = {
     sideMenuOptions: [
@@ -17,7 +21,8 @@ class EditProfile extends PureComponent {
       {option:"Account Settings", id: "Professional_Account"},
       {option:"Change Password or Email", id:"Change_Password_or_Email"},
       {option:"Blocked Users", id:"Blocked_Users" },
-      {option:"Feedback", id: "Feedback"}
+      {option:"Feedback", id: "Feedback"},
+      {option:"Themes", id:"Themes"}
     ],
   };
   static contextType = AppContext;
@@ -25,10 +30,6 @@ class EditProfile extends PureComponent {
     window.scrollTo(0,0);
     const { changeMainState} = this.context;
     changeMainState("currentPage", "Edit profile");
-  }
-  componentWillUnmount(){
-    const { changeMainState} = this.context;
-    changeMainState("activeOption", {activeIndex: 0, activeID: "Edit_Profile"});
   }
   onMenuChange(index, ID) {
     this.context.changeMainState("activeOption", {activeIndex: index, activeID: ID});
@@ -67,21 +68,26 @@ class EditProfile extends PureComponent {
                   </div>
                 </ul>
                 {/* end left side */}
-                <div className="flex-column right--side" ref={this.autoScroll}>
-                  {activeOption.activeID === this.state.sideMenuOptions[0].id ? (
-                    <EditProfileOption
-                      changeIndex={(i,id) => this.onMenuChange(i, id)}
-                    />
-                  ) : activeOption.activeID === this.state.sideMenuOptions[1].id ? (
-                    <ProfessionalAccount />
-                  ) : activeOption.activeID === this.state.sideMenuOptions[2].id ? (
-                    <ChangePassNEmail />
-                  ) : activeOption.activeID === this.state.sideMenuOptions[3].id ?
-                    <BlockList context={this.context} />
-                   : activeOption.activeID === this.state.sideMenuOptions[4].id ? (
-                     <Feedback />
-                   ): null} 
-                </div>
+                <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div></div>}>
+                    <div className="flex-column right--side" ref={this.autoScroll}>
+                    {activeOption.activeID === this.state.sideMenuOptions[0].id ? (
+                      <EditProfileOption
+                        changeIndex={(i,id) => this.onMenuChange(i, id)}
+                      />
+                    ) : activeOption.activeID === this.state.sideMenuOptions[1].id ? (
+                      <ProfessionalAccount />
+                    ) : activeOption.activeID === this.state.sideMenuOptions[2].id ? (
+                      <ChangePassNEmail />
+                    ) : activeOption.activeID === this.state.sideMenuOptions[3].id ?
+                      <BlockList context={this.context} />
+                    : activeOption.activeID === this.state.sideMenuOptions[4].id ? (
+                      <Feedback />
+                    ): activeOption.activeID === this.state.sideMenuOptions[5].id ? (
+                      <Themes />
+                    ): null} 
+                  </div>
+                </Suspense>
+
                 {/* end right side */}
               </div>
             </div>

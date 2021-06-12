@@ -120,7 +120,7 @@ const ProfessionalAccount = (props) => {
     <Fragment>
       <div className="option--container">
         <form onSubmit={(s) => onSubmission(s)} className="flex-column">
-          <Suspense fallback={<h1>Loading...</h1>}>
+        <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div></div>}>
             <InputForm
               type="select"
               changeInput={onInputChange}
