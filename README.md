@@ -3,7 +3,6 @@ A social media platform similar to Instagram that people can actually use.
 
 <h2>Preview</h2>
 
-<img src="/Screenshots/Capture3.gif" />
 
 <img src="/Screenshots/Capture1.png" />
 
@@ -12,6 +11,7 @@ A social media platform similar to Instagram that people can actually use.
 <img src="/Screenshots/Capture4.png" />
 
 <img src="/Screenshots/Capture5.png" />
+<img src="/Screenshots/Capture3.gif" />
 
 <h2>Core Features</h2>
 
