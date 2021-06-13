@@ -26,6 +26,7 @@ yarn-error.log*
 /src/info.js
 /src/Context.js
 /src/serviceAccount.json
+serviceAccount.json
 
 #others
 /.vscode
