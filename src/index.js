@@ -14,4 +14,4 @@ const mainApp = (
   </AppProvider>
 );
 
-ReactDOM.render(mainApp, document.getElementById("app"));
+ReactDOM.render(mainApp, document.getElementById("react-root"));

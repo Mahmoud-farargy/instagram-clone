@@ -13,6 +13,7 @@
        padding:5px;
        width:100%;
        border-top: 1px solid var(--gray);
+       min-height: 300px;
     }
     #feedback {
       padding: 30px 0 25px 0;
@@ -71,6 +72,7 @@
     }
   }
   .edit--box {
+    transition: background 0.3s linear;
     background-color: var(--white);
     border: 1px solid var(--gray);
     border-radius: 3px;
@@ -90,9 +92,11 @@
     margin: 0; 
     height: 100%;
     border-right: 1px solid var(--gray);
+    min-height:70vh;
     @media only screen and (max-width: 670px){
       width:100%;
       min-height:200px;
+      margin-bottom: 20px;
     }
   }
   .active__menu__option{

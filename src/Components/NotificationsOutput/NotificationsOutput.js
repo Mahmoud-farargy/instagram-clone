@@ -19,7 +19,7 @@ const NotificationOutput =(props)=>{
         //     props.history.push("/browse-post");
         // });
     }
-    return(
+    return notification && (
         <Auxiliary >
             <li className="space__between noti--popup-item">
                     <div className="flex-row noti--row">

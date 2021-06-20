@@ -9,7 +9,7 @@ const NotificationPeriod = ({list = [], title= ""}) => {
         igVideoImg,
         igAudioImg,
         changeMainState} = useContext(AppContext);
-    return (
+    return list && list.length > 0 &&(
       <div className="noti__period">
         <h3 className="noti__period__title">{title}</h3>
             {list

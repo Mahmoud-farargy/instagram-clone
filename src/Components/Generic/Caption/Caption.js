@@ -3,8 +3,8 @@ import Auxiliary from "../../HOC/Auxiliary";
 import PropTypes from "prop-types";
 import { trimText } from "../../../Utilities/TrimText";
 
-const Caption = ({ caption, userName }) => {
-  const [viewFullCaption, setViewFullCap] = useState(false);
+const Caption = ({ caption, userName = "", isFullCaption = false }) => {
+  const [viewFullCaption, setViewFullCap] = useState(isFullCaption || false);
   const findNReplaceHash = (txt) => {
     if (caption) {
       return txt.replace(
@@ -16,13 +16,13 @@ const Caption = ({ caption, userName }) => {
   return (
     <Auxiliary>
       <span className="post__caption flex-row">
-        <strong>{userName}</strong>{" "}
+       {userName && <strong>{userName}</strong>}
         {!viewFullCaption ? (
           <p
             style={{ cursor: "pointer" }}
             onClick={() => setViewFullCap(true)}
             dangerouslySetInnerHTML={{
-              __html: trimText(findNReplaceHash(caption), 600),
+              __html: trimText(findNReplaceHash(caption), 200),
             }}
           ></p>
         ) : (
@@ -38,5 +38,6 @@ const Caption = ({ caption, userName }) => {
 Caption.propTypes = {
   caption: PropTypes.string,
   userName: PropTypes.string.isRequired,
+  isFullCaption: PropTypes.bool
 };
 export default Caption;

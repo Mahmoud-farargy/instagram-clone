@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, memo, useState, Fragment} from "react";
 import "./LoadingStyling.scss";
 import loadingImg from "../../../Assets/2412274-min.png";
-import MobileHeader from "../../../Components/MobileHeader/MobileHeader";
 import { AiOutlineReload } from "react-icons/ai";
 import { useHistory } from "react-router-dom";
 
@@ -33,7 +32,6 @@ const LoadingScreen = () => {
             <Fragment>
                 <div id="loadingScreen" className="flex-column">
                     <div className="loading--backdrop"></div>
-                        <MobileHeader />
                         {
                             !showAnim ?
                             <div className="flex-column loading--screen--inner">

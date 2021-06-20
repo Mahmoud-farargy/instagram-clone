@@ -14,13 +14,17 @@ const Commment =(props)=>{
     useEffect(()=>{
         setPostLiked(comment?.likes.some(el => el.id === uid));
     },[comment, uid]);
+    const directTo = () => {
+        browseUser( comment?.uid, comment?.userName );
+        changeModalState("users", false, "", "");
+    }
     return(
         <Fragment>
         <div className="post--comment--item">
                <div className="flex-row post--comment--row">
                 { <Avatar className="comment__user__avatar" loading="lazy" src={comment?.userAvatarUrl} alt={comment?.userName}/>}
                 <span  title={comment?.userName} className="post__top__comment">
-                      <p className="comment__text"> <strong onClick={() => {browseUser( comment?.uid, comment?.userName ); changeModalState("users", false, "", "")}}>{comment?.userName}</strong> 
+                      <p className="comment__text"> <strong onClick={() => directTo()}>{trimText(comment?.userName, 19)}</strong> 
                           {trimText(comment?.comment, 600)}
                           </p>
                 </span>   
@@ -67,8 +71,8 @@ const Commment =(props)=>{
                                                             key={i} className="post--comment--item">
                                                             <div className="flex-row post--comment--row">
                                                             {<Avatar className="comment__user__avatar" loading="lazy" src={subComment?.userAvatarUrl} alt={subComment?.senderName}/>}
-                                                                <div onClick={() => browseUser( subComment?.senderUid, subComment?.senderName )} title={subComment?.senderName} className="post__top__comment flex-row">
-                                                                    <strong>{subComment?.senderName}</strong>
+                                                                <div title={subComment?.senderName} className="post__top__comment flex-column">
+                                                                    <strong onClick={() => browseUser( subComment?.senderUid, subComment?.senderName )} >{trimText(subComment?.senderName, 19)}</strong>
                                                                     <span> {trimText(subComment?.commentText, 600)}</span>
                                                                 </div>
                                                                 {

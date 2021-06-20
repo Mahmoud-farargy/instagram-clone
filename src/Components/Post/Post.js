@@ -351,6 +351,7 @@ class Post extends PureComponent {
                       src={contentURL}
                       isMuted={true}
                       preload={this.state.preLoad}
+                      autoPlay={index === 0}
                       isVidPlaying={ this.state.isVideoPlaying}
                       whenLoadedData={()=> this.setState( { ...this.state, isVidLoaded: true })}
                       whenEnded={()=> this.setState( { ...this.state, isVidEnded: true } )}

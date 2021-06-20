@@ -199,6 +199,7 @@
     right:10px;
     color:#fff;
     font-size:19px;
+    z-index:200;
 }
 
 .post--bottom--comment--adding .post__bottom__input:focus {
@@ -255,12 +256,15 @@
     #post.post--card--container .post--card--article .post--card--footer .post--footer--upper--row span:active, .bookmark__icon:active{
         background-color:inherit !important;
     }
+    #post.post--card--container.mobile--post .post--card--article{
+        background-color: var(--white);
+    }
     #post.post--card--container.mobile--post .post--card--article .post--card--footer .post--bottom--comment--adding{
         position: fixed;
         bottom:50px;
         left:0;
         width:100%;
-        background-color: var(--white);
+        background-color:var(--light-gray);
         z-index:1200;
         padding:0 9px;
         margin:0;

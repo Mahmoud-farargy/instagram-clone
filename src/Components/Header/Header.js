@@ -56,7 +56,7 @@ const Header = (props) => {
   };
   /// useEffects
   useEffect(() => {
-    if(_isMounted?.current){
+    if(_isMounted?.current && ((window.innerWidth || document.documentElement.clientWidth) >= 670)){
         window.addEventListener("scroll", () =>{
         if(headerRef && headerRef.current){
           if(window.scrollY > 0){
