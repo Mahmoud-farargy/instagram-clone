@@ -465,8 +465,9 @@ const DesktopPost = (props) => {
                               <Avatar className="comment__user__avatar" loading="lazy" src={usersProfileData?.userAvatarUrl} alt={usersProfileData?.userName} />
                                   <span title={usersProfileData?.userName} className="post__top__comment">
                                     <h6  onClick={() => {browseUser(usersProfileData?.uid, usersProfileData?.userName ); changeModalState("users", false, "", "")}} className="comment__text mt-1"> <strong>{usersProfileData?.userName}</strong> 
-                                        <Caption caption={caption} userName="" />
+                                      
                                     </h6>
+                                    <Caption caption={caption} isFullCaption={true} userName="" />
                                   </span>
                             </div>
                             <div className="post--comment--actions flex-row">

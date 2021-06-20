@@ -554,6 +554,9 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
     height: 34px;
     width: 34px;
 }
+.MuiFormLabel-root{
+    color: var(--light-black) !important;
+}
 /* -----x----------Global classes------x-------- */
 .auth--main{
     width:100%;
@@ -888,6 +891,8 @@ article, div, footer, header, main, nav, section{
     font-weight: 400;
     margin-bottom:0;
     cursor: pointer;
+    text-overflow: ellipsis;
+    white-space: wrap;
 }
 .people--also--liked p .similar__followers__item{
     font-weight: 600;
@@ -1205,7 +1210,7 @@ button:active{
     border-right: var(--main-border);
 }
 #messages.messages--container .mobile--users--sidedrawer #messagesUL{
-    max-height:75%;
+    max-height:85%;
     overflow-y: auto;
 }
 #messages.messages--container .messages--side{
@@ -1275,6 +1280,7 @@ button:active{
 .messages--view--users{
     padding:8px 0px;
     overflow-y:auto;
+    height: 100%;
 }
 .messages--view--users ul{
     padding:0;
@@ -1914,6 +1920,7 @@ ul.getting--started--inner{
     border:none;
     padding:10px 9px;
     flex:1;
+    background-color: var(--white);
 }
 #messages.messages--container .messages--bottom--form .message__input:focus{
     outline:none;
@@ -1955,6 +1962,10 @@ ul.getting--started--inner{
 .smiley__icon{
     font-size:24px;
     cursor: pointer;
+}
+#messages.messages--container .messages--bottom--form .message--mini--toolbox .message--heart--ico:last-of-type{
+    margin:0;
+    padding-right:0;
 }
 .form--input--container--inner{
     position: relative;
@@ -2592,7 +2603,7 @@ a.prof__btn__unfollowed{
     text-overflow:ellipsis;
     border-bottom: 1px solid rgb(236, 236, 236);
     width:100%;
-    background-color: #fcfcfc;
+    background-color: var(--light-gray);
     position: sticky;
     top:50px;
     left:0;
@@ -3073,7 +3084,7 @@ a.prof__btn__unfollowed{
         background-color:var(--white);
     }
     #usersProfile.users--profile--container .user--top--info{
-        padding: 22px 0 10px ;
+        padding: 22px 0 10px 10px;
     }
     #messages.messages--container .messages--bottom--form{
         position: fixed;
@@ -3097,7 +3108,7 @@ a.prof__btn__unfollowed{
         right:0;
         padding-top: 13px;
         z-index:5800;
-        background-color: rgba(255, 255, 255,0.99);
+        background-color: var(--white);
         border-left:1px solid var(--gray);
     }
     .auth--footer--container  .auth--copyright{
@@ -3109,7 +3120,7 @@ a.prof__btn__unfollowed{
     #messages.messages--container .messages--chatbox--body{
         overflow-y:auto;
         padding:44px 10px 40px;
-        height: 70%;
+        height: 68%;
     }
     #messages .messages--view--users ul li .messages--user--info{
         width:100%;

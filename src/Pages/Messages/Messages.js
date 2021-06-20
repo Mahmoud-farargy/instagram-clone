@@ -33,6 +33,7 @@ const Messages = (props) => {
     const fileUploadEl = useRef(null);
     const _isMounted = useRef(true);
     const timeouts = useRef(null);
+    const inputRef = useRef(null);
     // end refs
     const context = useContext(AppContext);
     const [compState, setCompState] = useState({
@@ -61,9 +62,6 @@ const Messages = (props) => {
     refToDatabase.update(objectToSubmit);
   }
   useEffect(() =>{
-    var unsubscribe = firebase.database().ref(`/status/${msg?.uid}`).on('value', snapshot =>{
-        setUserInfo(snapshot?.val());
-    });
     //if index is not correct then correct it
     if(receivedData?.messages.length >0 && _isMounted){
 
@@ -88,7 +86,6 @@ const Messages = (props) => {
     }
     window.scrollTo(0,0);
     return () => {
-      typeof unsubscribe === "function" && unsubscribe();
       fileUploadEl.current =false;
       autoScroll.current = false;
       window.clearTimeout(timeouts?.current);
@@ -96,6 +93,12 @@ const Messages = (props) => {
       updateRealTimeData("viewing", "");
     }
   },[]);
+  useEffect(() => {
+    var unsubscribe = firebase.database().ref(`/status/${msg?.uid}`).on('value', snapshot =>{
+        setUserInfo(snapshot?.val());
+    });
+    return () => typeof unsubscribe === "function" && unsubscribe();
+  },[msg, currentChat]);
   useEffect(() => {
     if(location.pathname === "/messages"){
       // autoScroll && autoScroll.current && autoScroll.current?.scrollIntoView && autoScroll.current.scrollIntoView({block: "end", behavoir:"smooth"});
@@ -130,8 +133,8 @@ const Messages = (props) => {
           ...compState,
           inputValue: "",
         });
+        (inputRef && inputRef?.current) && inputRef.current.blur();
     }
-
   }
 
 
@@ -323,17 +326,16 @@ const Messages = (props) => {
                   )}
                 </div>
                 {compState.openSidedrawer ? (
+                  <>
                   <div
                     className="backdrop mobile-only"
                     onClick={() => setCompState({...compState, openSidedrawer: false })}
                   ></div>
-                ) : null}
-
-                <div
+                                  <div
                   style={{
                     transform: compState.openSidedrawer
                       ? "translate(0)"
-                      : "translate(150vw)",
+                      : "translate(90vw)",
                     transition: "all 0.5s linear",
                     opacity: compState.openSidedrawer ? "1" : "0",
                   }}
@@ -355,6 +357,8 @@ const Messages = (props) => {
                     </div>
                   </div>
                 </div>
+                  </>
+                ) : null}
 
                 {(compState.loadedChatLog < 1 || messages.length <= 0 ) ? (
                   <div className="messages--empty--container flex-column">
@@ -439,6 +443,7 @@ const Messages = (props) => {
                               <div className="form--input--container--inner flex-row">
                                 <EmojiPicker onEmojiClick={selectEmoji} />
                                   <input
+                                    ref={inputRef}
                                     onChange={(e) =>
                                       setCompState({...compState, inputValue: e.target.value })
                                     }

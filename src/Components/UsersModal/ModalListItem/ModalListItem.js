@@ -9,17 +9,23 @@ import FollowUnfollowBtn from "../../../Components/FollowUnfollowBtn/FollowUnfol
 import { trimText } from "../../../Utilities/TrimText";
 import { GoVerified } from "react-icons/go";
 import * as Consts from "../../../Utilities/Consts";
+import { useHistory } from "react-router-dom";
 
 const ModalListItem =(props)=>{
     const {uid, userName, avatarUrl, date, isVerified , browseUser, type} = props;
     const {changeModalState, receivedData} = useContext(AppContext);
     const notMyItem = receivedData?.uid !== uid;
+    const history = useHistory();
+    const directTo = () => {
+        notMyItem ? browseUser(uid, userName) : history.push("/profile");
+        changeModalState("users", false, "", "");
+    }
     return(
         <Auxiliary>
             <div className="modal--user--item flex-row">
                 <div className="modal--item--inner flex-row acc-action clickable" >
                    <Avatar src={avatarUrl} alt={userName} />
-                    <div className="modal--user--info flex-column" onClick={()=> { notMyItem && browseUser(uid, userName); notMyItem && changeModalState("users", false, "", "")}}>
+                    <div className="modal--user--info flex-column" onClick={()=> directTo()}>
                         <h3 className="flex-row trim__txt">{trimText(userName, 20)}{isVerified && (
                       <GoVerified className="verified_icon" />
                     ) }</h3>

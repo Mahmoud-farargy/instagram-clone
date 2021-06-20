@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import Picker, { SKIN_TONE_MEDIUM_DARK } from "emoji-picker-react";
+import Picker, { SKIN_TONE_LIGHT } from "emoji-picker-react";
 import { BiSmile } from "react-icons/bi";
 const EmojiPicker = ({onEmojiClick}) => {
     const [isShown, setBeingShowing] = useState(false);
@@ -11,11 +11,17 @@ const EmojiPicker = ({onEmojiClick}) => {
             <div style={{position:"absolute"}}>
                <Picker
                   onEmojiClick={onEmojiClick}
-                  disableAutoFocus={true}
-                  skinTone={SKIN_TONE_MEDIUM_DARK}
+                  disableAutoFocus={ true }
+                  preload={ false }
+                  skinTone={ SKIN_TONE_LIGHT }
                   groupNames={{ smileys_people: "PEOPLE" }}
                   native
                   pickerStyle={{ width: '350px', height: "360px" }}
+                  groupVisibility={{
+                    flags: false,
+                    symbols: false,
+                    objects: false
+                  }}
                 />
                 <div
                 className="hidden--backdrop"

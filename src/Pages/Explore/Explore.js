@@ -291,7 +291,7 @@ const Explore = () => {
                    {newExploreArr?.length > 0 && <ProfilePosts list={ newExploreArr.slice(0,2) } className="explore--upper--row--item" withOwnersName={true} parentClass="explore--upper--row"/>}
                   </div>
                   <div>
-                      {newExploreArr?.length >= 2 && <ProfilePosts list={ newExploreArr.slice(2) } parentClass="users--profile--posts"/>}
+                      {newExploreArr?.length >= 2 && <ProfilePosts list={ newExploreArr.slice(2) } parentClass="users--profile--posts" withOwnersName={true} />}
                   </div>
                 </div>
               ) : loadingState?.suggList ? (

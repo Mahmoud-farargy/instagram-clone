@@ -66,7 +66,6 @@ const AuthPage = (props) => {
   let activeSlideIndex = 0;
 
   const slide = () => {
-   if((window.innerWidth || document.documentElement.clientWidth) >= 670){
           const slideContainer = document.querySelector("#slideContent");
           if( slideContainer){
             const slideItems = slideContainer.querySelectorAll("img");
@@ -74,7 +73,6 @@ const AuthPage = (props) => {
             activeSlideIndex = activeSlideIndex + 1 >= slideItems.length ? 0 : activeSlideIndex + 1;
             slideItems[activeSlideIndex].classList.add("active__slide");
           }
-   };
   }
   useEffect(() => {
     return () => {
@@ -85,9 +83,13 @@ const AuthPage = (props) => {
     };
   }, [signUpState]);
   useEffect(()=> {
-  var silderInterval = setInterval(slide, 4000);
+  var silderInterval;
+  if((window.innerWidth || document.documentElement.clientWidth) >= 670){
+    silderInterval = setInterval(slide, 4000);
+  }
   setGreeting(context?.currentHour > 12 ? "Good evening": "Good morning");
    return () => {
+     setLoading(false);
      window.clearInterval(silderInterval);
      window.clearTimeout(timeouts?.current);
      _isMounted.current = false;
@@ -218,7 +220,7 @@ const AuthPage = (props) => {
                                 suggested: true,
                                 status: true,
                                 reelsForFollowing: false,
-                                notificationBell: { state: true, type: "Both" },
+                                notificationBell: { state: false, type: "Both" },
                                 private: false,
                                 suggNotFollowed: false
                               },
@@ -258,11 +260,11 @@ const AuthPage = (props) => {
                                 })
                               );
                               resetForm();
+                              updatedReceivedData();
                               timeouts.current = setTimeout(() => {
                                 notify(
                                   "Welcome to Voxgram. Start by adding posts to your account."
                                 );
-                                updatedReceivedData();
                                 props.history.push("/");
                               }, 150);
                             }
@@ -351,7 +353,7 @@ const AuthPage = (props) => {
                           suggested: true,
                           status: true,
                           reelsForFollowing: false,
-                          notificationBell: { state: true, type: "Both" },
+                          notificationBell: { state: false, type: "Both" },
                           private: false,
                           suggNotFollowed: false
                         },
@@ -467,7 +469,7 @@ const AuthPage = (props) => {
                           suggested: true,
                           status: true,
                           reelsForFollowing: false,
-                          notificationBell: { state: true, type: "Both" },
+                          notificationBell: { state: false, type: "Both" },
                           private: false,
                           suggNotFollowed: false
                         },
@@ -567,7 +569,7 @@ const AuthPage = (props) => {
                           suggested: true,
                           status: true,
                           reelsForFollowing: false,
-                          notificationBell: { state: true, type: "Both" },
+                          notificationBell: { state: false, type: "Both" },
                           private: false,
                           suggNotFollowed: false
                         },
