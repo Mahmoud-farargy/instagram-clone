@@ -118,7 +118,7 @@ A social media platform similar to Instagram that people can actually use.
                                                 <ul class="bullet--2">
                                                  <li><p>View new members within the current week</p></li>
                                                  <li><p>View upcoming birthdays within the current month</p></li>
-                                                  <li><p>Hover on any user to see their profile in a mini window</p></li>
+                                                  <li><p>Hover over any user to see their profile in a mini window</p></li>
                                                 </ul>
                                             </li>
                                             <li><p>Activity Status</p></li>
@@ -144,8 +144,8 @@ A social media platform similar to Instagram that people can actually use.
    </ul>
 
 ## Available Scripts
-
-In the project directory, you can run:
+Please note before cloning the project: All functions that are responsible for handling actions like following, liking, commenting, etc.. are exist in Context.js which will not be pushed to the repo until this project gets at least 150 stars. without that file, the app won't run.
+Knowing that, In the project directory, you can run:
 
 ### `npm start`
 
