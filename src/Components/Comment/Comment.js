@@ -6,6 +6,7 @@ import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import { Avatar } from "@material-ui/core";
 import { trimText } from "../../Utilities/TrimText";
+import { findNReplaceHash } from "../../Utilities/ReplaceHashes";
 
 const Commment =(props)=>{
     var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, browseUser} = props;
@@ -15,8 +16,9 @@ const Commment =(props)=>{
         setPostLiked(comment?.likes.some(el => el.id === uid));
     },[comment, uid]);
     const directTo = () => {
-        browseUser( comment?.uid, comment?.userName );
-        changeModalState("users", false, "", "");
+        browseUser( comment?.uid, comment?.userName ).then(() =>{
+             changeModalState("users", false, "", "");
+        });
     }
     return(
         <Fragment>
@@ -25,8 +27,10 @@ const Commment =(props)=>{
                 { <Avatar className="comment__user__avatar" loading="lazy" src={comment?.userAvatarUrl} alt={comment?.userName}/>}
                 <span  title={comment?.userName} className="post__top__comment">
                       <p className="comment__text"> <strong onClick={() => directTo()}>{trimText(comment?.userName, 19)}</strong> 
-                          {trimText(comment?.comment, 600)}
-                          </p>
+                          <span dangerouslySetInnerHTML={{
+                            __html: trimText(findNReplaceHash(comment?.comment, 600)),
+                            }} ></span>
+                      </p>
                 </span>   
 
                    {
@@ -51,14 +55,14 @@ const Commment =(props)=>{
                           comment.likes?.length >=1 ?
                              <span className="acc-action clickable" onClick={()=> changeModalState("users",true, comment?.likes, Consts.LIKES)}>{comment.likes?.length.toLocaleString()} {comment.likes?.length > 1 ? "likes" : "like"}</span>
                           : null
-                      } 
+                      }
                        <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid, comment?.commentId); setSubComments(true)}}> Replay</span>      
                     {
                         comment?.uid === uid && (<span style={{cursor:"pointer"}} className="ml-1" onClick={() => deleteComment({type: "comment", ownerUid: comment?.uid, postId: comment?.postId , commentArr: comment, postIndex, commentIndex, postOwnerId})}>Delete</span>)
-                    }                             
+                    }
                </div>
                     {
-                        comment.subComments?.length >=1 ? 
+                        comment.subComments?.length >=1 ?
                         <div>
                            <span className="post__view__replies__btn" onClick={()=> setSubComments( !viewSubComments)}> <small className="long__dash"></small> {viewSubComments ? "Hide": "View"} replies ({comment.subComments?.length})</span>
                              {

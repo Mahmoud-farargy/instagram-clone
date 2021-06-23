@@ -230,6 +230,9 @@ a:visited{
     background-color: rgb(98, 98, 98);
     min-height: 14px;
 }
+.main--app{
+    min-height: 100%;
+}
 .reels--ul{
     padding: 0 0 0 40px;
     margin: 0;
@@ -1488,6 +1491,7 @@ button:active{
 }
 .audio--content{
     height: 100%;
+    width: 100%;
 }
 .audio--content .audio__artwork__cover{
     width: 100%;
@@ -1502,6 +1506,15 @@ button:active{
     height: 100%;
     align-items: center;
     justify-content: center;
+}
+.audio--content .song--details--container{
+    position: absolute;
+    top:0;
+    left:0;
+    color: #fff;
+    width: 100%;
+    height: 85%;
+    background-color: rgba(0,0,0,.2);
 }
 .rhap_container div{
     flex-direction: row;
@@ -3100,6 +3113,9 @@ a.prof__btn__unfollowed{
         position: fixed;
         bottom:109px;
     }
+    .noti--popup--window, .noti--popup--arrow, .search--pop--window, .search--popup--arrow{
+        display:none !important;
+    }
     .messages--side .mobile--users--sidedrawer{
         position: fixed;
         top:0px;
@@ -3286,12 +3302,6 @@ a.prof__btn__unfollowed{
     .private-acc{
         border: 1px solid var(--shadow-white);
         border-radius: 3px;
-    }
-}
-/* less than 760px */
-@media only screen and (max-width:760px){
-    .noti--popup--window, .noti--popup--arrow, .search--pop--window, .search--popup--arrow{
-        display:none !important;
     }
 }
 /* between 670px and 930px */

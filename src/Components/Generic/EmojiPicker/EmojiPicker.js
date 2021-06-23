@@ -8,7 +8,7 @@ const EmojiPicker = ({onEmojiClick}) => {
         <BiSmile onClick={() => setBeingShowing(true)} className="smiley__icon"/>
         {
             isShown &&
-            <div style={{position:"absolute"}}>
+            <div className="fadeEffect" style={{position:"absolute"}}>
                <Picker
                   onEmojiClick={onEmojiClick}
                   disableAutoFocus={ true }

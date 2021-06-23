@@ -7,6 +7,7 @@ import { auth } from '../../Config/firebase';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { GoVerified } from "react-icons/go";
 import { IoMdGrid } from "react-icons/io";
+import { MdOndemandVideo } from "react-icons/md";
 import { RiLayoutRowLine } from "react-icons/ri";
 import { GiCog } from "react-icons/gi";
 import { VscBookmark } from "react-icons/vsc";
@@ -17,9 +18,10 @@ import emptyPostsImg from "../../Assets/6efc710a1d5a.jpg";
 import appleStore from "../../Assets/get-app-apple.png";
 import gpStore from "../../Assets/get-app-gp.png";
 import { HiOutlinePlus } from "react-icons/hi";
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiVideoOff } from "react-icons/fi";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import { trimText } from "../../Utilities/TrimText";
+import { findNReplaceHash } from "../../Utilities/ReplaceHashes";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 
 const MyProfile =()=>{
@@ -30,8 +32,10 @@ const MyProfile =()=>{
     const [profSections] = useState([
         {sectionId: "grid",title: "grid", logo: <IoMdGrid />},
         {sectionId: "stacked",title: "stacked", logo: <RiLayoutRowLine/>},
-        {sectionId: "saved", title: "saved", logo: <VscBookmark />}
+        {sectionId: "reels", title: "reels", logo: <MdOndemandVideo />},
+        {sectionId: "saved", title: "saved", logo: <VscBookmark />},
     ]);
+    const [reelsList, setReelsList] = useState([]);
     const { receivedData,changeModalState, authLogout, usersProfileData, changeMainState, uid, currentPostIndex, modalsState, updateReelsProfile, activeProfileSection, testStorageConnection } = useContext(AppContext);
     useEffect(()=>{
         window.scrollTo(0,0);
@@ -44,10 +48,22 @@ const MyProfile =()=>{
         }
     },[]);
     useEffect(() => {
-        if(activeProfileSection?.activeIndex === 2){
+        if(activeProfileSection?.activeIndex === 3){
             testStorageConnection();
         }
     },[activeProfileSection]);
+    useEffect(() => {
+        const reelArr = [];
+        receivedData?.reels && receivedData.reels.length > 0 && receivedData.reels.map(reelGroup => {
+          return reelGroup.reelItems.map( reel => 
+             reelArr.push({
+                 ...reel,
+               groupId: reelGroup.id
+             })
+          );
+         });
+        setReelsList(reelArr);
+    },[receivedData?.reels]);
     const loadReels = ({currentGroupId, currentGroupIndex, currentReelIndex, currentReelId}) => {
         updateReelsProfile(uid).then(() => {
             if(_isMounted?.current){
@@ -86,7 +102,9 @@ const MyProfile =()=>{
                                 {
                                     receivedData?.profileInfo && receivedData?.profileInfo?.bio &&
                                     <div className="bottom--row--user-info flex-column">
-                                        <span>{receivedData?.profileInfo?.bio}</span>
+                                        <span dangerouslySetInnerHTML={{
+                                            __html: trimText(findNReplaceHash(receivedData?.profileInfo?.bio, 1000)),
+                                        }}></span>
                                     </div>
                                 }
                                 {
@@ -217,7 +235,7 @@ const MyProfile =()=>{
                  activeProfileSection?.activeIndex === 0 || activeProfileSection?.activeIndex === 1 ?
                  (receivedData?.posts?.length >=1 && !loading ?
                     <div >
-                        <ProfilePosts list={receivedData?.posts} parentClass={activeProfileSection?.activeIndex === 0 ? "users--profile--posts" : "users--profile--rowLine flex-column"} />
+                        <ProfilePosts listType="post" list={receivedData?.posts} parentClass={activeProfileSection?.activeIndex === 0 ? "users--profile--posts" : "users--profile--rowLine flex-column"} />
                     </div>
                             : loading ?
                                 (<Skeleton count={10} height={250} width={250} className="mt-4 mr-4 mx-auto"  />)
@@ -238,11 +256,32 @@ const MyProfile =()=>{
                             </div>
                         )
                     ): activeProfileSection?.activeIndex === 2 ?
+                        <>
+                        {reelsList && reelsList?.length > 0 ?
+                            <div>
+                                <ProfilePosts listType="reel" list={reelsList} parentClass="users--profile--posts"/>
+                            </div>
+                            :
+                            <div className="empty--posts--container flex-column">
+                            <div className="empty--posts--inner mx-auto flex-column">
+                              <div className="plus--icon--container flex-column">
+                                      <FiVideoOff className="plus__icon" />
+                                              </div>
+                                              <h3>You haven't created reels yet</h3>
+                                              <p>
+                                              Share reels so others can watch them and admire your lifestyle.
+                                              </p>
+                                            <Link to="/add-post"> <span>Create new</span></Link>
+                                            </div>
+                          </div>
+                        }
+                        </>
+                    :activeProfileSection?.activeIndex === 3 ?
                     (receivedData?.savedposts?.length >=1 && !loading ?
                         <div className="saved--posts--container">
                             <h6>Only you can see what you've saved</h6>
                             <div>
-                               <ProfilePosts list={receivedData?.savedposts} isSavedPost={true} parentClass="users--profile--posts" />
+                               <ProfilePosts listType="post" list={receivedData?.savedposts} isSavedPost={true} parentClass="users--profile--posts" />
                             </div>  
                         </div>
                             : loading ?

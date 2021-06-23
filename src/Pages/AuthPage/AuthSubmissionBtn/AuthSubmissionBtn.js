@@ -1,0 +1,67 @@
+import React, { Fragment, memo } from "react";
+import PropTypes from "prop-types";
+import Loader from "react-loader-spinner";
+
+const AuthSubmissionBtn = ({type = "login",value = "Log In",formState = {}, loading = false, inProgress = false}) => {
+    const disabledConfig = () => {
+        let isInvalid
+        switch(type) {
+            case "login":
+            isInvalid = !formState.loginEmail?.val || !formState.loginPassword?.val;
+            break;
+            case "signUp":
+            isInvalid = !formState.signUpEmail?.val ||
+            !formState.signUpPassword?.val ||
+            !formState.signUpUsername?.val ||
+            !formState.fullName?.val;
+            break;
+            default:
+            isInvalid = !formState.loginEmail?.val || !formState.loginPassword?.val;
+        }
+        return isInvalid;
+    }  
+
+    return (
+       <Fragment>
+              {loading || inProgress ? (
+                          <button
+                            className={"disabled loading__btn flex-row"}
+                            disabled={true}
+                          >
+                            <Loader
+                              type="ThreeDots"
+                              color="var(--white)"
+                              height={15}
+                              width={20}
+                              timeout={5000}
+                            />
+                          </button>
+                        ) : (
+                          <input
+                            data-testid={`${type}-sub-btn`}
+                            className={
+                              loading ||
+                             disabledConfig() ||
+                              inProgress
+                                ? "disabled"
+                                : ""
+                            }
+                            disabled={
+                              loading ||
+                              disabledConfig() ||
+                              inProgress
+                            }
+                            type="submit"
+                            value={value}
+                          />
+                        )}
+       </Fragment>
+    )
+}
+AuthSubmissionBtn.propTypes = {
+    value: PropTypes.string.isRequired,
+    formState: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+    inProgress: PropTypes.bool.isRequired
+}
+export default memo(AuthSubmissionBtn);

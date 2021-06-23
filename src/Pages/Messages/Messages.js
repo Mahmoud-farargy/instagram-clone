@@ -363,7 +363,6 @@ const Messages = (props) => {
                 {(compState.loadedChatLog < 1 || messages.length <= 0 ) ? (
                   <div className="messages--empty--container flex-column">
                     {/* if there is no messages */}{" "}
-                    {/* when loading them */}
                     <div className="messages--side--inner flex-column">
                       <div>
                         <FiSend className="messages__send__logo" />

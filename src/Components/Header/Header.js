@@ -104,7 +104,7 @@ const Header = (props) => {
       timeouts.current = setTimeout(() => {
         setNoti(false);
         window.clearTimeout(timeouts?.current);
-      },300);
+      },900);
     }
   }
   return (
@@ -292,7 +292,7 @@ const Header = (props) => {
                             </li>
                           </Link>
                           <Link
-                            onClick={() => {changeMainState("activeProfileSection", {activeIndex: 2, activeID: "saved" }); setProf(false)}}
+                            onClick={() => {changeMainState("activeProfileSection", {activeIndex: 3, activeID: "saved" }); setProf(false)}}
                             to="/profile"
                           >
                             <li>

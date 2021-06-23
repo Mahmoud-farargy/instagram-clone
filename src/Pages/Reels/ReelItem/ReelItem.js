@@ -93,8 +93,6 @@ function ReelItem(props) {
       if(isVideoPlaying){
         onVideoClick();
       }
-    
-    
   };
   const submitComment = (s) => {
       s.preventDefault();
@@ -105,7 +103,6 @@ function ReelItem(props) {
         notify("Sent");
         window.clearTimeout(timeouts?.current);
     },500);
-   
   }
   const eventDelegation =(k)=> {
     k.persist();

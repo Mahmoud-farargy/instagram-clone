@@ -76,7 +76,10 @@ const DesktopPost = (props) => {
       window.clearTimeout(timeouts.current);
     };
   }, []);
-  
+  useEffect(() => {
+    compState.insertedComment && setCompState({...compState, insertedComment: ""});
+    updateUsersWhoLiked();
+}, [currentPostIndex?.index]);
   var postLiked = usersProfileData?.posts && usersProfileData?.posts[currentPostIndex?.index]?.likes?.people?.some((el) => el.id === uid);
   const handleCurrLikes = (boolean) => {
     let postsData = usersProfileData?.posts;
@@ -96,6 +99,13 @@ const DesktopPost = (props) => {
       );
     }
   };
+  const directTo = () => {
+    browseUser(usersProfileData?.uid, usersProfileData?.userName ).then(() => {
+      if(_isMounted?.current){
+          changeModalState("users", false, "", "");
+      }
+    })
+  }
   const doubleClickEvent = () => {
     let currCount = compState.btnClicks;
     setCompState({
@@ -226,6 +236,7 @@ const DesktopPost = (props) => {
     id= "",
     contentName= "",
     userName= "",
+    songInfo= {},
   } = usersProfileData?.posts[currentPostIndex?.index];
   
   var isVerified = usersProfileData?.isVerified;
@@ -407,7 +418,7 @@ const DesktopPost = (props) => {
                         />
                     </div>
                   ) :  contentType === "audio" ? (
-                      <AudioContent autoPlay url={contentURL} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()}/>
+                      <AudioContent autoPlay url={contentURL} songInfo={songInfo || {}} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()}/>
                   ) : null}
                 </div>
                 <div className="desktop--right desktop-only">
@@ -421,7 +432,7 @@ const DesktopPost = (props) => {
                       />
                       <div
                         className="post--header--user--info flex-column"
-                        onClick={() => {browseUser(usersProfileData?.uid, usersProfileData?.userName ); changeModalState("users", false, "", "")}}
+                        onClick={() => directTo()}
                       >
                         <span
                           tabIndex="0"
@@ -464,7 +475,7 @@ const DesktopPost = (props) => {
                             <div className="flex-row post--comment--row">
                               <Avatar className="comment__user__avatar" loading="lazy" src={usersProfileData?.userAvatarUrl} alt={usersProfileData?.userName} />
                                   <span title={usersProfileData?.userName} className="post__top__comment">
-                                    <h6  onClick={() => {browseUser(usersProfileData?.uid, usersProfileData?.userName ); changeModalState("users", false, "", "")}} className="comment__text mt-1"> <strong>{usersProfileData?.userName}</strong> 
+                                    <h6  onClick={() => directTo()} className="comment__text mt-1"> <strong>{usersProfileData?.userName}</strong> 
                                       
                                     </h6>
                                     <Caption caption={caption} isFullCaption={true} userName="" />

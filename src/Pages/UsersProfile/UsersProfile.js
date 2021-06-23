@@ -7,10 +7,12 @@ import { auth, firebase } from "../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { GoVerified } from "react-icons/go";
 import { IoMdGrid } from "react-icons/io";
+import { MdOndemandVideo } from "react-icons/md";
 import { RiLayoutRowLine } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
 import { ImBlocked } from "react-icons/im";
 import { VscLock } from "react-icons/vsc";
+import { FiVideoOff } from "react-icons/fi";
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import reelsIco from "../../Assets/reels.png";
@@ -23,16 +25,25 @@ import Moment from "react-moment";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import { trimText } from "../../Utilities/TrimText";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
+import { findNReplaceHash } from "../../Utilities/ReplaceHashes";
 
 const UsersProfile = () => {
   const [, loading] = useAuthState(auth);
+  // STATES
   const [isFollowed, setFollowingState] = useState(false);
   const {userId} = useParams();
-  const [grid, setGrid] = useState(true);
   const context = useContext(AppContext);
   const [openSuggestionsBox, setSuggestionsBox] = useState(false);
   const [randNum, setRandNum] = useState(0);
   const [connectivityStatus, setConnectivityStatus] = useState({});
+  const [reelsList, setReelsList] = useState([]);
+  const [profSections] = useState([
+      {sectionId: "grid",title: "grid", logo: <IoMdGrid />},
+      {sectionId: "stacked",title: "stacked", logo: <RiLayoutRowLine/>},
+      {sectionId: "reels", title: "reels", logo: <MdOndemandVideo />}
+  ]);
+  // ---x---STATES---x---
+  const [currentProfIndex, setCurrProfIndex] = useState({activeIndex: 0, activeID: "grid" });
   const history = useHistory();
   const {
     usersProfileData,
@@ -50,8 +61,11 @@ const UsersProfile = () => {
     notify,
     handleSendingMessage
   } = context;
+  // REFS
   const _isMounted = useRef(true);
   const timeouts = useRef(null);
+  const scrollToSuggs = useRef(null);
+  //--x--REFS--x--
   const message = (uid, username, avatarUrl, isVerified) => {
     const newIndex = receivedData && receivedData.messages?.map(d => d.uid).indexOf(uid);
     if(newIndex !== -1){
@@ -78,10 +92,23 @@ const UsersProfile = () => {
     }
     window.scrollTo(0, 0);
     return () => {
+      setCurrProfIndex({activeIndex: 0, activeID: "grid" });
       window.clearTimeout(timeouts?.current);
       _isMounted.current = false;
     }
   }, []);
+  useEffect(() => {
+   const reelArr = [];
+   usersProfileData?.reels && usersProfileData.reels.length > 0 && usersProfileData.reels.map(reelGroup => {
+     return reelGroup.reelItems.map( reel => 
+        reelArr.push({
+            ...reel,
+          groupId: reelGroup.id
+        })
+     );
+    });
+   setReelsList(reelArr);
+  },[usersProfileData?.reels]);
   useEffect(()=> {
     if(isUserOnline){
     firebase?.database() &&  firebase.database().ref(`/status/${usersProfileData?.uid}`).once('value').then((snapshot) => {
@@ -97,7 +124,9 @@ const UsersProfile = () => {
     }
     suggestionsList?.length > 0 ? setRandNum(Math.floor(Math.random() * suggestionsList?.length -6)) : setRandNum(0);
   },[suggestionsList, usersProfileData]);
-
+ useEffect(() =>{
+  if(openSuggestionsBox && scrollToSuggs && scrollToSuggs.current) scrollToSuggs.current.scrollIntoViewIfNeeded({behavior: "smooth"});
+ },[openSuggestionsBox]);
   const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
     handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName).then(() =>  _isMounted?.current && history.push("/"));
   }
@@ -160,7 +189,10 @@ const UsersProfile = () => {
                       )}
 
                     <div className="bottom--row--user-info flex-column">
-                      <span>{usersProfileData?.profileInfo?.bio}</span>
+                      <span  dangerouslySetInnerHTML={{
+                            __html: trimText(findNReplaceHash(usersProfileData?.profileInfo?.bio, 1000)),
+                            }}
+                            ></span>
                     </div>
                     {
                         usersProfileData?.profileInfo && usersProfileData?.profileInfo?.website &&
@@ -395,7 +427,7 @@ const UsersProfile = () => {
                   <Link to="/explore/people"><span className="user__see__all__btn">see all</span></Link>
                 </div>
                 <div className="suggestions--list--container flex-row">
-                  <ul className="suggestion--items flex-row">
+                  <ul ref={scrollToSuggs} className="suggestion--items flex-row">
                     {suggestionsList && suggestionsList.length > 0 &&
                       suggestionsList.filter(
                         (item) =>
@@ -456,58 +488,78 @@ const UsersProfile = () => {
           <div className="users--profile--stripe flex-row">
                       {usersProfileData?.posts?.length >= 1 ? (
                         <div className="profile--stripe--inner flex-row">
-                          <span
-                            onClick={() => setGrid(true)}
-                            style={{
-                              color: grid ? "#1d8cd6" : "var(--second--gray)",
-                              borderTop: grid ? "2px solid var(--main-black)" : "none",
-                            }}
-                          >
-                            <IoMdGrid />
-                          </span>
-                          <span
-                            onClick={() => setGrid(false)}
-                            style={{
-                              color: !grid ? "#1d8cd6" : "var(--second--gray)",
-                              borderTop: !grid ? "2px solid var(--main-black)" : "none",
-                            }}
-                          >
-                            <RiLayoutRowLine />
-                          </span>
+                          <div className="profile--stripe--inner flex-row">
+                              {
+                                  profSections?.map((item, index) => {
+                                      return(
+                                          <div key={index}>
+                                              <span className="profile--section--item flex-row" style={{color: currentProfIndex?.activeIndex === index ? "var(--main-black)": "var(--second--gray)", borderTop: currentProfIndex?.activeIndex === index ? "1px solid var(--main-black)" : "none"}} onClick={()=> setCurrProfIndex(({activeIndex: index, activeID: item.sectionId }))} >{item.logo}<strong className="desktop-only">{profSections?.[index].title}</strong></span> 
+                                          </div>
+                                      )
+                                  })
+                              }
+                          </div>
                         </div>
                       ) : null}
                     </div>
-                {
-                    usersProfileData?.posts?.length >= 1 && !loading ? (
-                      <div>
-                          <ProfilePosts list={usersProfileData?.posts} parentClass={ grid ?"users--profile--posts" : "users--profile--rowLine flex-column"}/>
-                            
-                          </div>
-                        ) : loading ? (
-                          <Skeleton
-                            count={10}
-                            height={250}
-                            width={250}
-                            className="mt-4 mr-4 mx-auto"
-                          />
-                        ) : (
-                          <div className="empty--posts--container flex-column">
-                            <div className="empty--posts--inner mx-auto flex-column">
-                              <div className="plus--icon--container flex-column">
-                                <CgProfile className="plus__icon" />
+                  {currentProfIndex?.activeID.toLowerCase() === "grid" || currentProfIndex?.activeID.toLowerCase() === "stacked" ?
+                  <>
+                      {
+                        
+                        usersProfileData?.posts?.length >= 1 && !loading ? (
+                              <div>
+                                 <ProfilePosts listType="post" list={usersProfileData?.posts} parentClass={ currentProfIndex?.activeID.toLowerCase() === "grid" ? "users--profile--posts" : "users--profile--rowLine flex-column"}/>
                               </div>
-                              <h3>No posts yet</h3>
-                              <p>
-                                When you share photos and videos, they'll <br /> be appear on
-                                your profile page
-                              </p>
+                            ) : loading ? (
+                              <Skeleton
+                                count={10}
+                                height={250}
+                                width={250}
+                                className="mt-4 mr-4 mx-auto"
+                                  />
+                                ) : (
+                                  <div className="empty--posts--container flex-column">
+                                    <div className="empty--posts--inner mx-auto flex-column">
+                                      <div className="plus--icon--container flex-column">
+                                        <CgProfile className="plus__icon" />
+                                      </div>
+                                      <h3>No posts yet</h3>
+                                      <p>
+                                        When this user shares photos, videos, or music they'll <br /> be appearing here.
+                                      </p>
+                                     <span>Learn more</span>
+                                    </div>
+                                  </div>
+                                )
+                            
+                      }
+                  </>
+                  : 
+                  currentProfIndex?.activeID.toLowerCase() === "reels" ?
+                  <>
+                  {
+                    reelsList && reelsList?.length > 0 ?
+                     <div>
+                        <ProfilePosts listType="reel" list={reelsList} parentClass="users--profile--posts"/>
+                    </div>
+                    :
+                    <div className="empty--posts--container flex-column">
+                    <div className="empty--posts--inner mx-auto flex-column">
+                      <div className="plus--icon--container flex-column">
+                              <FiVideoOff className="plus__icon" />
+                                      </div>
+                                      <h3>No reels available</h3>
+                                      <p>
+                                      When this user shares reels, they'll <br /> be appearing here.
+                                      </p>
+                                     <span>Learn more</span>
+                                    </div>
+                  </div>
+                  }
+                  </>
 
-                              <Link to="/add-post"><span>Share your first photo or video</span></Link>
-                            </div>
-                          </div>
-                        )
-                    
-       }
+                  : <h3>Not Found</h3>
+            }
         </div>
         : 
          <div>

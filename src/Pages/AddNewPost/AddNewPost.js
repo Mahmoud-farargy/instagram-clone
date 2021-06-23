@@ -9,6 +9,8 @@ import InputForm from "../../Components/Generic/InpuForm/InputForm";
 import {updateObject} from "../../Utilities/Utility";
 import Files from "react-files";
 import * as Consts from "../../Utilities/Consts";
+import API from "../../Config/API";
+import { lastFMKey } from "../../info";
 class AddNewPost extends PureComponent {
   constructor(props) {
     super(props);
@@ -25,6 +27,8 @@ class AddNewPost extends PureComponent {
           userName: "",
           location: "",
           uid: "",
+          artist: "",
+          songName: "",
         },
       ],
       caption: "",
@@ -40,6 +44,7 @@ class AddNewPost extends PureComponent {
       method: "Post",
       submitted: false,
       showReelFieldErr: false,
+      loading: false
     };
     this._isMounted = true;
   }
@@ -83,7 +88,10 @@ class AddNewPost extends PureComponent {
       contentURL: "",
       location: "",
       contentName: "",
-      showReelFieldErr: false
+      showReelFieldErr: false,
+      method: "Post",
+      submitted: false,
+      loading: false
     });
   }
 
@@ -91,42 +99,78 @@ class AddNewPost extends PureComponent {
     this.context.deleteContentFromFB(this.state.contentName, this.state.method.toLowerCase() === Consts.Post ? "content" : "reels");
     this.resetState();
   }
+  onDataAdding = (songInfo) =>{
+    let { receivedData, uid, notify, generateNewId, addPost } = this.context;
+    const addedPost = {
+      caption: this.state.caption,
+      id: generateNewId(),
+      contentType: this.state.contentType,
+      contentURL: this.state.contentURL,
+      comments: [],
+      date: new Date(),
+      likes: { people: [] },
+      userName: receivedData?.userName,
+      location: this.state.location,
+      postOwnerId: uid,
+      userAvatarUrl: receivedData?.userAvatarUrl,
+      contentName: this.state.contentName,
+      songInfo: songInfo || {}
+    }
+    addPost(addedPost, Consts.Post).then(() => {
+      if(this._isMounted){
+        notify("Post has been added");
+        this.resetState();
+        this.setState(updateObject(this.state, {submitted: false, loading: false}));
+        this.props.history.push("/");
+      }
+    }).catch(() =>{
+      if(this._isMounted){
+        notify("Failed to make a post. Please try again later!", "error");
+      }
+    });  
+  }
   onSubmitPost(x) {
     x.preventDefault();
-    this.setState(updateObject(this.state, {submitted: true}));
+    this.setState(updateObject(this.state, {submitted: true, loading: true}));
     let { receivedData, uid, notify, generateNewId, addPost } = this.context;
-
     if (uid) {
       //submits post
       if(this.state.method.toLowerCase() === Consts.Post){
          if (this.state.caption.split(" ").length < 250 && this.state.caption.split(" ").length > 0) {
             if (this.state.contentName !== "") {
-              const addedPost = {
-                caption: this.state.caption,
-                id: generateNewId(),
-                contentType: this.state.contentType,
-                contentURL: this.state.contentURL,
-                comments: [],
-                date: new Date(),
-                likes: { people: [] },
-                userName: receivedData?.userName,
-                location: this.state.location,
-                postOwnerId: uid,
-                userAvatarUrl: receivedData?.userAvatarUrl,
-                contentName: this.state.contentName,
+              // upload area
+              if(this.state.contentType.toLowerCase() === "audio"){
+                if(this.state.songName || this.state.artist){
+                  if(this.state.songName && this.state.artist){
+                        API().get(`/?method=track.getinfo&api_key=${lastFMKey}&artist=${this.state.artist.trim().toLowerCase()}&track=${this.state.songName.trim().toLowerCase()}&format=json`).then(res => {
+                          const trackInfo = res?.data?.track;
+                          this.onDataAdding({
+                            artwork: trackInfo?.album?.image[3]?.["#text"] ? trackInfo?.album?.image[3]?.["#text"] : trackInfo?.album?.image[2]?.["#text"] ? trackInfo?.album?.image[2]?.["#text"] : "",
+                            name: this.state.songName || "",
+                            artist: this.state.artist || "",
+                            songFMUrl: trackInfo?.url || "",
+                            artistFMUrl: trackInfo?.artist?.url || "",
+                            albumFMUrl: trackInfo?.album.url || "",
+                            album: trackInfo?.album?.title || "",
+                            playCountFM: trackInfo?.playcount || "",
+                            summary: trackInfo?.wiki?.summary || "",
+                            publishedDate: trackInfo?.wiki?.published || "",
+                            tags: (trackInfo?.topTags && trackInfo?.topTags?.tag?.length >0) ? trackInfo?.topTags?.tag : []
+                          });
+                        }).catch(() =>{
+                          this.onDataAdding();
+                        });
+                  }else{
+                    notify(`${!this.state.songName ? "Song Name" : "Artist"} field is required`,"info");
+                  }
+                }else{
+                  this.onDataAdding();
+                }
+
+              }else{
+                this.onDataAdding();
               }
-              addPost(addedPost, Consts.Post).then(() => {
-                if(this._isMounted){
-                  notify("Post has been added");
-                  this.resetState();
-                  this.setState(updateObject(this.state, {submitted: false}));
-                  this.props.history.push("/");
-                }
-              }).catch(() =>{
-                if(this._isMounted){
-                  notify("Failed to make a post. Please try again later!", "error");
-                }
-              });              
+            // xxxx
             } else {
               notify("Content should be inserted", "error");
             }
@@ -337,7 +381,7 @@ class AddNewPost extends PureComponent {
     }
   }
   render() {
-    const isValid = this.state.method.toLowerCase() === Consts.Post ? this.state.caption && this.state.contentType : this.state.method.toLowerCase() === Consts.Reel? (this.state.contentType && (this.state.selectedReelGroup ||  this.state.newGroupName)) : null;
+    const isValid = (!this.state.loading) && (this.state.method.toLowerCase() === Consts.Post) ? this.state.caption && this.state.contentType : this.state.method.toLowerCase() === Consts.Reel? (this.state.contentType && (this.state.selectedReelGroup ||  this.state.newGroupName)) : null;
     const {notify, receivedData } = this.context;
     return (
       <Fragment>
@@ -357,10 +401,10 @@ class AddNewPost extends PureComponent {
                   {
                     this.state.contentType === "image" ?
                     <img loading="lazy" className="unselectable" src={this.state.contentURL} alt="" />
-                    : this.state.contentType === "video" ? 
-                    <video src={this.state.contentURL} controls autoPlay> </video>
-                    : this.state.contentType === "audio" ? 
-                    <audio src={this.state.contentURL} controls autoPlay> </audio>
+                    : this.state.contentType === "video" ?
+                    <video src={this.state.contentURL} controls controlsList="nodownload" autoPlay> </video>
+                    : this.state.contentType === "audio" ?
+                    <audio src={this.state.contentURL} controls controlsList="nodownload" autoPlay> </audio>
                     : null
                   }  
                   {
@@ -383,6 +427,27 @@ class AddNewPost extends PureComponent {
                               val={this.state.location}
                               changeInput={this.onInputChange}
                             />
+                          {
+                            (this.state.contentType && this.state.contentType === "audio") &&
+                            <>
+                            <InputForm
+                              type="text"
+                              name="artist"
+                              label="artist"
+                              val={this.state.artist}
+                              changeInput={this.onInputChange}
+                              submitted={this.state.submitted && (this.state.songName || this.state.artist)}
+                            />
+                            <InputForm
+                              type="text"
+                              name="songName"
+                              label="song name"
+                              val={this.state.songName}
+                              changeInput={this.onInputChange}
+                              submitted={this.state.submitted && (this.state.songName || this.state.artist)}
+                            />
+                            </>
+                          }
                     </div>  
                   : this.state.method?.toLowerCase() === Consts.Reel ?
                   <div className="mt-2">

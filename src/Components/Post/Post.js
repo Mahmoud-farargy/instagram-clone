@@ -44,7 +44,7 @@ class Post extends PureComponent {
       isVidEnded: false,
       isVideoPlaying: false,
       alsoLiked: [],
-      preLoad: "none"
+      preLoad: (this.props.contentType === "video" && this.props.index === 0) ? "metadata" : "none"
     };
     this._isMounted = true;
     this.similarsStr = (this.props.likes?.people?.some(el => el?.id === this.props.id) && this.props.likes?.people?.length >3) ? (this.props.likes?.people?.length?.toLocaleString() -3) : (this.props.likes?.people?.length?.toLocaleString() -2);
@@ -261,6 +261,7 @@ class Post extends PureComponent {
       postId,
       handleSavingPosts,
       savedPosts,
+      songInfo
     } = this.props;
     return (
       <Fragment>
@@ -351,7 +352,6 @@ class Post extends PureComponent {
                       src={contentURL}
                       isMuted={true}
                       preload={this.state.preLoad}
-                      autoPlay={index === 0}
                       isVidPlaying={ this.state.isVideoPlaying}
                       whenLoadedData={()=> this.setState( { ...this.state, isVidLoaded: true })}
                       whenEnded={()=> this.setState( { ...this.state, isVidEnded: true } )}
@@ -359,7 +359,7 @@ class Post extends PureComponent {
                   </ScrollTrigger>
                 </div>
               ) : contentType === "audio" ? (
-                  <AudioContent url={contentURL} userName={userName} doubleClickEvent={() => this.doubleClickEvent()} />
+                  <AudioContent url={contentURL} songInfo={songInfo || {}} userName={userName} doubleClickEvent={() => this.doubleClickEvent()} />
               ): null}
             </div>
             <div className="post--card--footer flex-column">
