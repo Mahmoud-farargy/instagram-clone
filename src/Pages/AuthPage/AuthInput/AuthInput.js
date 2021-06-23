@@ -32,6 +32,7 @@ const AuthInput = ({inputType, type, val, title, onInputChange, isSubmitted, isV
                 type={type ? type : "text"}
                 name={name}
                 data-cy={type}
+                data-testid={`${type}-auth-input`}
             /> 
             : inputType?.toLowerCase() === "password" ?
             < >

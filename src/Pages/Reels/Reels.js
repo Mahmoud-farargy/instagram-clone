@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react'
+import React, { Fragment, useEffect, useState, useRef } from 'react'
 import "./Reels.scss";
 import {Link} from "react-router-dom";
 import Loader from "react-loader-spinner";
@@ -8,9 +8,23 @@ import ReelItem from "./ReelItem/ReelItem";
 
 function Reels(props) {
     const {reelsProfile = {}, changeMainState, currentReel} = props.context;
+    const videoBox = useRef(null);
+    const [pushFromTop, setTopPushing] = useState(0);
     useEffect(()=>{
         changeMainState("currentPage", "Reels");
     },[]);
+    useEffect(() => {
+            currentReel.reelIndex > 0 ? setTopPushing(500 * currentReel.reelIndex +1): setTopPushing(0);
+    },[currentReel.reelIndex]);
+    useEffect(() => {
+        if(videoBox && videoBox.current ){
+            videoBox.current.scrollBy({
+                top: pushFromTop,
+                left:0,
+                behavior: 'smooth'
+            })
+        }
+    },[pushFromTop]);
     const [,loading] = useAuthState(auth);
     const [currentPlayingReel, setCurrPlayingReel] = useState(0);
     return (
@@ -27,13 +41,12 @@ function Reels(props) {
                         </span>
                     </div>
                     <div className="reel--video--inner flex-column">
-                        <div className="reel--video--box flex-column" >
+                        <div ref={videoBox} className="reel--video--box flex-column" >
                         {
                             !loading ?
                            reelsProfile?.reels?.length > 0 && reelsProfile?.reels?.[currentReel?.groupIndex]?.reelItems && reelsProfile?.reels[currentReel?.groupIndex]?.reelItems?.sort((a,b) => b.date.seconds - a.date.seconds ).map((reel, i) => {
                                 return reel && <ReelItem setCurrPlayingReel={setCurrPlayingReel} currentPlayingReel={currentPlayingReel} key={i} maxLength={(reelsProfile?.reels?.[currentReel?.groupIndex]?.reelItems?.length ? reelsProfile?.reels?.[currentReel?.groupIndex]?.reelItems?.length : NaN)} groupName={reelsProfile?.reels?.[currentReel?.groupIndex]?.groupName} index={i} item={reel}/>
                                 })
-
                             :
                             <div className="reels-loading flex-column">
                                 <Loader

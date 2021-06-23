@@ -1,4 +1,5 @@
 #homeReels{
+    position: relative;
     display:block;
     width: 100%;
     padding: 10px 0;
@@ -10,6 +11,41 @@
     max-width: 614px;
     overflow: hidden !important;
     white-space: nowrap;
+    .home--reels--deck{
+        position: relative;
+            .home--reels--scroll--arrows{
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top:50%;
+            left:0;
+            .home--reel--left--arrow, .home--reel--right--arrow{
+                top:-30%;
+                position: absolute;
+                background: 0 0;
+                border:none;
+                width:35px;
+                height:40px;
+                cursor:auto;
+                &:focus{
+                    outline:none;
+                }
+                svg{
+                    filter: drop-shadow(0 0px 10px rgba(0,0,0,0.4));
+                    width: 27px;
+                    height: 27px;
+                    color: #fff;
+                }
+            }
+            .home--reel--left--arrow{
+                left:3px;
+            }
+            .home--reel--right--arrow{
+                right:3px;
+            }
+        }
+    }
+
     .home--reels--box, .home--reels--inner, .home--reels--ul{
         overflow: hidden;
         white-space: nowrap;

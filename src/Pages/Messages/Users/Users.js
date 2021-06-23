@@ -16,7 +16,7 @@ const Users = () => {
         }
       });
     return () => _isMounted.current = false;
-  }, []);
+  }, [uid]);
   return (
     <>
       <ul id="messagesUL">

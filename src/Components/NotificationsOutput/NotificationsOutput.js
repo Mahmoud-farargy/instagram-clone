@@ -35,11 +35,10 @@ const NotificationOutput =(props)=>{
                             notification?.type === "follow" && notification?.uid !== myData.uid ?
                                 <FollowUnfollowBtn shape="secondary" userData={{userId: notification?.uid, uName: notification?.userName, uAvatarUrl: notification?.userAvatarUrl, isVerified: (notification?.isVerified || false)}} />
                             : null
-                        } 
+                        }
                         {
                              notification?.type !== "follow" ?
                              <div onClick={(e)=> redirectMeToPost(e)}><img loading="lazy" alt="Post" className="noti__bar__img unselectable" src={notification?.contentType ==="image" ? (notification?.contentURL) : notification?.contentType ==="video" ? igVideoImg : notification?.contentType === "reel" ? reelDefaultPic : notification?.contentType === "audio" ? igAudioImg: null } /></div>
-                                
                              : null
                         }
 

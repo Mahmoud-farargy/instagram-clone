@@ -1,5 +1,6 @@
 {
     "title": "Voxgram",
     "description": "Instagram clone",
-    "baseUrl": "https://instagram-clone-21d9b.firebaseio.com/"
+    "baseUrl": "https://instagram-clone-21d9b.firebaseio.com/",
+    "audioscrobbler": "https://ws.audioscrobbler.com/2.0"
 }

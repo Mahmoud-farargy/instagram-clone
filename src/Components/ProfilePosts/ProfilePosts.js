@@ -5,8 +5,8 @@ import { AppContext } from "../../Context";
 import { useHistory } from "react-router-dom";
 import "./ProfilePosts.scss";
 import loadingGif from "../../Assets/loadingGif.gif";
-const ProfilePosts = ({ list = [], parentClass = "users--profile--posts", isSavedPost = false, ...props }) => {
-    const { getUsersProfile, changeMainState, notify, changeModalState, handleSavingPosts, healthyStorageConnection } = useContext(AppContext);
+const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profile--posts", isSavedPost = false, ...props }) => {
+    const { getUsersProfile, changeMainState, notify, changeModalState, handleSavingPosts, healthyStorageConnection, openReel } = useContext(AppContext);
     const history = useHistory();
     // REFS
     const _isMounted = useRef(true);
@@ -30,7 +30,7 @@ const ProfilePosts = ({ list = [], parentClass = "users--profile--posts", isSave
                 }
         });
        if(node) observer.current.observe(node);
-    },[currLimit]);
+    },[currLimit, hasMore]);
     useEffect(() => () => {
         window.clearTimeout(timeouts?.current);
         _isMounted.current= false;
@@ -46,39 +46,47 @@ const ProfilePosts = ({ list = [], parentClass = "users--profile--posts", isSave
             },1000);
         }
     }
-    const openPost = (postId, _, postOwnerId) =>{
-        if(postOwnerId && postId){
-            setLoading({...isLoading,openingPost: true});
-            getUsersProfile(postOwnerId).then((data) => {
-                if(_isMounted?.current){
-                    setLoading({...isLoading,openingPost: false});
-                        const postsCopy = data?.posts;
-                        const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
-                        if( postIndex !== -1){                            
-                            if((window.innerWidth || document.documentElement.clientWidth) >= 670){
-                                setTimeout(() => {
-                                    changeMainState("currentPostIndex", { index:postIndex, id: postId });
-                                },10)
-                                timeouts.current = setTimeout(() => {
-                                    changeModalState("post", true);
-                                    window.clearTimeout(timeouts?.current);
-                                },200);
-                            }else{
-                                changeMainState("currentPostIndex", { index:postIndex, id: postId });
-                                history.push("/browse-post");
-                            }
-                        }else{
-                            notify("An error occurred", "error");
+    const openPost = ({type, postId, postOwnerId, reelId, groupId , reelUid}) =>{
+        if(type === "post"){
+                if(postOwnerId && postId){
+                    setLoading({...isLoading,openingPost: true});
+                    getUsersProfile(postOwnerId).then((data) => {
+                        if(_isMounted?.current){
+                            setLoading({...isLoading,openingPost: false});
+                                const postsCopy = data?.posts;
+                                const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
+                                if( postIndex !== -1){                            
+                                    if((window.innerWidth || document.documentElement.clientWidth) >= 670){
+                                        setTimeout(() => {
+                                            changeMainState("currentPostIndex", { index:postIndex, id: postId });
+                                        },10)
+                                        timeouts.current = setTimeout(() => {
+                                            changeModalState("post", true);
+                                            window.clearTimeout(timeouts?.current);
+                                        },200);
+                                    }else{
+                                        changeMainState("currentPostIndex", { index:postIndex, id: postId });
+                                        history.push("/browse-post");
+                                    }
+                                }else{
+                                    notify("An error occurred", "error");
+                                }
                         }
+                    });
+                }else{
+                    notify("An error occurred", "error");
+                }
+        }else if(type === "reel"){
+            openReel({ reelId, groupId, reelUid }).then(() => {
+                if(_isMounted?.current){
+                    history.push("/reels");
                 }
             });
-        }else{
-            notify("An error occurred", "error");
-            }
+        }
     }
     const onLoadingFail = ( postOwnerId, postId ) => {
         //automatically removes elements that have failed to load denoting they don't exist and got removed from the main source
-        if( isSavedPost && healthyStorageConnection && navigator.onLine && postOwnerId && postId ){
+        if( listType.toLowerCase() === "post" && isSavedPost && healthyStorageConnection && navigator.onLine && postOwnerId && postId){
             getUsersProfile(postOwnerId).then((data) => {
                 if(_isMounted?.current){
                     const postsCopy = data?.posts;
@@ -99,9 +107,9 @@ const ProfilePosts = ({ list = [], parentClass = "users--profile--posts", isSave
                         {
                             list?.slice(0,currLimit)?.map((post, index)=> {
                                 if( currLimit === index + 1 ){
-                                    return post && <ProfileItem ref={lastPostElementRef} key={post?.id + index} isSavedPost={isSavedPost} {...props} onLoadingFail={onLoadingFail} post={post} openPost={openPost} index={index} />
+                                    return post && <ProfileItem itemType={listType} ref={lastPostElementRef} key={post?.id + index} isSavedPost={isSavedPost} {...props} onLoadingFail={onLoadingFail} post={post} openPost={openPost} index={index} />
                                 }else{
-                                    return post && <ProfileItem key={post?.id + index} isSavedPost={isSavedPost} {...props} onLoadingFail={onLoadingFail} post={post} openPost={openPost} index={index} />
+                                    return post && <ProfileItem itemType={listType} key={post?.id + index} isSavedPost={isSavedPost} {...props} onLoadingFail={onLoadingFail} post={post} openPost={openPost} index={index} />
                                 }
                             })
                         }  
@@ -127,6 +135,7 @@ const ProfilePosts = ({ list = [], parentClass = "users--profile--posts", isSave
     )
 }
 ProfilePosts.propTypes = {
+    listType: PropTypes.string,
     list: PropTypes.array.isRequired,
     parentClass: PropTypes.string,
     isSavedPost: PropTypes.bool,

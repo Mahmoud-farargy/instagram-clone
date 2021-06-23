@@ -2,17 +2,10 @@ import React, { useState } from "react";
 import Auxiliary from "../../HOC/Auxiliary";
 import PropTypes from "prop-types";
 import { trimText } from "../../../Utilities/TrimText";
+import { findNReplaceHash } from "../../../Utilities/ReplaceHashes";
 
 const Caption = ({ caption, userName = "", isFullCaption = false }) => {
   const [viewFullCaption, setViewFullCap] = useState(isFullCaption || false);
-  const findNReplaceHash = (txt) => {
-    if (caption) {
-      return txt.replace(
-        /\B(#[a-zA-Z]+\b)(?!;)/g,
-        `<span class="hashtag">$1</span>`
-      );
-    }
-  };
   return (
     <Auxiliary>
       <span className="post__caption flex-row">

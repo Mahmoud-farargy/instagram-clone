@@ -288,10 +288,10 @@ const Explore = () => {
                (!loading || !loadingState?.suggList) ? (
                 <div>
                   <div>
-                   {newExploreArr?.length > 0 && <ProfilePosts list={ newExploreArr.slice(0,2) } className="explore--upper--row--item" withOwnersName={true} parentClass="explore--upper--row"/>}
+                   {newExploreArr?.length > 0 && <ProfilePosts listType="post" list={ newExploreArr.slice(0,2) } className="explore--upper--row--item" withOwnersName={true} parentClass="explore--upper--row"/>}
                   </div>
                   <div>
-                      {newExploreArr?.length >= 2 && <ProfilePosts list={ newExploreArr.slice(2) } parentClass="users--profile--posts" withOwnersName={true} />}
+                      {newExploreArr?.length >= 2 && <ProfilePosts listType="post" list={ newExploreArr.slice(2) } parentClass="users--profile--posts" withOwnersName={true} />}
                   </div>
                 </div>
               ) : loadingState?.suggList ? (
@@ -313,8 +313,7 @@ const Explore = () => {
                     </div>
                     <h3>No posts available</h3>
                     <p>
-                      When you share photos and videos, they'll <br /> be appear
-                      on your profile page
+                      When there are photos and videos, they'll <br /> be right here.
                     </p>
 
                     <span>Share your first photo or video</span>

@@ -169,7 +169,7 @@ const App = () => {
   }, [currentPage]);
   return (
     <Fragment>
-      <main>
+      <main className="main--app">
         {/* Modals */}
         <Suspense fallback={<LoadingScreen />}>
             {modalsState?.users && usersModalList && Object.keys(usersModalList).length > 0 && <UsersModal />}

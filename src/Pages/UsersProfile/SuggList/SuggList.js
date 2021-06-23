@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Avatar } from "@material-ui/core";
 import { withBrowseUser } from "../../../Components/HOC/withBrowseUser";
@@ -8,9 +8,14 @@ import { trimText } from "../../../Utilities/TrimText";
 
 const SuggList = (props) => {
     const {item, setSuggestionsBox, browseUser} = props;
+    const _isMounted = useRef(true);
+    useEffect(() => () => _isMounted.current = false,[]);
     const closeBoxAndRedirect = ( ) => {
-      browseUser(item?.uid, item?.userName);
-      setSuggestionsBox(false);
+      browseUser(item?.uid, item?.userName).then(() =>{
+        if(_isMounted?.current){
+            setSuggestionsBox(false);
+        }
+      });
     }
     return (
         <>

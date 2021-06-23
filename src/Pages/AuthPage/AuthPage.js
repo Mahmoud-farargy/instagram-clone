@@ -3,10 +3,10 @@ import Auxiliary from "../../Components/HOC/Auxiliary";
 import appleStore from "../../Assets/get-app-apple.png";
 import gpStore from "../../Assets/get-app-gp.png";
 import { GrInstagram } from "react-icons/gr";
-import Loader from "react-loader-spinner";
 import SignInOption from "./SignInOption/SignInOption";
 import * as Consts from "../../Utilities/Consts";
 import { anonInfo } from "../../info";
+import AuthSubmissionBtn from "./AuthSubmissionBtn/AuthSubmissionBtn";
 import {
   auth,
   db,
@@ -15,7 +15,7 @@ import {
   facebookProvider,
   githubProvider,
 } from "../../Config/firebase";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { useAuthState } from "react-firebase-hooks/auth";
 import AuthInput from "./AuthInput/AuthInput";
@@ -144,6 +144,7 @@ const AuthPage = (props) => {
                         receivedData?.userName || currentUser?.displayName || "User"
                       }`
                     );
+                    setLoading(false);
                     props.history.push("/");
                   }, 150);
               }
@@ -194,7 +195,6 @@ const AuthPage = (props) => {
                     )
                     .then((cred) => {
                       if(_isMounted?.current){
-                          setLoading(false);
                         db.collection(Consts.USERS)
                           .doc(cred.user.uid)
                           .set({
@@ -251,7 +251,6 @@ const AuthPage = (props) => {
                               auth.currentUser.updateProfile({
                                 displayName: formState.signUpUsername?.val,
                               });
-                              // setLoading(false);
                               localStorage.setItem(
                                 "user",
                                 JSON.stringify({
@@ -265,6 +264,7 @@ const AuthPage = (props) => {
                                 notify(
                                   "Welcome to Voxgram. Start by adding posts to your account."
                                 );
+                                setLoading(false);
                                 props.history.push("/");
                               }, 150);
                             }
@@ -713,40 +713,8 @@ const AuthPage = (props) => {
                     {!getPasswordMode ? (
                       <div className="flex-column">
                         <AuthInput inputType="text" type="email" val={formState.loginEmail?.val} title="Email" name="loginEmail" required autoFocus onInputChange={onInputChange} isValid={formState.loginEmail?.isValid} isSubmitted={isSubmitted}/>
-                         <AuthInput inputType="password" val={formState.loginPassword?.val} required title="Password" name="loginPassword" onInputChange={onInputChange} isValid={formState.loginPassword?.isValid} isSubmitted={isSubmitted}/>
-                        {loading || inProgress ? (
-                          <button
-                            className={"disabled loading__btn flex-row"}
-                            disabled={true}
-                          >
-                            <Loader
-                              type="ThreeDots"
-                              color="var(--white)"
-                              height={15}
-                              width={20}
-                              timeout={5000}
-                            />
-                          </button>
-                        ) : (
-                          <input
-                            className={
-                              loading ||
-                              !formState.loginEmail?.val ||
-                              !formState.loginPassword?.val ||
-                              inProgress
-                                ? "disabled"
-                                : ""
-                            }
-                            disabled={
-                              loading ||
-                              !formState.loginEmail?.val ||
-                              !formState.loginPassword?.val ||
-                              inProgress
-                            }
-                            type="submit"
-                            value="Log In"
-                          />
-                        )}
+                        <AuthInput inputType="password" val={formState.loginPassword?.val} required title="Password" name="loginPassword" onInputChange={onInputChange} isValid={formState.loginPassword?.isValid} isSubmitted={isSubmitted}/>
+                        <AuthSubmissionBtn value="Log In" type="login" formState={formState} inProgress={inProgress} loading={loading} />
                         <span
                           onClick={() => setPasswordMode(true)}
                           className="forgot__pass"
@@ -772,7 +740,7 @@ const AuthPage = (props) => {
                               : "resetPassBtn"
                           }
                           disabled={loading || formState.loginEmail?.val === "" || inProgress}
-                          value="Resest password through email"
+                          value="Reset password through email"
                         />
                       </div>
                     )}
@@ -820,39 +788,7 @@ const AuthPage = (props) => {
                       <AuthInput inputType="text" type="text" val={formState.signUpUsername?.val?.charAt(0).toUpperCase() +
                           formState.signUpUsername?.val?.slice(1)} title="Username" name="signUpUsername" required onInputChange={onInputChange} isValid={formState.signUpUsername?.isValid} isSubmitted={isSubmitted}/>
                       <AuthInput  inputType="password" val={formState.signUpPassword?.val} required title="password" name="signUpPassword" onInputChange={onInputChange} isValid={formState.signUpPassword?.isValid} isSubmitted={isSubmitted}/>
-                      {loading || inProgress ? (
-                        <button
-                          className={"disabled loading__btn flex-row"}
-                          disabled={true}
-                        >
-                          <Loader
-                            type="ThreeDots"
-                            color="var(--white)"
-                            height={15}
-                            width={20}
-                          />
-                        </button>
-                      ) : (
-                        <input
-                          className={
-                            !formState.signUpEmail?.val ||
-                            !formState.signUpPassword?.val ||
-                            !formState.signUpUsername?.val ||
-                            !formState.fullName?.val
-                              ? "disabled"
-                              : ""
-                          }
-                          disabled={
-                            loading ||
-                            !formState.signUpEmail?.val ||
-                            !formState.signUpPassword?.val ||
-                            !formState.signUpUsername?.val ||
-                            !formState.fullName?.val
-                          }
-                          type="submit"
-                          value="Sign Up"
-                        />
-                      )}
+                      <AuthSubmissionBtn value="Sign Up" type="signUp" formState={formState} inProgress={inProgress} loading={loading} />
                     </form>
                   </div>
                 )
@@ -882,7 +818,7 @@ const AuthPage = (props) => {
         </div>
         <div className="auth--footer--container flex-row">
           <ul className="auth--footer--ul flex-row">
-            <li>ABOUT</li>
+            <li><Link to="/about">ABOUT</Link></li>
             <li>HELP</li>
             <li>PRESS</li>
             <li>API</li>

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useRef, useEffect, useContext } from "react";
 import Auxiliary from "../../HOC/Auxiliary";
 import { Avatar } from "@material-ui/core";
 import PropTypes from "prop-types";
@@ -13,12 +13,22 @@ import { useHistory } from "react-router-dom";
 
 const ModalListItem =(props)=>{
     const {uid, userName, avatarUrl, date, isVerified , browseUser, type} = props;
+    const _isMounted = useRef(true);
+    useEffect(() => () => _isMounted.current = false, []);
     const {changeModalState, receivedData} = useContext(AppContext);
     const notMyItem = receivedData?.uid !== uid;
     const history = useHistory();
     const directTo = () => {
-        notMyItem ? browseUser(uid, userName) : history.push("/profile");
-        changeModalState("users", false, "", "");
+        if(notMyItem){
+            browseUser(uid, userName).then(() => {
+                if(_isMounted?.current){
+                    changeModalState("users", false, "", "");  
+                }
+            });
+        }else{
+            history.push("/profile");
+            changeModalState("users", false, "", "");
+        }
     }
     return(
         <Auxiliary>

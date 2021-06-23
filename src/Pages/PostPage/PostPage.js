@@ -186,7 +186,7 @@ const PostPage  = (props) => {
     })
   }
 
-    var {caption = "",contentType,contentURL = "",comments = [],likes= {},location = "",date = {},postOwnerId = "", id = "", userName, contentName="" } = usersProfileData?.posts[currentPostIndex?.index];       
+    var {caption = "",contentType,contentURL = "",comments = [],likes= {},location = "",date = {},postOwnerId = "", id = "", userName, contentName="", songInfo = {} } = usersProfileData?.posts[currentPostIndex?.index];       
     var isVerified = usersProfileData?.isVerified;
     var following = receivedData?.following;
     const updateUsersWhoLiked = () => {
@@ -314,7 +314,7 @@ const PostPage  = (props) => {
                        />
                   </div>
                 ) : contentType === "audio" ? (
-                  <AudioContent autoPlay url={contentURL} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()} />
+                  <AudioContent autoPlay url={contentURL} songInfo={songInfo || {}} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()} />
               ): null}
               </div>
               <div className="post--card--footer flex-column">

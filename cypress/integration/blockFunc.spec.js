@@ -15,7 +15,7 @@ describe("test blocking functionality", () => {
         cy.wait(200);
         cy.get(".Toastify__toast").should("contain", "blocked");
         cy.visit("/profile");
-        cy.wait(500);
+        cy.wait(1000);
         cy.get(".users--action--row").find(".my__settings__btn").click();
         cy.get("#optionsModal .optionsM--container--inner").contains("Manage blocked accounts").click();
         cy.wait(300);

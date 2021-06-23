@@ -112,6 +112,7 @@ const Home = (props) => {
                       savedPosts={receivedData?.savedposts}
                       following={receivedData?.following}
                       history={props.history}
+                      songInfo={post?.songInfo ? post?.songInfo : {}}
                     />
                   );
                 })

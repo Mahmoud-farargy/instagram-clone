@@ -36,7 +36,7 @@ const NotificationPeriod = ({list = [], title= ""}) => {
     )
 }
 NotificationPeriod.propTypes = {
-    list: PropTypes.array,
+    list: PropTypes.array.isRequired,
     title: PropTypes.string
 }
 export default NotificationPeriod;
