@@ -55,7 +55,7 @@ const MyProfile =()=>{
     useEffect(() => {
         const reelArr = [];
         receivedData?.reels && receivedData.reels.length > 0 && receivedData.reels.map(reelGroup => {
-          return reelGroup.reelItems.map( reel => 
+          return (reelGroup.reelItems && reelGroup.reelItems.length > 0) && reelGroup.reelItems.map( reel => 
              reelArr.push({
                  ...reel,
                groupId: reelGroup.id

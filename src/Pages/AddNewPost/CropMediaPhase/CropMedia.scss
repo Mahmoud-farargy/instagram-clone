@@ -1,0 +1,51 @@
+#cropMedia{
+    .crop--media--img--video{
+        position: relative;
+        justify-content: center;
+        align-items: center;
+       .reactEasyCrop_Container{
+            width: auto;
+            height: auto;
+            margin: 0 auto;
+        }
+        .crop-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 80px;
+            max-width: 70%;
+            max-height: 100%;
+            margin: 0 auto;
+        }
+        .crop--controls,  .rotation--controls{
+            position: absolute;
+            left: 50%;
+            width: 50%;
+            height: 30px;            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(-50%);
+        }
+        .crop--controls {
+            bottom:20px;
+            
+        }
+        .rotation--controls{
+            bottom: 10px;
+        }
+    }
+    .crop--media--preview{
+        min-height: 250px;
+        max-height: 100%;
+    }
+    .crop--media--preview, .crop--media--img--video, .crop--media--preview img{
+        width: 100%;
+        height: 100%;
+    }
+    .crop--media--preview img, .crop__content__style{
+        min-height: 100%;
+        object-fit: contain;
+    }
+}

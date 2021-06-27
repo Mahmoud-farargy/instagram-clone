@@ -1,0 +1,70 @@
+#createPost{
+    position: fixed;
+    top:46%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: #fff;
+    z-index: 1500;
+    width: 90%;
+    height:85%;
+    margin: auto;
+    border-radius: 12px;
+    max-width: 1400px;
+    padding:0;
+    @media only screen and (max-width: 670px){
+        // z-index: 5500;
+        position: static;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        margin: 0;
+        transform: none;
+    }
+    .create--post--container{
+        width: 100%;
+        height: 100%;
+        // border-radius: 12px;
+        .create--post--inner{
+            width: 100%;
+            height: 100%;
+            .create--post--header{
+                border-top-left-radius: 12px;
+                border-top-right-radius: 12px;
+                width: 100%;
+                height: 55px;
+                align-items: center;
+                background-color: var(--light-gray);
+                border-bottom: 1px solid var(--gray);
+                .create--post--header--inner{
+                    width: 100%;
+                    align-items: center;
+                    justify-content: space-between;
+                    h1{
+                        font-size: 20px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        line-height:25px;
+                        font-weight: 600;
+                        white-space: nowrap;
+                        text-transform: capitalize;
+                        margin-bottom:0;
+                        padding-bottom: 0;
+                    }
+                    .create--post--close{
+                        padding: 5px 10px;
+                        font-size: 30px;
+                        font-weight: 400;
+                        user-select: none;
+                        -webkit-user-select: none;
+                        &:active{
+                            background-color:rgba(45, 86, 129,0.1);
+                            border-radius: 5px;
+                        }
+                        margin-right: 14px;
+                        cursor:pointer;
+                    }
+                }
+            }
+        }
+    }
+}

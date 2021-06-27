@@ -64,23 +64,49 @@ const DesktopPost = (props) => {
     replayData: {},
     alsoLiked: []
   });
+  // Refs
   const inputField = useRef(null);
   const _isMounted = useRef(true);
   const timeouts = useRef(null);
   const vidRef = useRef(null);
+  const scrollToBottom = useRef(null);
+  // xxxx-Refs--xxx
   var following = receivedData?.following;
+  var {
+    caption = "",
+    contentType,
+    contentURL = "",
+    comments = [],
+    likes = {},
+    location = "",
+    date = {},
+    postOwnerId = "",
+    id= "",
+    contentName= "",
+    userName= "",
+    songInfo= {},
+    disableComments
+  } = usersProfileData?.posts[currentPostIndex?.index];
   useEffect(() => {
     changeMainState("currentPage", "Post");
     return () => {
+      inputField.current = false;
+      timeouts.current = false;
+      vidRef.current = false;
+      scrollToBottom.current = false;
       _isMounted.current = false;
       window.clearTimeout(timeouts.current);
     };
   }, []);
-  useEffect(() => {
-    compState.insertedComment && setCompState({...compState, insertedComment: ""});
+  useEffect(() => { 
     updateUsersWhoLiked();
+    if(compState.insertedComment) setCompState({...compState, insertedComment: ""});
 }, [currentPostIndex?.index]);
+useEffect(() => {
+  (scrollToBottom && scrollToBottom.current && scrollToBottom.current?.scrollIntoView) && scrollToBottom.current.scrollIntoView({block: "end"});
+},[comments]);
   var postLiked = usersProfileData?.posts && usersProfileData?.posts[currentPostIndex?.index]?.likes?.people?.some((el) => el.id === uid);
+  const areCommentsDisabled = (usersProfileData?.profileInfo?.professionalAcc?.disableComments || disableComments);
   const handleCurrLikes = (boolean) => {
     let postsData = usersProfileData?.posts;
     if (postsData) {
@@ -224,20 +250,6 @@ const DesktopPost = (props) => {
       profileName
     ).then(() => _isMounted?.current && history.push("/"));
   };
-  var {
-    caption = "",
-    contentType,
-    contentURL = "",
-    comments = [],
-    likes = {},
-    location = "",
-    date = {},
-    postOwnerId = "",
-    id= "",
-    contentName= "",
-    userName= "",
-    songInfo= {},
-  } = usersProfileData?.posts[currentPostIndex?.index];
   
   var isVerified = usersProfileData?.isVerified;
 
@@ -486,31 +498,40 @@ const DesktopPost = (props) => {
                             </div>
                       </div>
                    
-                    {comments?.length >= 1 ? 
-                   
-                      comments?.map((comment, i) => {
-                        return (
-                          <Comment
-                            key={i}
-                            comment={comment}
-                            handleLikingComments={handleLikingComments}
-                            postOwnerId={postOwnerId}
-                            commentIndex={i}
-                            date={comment?.date}
-                            replayFunc={replayFunc}
-                            postIndex={currentPostIndex.index}
-                            myName={receivedData?.userName}
-                            likes={likes}
-                            userAvatar={receivedData?.userAvatarUrl}
-                            uid={uid}
-                            contentType={contentType}
-                            contentURL={contentURL}
-                            changeModalState={changeModalState}
-                            deleteComment={onCommentDeletion}
-                          />
-                        );
-                      })
-                      : null}
+                    { 
+                    !areCommentsDisabled ?
+                    (comments?.length >= 1 ? 
+                    <div className="h-100 w-100">
+                          {comments?.map((comment, i) => {
+                            return (
+                              <Comment
+                                key={i}
+                                comment={comment}
+                                handleLikingComments={handleLikingComments}
+                                postOwnerId={postOwnerId}
+                                commentIndex={i}
+                                date={comment?.date}
+                                replayFunc={replayFunc}
+                                postIndex={currentPostIndex.index}
+                                myName={receivedData?.userName}
+                                likes={likes}
+                                userAvatar={receivedData?.userAvatarUrl}
+                                uid={uid}
+                                contentType={contentType}
+                                contentURL={contentURL}
+                                changeModalState={changeModalState}
+                                deleteComment={onCommentDeletion}
+                              />
+                            );
+                          })}
+                          <span ref={scrollToBottom}></span>
+                      </div>
+                      : null)
+                      :
+                      <span className="disabled__comments">
+                        Comments are disabled.
+                      </span>
+                    }
                     </div>
                  
 
@@ -535,9 +556,12 @@ const DesktopPost = (props) => {
                             <FaHeart />
                           </span>
                         )}
-                        <span onClick={() => inputField && inputField?.current && inputField?.current?.focus()}>
+                        { 
+                          !areCommentsDisabled && 
+                          <span onClick={() =>inputField && inputField?.current && inputField?.current?.focus()}>
                           <FaRegComment />
                         </span>
+                        }
                         <span>
                           <FiSend />
                         </span>
@@ -591,40 +615,43 @@ const DesktopPost = (props) => {
                     <small className="post__date">
                       <GetFormattedDate date={date?.seconds} /> • <time>{new Date(date?.seconds * 1000).toDateString()}</time>
                     </small>
-                    <form
-                      onSubmit={(e) => submitComment(e)}
-                      className="post--bottom--comment--adding flex-row"
-                    >
-                       <div className="form--input--container flex-row">
-                          <div className="form--input--container--inner flex-row">
-                              <EmojiPicker onEmojiClick={onEmojiClick} />
-                              <input
-                                ref={inputField}
-                                value={compState.insertedComment}
-                                onChange={(event) =>
-                                  setCompState({
-                                    ...compState,
-                                    insertedComment: event.target.value,
-                                  })
-                                }
-                                className="post__bottom__input"
-                                type="text"
-                                placeholder="Add a commment.."
-                            />
+                    {
+                      !areCommentsDisabled &&
+                        <form
+                          onSubmit={(e) => submitComment(e)}
+                          className="post--bottom--comment--adding flex-row"
+                        >
+                          <div className="form--input--container flex-row">
+                              <div className="form--input--container--inner flex-row">
+                                  <EmojiPicker onEmojiClick={onEmojiClick} />
+                                  <input
+                                    ref={inputField}
+                                    value={compState.insertedComment}
+                                    onChange={(event) =>
+                                      setCompState({
+                                        ...compState,
+                                        insertedComment: event.target.value,
+                                      })
+                                    }
+                                    className="post__bottom__input"
+                                    type="text"
+                                    placeholder="Add a commment.."
+                                />
+                              </div>
                           </div>
-                      </div>
-                      <button
-                        type="submit"
-                        disabled={compState.insertedComment.length < 1}
-                        className={
-                          compState.insertedComment.length >= 1
-                            ? "post__bottom__button"
-                            : "disabled post__bottom__button"
-                        }
-                      >
-                        Post
-                      </button>
-                    </form>
+                          <button
+                            type="submit"
+                            disabled={compState.insertedComment.length < 1}
+                            className={
+                              compState.insertedComment.length >= 1
+                                ? "post__bottom__button"
+                                : "disabled post__bottom__button"
+                            }
+                          >
+                            Post
+                          </button>
+                        </form> 
+                    }
                   </div>
                 </div>
               </article>

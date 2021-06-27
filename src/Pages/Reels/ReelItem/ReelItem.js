@@ -154,8 +154,7 @@ function ReelItem(props) {
                       type="TailSpin"
                       color="var(--white)"
                       height={60}
-                      width={60}
-                      timeout={5000}/>
+                      width={60}/>
               </div>
              }
            </div> 

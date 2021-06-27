@@ -119,8 +119,7 @@ const VideoPost = React.forwardRef(
                             type="TailSpin"
                             color="var(--light-black)"
                             height={60}
-                            width={60}
-                            timeout={5000}/>  
+                            width={60}/>  
                         </div>
                         
                     }

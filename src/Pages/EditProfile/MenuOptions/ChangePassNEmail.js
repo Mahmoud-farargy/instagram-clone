@@ -226,7 +226,6 @@ const ChangePassNEmail = (props) => {
           <div>
              <h1 className="user__prof__name">{receivedData?.userName} {receivedData?.isVerified && <span><GoVerified className="verified_icon"/></span>}</h1>
           </div>
-         
         </div>
 
         {/* Modals */}

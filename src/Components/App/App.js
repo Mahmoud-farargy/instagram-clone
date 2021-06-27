@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useContext, Suspense, lazy, useRef} from "react";
 import { Switch, Route, useHistory } from "react-router-dom";
 import { AppContext } from "../../Context";
-import { auth, changeConnectivityStatus} from "../../Config/firebase";
+import { auth, changeConnectivityStatus } from "../../Config/firebase";
 import AppConfig from "../../Config/app-config.json";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { ToastContainer } from "react-toastify";
@@ -21,7 +21,7 @@ const CommentsModal = lazy(( ) => import("../../Components/CommentsModal/Comment
 const Home = lazy(() => import("../../Pages/Home/Home"));
 const Footer = lazy(() => import("../../Components/Footer/Footer"));
 const AuthPage = lazy(() => import("../../Pages/AuthPage/AuthPage"));
-const AddNewPost = lazy(() => import("../../Pages/AddNewPost/AddNewPost"));
+const CreatePage = lazy(() => import("../../Pages/AddNewPost/CreatePage"));
 const UsersProfile = lazy(() =>
   import("../../Pages/UsersProfile/UsersProfile")
 );
@@ -177,16 +177,20 @@ const App = () => {
           {modalsState?.comments ? (
             <CommentsModal context={context} />
           ) : null}
-          <div
-              style={{
-                opacity: isAnyModalOpen ? "1" : "0",
-                display: isAnyModalOpen ? "block" : "none",
-                transition: "all 0.5s linear",
-              }}
-              className="backdrop"
-              onClick={() => changeModalState("users", false, "", "")}
-            ></div>
-          {loading && <div className="global__loading"><span className="global__loading__inner"></span></div>}          
+
+          {loading && <div className="global__loading"><span className="global__loading__inner"></span></div>} 
+         {
+           isAnyModalOpen &&
+            <div
+                style={{
+                  opacity: "1" ,
+                  display: "block",
+                  transition: "all 0.5s linear",
+                }}
+                className="backdrop"
+                onClick={() => changeModalState("users", false, "", "")}
+              ></div> 
+         }          
         </Suspense>
         
         {/* Notifications container */}
@@ -214,7 +218,7 @@ const App = () => {
             <Route exact path="/add-post">
               {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
               <MobileHeader />
-              <AddNewPost />
+              <CreatePage />
               <MobileNav />
             </Route>
             <Route exact path="/notifications">

@@ -76,21 +76,17 @@
                     height: 570px;
                     display: grid;
                     border:none !important;
-                    grid-template-columns: 62% 35%;
+                    grid-template-columns: auto 35%;
                     .desktop--left, .desktop--right{
                         height:100%;
                         @media only screen and (max-width: 670px){
-                            height:50%
+                            height:50%;
                         }
-                    }
-                    .post--comments--layout{
-                        height:320px;
-                        overflow-y:auto !important;
-                        padding:10px 10px 20px;
                     }
                     .desktop--right{
                         height: 100%;
-                        width: 343px;
+                        width: 100%;
+                        max-width: 350px;
                         position: relative;
                         background-color: var(--white);
                         .post--card--header{
@@ -105,6 +101,17 @@
                             left:0;
                             width:100%;
                             border-top:1px solid var(--shadow-white);
+                        }
+                        .post--comments--layout{
+                            height:320px;
+                            overflow-y:auto !important;
+                            padding:10px 10px 20px;
+                            .post--comment--item .comment__text{
+                                @media only screen and (max-width: 900px) {
+                                    display: flex;
+                                    flex-direction: column;
+                                }
+                            }
                         }
                     }
                     @media only screen and (max-width: 780px){

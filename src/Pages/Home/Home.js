@@ -113,6 +113,7 @@ const Home = (props) => {
                       following={receivedData?.following}
                       history={props.history}
                       songInfo={post?.songInfo ? post?.songInfo : {}}
+                      areCommentsDisabled= {(receivedData?.profileInfo?.professionalAcc?.disableComments || post?.disableComments) || false}
                     />
                   );
                 })

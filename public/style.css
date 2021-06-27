@@ -644,6 +644,15 @@ time{
 .MuiAvatar-root{
     object-fit: contain;
 }
+.prof--input--row{
+    justify-content: space-between;
+}
+.disabled__comments{
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--second--gray);
+    text-align:center;
+}
 .auth--upper--card .auth--logo{
     align-items:center;
     margin: 0 auto;
@@ -1153,7 +1162,7 @@ button:active{
 }
 .desktop--caption p{
     display: inline;
-    margin:5px 0 0 1px !important;
+    margin:0 0 0 1px !important;
 }
 .desktop--caption .post--comment--actions{
     margin-top:-6px;
@@ -1802,7 +1811,7 @@ ul.getting--started--inner{
     margin-right: 18px;
     width: 180px;
     height:auto;
-    /* max-height: 200px; */
+    border-radius:4px;
     align-items:center;
     justify-content: center;
     text-align:center;
@@ -2880,6 +2889,27 @@ a.prof__btn__unfollowed{
 .requests--noti .noti--popup-item .noti--row, .requests--button .noti--popup-item .noti--row{
     width: auto;
 }
+.change--photo .MuiAvatar-circle{
+    width:50px;
+    height: 50px;
+}
+.change--photo {
+    flex-wrap: wrap;
+   margin: 20px 0px 0px;
+   width: 100%;
+   align-items: center;
+   padding: 4px 0;
+ }
+ .user__prof__name{
+    padding:2px 2px 0;
+    margin-bottom:3px;
+    font-size:20px;
+    color: var(--font-black);
+    line-height: 22px;
+    white-space:nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 /* -------x------------Empty page--------x-------- */
 /* -----------Query less than or equal 250px------------ */
 @media only screen and (max-width: 250px){
@@ -2930,13 +2960,16 @@ a.prof__btn__unfollowed{
     .auth{
         width:85%;
     }
+    .prof--input--row{
+        flex-direction: column !important;
+    }
     .desktop-comp{
         padding:0;
     }
     .auth .auth--upper--card{
         padding:15px 15px 18px;
     }
-    .form--input--container--inner .emoji-picker-react, .usersModal--container, .usersModal--inner .usersModal--card, #commentsModal.comments--modal--container, .desktopPost{
+    .form--input--container--inner .emoji-picker-react, .usersModal--container, .usersModal--inner .usersModal--card, #commentsModal.comments--modal--container, .desktopPost, .create--dismiss--modal{
         z-index: 5800 !important;
     }
     .backdrop, .hidden--backdrop{
@@ -3284,6 +3317,12 @@ a.prof__btn__unfollowed{
 }
 /* more than 760px */
 @media only screen and (min-width:760px){
+    .prof--input--row{
+        align-items: center;
+    }
+    .prof--input--row label{
+        margin:0;
+    }
     .messages--view--users{
         max-height: 70vh;
     }

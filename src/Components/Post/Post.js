@@ -48,33 +48,45 @@ class Post extends PureComponent {
     };
     this._isMounted = true;
     this.similarsStr = (this.props.likes?.people?.some(el => el?.id === this.props.id) && this.props.likes?.people?.length >3) ? (this.props.likes?.people?.length?.toLocaleString() -3) : (this.props.likes?.people?.length?.toLocaleString() -2);
+    this.updateUsersWhoLiked = this.updateUsersWhoLiked.bind(this);
+    this.handleCurrLikes = this.handleCurrLikes.bind(this);
+    this.openPost = this.openPost.bind(this);
+    this.doubleClickEvent = this.doubleClickEvent.bind(this);
+    this.submitComment = this.submitComment.bind(this);
+    this.replayFunc = this.replayFunc.bind(this);
+    this.onCommentBtnClick = this.onCommentBtnClick.bind(this);
+    this.onEmojiClick = this.onEmojiClick.bind(this);
+    this.closeAllModals = this.closeAllModals.bind(this);
   }
   static contextType = AppContext;
-  updateUsersWhoLiked = () => {
+  updateUsersWhoLiked(){
     var { likes, following } = this.props;
     this.setState({
       ...this.state,
-      alsoLiked: following?.filter(user => likes?.people?.some((el) => (user?.receiverUid !== this.context.receivedData?.uid) && (user?.receiverUid === el?.id))).slice(0,2) 
+      alsoLiked: following?.filter(user => likes?.people?.some((el) => (user?.receiverUid !== this.context.receivedData?.uid) && (user?.receiverUid === el?.id))).slice(0,2)
     })
   }
   componentDidMount() {
     this.updateUsersWhoLiked();
   }
   componentWillUnmount(){
+    this.isVidBuffering = false;
+    this.videoPost = false;
+    this.inputField = false;
     window.clearTimeout(this.timeouts?.current);
     this._isMounted = false;
   }
   componentDidUpdate(prevProps) {
-    if(prevProps.following !== this.props.following){
+    if((prevProps.following !== this.props.following) || (prevProps.likes !== this.props.likes)){
        this.updateUsersWhoLiked();
     }
   }
 
-  handleCurrLikes = (boolean) => {
+  handleCurrLikes(boolean){
     const { index, handleMyLikes, id, userName, userAvatar } = this.props;
     handleMyLikes(boolean, index, id, userName, userAvatar, true);
   };
-  openPost = (postId) => {
+  openPost(postId){
     const { changeMainState,changeModalState, receivedData, notify, getUsersProfile} = this.context
     if(postId){
         getUsersProfile(receivedData?.uid).then((data) => {
@@ -100,7 +112,7 @@ class Post extends PureComponent {
     }
 
   };
-  doubleClickEvent = () => {
+  doubleClickEvent(){
     let currCount = this.state.btnClicks;
     this.setState((prevState) => ({
       btnClicks: prevState.btnClicks + 1,
@@ -193,7 +205,7 @@ class Post extends PureComponent {
   }
 
   onCommentBtnClick() {
-    this.setState(
+    !this.props.areCommentsDisabled && this.setState(
       updateObject(this.state, { showInputForm: !this.state.showInputForm })
     );
 
@@ -206,7 +218,7 @@ class Post extends PureComponent {
       window.clearTimeout(tOut);
     }, 150);
   }
-  handleVideoPlaying =(type) => {
+  handleVideoPlaying(type){
     if(this.state.preLoad === "none"){
       this.setState({...this.state, preLoad: "metadata"});
     }
@@ -220,11 +232,7 @@ class Post extends PureComponent {
         }
     }
   }
-  componentWillUnmount = () => {
-    this.videoPost = false;
-    this.inputField = false;
-  }
-  onEmojiClick = (e, x) => {
+  onEmojiClick(e, x){
     e.persist();
     if(this.inputField && this.inputField?.current && typeof this.inputField?.current.blur !== undefined){
         this.inputField.current.blur();
@@ -234,7 +242,7 @@ class Post extends PureComponent {
       insertedComment: insertIntoText( this.state.insertedComment,x.emoji)
     });
   }
-  closeAllModals = () => {
+  closeAllModals(){
     this.setState({...this.state, openOptionsModal: false, openNewMsgModal: false });
   }
   render() {
@@ -261,7 +269,8 @@ class Post extends PureComponent {
       postId,
       handleSavingPosts,
       savedPosts,
-      songInfo
+      songInfo,
+      areCommentsDisabled
     } = this.props;
     return (
       <Fragment>
@@ -383,14 +392,17 @@ class Post extends PureComponent {
                       <FaHeart />
                     </span>
                   )}
-                  <span data-cy="comment" onClick={() => this.onCommentBtnClick()}>
-                   {
-                     this.state.showInputForm ?
-                     <FaRegCommentDots />
-                     :
-                     <FaRegComment />
-                   } 
-                  </span>
+                 {
+                   !areCommentsDisabled &&
+                    <span data-cy="comment" onClick={() => this.onCommentBtnClick()}>
+                    {
+                      this.state.showInputForm ?
+                      <FaRegCommentDots />
+                      :
+                      <FaRegComment />
+                    } 
+                    </span>
+                 } 
                   <span>
                     <FiSend onClick={() => this.setState({...this.state, openNewMsgModal: true})} />
                   </span>
@@ -441,7 +453,9 @@ class Post extends PureComponent {
                 : null
               }
               <Caption caption={caption} userName={userName}  />
-              {comments?.length >= 1 ? (
+
+              { !areCommentsDisabled  ?
+               (comments?.length >= 1 ? (
                 <div>
                   {comments?.length > 1 ? (
                     <h5
@@ -507,12 +521,17 @@ class Post extends PureComponent {
                         );
                       })}
                 </div>
-              ) : null}
+              ) : null)
+              :
+              <span className="disabled__comments">
+                Comments are disabled.
+              </span>
+            }
 
               <small className="post__date pb-2 ">
                 <GetFormattedDate date={postDate?.seconds} /> • <time>{new Date(postDate?.seconds * 1000).toDateString()}</time>
               </small>
-              {this.state.showInputForm && (
+              {(this.state.showInputForm && !areCommentsDisabled) && (
                 <form
                   onSubmit={(e) => this.submitComment(e)}
                   className="post--bottom--comment--adding flex-row"

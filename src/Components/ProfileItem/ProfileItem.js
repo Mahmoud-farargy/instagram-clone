@@ -94,8 +94,7 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
                               type="ThreeDots"
                               color="var(--light-black)"
                               height={30}
-                              width={30}
-                              timeout={5000}/>
+                              width={30}/>
                           </div>
                           
                       }

@@ -16,9 +16,9 @@ const About = (props) => {
                     <div className="about-sub flex-column">
                         <div className="flex-column about-section-inner">
                         {/* <Avatar  className="my-image" src={myImage} alt="Me" draggable="false" /> */}
-                        <h2>Hi, I'm Mahmoud</h2>
+                        <h2>Hi, I'm Mahmoud <br /> Farargy</h2>
 
-                        <p>I am a front end developer who is specialized in Vue.js, React.js, Javascript and other technologies. You can visit my portfolio to find more cool projects like this one <a target="_blank" rel="noopener noreferrer" href="https://mahmoudportfolio.netlify.app">Portfolio.</a></p>
+                        <p>A front end developer who is specialized in Vue.js, React.js, Javascript and other technologies. You can visit my portfolio to find more cool projects like this one <a target="_blank" rel="noopener noreferrer" href="https://mahmoudportfolio.netlify.app">Portfolio.</a></p>
                         <ul className="flex-row socials--links">
                             <li title="Github">
                                 <a href="https://github.com/Mahmoud-farargy/instagram-clone" rel="noopener noreferrer" target="_blank">
