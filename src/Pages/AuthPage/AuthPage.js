@@ -188,9 +188,6 @@ const AuthPage = (props) => {
             if (formState.fullName?.isValid) {
               if (formState.signUpUsername?.isValid) {
                 if (formState.signUpPassword?.isValid) {
-                  db.collection("users").where('userName', '==', formState.signUpUsername?.val).limit(5).get().then( snapshot => {
-                    if(_isMounted?.current){
-                        if(snapshot?.empty){
                           auth
                             .createUserWithEmailAndPassword(
                               formState.signUpEmail.val?.toLowerCase().trim(),
@@ -281,22 +278,6 @@ const AuthPage = (props) => {
                                 notify(err.message, "error");
                               }
                             }); 
-                        }else{
-                          setLoading(false);
-                            notify(
-                              "This User Name already exists. Please choose another one.",
-                              "error"
-                            );
-                        }
-                    }
-                  }).catch((err) => {
-                    setLoading(false);
-                    notify(
-                      (err?.message ||
-                      "An error occurred. Please try again later."),
-                      "error"
-                    );
-                  })
                 } else {
                   setLoading(false);
                   notify(

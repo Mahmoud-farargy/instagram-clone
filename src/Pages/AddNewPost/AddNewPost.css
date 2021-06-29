@@ -13,13 +13,10 @@
 }
 #upload.post--uploading--container .post--uploading--card{
     width:320px;
-    background-color: var(--white);
-    padding:20px;
-    border: 1px solid var(--gray);
+    padding: 50px 20px 20px;
     border-radius:30px;
     justify-content:center;
     margin:5px;
-    box-shadow: inset 0px 1px 6px rgba(0,0,0,0.1);
 }
 #upload.post--uploading--container .uploading__in__progress{
     justify-content:center;
@@ -87,7 +84,7 @@
     min-width: 0;
 }
 #upload.post--uploading--container .original--review{
-        max-width: 35%;
+        max-width: 300px;
         max-height: 300px;
         min-height: 100%;
 }
@@ -127,5 +124,16 @@
     #upload.post--uploading--container .post--uploading--inner{
         align-items:flex-start;
         width: 100%;
+    }
+    #upload.post--uploading--container .original--review{
+        max-width: 35%;
+    }
+}
+@media only screen and (min-width: 670px){
+    #upload.post--uploading--container .post--uploading--card{
+        background-color: var(--white);
+        border: 1px solid var(--gray);
+        box-shadow: inset 0px 1px 6px rgba(0,0,0,0.1);
+        padding:20px;
     }
 }

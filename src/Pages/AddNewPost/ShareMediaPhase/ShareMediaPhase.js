@@ -274,7 +274,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
   }
 }
     // xxxxxx
-    const isValid = (!loadState.uploading) && (method.toLowerCase() === Consts.Post) ? shareState.caption && contentType : method.toLowerCase() === Consts.Reel? (contentType && (shareState.selectedReelGroup ||  shareState.newGroupName)) : null;
+    const isValid = (method.toLowerCase() === Consts.Post) ? shareState.caption && contentType : method.toLowerCase() === Consts.Reel? (contentType && (shareState.selectedReelGroup ||  shareState.newGroupName)) : null;
     const { receivedData } = context;
     return (
         <Fragment>
@@ -284,7 +284,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                 {
                   loadState.uploading ?
                     <div className="uploading__in__progress flex-column">
-                        <h4 className="mb-3">{ shareState.progressBarPercentage <= 0 ? "Preparing..": shareState.progressBarPercentage >= 80 ?  "Processing..." : "Uploading..." }</h4>
+                        <h4 className="mb-3">{ shareState.progressBarPercentage <= 0 ? "Preparing..": shareState.progressBarPercentage >= 80 ?  "Finishing up..." : "Uploading..." }</h4>
                         <div className="my-4 w-100">
                         <Box display="flex" alignItems="center">
                             <Box width="100%" mr={1}>
@@ -348,6 +348,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                     val={shareState.caption}
                                     changeInput={onInputChange}
                                     submitted={loadState.submitted}
+                                    disabled={loadState.uploading}
                                 />
                                 <InputForm
                                     type="text"
@@ -355,6 +356,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                     label="location"
                                     val={shareState.location}
                                     changeInput={onInputChange}
+                                    disabled={loadState.uploading}
                                   />
                                 {
                                   (contentType && contentType === "audio") &&
@@ -366,6 +368,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                     val={shareState.artist}
                                     changeInput={onInputChange}
                                     submitted={loadState.submitted && (shareState.songName || shareState.artist)}
+                                    disabled={loadState.uploading}
                                   />
                                   <InputForm
                                     type="text"
@@ -374,6 +377,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                     val={shareState.songName}
                                     changeInput={onInputChange}
                                     submitted={loadState.submitted && (shareState.songName || shareState.artist)}
+                                    disabled={loadState.uploading}
                                   />
                                   </>
                                 }
@@ -383,7 +387,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                   <div className="form-group flex-column">
                                     <div className="prof--input--row  flex-row">
                                       <label htmlFor="disableComments">Turn off commenting</label>
-                                      <CheckboxIOS checked={shareState.disableComments || false} changeInput={onInputChange} id="disableComments" name="disableComments" />
+                                      <CheckboxIOS disabled={loadState.uploading} checked={shareState.disableComments || false} changeInput={onInputChange} id="disableComments" name="disableComments" />
                                       </div>
                                     </div>
                                   </div>
@@ -402,6 +406,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                   val={shareState.selectedReelGroup}
                                   changeInput={onInputChange}
                                   submitted={loadState.submitted}
+                                  disabled={loadState.uploading}
                             />
                           }  
                           {
@@ -416,6 +421,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                     val={shareState.newGroupName}
                                     changeInput={onInputChange}
                                     submitted={loadState.submitted}
+                                    disabled={loadState.uploading}
                               /> 
                             
                             </div>
@@ -430,7 +436,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                         </div>
                         </div>
                         <span className="phase__media__next_btn mt-4">
-                      <Button disabled={!isValid} className={`share--btn profile__btn ${!isValid && "disabled"}`} type="submit" value="Post" > {loadState.uploading ? "Uploading..." : "Share"}</Button> 
+                      <Button disabled={!isValid || loadState.uploading} className={`share--btn profile__btn ${(!isValid || loadState.uploading) && "disabled"}`} type="submit" value="Post" > {loadState.uploading ? "Uploading..." : "Share"}</Button> 
                         </span>
                     </div>
                 </form>
