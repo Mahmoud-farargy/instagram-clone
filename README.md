@@ -93,7 +93,7 @@ A social media platform similar to Instagram that people can actually use.
                                                 <ul class="bullet--2">
                                                     <li><p>Explore other people's posts</p></li>
                                                     <li><p>Sort these posts by likes count, comments count, date, or randomly in both ascending and descending orders</p></li>
-                                                    <li>Filter them to show images only, videos only, audio only, or posts from people you followed only</li>
+                                                    <li><p>Filter them to show images only, videos only, audio only, or posts from people you followed only</p></li>
                                                 </ul>
                                             </li>
                                             <li>

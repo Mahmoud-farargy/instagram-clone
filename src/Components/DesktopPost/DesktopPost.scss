@@ -9,9 +9,9 @@
     padding: 1px 8px;
 }
 .desktopPost{
-    width:1000px;
+    width:1100px;
     height:90%;
-    max-width: 1100px;
+    max-width: 1150px;
     position:fixed;
     left:50%;
     top:50%;
@@ -76,7 +76,7 @@
                     height: 570px;
                     display: grid;
                     border:none !important;
-                    grid-template-columns: auto 35%;
+                    grid-template-columns: auto 36%;
                     .desktop--left, .desktop--right{
                         height:100%;
                         @media only screen and (max-width: 670px){

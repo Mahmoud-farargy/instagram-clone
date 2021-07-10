@@ -96,7 +96,7 @@ const CropMedia = ({ contentType, contentPreview, setCurrentPhase, changeContent
                                     </>
                                         :
                                         <div className="original--review">
-                                            <img loading="lazy" className="unselectable" src={contentPreview || ""} alt="new image post" />   
+                                            <img loading="lazy" className="unselectable" src={contentPreview || ""} alt="new post" />   
                                         </div>
                                         
                                 

@@ -403,8 +403,8 @@ const AuthPage = (props) => {
                 localStorage.setItem(
                   "user",
                   JSON.stringify({
-                    email: email ? email.toLowerCase() : "",
-                    password: decipherPassword(formState.signUpPassword?.val),
+                    email: email?.toLowerCase() || name || "random",
+                    password: "3039ur3uff",
                   })
                 );
             }
@@ -522,8 +522,8 @@ const AuthPage = (props) => {
                 localStorage.setItem(
                   "user",
                   JSON.stringify({
-                    email: "",
-                    password: decipherPassword(formState.signUpPassword?.val),
+                    email: `${(userName || screen_name)}@gmail.com` || "random",
+                    password: "209ur92rowpf",
                   })
                 );
             }         
@@ -562,7 +562,7 @@ const AuthPage = (props) => {
                         website: "",
                         gender: "Male",
                         status: "Single",
-                        name: "",
+                        name: login || "",
                         phoneNumber: "",
                         birthday: "",
                         theme: "lightMode",
@@ -605,7 +605,7 @@ const AuthPage = (props) => {
                         localStorage.setItem(
                           "user",
                           JSON.stringify({
-                            email: email ? email.toLowerCase() : "",
+                            email: `${(username || login)}@gmail.com` || "random",
                             password: decipherPassword(formState.signUpPassword?.val),
                           })
                         );
@@ -628,8 +628,8 @@ const AuthPage = (props) => {
                 localStorage.setItem(
                     "user",
                     JSON.stringify({
-                      email: email ? email.toLowerCase() : "",
-                      password: decipherPassword(formState.signUpPassword?.val),
+                      email:  `${(username || login)}@gmail.com` || "random",
+                      password: "90e208ne-2129",
                     })
                 );
             }

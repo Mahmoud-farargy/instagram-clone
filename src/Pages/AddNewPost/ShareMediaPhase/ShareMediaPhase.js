@@ -305,7 +305,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                   :
                     (contentType === "image" ?
                     <div className="original--review">
-                        <img loading="lazy" className="unselectable" src={contentPreview || ""} alt="new image post" />   
+                        <img loading="lazy" className="unselectable" src={contentPreview || ""} alt="new post" />   
                     </div>
                     : contentType === "video" ?
                     <div className="original--review">

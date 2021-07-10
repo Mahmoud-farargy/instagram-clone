@@ -89,6 +89,7 @@ const Explore = () => {
     const alteredSortFilter = underscoreVal(filter);
     if(explore && explore.length > 0){
       let exploreAlteredArr;
+      // filter
       switch(alteredSortFilter){
         case "posts_by_people_i_follow":
           exploreAlteredArr = explore?.filter(user => user?.some(post => receivedData?.following?.some(item => item?.receiverUid === post?.postOwnerId)));
@@ -113,6 +114,7 @@ const Explore = () => {
           exploreAlteredArr = explore;
       }
       if(exploreAlteredArr?.length > 0){
+        // sort
           switch (alteredSortBy){
                   case "likes_count":
                     return exploreAlteredArr.map(el => {
