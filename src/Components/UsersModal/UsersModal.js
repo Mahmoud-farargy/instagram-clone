@@ -4,55 +4,55 @@ import ModalListItem from "./ModalListItem/ModalListItem";
 import * as Consts from "../../Utilities/Consts";
 import { BsPersonPlus } from "react-icons/bs";
 const UsersModal =()=>{
-    const {changeModalState,modalsState, usersModalList} = useContext(AppContext);
+    const { changeModalState, modalsState, usersModalList } = useContext(AppContext);
     let renderedModal;
     switch(usersModalList?.type){
         
         case Consts.FOLLOWERS:
            renderedModal =  usersModalList?.list && usersModalList?.list.map((user, i) =>{
-                    return(
+                    return (user && user?.senderUid) && (
                         <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} isVerified={user?.isVerified || false} date={(user?.date ? user?.date : {})} type={usersModalList?.type}/>
                     )
                 })
         break;
         case Consts.FOLLOWING:
             renderedModal = usersModalList?.list && usersModalList?.list.map((user, i) =>{
-                            return(
+                           return (user && user?.receiverUid) && (
                                 <ModalListItem key={user?.receiverUid + i} uid={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} isVerified={user?.isVerified || false} date={(user?.date ? user?.date : {})} type={usersModalList?.type}/>
                             )
                 })
         break;
         case Consts.LIKES:
               renderedModal = usersModalList?.list && usersModalList?.list.map((user, i) =>{
-                            return(
+                           return (user && user?.id) && (
                                 <ModalListItem key={user?.id + i} uid ={user?.id} userName={user?.userName} avatarUrl={user?.userAvatarUrl} date={(user?.date ? user?.date : {}) } isVerified={user?.isVerified || false} type={usersModalList?.type}/>
                             )
                 })
         break;
         case Consts.MUTUALFRIENDS:
             renderedModal = usersModalList?.list && usersModalList?.list.map((user, i ) => {
-                    return(
+                   return (user && user?.receiverUid) && (
                         <ModalListItem key={user?.receiverUid + i} uid ={user?.receiverUid} userName={user?.receiverName} avatarUrl={user?.receiverAvatarUrl} isVerified={user?.isVerified || false} date={(user?.date ? user?.date : {})} type={usersModalList?.type}/>
-                    )
+                   )
             })
         break;
         case Consts.NEWUSERS:
             renderedModal = usersModalList?.list && usersModalList?.list.map((user, i ) => {
-                    return(
+                   return (user && user?.uid) && (
                         <ModalListItem key={user?.uid + i} uid ={user?.uid} userName={user?.userName} avatarUrl={user?.userAvatarUrl} isVerified={user?.isVerified || false} date={user?.profileInfo?.accountCreationDate || {}} type={usersModalList?.type}/>
                     )
             })
         break;
         case Consts.BIRTHDAYS:
             renderedModal = usersModalList?.list && usersModalList?.list.map((user, i ) => {
-                    return(
+                   return (user && user?.uid) && (
                         <ModalListItem key={user?.uid + i} uid ={user?.uid} userName={user?.userName} avatarUrl={user?.userAvatarUrl} isVerified={user?.isVerified || false} date={user?.profileInfo?.birthday || {}} type={usersModalList?.type}/>
                     )
             })
         break;
         default: 
         renderedModal =  usersModalList?.list.map((user, i) =>{
-            return(
+           return (user && user?.senderUid) && (
                 <ModalListItem key={user?.senderUid + i} uid={user?.senderUid} userName={user?.senderName} avatarUrl={user?.senderAvatarUrl} isVerified={user?.isVerified || false} date={(user?.date ? user?.date : {} )} type={usersModalList?.type}/>
             )
         });

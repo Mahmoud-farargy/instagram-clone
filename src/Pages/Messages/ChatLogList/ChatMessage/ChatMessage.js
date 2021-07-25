@@ -1,7 +1,7 @@
-import React, {Fragment, useState, useContext, useEffect} from "react";
+import React, { Fragment, useState, useContext, useEffect, memo } from "react";
 import PropTypes from "prop-types";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import {AppContext} from "../../../Context";
+import {AppContext} from "../../../../Context";
 import { BsFillHeartFill } from "react-icons/bs";
 import { BiFullscreen } from "react-icons/bi";
 import { Avatar } from "@material-ui/core";
@@ -127,4 +127,4 @@ Message.propTypes ={
     user: PropTypes.object.isRequired,
     openSidedrawer: PropTypes.bool
 }
-export default Message;
+export default memo(Message);

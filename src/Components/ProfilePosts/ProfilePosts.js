@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useRef, useEffect, useState, useCallback } from "react";
+import React, { Fragment, useContext, useRef, useEffect, useState, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import ProfileItem from "../ProfileItem/ProfileItem";
 import { AppContext } from "../../Context";
@@ -21,7 +21,23 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
         openingPost: false
     });
     // ----x--State---x-----
-    const finalLimit = list?.length ? list?.length : null;
+    const finalLimit = list?.length || null;
+
+    useEffect(() => () => {
+        window.clearTimeout(timeouts?.current);
+        _isMounted.current= false;
+    }, []);
+    const increasePostsBy5 = () => {
+        if(hasMore){
+            setLoading({...isLoading,loadingMorePosts: true});
+            if(currLimit >= finalLimit) setLimit(false);
+            if(_isMounted.current) timeouts.current = setTimeout(() => {
+                setLoading({...isLoading,loadingMorePosts: false});
+                setCurrLimit(currLimit + 5);
+                window.clearTimeout(timeouts?.current);
+            },1200);
+        }
+    } 
     const lastPostElementRef = useCallback(node => {
        if(observer?.current) observer.current.disconnect();
         observer.current = new IntersectionObserver(enteries => {
@@ -30,23 +46,9 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
                 }
         });
        if(node) observer.current.observe(node);
-    },[currLimit, hasMore]);
-    useEffect(() => () => {
-        window.clearTimeout(timeouts?.current);
-        _isMounted.current= false;
-    }, []);
-    const increasePostsBy5 = () => {
-        if((finalLimit > 0) && (hasMore)){
-            setLoading({...isLoading,loadingMorePosts: true});
-            if(currLimit >= finalLimit) setLimit(false);
-            if(_isMounted.current) timeouts.current = setTimeout(() => {
-                setLoading({...isLoading,loadingMorePosts: false});
-                setCurrLimit(currLimit + 5);
-                window.clearTimeout(timeouts?.current);
-            },1000);
-        }
-    }
-    const openPost = ({type, postId, postOwnerId, reelId, groupId , reelUid}) =>{
+    },[currLimit, hasMore, increasePostsBy5]);
+
+    const openPost = useCallback(({type, postId, postOwnerId, reelId, groupId , reelUid}) =>{
         if(type === "post"){
                 if(postOwnerId && postId){
                     setLoading({...isLoading,openingPost: true});
@@ -83,8 +85,8 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
                 }
             });
         }
-    }
-    const onLoadingFail = ( postOwnerId, postId ) => {
+    },[]);
+    const onLoadingFail = useCallback(( postOwnerId, postId ) => {
         //automatically removes elements that have failed to load denoting they don't exist and got removed from the main source
         if( listType.toLowerCase() === "post" && isSavedPost && healthyStorageConnection && navigator.onLine && postOwnerId && postId){
             getUsersProfile(postOwnerId).then((data) => {
@@ -97,7 +99,7 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
                 }
             });
         }
-    }
+    },[])
     return (
         <Fragment>
            {
@@ -140,4 +142,4 @@ ProfilePosts.propTypes = {
     parentClass: PropTypes.string,
     isSavedPost: PropTypes.bool,
 }
-export default ProfilePosts;
+export default memo(ProfilePosts);

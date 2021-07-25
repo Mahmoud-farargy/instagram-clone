@@ -33,7 +33,6 @@ const AuthSubmissionBtn = ({type = "login",value = "Log In",formState = {}, load
                               color="var(--white)"
                               height={15}
                               width={20}
-                              timeout={5000}
                             />
                           </button>
                         ) : (

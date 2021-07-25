@@ -41,6 +41,7 @@ const PostPage  = (props) => {
   const autoScroll = useRef(null);
   const timeouts = useRef(null);
   const vidRef = useRef(null);
+  const scrollToBottom = useRef(null);
   //----------------------
   useEffect(() => {
     window.scrollTo(0,0);
@@ -186,19 +187,23 @@ const PostPage  = (props) => {
     })
   }
 
-    var {caption = "",contentType,contentURL = "",comments = [],likes= {},location = "",date = {},postOwnerId = "", id = "", userName, contentName="", songInfo = {} } = usersProfileData?.posts[currentPostIndex?.index];       
+    var {caption = "",contentType,contentURL = "",comments = [],likes= {},location = "",date = {},postOwnerId = "", id = "", userName, contentName="", songInfo = {}, disableComments = false } = usersProfileData?.posts[currentPostIndex?.index];       
     var isVerified = usersProfileData?.isVerified;
     var following = receivedData?.following;
     const updateUsersWhoLiked = () => {
       setCompState({
         ...compState,
-        alsoLiked: following?.filter(user => likes?.people?.some((el) => (user?.receiverUid !== receivedData?.uid) && (user?.receiverUid === el?.id))).slice(0,3) 
+        alsoLiked: following?.filter(user => likes?.people?.some((el) => (user?.receiverUid !== receivedData?.uid) && (user?.receiverUid === el?.id))).slice(0,3)
       })
     }
     useEffect(()=> {
       updateUsersWhoLiked();
-    },[following]);
+    },[following, likes]);
+    useEffect(() => {
+      (scrollToBottom && scrollToBottom.current && scrollToBottom.current?.scrollIntoView) && scrollToBottom.current.scrollIntoView({block: "end"});
+    },[comments]);
     const similarsStr = (likes?.people?.some(el => el?.id === uid) && likes?.people?.length >3) ? (likes?.people?.length?.toLocaleString() -3) : (likes?.people?.length?.toLocaleString() -2);
+    const areCommentsDisabled = (usersProfileData?.profileInfo?.professionalAcc?.disableComments || disableComments);
     return (
       <Fragment>
         {
@@ -279,11 +284,11 @@ const PostPage  = (props) => {
                 </span>
               </div>
               <div className="post--card--body">
+                <div className="post__card__content__outer" >
                 {contentType === "image" ? (
-                  <div>
+                  <div className="post__card__content__middle" role="button" tabIndex="1" onClick={() => doubleClickEvent()}>
                     <img
                       loading="lazy"
-                      onClick={() => doubleClickEvent()}
                       className="post__card__content"
                       src={contentURL}
                       alt="post"
@@ -292,30 +297,34 @@ const PostPage  = (props) => {
                     {compState.doubleLikeClicked ? (
                       <div>
                         <div className="liked__double__click__layout"></div>
-                        <span
-                          className="liked__double__click"
-                          style={{
-                            animation: compState.doubleLikeClicked
-                              ? "boundHeartOnDouble 0.9s forwards ease"
-                              : null,
-                          }}
-                        >
-                          <FaHeart />
-                        </span>
+                        <div className="liked__double__click">
+                          <span
+                            style={{
+                              animation: compState.doubleLikeClicked
+                                ? "boundHeartOnDouble 0.9s forwards ease-out"
+                                : null,
+                            }}
+                          >
+                            <FaHeart />
+                          </span>
+                        </div>
                       </div>
                     ) : null}
                   </div>
                 ) : contentType === "video" ? (
-                  <div className="w-100 h-100">
-                    <VideoPostComp
+                  <div className="post__card__content__middle" >
+                    <div className="post__card__content__video">
+                      <VideoPostComp
                       src={contentURL}
                       isVidPlaying={true}
                       ref={vidRef}
-                       />
+                       /> 
+                    </div>
                   </div>
                 ) : contentType === "audio" ? (
                   <AudioContent autoPlay url={contentURL} songInfo={songInfo || {}} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()} />
               ): null}
+                </div>
               </div>
               <div className="post--card--footer flex-column">
                 <div className="post--footer--upper--row flex-row">
@@ -337,9 +346,12 @@ const PostPage  = (props) => {
                         <FaHeart />
                       </span>
                     )}
-                    <span onClick={() => inputField?.current && inputField.current?.focus()}>
-                      <FaRegComment />
-                    </span>
+                   {
+                     !areCommentsDisabled &&
+                      <span onClick={() => inputField?.current && inputField.current?.focus()}>
+                        <FaRegComment />
+                      </span>
+                   } 
                     <span>
                       <FiSend />
                     </span>
@@ -390,7 +402,9 @@ const PostPage  = (props) => {
               }
                 <Caption caption={caption} userName={usersProfileData?.userName}/>
 
-                {comments?.length >= 1 ? (
+                {
+                !areCommentsDisabled ?
+                (comments?.length >= 1 ? (
                   <div className="post--comments--layout" ref={autoScroll}>
                     {comments?.length > 1 ? (
                       <h5
@@ -424,43 +438,51 @@ const PostPage  = (props) => {
                         />
                       );
                     })}
+                    <span ref={scrollToBottom}></span>
                   </div>
-                ) : null}
+                ) : null)
+                  : <span className="disabled__comments">
+                    Comments are disabled.
+                  </span>
+                }
 
                 <small className="post__date">
                   <GetFormattedDate date={date?.seconds} /> • <time>{new Date(date?.seconds * 1000).toDateString()}</time>
                 </small>
-                <form
-                  onSubmit={(e) => submitComment(e)}
-                  className="post--bottom--comment--adding flex-row"
-                >
-                  <div className="form--input--container flex-row">
-                    <div className="form--input--container--inner flex-row">
-                      <EmojiPicker onEmojiClick={onEmojiClick} />
-                    <input
-                      ref={inputField}
-                      value={compState.insertedComment}
-                      onChange={(event) =>
-                        setCompState({...compState, insertedComment: event.target.value })
-                      }
-                      className="post__bottom__input"
-                      type="text"
-                      placeholder="Add a commment.."
-                    />
-                    </div>
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={compState.insertedComment.length < 1}
-                    className={
-                      compState.insertedComment.length >= 1
-                        ? "post__bottom__button"
-                        : "disabled post__bottom__button"
-                    }
+               {
+                 !areCommentsDisabled &&
+                  <form
+                    onSubmit={(e) => submitComment(e)}
+                    className="post--bottom--comment--adding flex-row"
                   >
-                    Post
-                  </button>
-                </form>
+                    <div className="form--input--container flex-row">
+                      <div className="form--input--container--inner flex-row">
+                        <EmojiPicker onEmojiClick={onEmojiClick} />
+                      <input
+                        ref={inputField}
+                        value={compState.insertedComment}
+                        onChange={(event) =>
+                          setCompState({...compState, insertedComment: event.target.value })
+                        }
+                        className="post__bottom__input"
+                        type="text"
+                        placeholder="Add a commment.."
+                      />
+                      </div>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={compState.insertedComment.length < 1}
+                      className={
+                        compState.insertedComment.length >= 1
+                          ? "post__bottom__button"
+                          : "disabled post__bottom__button"
+                      }
+                    >
+                      Post
+                    </button>
+                  </form>
+               } 
               </div>
             </article>
           </div>

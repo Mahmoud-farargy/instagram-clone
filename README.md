@@ -43,6 +43,7 @@ A social media platform similar to Instagram that people can actually use.
                                                              <li class="bullet--3"><p>Change account's Username and Password</p></li>
                                                              <li class="bullet--3"><p>Show/Hide activity status</p></li>
                                                              <li class="bullet--3"><p>Make account private/public </p></li>
+                                                             <li class="bullet--3"><p>Disable Comments</p></li>
                                                              <li class="bullet--3"><p>Delete account</p></li>
                                                              <li class="bullet--3"><p> + more options</p></li>
                                                     </ul>
@@ -52,6 +53,7 @@ A social media platform similar to Instagram that people can actually use.
                                                 <ul class="bullet--2">
                                                     <li><p>Feed is based on who the user follow</p></li>
                                                     <li><p>Users can post pictures and videos from a camera or gallery</p></li>
+                                                    <li><p>Crop and filter post before sharing</p></li>
                                                     <li><p>They can also post audio like songs or mini podcasts</p></li>
                                                     <li><p>Like/Dislike posts
                                                         <ul class="bullet--3">
@@ -67,6 +69,7 @@ A social media platform similar to Instagram that people can actually use.
                                                                 <li><p>Like/Dislike comments and sub-comments</p></li>
                                                                 <li><p>View all comments and who liked them</p></li>
                                                                 <li><p>Include emojis among hundreds while commenting<p></li>
+                                                                 <li><p>Turn off commenting on a specific post<p></li>
                                                             </ul>
                                                         </p>
                                                     </li>
@@ -90,7 +93,7 @@ A social media platform similar to Instagram that people can actually use.
                                                 <ul class="bullet--2">
                                                     <li><p>Explore other people's posts</p></li>
                                                     <li><p>Sort these posts by likes count, comments count, date, or randomly in both ascending and descending orders</p></li>
-                                                    <li>Filter them to show images only, videos only, audio only, or posts from people you followed only</li>
+                                                    <li><p>Filter them to show images only, videos only, audio only, or posts from people you followed only</p></li>
                                                 </ul>
                                             </li>
                                             <li>
@@ -144,7 +147,7 @@ A social media platform similar to Instagram that people can actually use.
    </ul>
 
 ## Available Scripts
-Please note before cloning the project: All functions that are responsible for handling actions like following, liking, commenting, etc.. are exist in Context.js which will not be pushed to the repo until this project gets at least 150 stars. without that file, the app won't run.
+Please note before cloning the project: All functions that are responsible for handling actions like following, liking, commenting, etc.. are exist in Context.js which will not be pushed to the repo until this project gets at least 150 stars. without that file, the app won't work.
 Knowing that, In the project directory, you can run:
 
 ### `npm start`

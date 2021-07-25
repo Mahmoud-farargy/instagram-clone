@@ -20,7 +20,7 @@ const ProfessionalAccount = (props) => {
   const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser, handleFollowRequests, updateSuggestionsList } = useContext(AppContext);
   //useState
   const [formState, setForm] = useState({
-    professionalAcc: { category: "", show: true, status: true, suggested: true, reelsForFollowing: false, notificationBell:{state: true, type: "Both"}, private: false, suggNotFollowed: false},
+    professionalAcc: { category: "", show: true, status: true, suggested: true, reelsForFollowing: false, notificationBell:{state: true, type: "Both"}, private: false, suggNotFollowed: false, disableComments: false},
     catOptions: CategoryList,
     submitted: false,
   });
@@ -137,6 +137,15 @@ const ProfessionalAccount = (props) => {
                 <CheckboxIOS checked={(formState?.professionalAcc?.private || false)} changeInput={onInputChange} id="private" name="private" />
                 </div>
              <small>When your account is private, only people you approve can see your photos, music and videos on Voxgram. Your existing followers won't be affected.</small>
+              </div>
+              
+            </div>
+            <div id="input--form--field">
+              <div className="form-group flex-column">
+                <div className="prof--input--row  flex-row">
+                  <label htmlFor="disableComments">Turn off commenting</label>
+                  <CheckboxIOS checked={(formState?.professionalAcc?.disableComments || false)} changeInput={onInputChange} id="disableComments" name="disableComments" />
+              </div>
               </div>
               
             </div>

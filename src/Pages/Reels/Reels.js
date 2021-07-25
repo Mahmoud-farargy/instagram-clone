@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useRef } from 'react'
+import React, { Fragment, useEffect, useState, useRef, useCallback } from 'react'
 import "./Reels.scss";
 import {Link} from "react-router-dom";
 import Loader from "react-loader-spinner";
@@ -27,6 +27,10 @@ function Reels(props) {
     },[pushFromTop]);
     const [,loading] = useAuthState(auth);
     const [currentPlayingReel, setCurrPlayingReel] = useState(0);
+    const reelItems = reelsProfile?.reels?.[currentReel?.groupIndex]?.reelItems;
+    const memoizedSettingReel = useCallback((val) => {
+        setCurrPlayingReel(val)
+    },[]);
     return (
         <Fragment>
             <section id="reels"> 
@@ -44,8 +48,8 @@ function Reels(props) {
                         <div ref={videoBox} className="reel--video--box flex-column" >
                         {
                             !loading ?
-                           reelsProfile?.reels?.length > 0 && reelsProfile?.reels?.[currentReel?.groupIndex]?.reelItems && reelsProfile?.reels[currentReel?.groupIndex]?.reelItems?.sort((a,b) => b.date.seconds - a.date.seconds ).map((reel, i) => {
-                                return reel && <ReelItem setCurrPlayingReel={setCurrPlayingReel} currentPlayingReel={currentPlayingReel} key={i} maxLength={(reelsProfile?.reels?.[currentReel?.groupIndex]?.reelItems?.length ? reelsProfile?.reels?.[currentReel?.groupIndex]?.reelItems?.length : NaN)} groupName={reelsProfile?.reels?.[currentReel?.groupIndex]?.groupName} index={i} item={reel}/>
+                           reelsProfile?.reels?.length > 0 && reelItems && reelItems.length > 0 && reelItems.sort((a,b) => b.date.seconds - a.date.seconds ).map((reel, i) => {
+                                return reel && <ReelItem setCurrPlayingReel={ memoizedSettingReel } currentPlayingReel={currentPlayingReel} key={i} maxLength={(reelItems?.length ? reelItems?.length : NaN)} groupName={reelsProfile?.reels?.[currentReel?.groupIndex]?.groupName} index={i} item={reel}/>
                                 })
                             :
                             <div className="reels-loading flex-column">
@@ -53,8 +57,7 @@ function Reels(props) {
                                 type="TailSpin"
                                 color="var(--white)"
                                 height={50}
-                                width={50}
-                                timeout={5000}/>
+                                width={50}/>
                             </div>
                         }                           
                         </div>

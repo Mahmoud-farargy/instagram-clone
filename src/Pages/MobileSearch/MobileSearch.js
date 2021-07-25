@@ -9,7 +9,7 @@ import { BsMicFill } from "react-icons/bs";
 const Explore = lazy(() => import("../../Pages/Explore/Explore"));
 
 const MobileSearch = () => {
-    const {explore, searchUsers, searchInfo} = useContext(AppContext);
+    const {explore, searchUsers, searchInfo, notify} = useContext(AppContext);
     const [searchVal, setSearchVal] = useState("");
     const _isMounted = useRef(true);
 
@@ -70,7 +70,7 @@ const MobileSearch = () => {
                 <TiDelete />
               </span>
             ) :  <span
-                    onClick={() => console.log("voice search is on the way to mobile")}
+                    onClick={() => notify("Voice search is on the way to mobile soon.", "info")}
                     className="clear--search--box voice__search__icon"
                   >
                   <BsMicFill/>

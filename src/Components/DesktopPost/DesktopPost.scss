@@ -9,9 +9,9 @@
     padding: 1px 8px;
 }
 .desktopPost{
-    width:1000px;
+    width:1100px;
     height:90%;
-    max-width: 1100px;
+    max-width: 1150px;
     position:fixed;
     left:50%;
     top:50%;
@@ -26,17 +26,26 @@
     @media only screen and (min-width:670px) and (max-width: 940px){
         width: 95%;
     }
-
+    $bg: radial-gradient(circle at 30% 107%, rgba(253, 244, 151,0.3) 1%,rgba(255, 198, 63,0.3) 10% , rgba(253, 51, 88,0.3) 45%,rgba(189, 54, 217,0.3) 60%);
     .desktop--left{
         min-height: 570px;
         display:flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background: radial-gradient(circle at 30% 107%, rgba(253, 244, 151,0.3) 1%,rgba(255, 198, 63,0.3) 10% , rgba(253, 51, 88,0.3) 45%,rgba(189, 54, 217,0.3) 60%);
         border-right: 1px solid var(--shadow-white);
+        background: $bg;
+        .post__card__content{
+            object-fit: contain !important;
+            position: relative;
+            background: $bg;
+        }
+        .audio--content.post__card__content__middle{
+            padding-bottom: 0px ;
+
+        }
     }
-    
+           
     .d--post--container{
         width:100%;
         height:100%;
@@ -71,26 +80,22 @@
                 // max-height: 570px;
                 margin: 0 auto;
                 .post--card--article{
+                    background-color: var(--white);
                     width:100%;
-                    // height: 100%;
                     height: 570px;
                     display: grid;
                     border:none !important;
-                    grid-template-columns: 62% 35%;
+                    grid-template-columns: auto 36%;
                     .desktop--left, .desktop--right{
                         height:100%;
                         @media only screen and (max-width: 670px){
-                            height:50%
+                            height:50%;
                         }
-                    }
-                    .post--comments--layout{
-                        height:320px;
-                        overflow-y:auto !important;
-                        padding:10px 10px 20px;
                     }
                     .desktop--right{
                         height: 100%;
-                        width: 343px;
+                        width: 100%;
+                        max-width: 360px;
                         position: relative;
                         background-color: var(--white);
                         .post--card--header{
@@ -105,6 +110,17 @@
                             left:0;
                             width:100%;
                             border-top:1px solid var(--shadow-white);
+                        }
+                        .post--comments--layout{
+                            height:320px;
+                            overflow-y:auto !important;
+                            padding:10px 10px 20px;
+                            .post--comment--item .comment__text{
+                                @media only screen and (max-width: 900px) {
+                                    display: flex;
+                                    flex-direction: column;
+                                }
+                            }
                         }
                     }
                     @media only screen and (max-width: 780px){

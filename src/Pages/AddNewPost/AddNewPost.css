@@ -1,23 +1,29 @@
 #upload.post--uploading--container{
-    background-color: var(--light-gray);
+    background-color: var(--white);
     justify-content:center;
     align-items:center;
+    width: 100%;
+    height: 100%;
+    border-radius: 0 12px 12px;
 }
-
+#upload.post--uploading--container .upload__files__icon{
+    margin:0 auto;
+    text-align:center;
+    margin-bottom: 20px;
+    font-size: 29px;
+}
 #upload.post--uploading--container .post--uploading--card{
     width:320px;
-    background-color: var(--white);
-    padding:20px;
-    border: 1px solid var(--gray);
+    padding: 50px 20px 20px;
     border-radius:30px;
     justify-content:center;
     margin:5px;
-    box-shadow: inset 0px 1px 6px rgba(0,0,0,0.1);
 }
 #upload.post--uploading--container .uploading__in__progress{
     justify-content:center;
     text-align:center;
     align-items:center;
+    width: 60%;
 }
 #upload.post--uploading--container .share--btn{
     background: linear-gradient(225deg,#ffc63f 0%,#fd3358 49%,#bc35d8 100%);
@@ -44,7 +50,7 @@
     margin:-2px  0 15px 0;
     width:100%;
     height: 300px;
-    padding-top: 150px;
+    padding-top: 100px;
     margin-top:8px;
     text-align:center;
     font-size: 16px;
@@ -52,10 +58,53 @@
     white-space: pre-wrap;
     cursor: pointer;
 }
+#upload.post--uploading--container .uploadPhase{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 70% 30%; 
+}
+#upload.post--uploading--container .uploadPhase .share--media--container,#upload.post--uploading--container .uploadPhase .filter--media--container{
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    padding-top:30px;
+}
+#upload.post--uploading--container .phase--media--right{
+    width: 100%;
+    height: 100%;
+    margin:0;
+    padding:10px;
+    border-left: 1px solid var(--gray);
+}
+#upload.post--uploading--container .phase--media--right .phase--media--choices{
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+    width: 100%;
+}
+#upload.post--uploading--container .original--review{
+        max-width: 300px;
+        max-height: 300px;
+        min-height: 100%;
+}
+#upload.post--uploading--container .phase--media--right .phase__media__next_btn{
+    justify-self: end;
+} 
+#upload.post--uploading--container .phase--media--right .phase__media__next_btn .profile__btn{
+    width: 100%;
+    padding:5px 10px;
+}
 #upload.post--uploading--container .files-dropzone-active{
     background-color: var(--secondary-clr);
     color: var(--white);
     border: 1px dashed var(--white);
+}
+#upload.post--uploading--container .post--uploading--crop{
+    width: 100%;
+    height: 100%;
 }
 @media only screen and (max-width: 670px){
     #upload.post--uploading--container .post--uploading--card form{
@@ -63,9 +112,30 @@
        flex-direction:column;
     }
     #upload.post--uploading--container .post--uploading--card{
-        width:85%;
+        width:95%;
+        margin:0 auto;
     }
     #upload.post--uploading--container{
         padding-bottom:50px;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+    #upload.post--uploading--container .uploadPhase{
+        grid-template-columns: 100%; 
+    }
+    #upload.post--uploading--container .post--uploading--inner{
+        align-items:flex-start;
+        width: 100%;
+    }
+    #upload.post--uploading--container .original--review{
+        max-width: 35%;
+    }
+}
+@media only screen and (min-width: 670px){
+    #upload.post--uploading--container .post--uploading--card{
+        background-color: var(--white);
+        border: 1px solid var(--gray);
+        box-shadow: inset 0px 1px 6px rgba(0,0,0,0.1);
+        padding:20px;
     }
 }

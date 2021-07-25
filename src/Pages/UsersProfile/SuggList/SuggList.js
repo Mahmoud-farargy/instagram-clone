@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, memo } from "react";
 import PropTypes from "prop-types";
 import { Avatar } from "@material-ui/core";
 import { withBrowseUser } from "../../../Components/HOC/withBrowseUser";
@@ -60,4 +60,4 @@ SuggList.propTypes = {
     notify: PropTypes.func,
     browseUser: PropTypes.func,
 }
-export default withBrowseUser(SuggList);
+export default withBrowseUser(memo(SuggList));

@@ -113,13 +113,13 @@
     width:100%
 }
 #post.post--card--container .post--card--article .post--card--body .post__card__content{
-    max-height:600px;
-    min-height:300px;
     background-color: var(--gray);
     margin:0;
     padding:0;
     object-fit:cover;
     user-select: none;
+    height: 100%;
+    width: 100%;
 }
 
 #post.post--card--container .post--card--article .post--card--footer .post--footer--upper--row span ,
@@ -246,9 +246,6 @@
     #post.post--card--container .post--card--article .post--card--footer .post--footer--upper--row span{
         margin-right:1.5vw;
         font-size:25px;
-    }
-    #post.post--card--container .post--card--article .post--card--body .post__card__content{
-        max-height:75vh;
     }
     #post.post--card--container .post--card--article .desktop--left .post__card__content{
         max-height: 100%;

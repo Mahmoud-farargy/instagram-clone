@@ -22,7 +22,7 @@ const ModalListItem =(props)=>{
         if(notMyItem){
             browseUser(uid, userName).then(() => {
                 if(_isMounted?.current){
-                    changeModalState("users", false, "", "");  
+                    changeModalState("users", false, "", "");
                 }
             });
         }else{
@@ -41,7 +41,7 @@ const ModalListItem =(props)=>{
                     ) }</h3>
                         
                         { type === Consts.BIRTHDAYS ? <span>BD: {date}</span> : date?.seconds && <span> {type === Consts.NEWUSERS && "Joined in: "} <GetFormattedDate date={date?.seconds && date?.seconds} /></span>}
-                    </div> 
+                    </div>
                 </div>
               {
                   uid !== receivedData.uid ?

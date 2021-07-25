@@ -10,9 +10,8 @@ import 'firebase/firestore';   // for cloud firestore
 import 'firebase/functions';   // for cloud functions
 import 'firebase/analytics';
 
-var firebaseConfig = config
   // Initialize Firebase
- const firebaseApp = firebase.initializeApp(firebaseConfig);
+ const firebaseApp = firebase.initializeApp(config);
  firebase.analytics();
 
   const db = firebaseApp.firestore();

@@ -4,8 +4,7 @@ import "./Home.css";
 import Post from "../../Components/Post/Post";
 import { Avatar } from "@material-ui/core";
 import { AppContext } from "../../Context";
-import { Redirect, withRouter, Link } from "react-router-dom";
-import SuggestItem from "../../Components/SuggestItem/SuggestItem";
+import { Redirect, withRouter } from "react-router-dom";
 import { GoVerified } from "react-icons/go";
 import { useAuthState } from "react-firebase-hooks/auth"; //firebase hook
 import { auth } from "../../Config/firebase";
@@ -16,6 +15,7 @@ import { AiOutlineHome } from "react-icons/ai";
 import { RiVideoAddLine } from "react-icons/ri";
 import { FiEdit, FiSettings } from "react-icons/fi";
 import HomeReels from "../../Components/HomeReels/HomeReels";
+import HomeSuggsList from "../../Components/HomeSuggList/HomeSuggList";
 import GSCardItem from "./GSCardItem/GSCardItem";
 import { GOU } from "../../Utilities/GetOnlineUsers";
 
@@ -40,7 +40,6 @@ const Home = (props) => {
   let posts = receivedData?.posts;
   const _isMounted = useRef(true);
   let [user, loading] = useAuthState(auth);
-  const [randNum, setRandNum] = useState(0);
   const [onlineList, setOnlineList] = useState([]);
   const [footerLinks] = useState([
     "About",
@@ -65,9 +64,6 @@ const Home = (props) => {
     window.scrollTo(0, 0);
     return () => _isMounted.current = false;
   }, []);
-  useEffect(()=> {
-        setRandNum(Math.floor(Math.random() * suggestionsList?.length -6));
-  },[suggestionsList]);
 
   const recievedAuth = localStorage.getItem("user");
   return (
@@ -113,6 +109,7 @@ const Home = (props) => {
                       following={receivedData?.following}
                       history={props.history}
                       songInfo={post?.songInfo ? post?.songInfo : {}}
+                      areCommentsDisabled= {(receivedData?.profileInfo?.professionalAcc?.disableComments || post?.disableComments) || false}
                     />
                   );
                 })
@@ -177,64 +174,7 @@ const Home = (props) => {
                   <button className="txt_follow disabled">Switch</button>
                 </div>
               ) : null}
-              {suggestionsList.length >= 1 ? (
-                <div className="suggestions--home--container">
-                  <div className="suggestions--header flex-row">
-                    <h6>Suggestions For you</h6>
-                    <Link to="/explore/people"><button className="user__see__all__btn">See all</button></Link>
-                  </div>
-                  <div className="suggestions--list flex-column">
-                    <ul className="flex-column">
-                      {suggestionsList &&
-                        suggestionsList.length > 0 &&
-                       Array.from(new Set(suggestionsList.map((item) => item.uid))).map((id) => suggestionsList.find((el) => el.uid === id))
-                          .filter((item) => (item?.uid !== receivedData?.uid) ).slice(randNum, suggestionsList?.length -1).slice(0,5)
-                          .map((user, i) => {
-                            return (
-                              user && Object.keys(user).length > 0 &&
-                              <SuggestItem
-                                key={i}
-                                userName={user?.userName}
-                                isVerified={user?.isVerified}
-                                userUid={user?.uid}
-                                userAvatarUrl={user?.userAvatarUrl}
-                                creationDate={user?.profileInfo?.accountCreationDate ? user?.profileInfo?.accountCreationDate : ""}
-                                followers={user?.followers}
-                                isOnline={onlineList?.some(c => c.uid === user?.uid)}
-                                user={user}
-                              />
-                            );
-                          })
-                      }
-                          
-                    </ul>
-                  </div>
-                </div>
-              ) : suggestionsList.length < 1 && loadingState?.suggList ?
-              <div className="suggestions--home--container">
-                <div className="suggestions--list">
-                  {
-                      Array.from({length: 5},(_,i) =>(
-                        <li key={i} className="suggestion--item flex-row mb-3">
-                        <div className="side--user--info flex-row">
-                            <Skeleton count={1} circle={true} width={32} height={32} />
-                            <span className="flex-column ml-2">
-                                <Skeleton count={1} width={80} height={13} /> 
-                                <Skeleton count={1} width={150} height={13} />
-                            </span>
-                        </div>
-                        <Skeleton count={1} width={39} height={13} />
-                      </li>
-                      ))  
-                  }
-                  </div>
-              </div>
-           
-
-              : <div className="empty--box flex-column">
-                  <h4>No suggestions available</h4>
-                </div>
-              }
+              <HomeSuggsList receivedData={receivedData} loadingState={loadingState} suggestionsList={suggestionsList} onlineList={onlineList} />
               <div className="home--footer desktop-only">
                <nav>
                  <ul className="flex-row">

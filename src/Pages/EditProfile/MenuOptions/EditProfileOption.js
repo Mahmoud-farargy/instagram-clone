@@ -125,7 +125,7 @@ const EditProfileOption = (props) => {
         /(image)/g.test(metadata.contentType) &&
         uploadedPhoto.size <= 12378523
       ) {
-        if (uploadedPhoto?.name.split("").length <= 50) {
+        if (uploadedPhoto?.name.split("").length <= 200) {
           notify("In progress");
           const uploadContent = storage
             .ref(`avatars/${receivedData?.uid}`)
@@ -159,7 +159,7 @@ const EditProfileOption = (props) => {
           );
         } else {
           notify(
-            `The name of the photo is too long. it should not exceed 50 characters`,
+            `The name of the photo is too long. it should not exceed 200 characters`,
             "error"
           );
         }

@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState, Fragment, useRef } from "react";
+import React, { useContext, useEffect, useState, Fragment, useRef, memo } from "react";
 import "./Explore.scss";
 import { AppContext } from "../../Context";
-import Skeleton from "react-loading-skeleton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../Config/firebase";
 import PostModal from "../../Components/DesktopPost/DesktopPost";
@@ -11,6 +10,7 @@ import InputForm from "../../Components/Generic/InpuForm/InputForm";
 import { BiCog } from "react-icons/bi";
 import { CgUnavailable } from "react-icons/cg";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
+import LoadingComponent from "../../Components/Generic/LoadingScreen/LoadingComponent";
 
 const Explore = () => {
   const context = useContext(AppContext);
@@ -23,7 +23,8 @@ const Explore = () => {
     currentPostIndex,
     receivedData,
     handleChangingSort,
-    loadingState
+    loadingState,
+    mutateLoadingState
   } = context;
   const [newExploreArr, setExploreArr] = useState([]);
   const [sortingModalIsOpen, setSortingModal] = useState(false);
@@ -68,6 +69,7 @@ const Explore = () => {
     );
   }
   useEffect(() => {
+    mutateLoadingState({key: "suggList", val: true});
     changeMainState("currentPage", "Explore");
     return() => _isMounted.current = false;
   }, []);
@@ -89,6 +91,7 @@ const Explore = () => {
     const alteredSortFilter = underscoreVal(filter);
     if(explore && explore.length > 0){
       let exploreAlteredArr;
+      // filter
       switch(alteredSortFilter){
         case "posts_by_people_i_follow":
           exploreAlteredArr = explore?.filter(user => user?.some(post => receivedData?.following?.some(item => item?.receiverUid === post?.postOwnerId)));
@@ -113,6 +116,7 @@ const Explore = () => {
           exploreAlteredArr = explore;
       }
       if(exploreAlteredArr?.length > 0){
+        // sort
           switch (alteredSortBy){
                   case "likes_count":
                     return exploreAlteredArr.map(el => {
@@ -167,7 +171,6 @@ const Explore = () => {
       updateSortedElements();
     }
   }, [explore]);
-  //reminder: overflow hidden when explore modal is open
   const customStyles = {
     content : {
       top                   : '50%',
@@ -268,8 +271,6 @@ const Explore = () => {
                      
           </form>
 
-         
-         
         </Modal>
         </div>
         
@@ -295,16 +296,7 @@ const Explore = () => {
                   </div>
                 </div>
               ) : loadingState?.suggList ? (
-                <div className="w-100 flex-row" style={{overflow: "hidden"}}>
-                    <Skeleton
-                    count={8}
-                    height={200}
-                    width={200}
-                    className="m-2"
-                    duration={10}
-                  />
-                </div>
-
+                <LoadingComponent />
               ) : (
                 <div className="empty--posts--container flex-column">
                   <div className="empty--posts--inner mx-auto flex-column">
@@ -331,4 +323,4 @@ const Explore = () => {
   );
 };
 
-export default Explore;
+export default memo(Explore);

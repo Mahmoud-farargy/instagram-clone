@@ -6,14 +6,18 @@ import { AppContext } from "../../Context";
 export const withBrowseUser = WrappedComponent => {
     class newComponent extends PureComponent {
       static contextType = AppContext;
-      state={ isLoading: false}
-      _isMounted = true;
+      constructor(){
+        super();
+        this.state={ isLoading: false};
+        this.memoizedBrowseUser = this.browseUser.bind(this);
+        this._isMounted = true;
+      }
       componentWillUnmount(){
         this._isMounted = false;
       }
        browseUser = (specialUid, name) =>{
-        const { getUsersProfile , notify, uid} =  this.context;
         return new Promise((resolve, reject) => {
+          const { getUsersProfile , notify, uid} =  this.context;
             this.setState({...this.state,isLoading: true});
             if (specialUid && name) {
                 if(specialUid !== uid){
@@ -26,28 +30,27 @@ export const withBrowseUser = WrappedComponent => {
                         reject();
                       }
                     }).catch((err) =>{
+                      reject();
                       if(this._isMounted){
                         this.setState({...this.state,isLoading: false});
                         notify((err && err?.message) || "error has occurred. please try again later!", "error");
                       }
-                      reject();
                     });
                 }else{
-                  this.props.history.push(`/profile`);
                   resolve();
+                  this.props.history.push(`/profile`);
                 }
             }else{
               reject();
             }
         })
- 
       }
       render(){
       
         return (
           <>
             {this._isMounted && this.state.isLoading && <div className="global__loading"><span className="global__loading__inner"></span></div>}
-            <WrappedComponent {...this.props} browseUser={this.browseUser} />
+            <WrappedComponent {...this.props} browseUser={this.memoizedBrowseUser} />
           </>
         )
       }

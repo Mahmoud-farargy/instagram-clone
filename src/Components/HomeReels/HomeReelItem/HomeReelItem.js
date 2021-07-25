@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, { useContext, useState, useRef, useEffect, memo } from "react";
 import reelDefaultIco from "../../../Assets/reels.png";
 import { Avatar } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
@@ -93,4 +93,4 @@ const HomeReelItem = (props) => {
 HomeReelItem.propTypes = {
     reel: PropTypes.object.isRequired
 }
-export default HomeReelItem;
+export default memo(HomeReelItem);

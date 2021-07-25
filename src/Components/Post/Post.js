@@ -7,7 +7,7 @@ import { FiHeart, FiSend } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment , FaRegCommentDots} from "react-icons/fa";
 import { RiBookmarkLine, RiBookmarkFill } from "react-icons/ri";
-import Comment from "../../Components/Comment/Comment";
+import CommentsList from "./Comments/Comments";
 import { GoVerified } from "react-icons/go";
 import { Link } from "react-router-dom";
 import { updateObject } from "../../Utilities/Utility";
@@ -35,7 +35,6 @@ class Post extends PureComponent {
       btnClicks: 0,
       viewFullCaption: false,
       doubleLikeClicked: false,
-      showFullComments: false,
       showInputForm: false,
       replayData: {},
       openOptionsModal: false,
@@ -48,33 +47,45 @@ class Post extends PureComponent {
     };
     this._isMounted = true;
     this.similarsStr = (this.props.likes?.people?.some(el => el?.id === this.props.id) && this.props.likes?.people?.length >3) ? (this.props.likes?.people?.length?.toLocaleString() -3) : (this.props.likes?.people?.length?.toLocaleString() -2);
+    this.updateUsersWhoLiked = this.updateUsersWhoLiked.bind(this);
+    this.handleCurrLikes = this.handleCurrLikes.bind(this);
+    this.openPost = this.openPost.bind(this);
+    this.doubleClickEvent = this.doubleClickEvent.bind(this);
+    this.submitComment = this.submitComment.bind(this);
+    this.replayFunc = this.replayFunc.bind(this);
+    this.onCommentBtnClick = this.onCommentBtnClick.bind(this);
+    this.onEmojiClick = this.onEmojiClick.bind(this);
+    this.closeAllModals = this.closeAllModals.bind(this);
   }
   static contextType = AppContext;
-  updateUsersWhoLiked = () => {
+  updateUsersWhoLiked(){
     var { likes, following } = this.props;
     this.setState({
       ...this.state,
-      alsoLiked: following?.filter(user => likes?.people?.some((el) => (user?.receiverUid !== this.context.receivedData?.uid) && (user?.receiverUid === el?.id))).slice(0,2) 
+      alsoLiked: following?.filter(user => likes?.people?.some((el) => (user?.receiverUid !== this.context.receivedData?.uid) && (user?.receiverUid === el?.id))).slice(0,2)
     })
   }
   componentDidMount() {
     this.updateUsersWhoLiked();
   }
   componentWillUnmount(){
+    this.isVidBuffering = false;
+    this.videoPost = false;
+    this.inputField = false;
     window.clearTimeout(this.timeouts?.current);
     this._isMounted = false;
   }
   componentDidUpdate(prevProps) {
-    if(prevProps.following !== this.props.following){
+    if((prevProps.following !== this.props.following) || (prevProps.likes !== this.props.likes)){
        this.updateUsersWhoLiked();
     }
   }
 
-  handleCurrLikes = (boolean) => {
+  handleCurrLikes(boolean){
     const { index, handleMyLikes, id, userName, userAvatar } = this.props;
     handleMyLikes(boolean, index, id, userName, userAvatar, true);
   };
-  openPost = (postId) => {
+  openPost(postId){
     const { changeMainState,changeModalState, receivedData, notify, getUsersProfile} = this.context
     if(postId){
         getUsersProfile(receivedData?.uid).then((data) => {
@@ -100,7 +111,7 @@ class Post extends PureComponent {
     }
 
   };
-  doubleClickEvent = () => {
+  doubleClickEvent(){
     let currCount = this.state.btnClicks;
     this.setState((prevState) => ({
       btnClicks: prevState.btnClicks + 1,
@@ -193,7 +204,7 @@ class Post extends PureComponent {
   }
 
   onCommentBtnClick() {
-    this.setState(
+    !this.props.areCommentsDisabled && this.setState(
       updateObject(this.state, { showInputForm: !this.state.showInputForm })
     );
 
@@ -206,7 +217,7 @@ class Post extends PureComponent {
       window.clearTimeout(tOut);
     }, 150);
   }
-  handleVideoPlaying =(type) => {
+  handleVideoPlaying(type){
     if(this.state.preLoad === "none"){
       this.setState({...this.state, preLoad: "metadata"});
     }
@@ -220,11 +231,7 @@ class Post extends PureComponent {
         }
     }
   }
-  componentWillUnmount = () => {
-    this.videoPost = false;
-    this.inputField = false;
-  }
-  onEmojiClick = (e, x) => {
+  onEmojiClick(e, x){
     e.persist();
     if(this.inputField && this.inputField?.current && typeof this.inputField?.current.blur !== undefined){
         this.inputField.current.blur();
@@ -234,7 +241,7 @@ class Post extends PureComponent {
       insertedComment: insertIntoText( this.state.insertedComment,x.emoji)
     });
   }
-  closeAllModals = () => {
+  closeAllModals(){
     this.setState({...this.state, openOptionsModal: false, openNewMsgModal: false });
   }
   render() {
@@ -261,7 +268,8 @@ class Post extends PureComponent {
       postId,
       handleSavingPosts,
       savedPosts,
-      songInfo
+      songInfo,
+      areCommentsDisabled
     } = this.props;
     return (
       <Fragment>
@@ -317,39 +325,42 @@ class Post extends PureComponent {
               </span>
             </div>
             <div className="post--card--body">
+              <div className="post__card__content__outer" >
               {contentType === "image" ? (
-                <div className="w-100 h-100"> 
-                  <img
-                    loading="lazy"
-                    onClick={() => this.doubleClickEvent()}
-                    className="post__card__content"
-                    src={contentURL}
-                    alt={`Post by ${userName}`}
-                    draggable="false"
-                  />
-                  {this.state.doubleLikeClicked ? (
-                    <div>
-                      <div className="liked__double__click__layout"></div>
-                      <span
-                        className="liked__double__click"
-                        style={{
-                          animation: this.state.doubleLikeClicked
-                            ? "boundHeartOnDouble 0.9s forwards ease-out"
-                            : null,
-                        }}
-                      >
-                        <FaHeart />
-                      </span>
-                    </div>
-                  ) : null}
-                </div>
+                
+                  <div className="post__card__content__middle" role="button" tabIndex="-1" onClick={() => this.doubleClickEvent()}>
+                    <img
+                      loading="lazy"
+                      className="post__card__content"
+                      src={contentURL}
+                      alt={`Post by ${userName}`}
+                      draggable="false"
+                    />
+                    {this.state.doubleLikeClicked ? (
+                      <div>
+                        <div className="liked__double__click__layout"></div>
+                        <div className="liked__double__click">
+                          <span
+                            style={{
+                              animation: this.state.doubleLikeClicked
+                                ? "boundHeartOnDouble 0.9s forwards ease-out"
+                                : null,
+                            }}
+                          >
+                            <FaHeart />
+                          </span> 
+                        </div>
+                      </div>
+                    ) : null}
+                  </div> 
+
               ) : contentType === "video" ? (
-                <div className="w-100 h-100">
-                  <ScrollTrigger onEnter={() => this.handleVideoPlaying("on-view")} onExit={() => this.handleVideoPlaying("out-of-view")} >
+                <div className="post__card__content__middle" >
+                  <ScrollTrigger className="post__card__content__video" onEnter={() => this.handleVideoPlaying("on-view")} onExit={() => this.handleVideoPlaying("out-of-view")} >
                   <VideoPostComp
                       ref={this.videoPost}
-                      clickEvent={() => this.doubleClickEvent()}
                       src={contentURL}
+                      clickEvent={() => this.doubleClickEvent()}
                       isMuted={true}
                       preload={this.state.preLoad}
                       isVidPlaying={ this.state.isVideoPlaying}
@@ -359,9 +370,10 @@ class Post extends PureComponent {
                   </ScrollTrigger>
                 </div>
               ) : contentType === "audio" ? (
-                  <AudioContent url={contentURL} songInfo={songInfo || {}} userName={userName} doubleClickEvent={() => this.doubleClickEvent()} />
+                    <AudioContent url={contentURL} songInfo={songInfo || {}} userName={userName} doubleClickEvent={() => this.doubleClickEvent()} />
               ): null}
-            </div>
+              </div>
+          </div>
             <div className="post--card--footer flex-column">
               <div className="post--footer--upper--row flex-row">
                 <div className="flex-row">
@@ -383,14 +395,17 @@ class Post extends PureComponent {
                       <FaHeart />
                     </span>
                   )}
-                  <span data-cy="comment" onClick={() => this.onCommentBtnClick()}>
-                   {
-                     this.state.showInputForm ?
-                     <FaRegCommentDots />
-                     :
-                     <FaRegComment />
-                   } 
-                  </span>
+                 {
+                   !areCommentsDisabled &&
+                    <span data-cy="comment" onClick={() => this.onCommentBtnClick()}>
+                    {
+                      this.state.showInputForm ?
+                      <FaRegCommentDots />
+                      :
+                      <FaRegComment />
+                    } 
+                    </span>
+                 } 
                   <span>
                     <FiSend onClick={() => this.setState({...this.state, openNewMsgModal: true})} />
                   </span>
@@ -441,78 +456,27 @@ class Post extends PureComponent {
                 : null
               }
               <Caption caption={caption} userName={userName}  />
-              {comments?.length >= 1 ? (
-                <div>
-                  {comments?.length > 1 ? (
-                    <h5
-                      className="post__comments__count"
-                      onClick={() =>
-                        this.setState({
-                          showFullComments: !this.state.showFullComments,
-                        })
-                      }
-                    >
-                      {" "}
-                      {!this.state.showFullComments
-                        ? "View all"
-                        : "Hide most of the "}{" "}
-                      {comments.length.toLocaleString()} comments
-                    </h5>
-                  ) : (
-                    <h5 className="post__comments__count">Comments</h5>
-                  )}
-                  {!this.state.showFullComments
-                    ? comments?.slice(0, 2).map((comment, i) => {
-                        return (
-                          <Comment
-                            key={i}
-                            comment={comment}
-                            handleLikingComments={handleLikingComments}
-                            postOwnerId={postOwnerId}
-                            commentIndex={i}
-                            replayFunc={this.replayFunc.bind(this)}
-                            postIndex={this.props.index}
-                            myName={myName}
-                            date={comment?.date}
-                            likes={likes}
-                            userAvatar={userAvatar}
-                            contentType={contentType}
-                            contentURL={contentURL}
-                            changeModalState={changeModalState}
-                            uid={id}
-                            deleteComment={onCommentDeletion}
-                          />
-                        );
-                      })
-                    : comments?.map((comment, i) => {
-                        return (
-                          <Comment
-                            key={i}
-                            comment={comment}
-                            handleLikingComments={handleLikingComments}
-                            postOwnerId={postOwnerId}
-                            commentIndex={i}
-                            replayFunc={this.replayFunc.bind(this)}
-                            postIndex={this.props.index}
-                            myName={myName}
-                            date={comment?.date}
-                            likes={likes}
-                            userAvatar={userAvatar}
-                            contentType={contentType}
-                            contentURL={contentURL}
-                            changeModalState={changeModalState}
-                            uid={id}
-                            deleteComment={onCommentDeletion}
-                          />
-                        );
-                      })}
-                </div>
-              ) : null}
+              <CommentsList
+                areCommentsDisabled={areCommentsDisabled}
+                handleLikingComments={handleLikingComments}
+                comments={comments}
+                postOwnerId={postOwnerId}
+                onCommentDeletion={onCommentDeletion}
+                contentType={contentType}
+                likes={likes}
+                userAvatar={userAvatar}
+                userId={id}
+                myName={myName}
+                changeModalState={changeModalState}
+                contentURL={contentURL}
+                postIndex={index}
+                replayFunc={this.replayFunc}
+              />
 
               <small className="post__date pb-2 ">
                 <GetFormattedDate date={postDate?.seconds} /> • <time>{new Date(postDate?.seconds * 1000).toDateString()}</time>
               </small>
-              {this.state.showInputForm && (
+              {(this.state.showInputForm && !areCommentsDisabled) && (
                 <form
                   onSubmit={(e) => this.submitComment(e)}
                   className="post--bottom--comment--adding flex-row"

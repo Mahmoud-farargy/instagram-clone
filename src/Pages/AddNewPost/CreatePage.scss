@@ -1,0 +1,48 @@
+#createPage{
+    background-color: var(--light-gray);
+    width: 100%;
+    .backdrop {
+        background-color: rgba(0,0,0,0.6);
+    } 
+    @media only screen and (max-width: 670px) {
+        background-color: var(--white);
+        .backdrop{
+             display: none !important;
+        }
+    }
+    .go__back__icon{
+        font-size: 45px;
+        padding: 5px 10px;
+        font-weight: 200;
+        cursor: pointer;
+        margin-left: 14px;
+    }
+}
+.create--dismiss--modal{
+    .backdrop{
+        z-index: 1700;
+    }
+    .uf--box--inner{
+        text-align: center;
+        display: block;
+        width: 100%;
+        padding: 32px 32px 10px 32px;
+        h3{
+            font-size: 18px;
+            line-height: 24px;
+            font-weight: 600;
+           
+        }
+        p{
+            padding: 0;
+            font-size: 14px;
+            line-height: 18px;
+            font-weight: 400;
+            color: var(--second--gray);
+        }
+        h3, p{
+            display: block;
+        }
+        border-bottom: 1px solid var(--gray);
+    }
+}

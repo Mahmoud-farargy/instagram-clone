@@ -20,19 +20,22 @@
         transition:all 0.4s ease-out;
         z-index: 100;
     }
-    .video__volume__icon{
+    .video--volume--outer{
         position: absolute;
-        bottom: 15px;
-        right:12px;
-        font-size: 21px;
-        width: 29px;
-        height: 29px;
-        padding:5px 5px;
-        color: inherit;
-        border-radius: 50%;
-        border:1px solid #202020;
-        background: var(--font-black);
-        z-index: $zIndex;
-        text-align: center;
+        right:11px;
+        bottom: 5%;
+        margin: 8px;
+        .video__volume__icon{
+            font-size: 21px;
+            width: 29px;
+            height: 29px;
+            padding:5px 5px;
+            color: inherit;
+            border-radius: 50%;
+            border:1px solid #202020;
+            background: var(--font-black);
+            z-index: $zIndex;
+            text-align: center;
+        } 
     }
 }

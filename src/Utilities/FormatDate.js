@@ -1,4 +1,4 @@
-import React, {Fragment} from "react";
+import React, { Fragment, memo } from "react";
 import PropTypes from "prop-types";
 import Moment from "react-moment";
 const GetFormattedDate = ({date,...args}) => {
@@ -19,4 +19,4 @@ const GetFormattedDate = ({date,...args}) => {
 GetFormattedDate.propTypes = {
     date: PropTypes.number.isRequired
 }
-export default GetFormattedDate;
+export default memo(GetFormattedDate);

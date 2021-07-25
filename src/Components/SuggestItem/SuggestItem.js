@@ -1,9 +1,8 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, memo } from "react";
 import {Avatar} from "@material-ui/core";
 import {GoVerified} from "react-icons/go";
 import PropTypes from "prop-types";
 import { withBrowseUser } from "../HOC/withBrowseUser";
-import { AppContext } from "../../Context";
 import Skeleton from "react-loading-skeleton";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import { trimText } from "../../Utilities/TrimText";
@@ -11,8 +10,7 @@ import { withinPeriod } from "../../Utilities/WithinPeriod";
 import UserNameComp from "../../Components/UserName/UserName";
 
 const SuggestItem =(props)=>{
-    const { loadingState, receivedData } = useContext(AppContext);
-    const { userName, isVerified, userUid, userAvatarUrl, browseUser, creationDate, followers, isOnline, user } = props;
+    const { userName, isVerified, userUid, userAvatarUrl, browseUser, creationDate, followers, isOnline, user, loadingState, receivedData } = props;
     const mutuals = receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.filter(el => el.receiverUid !== receivedData?.uid && followers?.sort((a,b) => b?.date?.seconds -  a?.date?.seconds).some(item => item?.senderUid === el?.receiverUid)).slice(0,1);
     return(
         <Fragment>
@@ -69,4 +67,4 @@ SuggestItem.propTypes = {
         PropTypes.string
     ])
 }
-export default withBrowseUser(SuggestItem);
+export default withBrowseUser(memo(SuggestItem));
