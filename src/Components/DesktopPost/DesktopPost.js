@@ -395,7 +395,7 @@ useEffect(() => {
               <article className="post--card--article">
               <div className="post--card--body desktop--left">
                   {contentType === "image" ? (
-                    <div>
+                    <div className="w-100 h-100" style={{position: "relative"}}>
                       <img
                         loading="lazy"
                         onClick={() => doubleClickEvent()}
@@ -407,21 +407,23 @@ useEffect(() => {
                       {compState.doubleLikeClicked ? (
                         <div>
                           <div className="liked__double__click__layout"></div>
-                          <span
-                            className="liked__double__click"
-                            style={{
-                              animation: compState.doubleLikeClicked
-                                ? "boundHeartOnDouble 0.9s forwards ease"
-                                : null,
-                            }}
-                          >
-                            <FaHeart />
-                          </span>
+                          <div className="liked__double__click">
+                            <span
+                              style={{
+                                animation: compState.doubleLikeClicked
+                                  ? "boundHeartOnDouble 0.9s forwards ease-out"
+                                  : null,
+                              }}
+                            >
+                              <FaHeart />
+                            </span>
+                          </div>
+
                         </div>
                       ) : null}
                     </div>
                   ) : contentType === "video" ? (
-                    <div className="w-100 h-100">
+                    <div className="w-100 h-100" style={{position: "relative"}}>
                       <VideoPostComp
                         src={contentURL}
                         // autoPlay
@@ -430,7 +432,9 @@ useEffect(() => {
                         />
                     </div>
                   ) :  contentType === "audio" ? (
-                      <AudioContent autoPlay url={contentURL} songInfo={songInfo || {}} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()}/>
+                    <div className="post__card__content__outer">
+                        <AudioContent autoPlay url={contentURL} songInfo={songInfo || {}} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()}/>
+                    </div>
                   ) : null}
                 </div>
                 <div className="desktop--right desktop-only">

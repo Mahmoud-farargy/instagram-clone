@@ -1,9 +1,11 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import AddNewPost from "../../Pages/AddNewPost/AddNewPost";
 import "./CreatePostModal.scss";
+import { AppContext } from "../../Context";
 import { IoIosArrowBack } from "react-icons/io";
 
 const CreatePostModal = ({ closeCreateModal, currentPhase, setCurrentPhase }) => {
+    const { loadingState } = useContext(AppContext);
     const goBack = () => {
         currentPhase > 1 ? setCurrentPhase(currentPhase -1) : closeCreateModal();
     }
@@ -12,12 +14,13 @@ const CreatePostModal = ({ closeCreateModal, currentPhase, setCurrentPhase }) =>
             <div id="createPost" >
                 <div className="create--post--container modalShow">
                     <div className="create--post--inner">
+                        {/* Header */}
                         <div className="create--post--header flex-row">
                             <div className="create--post--header--inner flex-row">
-                                <span>
+                                <span className={loadingState.uploading ? "disabled" : ""}>
                                   {
                                     currentPhase > 0 &&
-                                      <IoIosArrowBack className="go__back__icon" onClick={() => goBack()} />
+                                      <IoIosArrowBack className="go__back__icon" onClick={() => !loadingState.uploading && goBack()} />
                                   }
                                 </span>
                                 <h1>
@@ -36,11 +39,12 @@ const CreatePostModal = ({ closeCreateModal, currentPhase, setCurrentPhase }) =>
                                        : "Create"
                                    }
                                 </h1>
-                                <span className="create--post--close" onClick={() => closeCreateModal()}>
+                                <span className={`create--post--close ${loadingState.uploading ? "disabled" : ""}` } onClick={() => !loadingState.uploading && closeCreateModal()}>
                                     &times;
                                 </span>
                             </div>
                         </div>
+                        {/* Body */}
                         <AddNewPost currentPhase={currentPhase} setCurrentPhase={setCurrentPhase}/>
                     </div>
                 </div>

@@ -41,7 +41,7 @@ describe("login tests", () => {
                 cy.wrap(form).find('input[type="submit"]').click();
 
                 cy.wait('@loginUser').its('response.statusCode').should('eq', 200);
-                cy.get(".Toastify__toast").invoke("text").should("contain", "Good morning"); //or Good evening
+                cy.get(".Toastify__toast").invoke("text").should("contain", "Good evening"); //or Good evening
             });
     });  
     

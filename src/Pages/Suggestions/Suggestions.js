@@ -1,15 +1,15 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState, memo } from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import "./Suggestions.scss";
-import { AppContext } from "../../Context";
 import SuggestionItem from "../../Components/SuggestItem/SuggestItem";
 import { GOU } from "../../Utilities/GetOnlineUsers";
 import { withinPeriod } from "../../Utilities/WithinPeriod";
+import PropTypes from "prop-types";
 import * as Consts from "../../Utilities/Consts";
 
-const Suggestions = () => {
+const Suggestions = (props) => {
     const _isMounted = useRef(true);
-    const { suggestionsList, uid, changeMainState, changeModalState} = useContext(AppContext);
+    const { suggestionsList, uid, changeMainState, changeModalState, receivedData, loadingState } = props;
     const [onlineList, setOnlineList] = useState([]);
     const [newUsers, setNewUsers] = useState([]);
     const [upcomingBirthdays, setBirthdays] = useState([]);
@@ -54,6 +54,8 @@ const Suggestions = () => {
                                         followers={user?.followers}
                                         isOnline={onlineList?.some(c => c.uid === user?.uid)}
                                         user={user}
+                                        receivedData={receivedData}
+                                        loadingState={loadingState}
                                     />
                                     ))
                                     :
@@ -68,5 +70,12 @@ const Suggestions = () => {
         </Auxiliary>
     )
 }
-
-export default React.memo(Suggestions);
+Suggestions.propTypes = {
+    suggestionsList: PropTypes.array.isRequired,
+    uid: PropTypes.string.isRequired,
+    changeMainState: PropTypes.func.isRequired,
+    changeModalState: PropTypes.func.isRequired,
+    receivedData: PropTypes.object.isRequired,
+    loadingState: PropTypes.object.isRequired
+}
+export default memo(Suggestions);

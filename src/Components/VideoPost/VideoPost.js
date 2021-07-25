@@ -129,19 +129,21 @@ const VideoPost = React.forwardRef(
 
                 <IoMdVideocam className="video__top__icon" />
                 {vid.isPlaying && <FaPlay onClick={(s) => handleVideo("play", s)} className="video__play__icon fadeEffect" />}
-                {!vid?.hasMuted ? (
-                    <ImVolumeMedium
-                    data-cy="vid-unmuted"
-                    onClick={(l) => handleVideo("mute", l)}
-                    className="video__volume__icon"
-                    />
-                ) : (
-                    <FaVolumeMute
-                    data-cy="vid-muted"
-                    onClick={(l) => handleVideo("mute", l)}
-                    className="video__volume__icon"
-                    />
-                )}
+                <div className="video--volume--outer">
+                  {!vid?.hasMuted ? (
+                      <ImVolumeMedium
+                      data-cy="vid-unmuted"
+                      onClick={(l) => handleVideo("mute", l)}
+                      className="video__volume__icon"
+                      />
+                  ) : (
+                      <FaVolumeMute
+                      data-cy="vid-muted"
+                      onClick={(l) => handleVideo("mute", l)}
+                      className="video__volume__icon"
+                      />
+                  )} 
+                </div>
              </>
             }
             

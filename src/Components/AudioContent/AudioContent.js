@@ -7,8 +7,8 @@ import PropTypes from "prop-types";
 const AudioContent = ({url,userName, doubleClickEvent, songInfo, ...args}) => {
     // const [showDetails, setShowingDetails] = useState(true);
     return(
-        <div className="audio--content flex-column">
-          <div  className="w-100 h-100" style={{position: "relative"}}>
+        <div className="audio--content post__card__content__middle flex-column">
+          <div  className="post__card__content">
             <img className="audio__artwork__cover" loading="lazy" alt={`Post by ${userName}`} src={ songInfo?.artwork || igAudioImg } onClick={() => doubleClickEvent(true)} />
             {/* {
              (showDetails && songInfo && Object.keys(songInfo).length > 0) &&
@@ -22,6 +22,7 @@ const AudioContent = ({url,userName, doubleClickEvent, songInfo, ...args}) => {
               draggable="false"
               src={url}
               // onPlay={e => console.log("onPlay")}
+              className="pb-2"
             />
             <MdAudiotrack className="video__top__icon" />
 

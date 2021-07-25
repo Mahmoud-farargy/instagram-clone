@@ -1,4 +1,4 @@
-import React, { useContext, Fragment, useState, useEffect, useRef } from "react";
+import React, { useContext, Fragment, useState, useEffect, useRef, memo } from "react";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
 import { useHistory, Link, useParams } from "react-router-dom";
@@ -61,6 +61,7 @@ const UsersProfile = () => {
     notify,
     handleSendingMessage
   } = context;
+  const reelsData = usersProfileData?.reels;
   // REFS
   const _isMounted = useRef(true);
   const timeouts = useRef(null);
@@ -108,7 +109,7 @@ const UsersProfile = () => {
      );
     });
    setReelsList(reelArr);
-  },[usersProfileData?.reels]);
+  },[reelsData]);
   useEffect(()=> {
     if(isUserOnline){
     firebase?.database() &&  firebase.database().ref(`/status/${usersProfileData?.uid}`).once('value').then((snapshot) => {
@@ -605,4 +606,4 @@ const UsersProfile = () => {
     </Fragment>
   );
 };
-export default React.memo(UsersProfile);
+export default memo(UsersProfile);

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, lazy, Suspense, useRef } from "react";
+import React, { useState, useEffect, lazy, Suspense, useRef, useCallback } from "react";
 import Auxiliary from "../HOC/Auxiliary";
 import { NavLink, Link } from "react-router-dom";
 import "./Header.css";
@@ -6,7 +6,6 @@ import { HiHome } from "react-icons/hi";
 import { FaHeart , FaFacebookMessenger } from "react-icons/fa";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import { Avatar } from "@material-ui/core";
-import { AppContext } from "../../Context";
 import { auth } from "../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { BiPowerOff, BiCog, BiInfoCircle } from "react-icons/bi";
@@ -23,6 +22,15 @@ import DeskTopSearch from "../../Components/DesktopSearch/DesktopSearch";
 const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
 const Header = (props) => {
+  const {
+    history,
+    location,
+    receivedData,
+    closeNotificationAlert,
+    authLogout,
+    changeMainState,
+    isDayTime
+  } = props
   // Refs
   const headerRef = useRef(null);
   const _isMounted = useRef(true);
@@ -30,7 +38,6 @@ const Header = (props) => {
   // --xx-- //
 
   // state
-  const context = useContext(AppContext);
   const [openNoti, setNoti] = useState(false);
   const [openProf, setProf] = useState(false);
   const [openSearchBox, setSeachBox] = useState(false);
@@ -38,13 +45,6 @@ const Header = (props) => {
   const [openLogoutModal, setLogoutModal] = useState(false);
   const [scrolled, setScrollingState] = useState(false);
    // --xx--//
-  const {
-    receivedData,
-    closeNotificationAlert,
-    authLogout,
-    changeMainState,
-    isDayTime
-  } = context;
   const reverseNotiState = (type) => {
     const notiUpdate = receivedData?.notifications?.isUpdate;
     const notiMsg = receivedData?.notifications?.isNewMsg;
@@ -54,7 +54,12 @@ const Header = (props) => {
       closeNotificationAlert(type);
     }
   };
-  /// useEffects
+  // callbacks
+  const memoizedControlSearchBox = useCallback((val) => {
+    setSeachBox(val);
+    },[],
+  )
+  // useEffects
   useEffect(() => {
     if(_isMounted?.current && ((window.innerWidth || document.documentElement.clientWidth) >= 670)){
         window.addEventListener("scroll", () =>{
@@ -86,7 +91,7 @@ const Header = (props) => {
    setProf(false);
      
        timeouts.current = setTimeout(() => {
-        authLogout(props.history).then(() => {
+        authLogout(history).then(() => {
           if(_isMounted?.current){
           setLogoutModal(false);
           }
@@ -125,7 +130,7 @@ const Header = (props) => {
                             timeout={5000}
                     />
                   </div>
-                  <span onClick={() => props.history.replace("/auth")}>
+                  <span onClick={() => history.replace("/auth")}>
                     Log In
                   </span>
                 </div>
@@ -154,7 +159,7 @@ const Header = (props) => {
               animation: "0.5s ease-in disappear-item 1",
               // animationDelay: "0.5s"
             }}
-            onClick={() => props.history.push("/")} className="ig--logo--img" >
+            onClick={() => history.push("/")} className="ig--logo--img" >
               <img src={receivedData?.profileInfo?.theme === "lightMode" ? HeaderLogoLight : (receivedData?.profileInfo?.theme === "darkMode" || receivedData?.profileInfo?.theme === "blueIzis" || (receivedData?.profileInfo?.theme === "lightDarkAuto" && !isDayTime)) || receivedData?.profileInfo?.theme === "snorkelBlue" || receivedData?.profileInfo?.theme === "icedCoffee" ? HeaderLogoDark : HeaderLogoLight } alt="Instagram Logo" />
             </div>
             <div style={{
@@ -170,7 +175,7 @@ const Header = (props) => {
             </Link> 
           </div>
           
-         <DeskTopSearch controlSearchBox={(state) => setSeachBox(state)} openSearchBox={openSearchBox}  />
+         <DeskTopSearch controlSearchBox={memoizedControlSearchBox} openSearchBox={openSearchBox}  />
           <nav className="header--nav flex-row">
             <ul className="header--ul flex-row">
               <li title="Home">
@@ -194,7 +199,7 @@ const Header = (props) => {
                     >
                       <FaFacebookMessenger />
                       {receivedData?.notifications?.isNewMsg &&
-                      props.location.pathname !== "/messages" ? (
+                      location.pathname !== "/messages" ? (
                         <div className="like__noti__dot mt-1"></div>
                       ) : null}
                     </NavLink>
@@ -256,7 +261,7 @@ const Header = (props) => {
                     <span title={receivedData?.userName} onClick={() => setProf(true)}>
                       <Avatar
                         loading="lazy"
-                        style={{border: (openProf || props.location.pathname?.toLowerCase() === "/profile" || props.location.pathname?.toLowerCase() === "/edit-profile") ? "2px solid var(--light-black)" : ""}}
+                        style={{border: (openProf || location.pathname?.toLowerCase() === "/profile" || location.pathname?.toLowerCase() === "/edit-profile") ? "2px solid var(--light-black)" : ""}}
                         src={receivedData?.userAvatarUrl}
                         alt={receivedData?.userName}
                         className="header__user__avatar flex-column"

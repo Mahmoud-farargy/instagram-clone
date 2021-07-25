@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, useState, useEffect } from "react";
+import React, { Fragment, useRef, useState, useEffect, memo } from "react";
 import { FaHeart } from "react-icons/fa";
 import { FaComment } from "react-icons/fa";
 import PropTypes from "prop-types";
@@ -175,4 +175,4 @@ ProfileItem.propTypes = {
   isSavedPost: PropTypes.bool,
   onLoadingFail: PropTypes.func
 };
-export default ProfileItem;
+export default memo(ProfileItem);

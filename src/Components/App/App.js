@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useContext, Suspense, lazy, useRef} from "react";
+import React, { Fragment, useEffect, useContext, Suspense, lazy } from "react";
 import { Switch, Route, useHistory } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { auth, changeConnectivityStatus } from "../../Config/firebase";
@@ -11,7 +11,6 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import 'react-h5-audio-player/lib/styles.css';
 import $ from "jquery";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
-// import notificationSound from "../../Assets/Sounds/NotificationBell.mp3";
 
 //lazy loading
 const Header = lazy(()=> import("../Header/Header"));
@@ -52,6 +51,7 @@ const App = () => {
     updateSuggestionsList,
     currentPage,
     changeMainState,
+    uid,
     // returnPassword,
     suggestionsList,
     modalsState,
@@ -64,14 +64,24 @@ const App = () => {
     currentPostIndex,
     testStorageConnection,
     explore,
-    currentHour
+    currentHour,
+    loadingState,
+    authLogout,
+    closeNotificationAlert,
+    isDayTime
   } = context;
   const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
   const [user,loading] = useAuthState(auth);
   const history = useHistory();
-  // const [toggledNotiBell, setNotiBell] = useState(false);
-  const stopBellTimeout = useRef(true);
-  const reverseBellTimeout = useRef(true);
+  const renderHeader = (
+    <Header
+      receivedData = {receivedData}
+      closeNotificationAlert = {closeNotificationAlert}
+      authLogout = {authLogout}
+      changeMainState= {changeMainState}
+      isDayTime = {isDayTime}
+     />
+  )
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
@@ -100,43 +110,8 @@ const App = () => {
     return () => {
       //performs some clearn up actions
       unsubscribe();
-     window.clearTimeout(reverseBellTimeout?.current);
-     window.clearTimeout(stopBellTimeout?.current);
     };
   }, []);
-  // useEffect(() => {
-  //   const notificationBellOption = receivedData?.profileInfo?.professionalAcc?.notificationBell;
-  //   const notificationBellType = notificationBellOption?.type?.toLowerCase();
-  
-  //   if(notificationBellOption?.state && notificationBellOption?.type && !toggledNotiBell){
-  //       const lastUpdate = receivedData?.notifications?.list?.sort((a,b ) => b.date.seconds - a.date.seconds)[0];
-  //       // console.log(new Date().getTime());
-  //       const lastMessage = receivedData?.messages?.sort((a, b) => b?.lastMsgDate - a?.lastMsgDate)[0];
-  //       const checkIfTimePassed = (time) => {
-  //           const tenSecs = 10*1000;
-  //           const dateNow = new Date();
-  //          return dateNow - new Date(time * 1000) < tenSecs;
-  //       }
-  //       const diffTimesUpdate = checkIfTimePassed(lastUpdate?.date?.seconds);
-  //       const diffTimesMsg = checkIfTimePassed(lastMessage);
-  //       // Note to self 1*40*1000 = 1 minute,  5*40*1000 = 5 minutes,  10*40*1000 = 10 minutes ...
-  //      //checks if the latest received element's date is less than a minutes ago.If so it fires a bell sound
-  //       const timePassed = notificationBellType === "new updates" ? diffTimesUpdate : notificationBellType === "new messages" ? diffTimesMsg : (diffTimesUpdate || diffTimesMsg);
-  //        const bellSound = new Audio(notificationSound);
-  //        if((timePassed && lastUpdate?.uid !== receivedData?.uid)){
-  //           setNotiBell(true);
-  //           bellSound.play();
-  //           stopBellTimeout.current = setTimeout(() => {
-  //               setNotiBell(false);
-  //               reverseBellTimeout.current = setTimeout(() => {
-  //                   bellSound.pause();
-  //                   window.clearTimeout(reverseBellTimeout?.current);
-  //                   window.clearTimeout(stopBellTimeout?.current);
-  //                 },3000);
-  //             },300);
-  //       }
-  //   }
-  // },[receivedData?.notifications]);
 
   useEffect(() => {
     $(document).ready(() => {
@@ -160,7 +135,6 @@ const App = () => {
        }
   },[receivedData?.profileInfo?.theme]);
   useEffect(() => {
-    //<<make cleanup work here
     document.title = `${currentPage && currentPage + " • "}${AppConfig.title}`;
     if(!navigator.onLine){
       notify("You are Offline! Please reconnect and try again.", "error");
@@ -196,17 +170,18 @@ const App = () => {
         {/* Notifications container */}
         <ToastContainer />
         {/* Routes */}
+        {/* TODO: put these routes in a routes.js component */}
           <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div><LoadingScreen /></div>}>
             <Switch>
             <Route exact path="/">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 ? <Header/> : <LoadingScreen />}
+              {(user && receivedData && Object.keys(receivedData).length) > 0 ? renderHeader : <LoadingScreen />}
               <MobileHeader />
               <Home />
               <MobileNav />
             </Route>
             <Route exact path="/auth" component={AuthPage} />
             <Route exact path="/messages">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
               { //Guards
                 receivedData && Object.keys(receivedData).length > 0 && receivedData?.messages ?
                  <Messages history={history} />
@@ -216,13 +191,13 @@ const App = () => {
               <MobileNav />
             </Route>
             <Route exact path="/add-post">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
               <MobileHeader />
-              <CreatePage />
+              <CreatePage loadingState={loadingState} />
               <MobileNav />
             </Route>
             <Route exact path="/notifications">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
               <MobileHeader />
               {
                 receivedData && receivedData?.notifications ?
@@ -233,7 +208,7 @@ const App = () => {
               <MobileNav />
             </Route>
             <Route exact path="/profile">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
               <MobileHeader />
               {
                 receivedData && Object.keys(receivedData).length > 0 ?
@@ -245,7 +220,7 @@ const App = () => {
               <Footer />
             </Route>
             <Route exact path="/user_profile/:name/:userId">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
               <MobileHeader />
               {
                 usersProfileData && Object.keys(usersProfileData).length > 0 && usersProfileData?.posts ? 
@@ -257,7 +232,7 @@ const App = () => {
               <Footer />
             </Route>
             <Route exact path="/browse-post">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
               <MobileHeader />
               {
                 Object.keys(usersProfileData).length > 0 && usersProfileData?.posts &&  usersProfileData?.posts[currentPostIndex?.index] ?
@@ -268,7 +243,7 @@ const App = () => {
               <MobileNav />
             </Route>
             <Route exact path="/edit-profile">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
               <MobileHeader />
               {
                  receivedData && Object.keys(receivedData).length > 0 && receivedData?.profileInfo?
@@ -288,7 +263,7 @@ const App = () => {
               }
             </Route>
             <Route exact path="/explore">
-            {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+            {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
             <MobileHeader />
               {  
                explore ?
@@ -300,25 +275,32 @@ const App = () => {
             <Footer />
             </Route>
             <Route exact path="/about">
-                {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+                {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
                 <MobileHeader />
                 <About changeMainState={changeMainState} />
                 <MobileNav />
                 <Footer />
             </Route>
             <Route exact path="/search">
-            {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+            {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
               <MobileHeader/>
               <MobileSearch />
               <MobileNav />
               <Footer />
             </Route>
             <Route path="/explore/people">
-            {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+            {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
             <MobileHeader />
             {
               suggestionsList && suggestionsList.length > 0 ?
-              <Suggestions />
+              <Suggestions 
+              suggestionsList={suggestionsList}
+              uid={uid}
+              changeMainState={changeMainState}
+              changeModalState={changeModalState}
+              receivedData={receivedData}
+              loadingState={loadingState}
+               />
               :
               <ErrorRoute type="403" />
             }
@@ -326,7 +308,7 @@ const App = () => {
             <Footer />
             </Route>
             <Route path="*" >
-                {(user && receivedData && Object.keys(receivedData).length) > 0 && <Header/>}
+                {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
                 <MobileHeader />
                 <ErrorRoute type="404"/>
                 <MobileNav />

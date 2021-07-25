@@ -9,7 +9,7 @@ import { TiMessageTyping } from "react-icons/ti";
 import { MdClose } from "react-icons/md";
 import PropTypes from "prop-types";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
-import Message from "./Message/Message";
+import ChatLogList from "./ChatLogList/ChatLogList";
 import { AiOutlinePicture } from "react-icons/ai";
 import { FaRegHeart } from "react-icons/fa";
 import { storage, database, firebase } from "../../Config/firebase";
@@ -309,7 +309,11 @@ const Messages = (props) => {
                   </div>
                 </div>
                 <div className="messages--view--users">
-                  <MSGUsers />
+                  <MSGUsers
+                  messages={receivedData?.messages || []}
+                  uid={receivedData?.uid}
+                  blockList={receivedData.blockList}
+                   />
                 </div>
               </div>
               {/* messages side */}
@@ -353,7 +357,11 @@ const Messages = (props) => {
                       </div>
                     </div>
                     <div className="messages--view--users">
-                      <MSGUsers />
+                      <MSGUsers
+                       messages={receivedData?.messages || []}
+                       uid={receivedData?.uid}
+                       blockList={receivedData.blockList}
+                      />
                     </div>
                   </div>
                 </div>
@@ -398,11 +406,12 @@ const Messages = (props) => {
                       {/* -- */}
                     </div>
                     <div className="messages--chatbox--body" >
-                      {msg?.chatLog?.map((message, index) => {
-                        return (
-                          <Message key={message?.uid + index} user={{ uid: msg?.uid }} openSidedrawer={compState.openSidedrawer} receivedData={receivedData} message={message} index={index} />
-                        );
-                      })}
+                      <ChatLogList
+                        chatLog={msg?.chatLog}
+                        messagerUid={msg?.uid}
+                        receivedData={receivedData}
+                        openSidedrawer={compState.openSidedrawer}
+                       />
                       {
                         userInfo?.typingTo === receivedData?.uid &&
                         <div className="user--typing--row flex-row fadeEffect">

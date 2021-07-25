@@ -14,17 +14,17 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploadedItem, contentName }) => {
+    const { mutateLoadingState, loadingState, receivedData } = context;
     const history = useHistory();
     const _isMounted = useRef(true);
     const [loadState, setLoadState] = useState({
-      uploading: false,
       submitted: false
     });
     const [shareState, setShareState] = useState({
       caption: "",
       location: "",
       artist: "",
-      selectedReelGroup: "New Group",
+      selectedReelGroup: receivedData?.reels && (receivedData?.reels?.length > 0 ? (receivedData?.reels[0].groupName) :"New Group"),
       newGroupName: "",
       showReelFieldErr: false,
       progressBarPercentage: 0,
@@ -46,12 +46,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
       }
     }
   useEffect(() =>{
-    const  { receivedData } = context;
-    setShareState({
-      ...shareState,
-      selectedReelGroup: receivedData?.reels && (receivedData?.reels?.length > 0 ? (receivedData?.reels[0].groupName) :"New Group"),
-    });
-    if(new URL(contentPreview).protocol === 'blob:'){
+      if(new URL(contentPreview).protocol === 'blob:'){
         async function convertBlobToFile() {
           return await fetch(contentPreview).then(r => r.blob());
         }
@@ -65,7 +60,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
         })
     }
      return () => {
-      setLoadState({...loadState, uploading: false});
+      mutateLoadingState({key: "uploading", val:false});
       _isMounted.current = false;
     };
   }, []);
@@ -82,14 +77,14 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
       showReelFieldErr: false,
       method: "Post"
     });
+    mutateLoadingState({key: "uploading", val:false});
     setLoadState({...loadState,
-      submitted: false,
-      uploading: false
+      submitted: false
     });
   }
   const onDataAdding = ({songInfo, type ,url}) =>{
     let { receivedData, uid, notify, generateNewId, addPost } = context;
-    if(uid && url && contentType, receivedData?.userName, contentName){
+    if(uid && url && contentType && receivedData?.userName && contentName){
       if(type.toLowerCase() === Consts.Post){
           const addedPost = {
             caption: shareState.caption,
@@ -152,7 +147,8 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
   
   const onSubmitPost = (x) => {
     x.preventDefault();
-    setLoadState({...loadState, submitted: true, uploading: true});
+    mutateLoadingState({key: "uploading", val: true});
+    setLoadState({...loadState, submitted: true});
     let { receivedData, uid, notify } = context;
     if (uid) {
       const metadata = {
@@ -173,6 +169,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
         });
       },
       (error) => {
+        // Error Function ..
         notify(error.message, "error");
         resetState();
       },
@@ -184,10 +181,6 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
             .getDownloadURL()
             .then((url) => {
               if(_isMounted?.current){
-                // setShareState({
-                //   ...shareState,
-                //   progressBarPercentage: 0,
-                // });
                       //submits post
                   if(method.toLowerCase() === Consts.Post){
                     if (shareState.caption.split(" ").length < 250 && shareState.caption.split(" ").length > 0) {
@@ -233,9 +226,11 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                         }
                       // xxxx
                       } else {
+                        mutateLoadingState({key: "uploading", val:false});
                         notify("Content should be inserted", "error");
                       }
                     } else {
+                      mutateLoadingState({key: "uploading", val:false});
                       notify("Caption should be between 2 and 250 characters", "error");
                     }
                 } else if(method.toLowerCase() === Consts.Reel) {
@@ -275,14 +270,13 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
 }
     // xxxxxx
     const isValid = (method.toLowerCase() === Consts.Post) ? shareState.caption && contentType : method.toLowerCase() === Consts.Reel? (contentType && (shareState.selectedReelGroup ||  shareState.newGroupName)) : null;
-    const { receivedData } = context;
     return (
         <Fragment>
             <div id="shareMediaPhase" className="uploadPhase flex-row">
                 <div className="share--media--container flex-row">
                 {/* share */}
                 {
-                  loadState.uploading ?
+                  loadingState.uploading ?
                     <div className="uploading__in__progress flex-column">
                         <h4 className="mb-3">{ shareState.progressBarPercentage <= 0 ? "Preparing..": shareState.progressBarPercentage >= 80 ?  "Finishing up..." : "Uploading..." }</h4>
                         <div className="my-4 w-100">
@@ -334,11 +328,11 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                         </div>
                       </div>
                         <div className="phase--media--choices flex-column">
-                        <div id="Filter" className="option--container">
+                        <div id="Filter" className="option--container w-100">
                                 {/* location, caption.. */}
                                 {
                           method.toLowerCase() === Consts.Post ?
-                        <div className="mt-2">
+                        <div className="mt-2 w-100">
                                 <InputForm
                                     required={true}
                                     autoFocus={true}
@@ -348,7 +342,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                     val={shareState.caption}
                                     changeInput={onInputChange}
                                     submitted={loadState.submitted}
-                                    disabled={loadState.uploading}
+                                    disabled={loadingState.uploading}
                                 />
                                 <InputForm
                                     type="text"
@@ -356,7 +350,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                     label="location"
                                     val={shareState.location}
                                     changeInput={onInputChange}
-                                    disabled={loadState.uploading}
+                                    disabled={loadingState.uploading}
                                   />
                                 {
                                   (contentType && contentType === "audio") &&
@@ -368,7 +362,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                     val={shareState.artist}
                                     changeInput={onInputChange}
                                     submitted={loadState.submitted && (shareState.songName || shareState.artist)}
-                                    disabled={loadState.uploading}
+                                    disabled={loadingState.uploading}
                                   />
                                   <InputForm
                                     type="text"
@@ -377,7 +371,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                     val={shareState.songName}
                                     changeInput={onInputChange}
                                     submitted={loadState.submitted && (shareState.songName || shareState.artist)}
-                                    disabled={loadState.uploading}
+                                    disabled={loadingState.uploading}
                                   />
                                   </>
                                 }
@@ -387,14 +381,14 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                   <div className="form-group flex-column">
                                     <div className="prof--input--row  flex-row">
                                       <label htmlFor="disableComments">Turn off commenting</label>
-                                      <CheckboxIOS disabled={loadState.uploading} checked={shareState.disableComments || false} changeInput={onInputChange} id="disableComments" name="disableComments" />
+                                      <CheckboxIOS disabled={loadingState.uploading} checked={shareState.disableComments || false} changeInput={onInputChange} id="disableComments" name="disableComments" />
                                       </div>
                                     </div>
                                   </div>
                               }
                           </div>  
                         : method?.toLowerCase() === Consts.Reel ?
-                        <div className="mt-2">
+                        <div className="mt-2 w-100">
                           {
                             context.receivedData?.reels?.length > 0 &&
                             <InputForm
@@ -406,7 +400,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                   val={shareState.selectedReelGroup}
                                   changeInput={onInputChange}
                                   submitted={loadState.submitted}
-                                  disabled={loadState.uploading}
+                                  disabled={loadingState.uploading}
                             />
                           }  
                           {
@@ -421,7 +415,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                     val={shareState.newGroupName}
                                     changeInput={onInputChange}
                                     submitted={loadState.submitted}
-                                    disabled={loadState.uploading}
+                                    disabled={loadingState.uploading}
                               /> 
                             
                             </div>
@@ -436,7 +430,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                         </div>
                         </div>
                         <span className="phase__media__next_btn mt-4">
-                      <Button disabled={!isValid || loadState.uploading} className={`share--btn profile__btn ${(!isValid || loadState.uploading) && "disabled"}`} type="submit" value="Post" > {loadState.uploading ? "Uploading..." : "Share"}</Button> 
+                      <Button disabled={!isValid || loadingState.uploading} className={`share--btn profile__btn ${(!isValid || loadingState.uploading) && "disabled"}`} type="submit" value="Post" > {loadingState.uploading ? "Uploading..." : "Share"}</Button> 
                         </span>
                     </div>
                 </form>

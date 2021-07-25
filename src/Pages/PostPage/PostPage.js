@@ -284,11 +284,11 @@ const PostPage  = (props) => {
                 </span>
               </div>
               <div className="post--card--body">
+                <div className="post__card__content__outer" >
                 {contentType === "image" ? (
-                  <div>
+                  <div className="post__card__content__middle" role="button" tabIndex="1" onClick={() => doubleClickEvent()}>
                     <img
                       loading="lazy"
-                      onClick={() => doubleClickEvent()}
                       className="post__card__content"
                       src={contentURL}
                       alt="post"
@@ -297,30 +297,34 @@ const PostPage  = (props) => {
                     {compState.doubleLikeClicked ? (
                       <div>
                         <div className="liked__double__click__layout"></div>
-                        <span
-                          className="liked__double__click"
-                          style={{
-                            animation: compState.doubleLikeClicked
-                              ? "boundHeartOnDouble 0.9s forwards ease"
-                              : null,
-                          }}
-                        >
-                          <FaHeart />
-                        </span>
+                        <div className="liked__double__click">
+                          <span
+                            style={{
+                              animation: compState.doubleLikeClicked
+                                ? "boundHeartOnDouble 0.9s forwards ease-out"
+                                : null,
+                            }}
+                          >
+                            <FaHeart />
+                          </span>
+                        </div>
                       </div>
                     ) : null}
                   </div>
                 ) : contentType === "video" ? (
-                  <div className="w-100 h-100">
-                    <VideoPostComp
+                  <div className="post__card__content__middle" >
+                    <div className="post__card__content__video">
+                      <VideoPostComp
                       src={contentURL}
                       isVidPlaying={true}
                       ref={vidRef}
-                       />
+                       /> 
+                    </div>
                   </div>
                 ) : contentType === "audio" ? (
                   <AudioContent autoPlay url={contentURL} songInfo={songInfo || {}} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()} />
               ): null}
+                </div>
               </div>
               <div className="post--card--footer flex-column">
                 <div className="post--footer--upper--row flex-row">

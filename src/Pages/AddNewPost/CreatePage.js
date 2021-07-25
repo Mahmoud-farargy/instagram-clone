@@ -3,13 +3,17 @@ import CreatePostModal from "../../Components/CreatePostModal/CreatePostModal";
 import "./CreatePage.scss";
 import { useHistory } from "react-router-dom";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
+import PropTypes from "prop-types";
 
-const CreatePage = () => {
+const CreatePage = (props) => {
+  const { loadingState } = props;
     const history = useHistory();
     const [currentPhase, setCurrentPhase] = useState(0);
     const [dismissModal, setDismissModal] = useState(false);
     const closeCreateModal = () => {
-      currentPhase > 0 ? setDismissModal(true): history.goBack();
+      if(!loadingState.uploading){
+          currentPhase > 0 ? setDismissModal(true): history.goBack();
+      }
     }
     return (
         <Fragment>
@@ -58,5 +62,8 @@ const CreatePage = () => {
             </div>
         </Fragment>
     )
+}
+CreatePage.propTypes ={
+  loadingState: PropTypes.object.isRequired
 }
 export default CreatePage;

@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useContext, useEffect } from "react";
+import React, { Fragment, memo, useContext, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import GetFormattedDate from "../../../../Utilities/FormatDate";
 import TruncateMarkup from "react-truncate";
@@ -19,6 +19,7 @@ const User = ({ user, index, isOnline }) => {
     changeMainState,
     receivedData,
   } = useContext(AppContext);
+  const logData = user?.chatLog;
   const viewUsersMessages = (loadedUid, loadedIndex) => {
     const checkIndex = receivedData?.messages
       ?.map((user) => user.uid)
@@ -41,6 +42,11 @@ const User = ({ user, index, isOnline }) => {
       }
     }
   }, []);
+  const memoizedLastMessage = useMemo(() => {
+    const log = user?.chatLog;
+    return log?.[log?.length - 1];
+  }, [logData]);
+  const chatLogLength = user?.chatLog?.length;
   return (
     <Fragment>
       <li
@@ -73,36 +79,36 @@ const User = ({ user, index, isOnline }) => {
             </span>
 
             <span className="last__message">
-              {user?.chatLog?.[user.chatLog?.length - 1]?.type === "text" ? (
+              {memoizedLastMessage?.type === "text" ? (
                 <TruncateMarkup
                   line={1}
                   ellipsis=".."
                   style={{ textTransform: "none" }}
                 >
-                  {user?.chatLog?.length >= 1
-                    ? user?.chatLog?.[user.chatLog?.length - 1].textMsg
+                  {chatLogLength >= 1
+                    ? memoizedLastMessage.textMsg
                     : null}
                 </TruncateMarkup>
-              ) : user?.chatLog?.[user.chatLog?.length - 1]?.type ===
+              ) : memoizedLastMessage?.type ===
                 "picture" ? (
                 <span>
                   <AiOutlinePicture />
                 </span>
-              ) : user?.chatLog?.[user.chatLog?.length - 1]?.type ===
+              ) : memoizedLastMessage?.type ===
                 "video" ? (
                 <span>
                   <BsFillCameraVideoFill />
                 </span>
-              ) : user?.chatLog?.[user.chatLog?.length - 1]?.type === "like" ? (
+              ) : memoizedLastMessage?.type === "like" ? (
                 <span>
                   <FcLike />
                 </span>
-              ) : user?.chatLog?.[user.chatLog?.length - 1]?.type ===
+              ) : memoizedLastMessage?.type ===
                 "audio" ? (
                 <span>
                   <MdAudiotrack />
                 </span>
-              ) : user?.chatLog?.[user.chatLog?.length - 1]?.type ===
+              ) : memoizedLastMessage?.type ===
                 "document" ? (
                 <span>
                   <CgFileDocument />
@@ -113,11 +119,11 @@ const User = ({ user, index, isOnline }) => {
             </span>
           </div>
           <p className="messages__user__date">
-            {user?.chatLog?.length >= 1 ? (
+            {chatLogLength >= 1 ? (
               <span>
                 <span className="messages__user__date__divider">• </span>
                 <GetFormattedDate
-                  date={user?.chatLog[user.chatLog?.length - 1].date.seconds}
+                  date={memoizedLastMessage.date.seconds}
                 />
               </span>
             ) : null}

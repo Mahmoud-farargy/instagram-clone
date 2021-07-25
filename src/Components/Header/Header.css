@@ -66,6 +66,7 @@
     z-index:2.5;
     height:100%;
     color:var(--font-black);
+    transition: background 0.3s linear;
 }
 #header ::-webkit-input-placeholder, #header ::placeholder,#header ::-webkit-input-placeholder {
     text-align:center;

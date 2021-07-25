@@ -1,13 +1,11 @@
-import React, { useContext, useState, useEffect, useRef, memo } from "react";
+import React, { useState, useEffect, useRef, memo } from "react";
 import { AiOutlineMessage } from "react-icons/ai";
-import { AppContext } from "../../../Context";
 import { GOU } from "../../../Utilities/GetOnlineUsers";
 import User from "./User/User";
 
-const Users = () => {
+const Users = (props) => {
+  const { messages, uid, blockList } = props;
   const [onlineList, setOnlineList] = useState([]);
-  const { receivedData, uid } = useContext(AppContext);
-  const { messages } = receivedData;
   const _isMounted = useRef(true);
   useEffect(() => {
       GOU(uid).then((k) => {
@@ -39,7 +37,7 @@ const Users = () => {
               return (
                 //Desktop
                 <div key={user?.uid + index}>
-                  {!receivedData?.blockList?.some(
+                  {!blockList?.some(
                     (el) => el?.blockedUid === user?.uid
                   ) && (
                     <User

@@ -37,7 +37,7 @@ const CropMedia = ({ contentType, contentPreview, setCurrentPhase, changeContent
         } catch (e) {
           console.error(e)
         }
-      }, [croppedAreaPixels, rotation]);
+      }, [croppedAreaPixels, rotation, contentPreview, changeContentPreview]);
     const nextPhase = () => {
         selectedCrop !== "original" && showCroppedImage();
         setCurrentPhase( contentType === "image" ? 2 : 3 );

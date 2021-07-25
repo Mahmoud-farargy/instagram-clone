@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState, useEffect, useRef } from "react";
+import React, { Fragment, useContext, useState, useEffect, useRef, memo } from "react";
 import { AppContext } from "../../Context";
 import "./HomeReels.scss";
 import { auth } from "../../Config/firebase";
@@ -102,4 +102,4 @@ const HomeReels = () => {
     )
 }
 
-export default HomeReels;
+export default memo(HomeReels);

@@ -605,7 +605,7 @@ const AuthPage = (props) => {
                         localStorage.setItem(
                           "user",
                           JSON.stringify({
-                            email: `${(username || login)}@gmail.com` || "random",
+                            email: `${email || (username || login)}@gmail.com` || "random",
                             password: decipherPassword(formState.signUpPassword?.val),
                           })
                         );

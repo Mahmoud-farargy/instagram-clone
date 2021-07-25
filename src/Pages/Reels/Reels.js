@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useRef } from 'react'
+import React, { Fragment, useEffect, useState, useRef, useCallback } from 'react'
 import "./Reels.scss";
 import {Link} from "react-router-dom";
 import Loader from "react-loader-spinner";
@@ -28,6 +28,9 @@ function Reels(props) {
     const [,loading] = useAuthState(auth);
     const [currentPlayingReel, setCurrPlayingReel] = useState(0);
     const reelItems = reelsProfile?.reels?.[currentReel?.groupIndex]?.reelItems;
+    const memoizedSettingReel = useCallback((val) => {
+        setCurrPlayingReel(val)
+    },[]);
     return (
         <Fragment>
             <section id="reels"> 
@@ -46,7 +49,7 @@ function Reels(props) {
                         {
                             !loading ?
                            reelsProfile?.reels?.length > 0 && reelItems && reelItems.length > 0 && reelItems.sort((a,b) => b.date.seconds - a.date.seconds ).map((reel, i) => {
-                                return reel && <ReelItem setCurrPlayingReel={setCurrPlayingReel} currentPlayingReel={currentPlayingReel} key={i} maxLength={(reelItems?.length ? reelItems?.length : NaN)} groupName={reelsProfile?.reels?.[currentReel?.groupIndex]?.groupName} index={i} item={reel}/>
+                                return reel && <ReelItem setCurrPlayingReel={ memoizedSettingReel } currentPlayingReel={currentPlayingReel} key={i} maxLength={(reelItems?.length ? reelItems?.length : NaN)} groupName={reelsProfile?.reels?.[currentReel?.groupIndex]?.groupName} index={i} item={reel}/>
                                 })
                             :
                             <div className="reels-loading flex-column">
