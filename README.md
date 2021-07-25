@@ -126,7 +126,7 @@ A social media platform similar to Instagram that people can actually use.
                                             </li>
                                             <li><p>Activity Status</p></li>
                                             <li><p>Save posts</p></li>
-                                            <li><p>Dark/light, Iced Coffee, Snorkel Blue, Blue Izis, Butter Cup and honeysucle themes</p></li>
+                                            <li><p>Included themes are: Dark/light, Iced Coffee, Snorkel Blue, Blue Izis, Butter Cup and honeysucle</p></li>
                                             <li><p>Passed multiple automated tests on different functionalites using Cypress.io</p></li>
                                             <li><p>Fully responsive on mobile and tablet devices as well</p></li>
                                         </ul>
