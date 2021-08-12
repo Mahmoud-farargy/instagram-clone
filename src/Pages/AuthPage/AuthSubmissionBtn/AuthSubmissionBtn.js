@@ -7,16 +7,16 @@ const AuthSubmissionBtn = ({type = "login",value = "Log In",formState = {}, load
         let isInvalid
         switch(type) {
             case "login":
-            isInvalid = !formState.loginEmail?.val || !formState.loginPassword?.val;
+            isInvalid = loading || inProgress || (!formState.loginEmail?.val || !formState.loginPassword?.val);
             break;
             case "signUp":
-            isInvalid = !formState.signUpEmail?.val ||
+            isInvalid = loading || inProgress || (!formState.signUpEmail?.val ||
             !formState.signUpPassword?.val ||
             !formState.signUpUsername?.val ||
-            !formState.fullName?.val;
+            !formState.fullName?.val);
             break;
             default:
-            isInvalid = !formState.loginEmail?.val || !formState.loginPassword?.val;
+            isInvalid = loading || inProgress || (!formState.loginEmail?.val || !formState.loginPassword?.val);
         }
         return isInvalid;
     }  
@@ -39,16 +39,12 @@ const AuthSubmissionBtn = ({type = "login",value = "Log In",formState = {}, load
                           <input
                             data-testid={`${type}-sub-btn`}
                             className={
-                              loading ||
-                             disabledConfig() ||
-                              inProgress
+                             disabledConfig()
                                 ? "disabled"
                                 : ""
                             }
                             disabled={
-                              loading ||
-                              disabledConfig() ||
-                              inProgress
+                              disabledConfig()
                             }
                             type="submit"
                             value={value}
