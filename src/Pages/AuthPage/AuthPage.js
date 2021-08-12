@@ -117,7 +117,7 @@ const AuthPage = (props) => {
     timeouts.current = setTimeout(() => {
       //avoids data overlapping
       if (!isUserOnline) {
-          if(formState.loginEmail?.val){
+          if(formState.loginEmail?.val || email === anonInfo.email){
               auth
               .signInWithEmailAndPassword(
                 email.toLowerCase().trim(),
@@ -157,6 +157,7 @@ const AuthPage = (props) => {
               }
             });
           }else{
+            setLoading(false);
             notify(formState.loginEmail?.errorMsg,"error");
           }
       } else {
