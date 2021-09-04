@@ -3,6 +3,7 @@
     min-height: calc(100vh - 10px);
     width: 100%;
     overflow-x: hidden;
+    padding-top: 20px;
 }
 #home.main--home--container .main--home--inner{
     display:flex;

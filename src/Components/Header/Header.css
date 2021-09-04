@@ -1,6 +1,6 @@
 #header.main--header {
     width:100%;
-    position:sticky;
+    position:fixed;
     top:0px;
     left:0px;
     z-index:300;

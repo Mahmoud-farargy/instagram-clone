@@ -13,14 +13,9 @@
     white-space: nowrap;
     .home--reels--deck{
         position: relative;
-            .home--reels--scroll--arrows{
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            top:50%;
-            left:0;
             .home--reel--left--arrow, .home--reel--right--arrow{
-                top:-30%;
+                top:50%;
+                transform: translate(-50%, -50%);
                 position: absolute;
                 background: 0 0;
                 border:none;
@@ -43,7 +38,6 @@
             .home--reel--right--arrow{
                 right:3px;
             }
-        }
     }
 
     .home--reels--box, .home--reels--inner, .home--reels--ul{
@@ -52,13 +46,13 @@
     }
         .home--reels--ul{
             box-shadow: inset -5px 0 5px -5px rgba(0,0,0,0.2);
-            padding-right: 30px;
+            padding-right: 12px;
             width:100%;
                 overflow-x:auto;
                 overflow-y: hidden;
                 max-width: 100%;
                 align-items:center;
-                padding-left:18px;
+                padding-left:12px;
                 margin-bottom:0;
                 min-height: 50px;
                 align-content: flex-start;
@@ -68,6 +62,12 @@
                     display: none;
                 };
                 white-space: nowrap;
+                .react-multi-carousel-list{
+                    align-items: flex-start;
+                }
+                .reel--carousel--item{
+                    margin-right: 3px;
+                }
             .home-reel-item{
                 margin-right:8px;
                 cursor: pointer;
@@ -91,5 +91,9 @@
    
     @media only screen and (max-width: 670px){
         margin:0;
+        .home--reels--ul{
+            padding-right: 1px;
+            padding-left: 1px;
+        }
     }
 }

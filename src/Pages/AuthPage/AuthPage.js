@@ -756,6 +756,11 @@ const AuthPage = (props) => {
                     </div>
                     <div className="signIn--options--box">
                       <SignInOption
+                        method="anonymous"
+                        isLoading={(loading || inProgress)}
+                        signInFunc={(x) => signInMethods(x)}
+                      />
+                      <SignInOption
                         method="google"
                         isLoading={(loading || inProgress)}
                         signInFunc={(x) => signInMethods(x)}
@@ -768,11 +773,6 @@ const AuthPage = (props) => {
                       /> */}
                       <SignInOption
                         method="github"
-                        isLoading={(loading || inProgress)}
-                        signInFunc={(x) => signInMethods(x)}
-                      />
-                      <SignInOption
-                        method="anonymous"
                         isLoading={(loading || inProgress)}
                         signInFunc={(x) => signInMethods(x)}
                       />
