@@ -141,6 +141,7 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
               src={reelPlaceholder}
               className={`users__profile__image`}
               alt={`A Reel by ${post?.userName}`}
+              decoding="auto"
              />
           <div className="user--img--cover flex-column fadeEffect">
             {

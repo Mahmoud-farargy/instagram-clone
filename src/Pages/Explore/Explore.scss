@@ -29,9 +29,6 @@
            }
        }
    }
-   div.desktop-comp.explore-inner{
-       padding-top: 20px;
-   }
     .explore--upper--row{
         margin-bottom:25px;
         display: grid;
@@ -49,7 +46,6 @@
     @media only screen and (min-width:1160px){
         .desktop-comp{
             max-width: 935px !important;
-            padding-top:30px;
             margin-left:auto; 
             margin-right:auto;
         }

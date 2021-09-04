@@ -1,3 +1,5 @@
+/* import files */
+@import url("./fonts/fonts.css");
 *{
     margin:0;
     box-sizing:border-box;
@@ -71,7 +73,7 @@ input {
 }
 :root{
     /* paddings */
-    --desktop-padding-top: 30px;
+    --desktop-padding-top: 80px;
     --desktop-padding-bottom: 30px;
     --padding-sides: 9vw;
     /* colors */
@@ -232,6 +234,8 @@ a:visited{
 }
 .main--app{
     min-height: 100%;
+    min-width: 250px;
+    overflow: hidden;
 }
 .reels--ul{
     padding: 0 0 0 40px;
@@ -1062,14 +1066,14 @@ button:active{
 .global__loading span.global__loading__inner{
     height: 100%;
     background: #f09433;
-    background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
-    background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
-    background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+    background: -moz-linear-gradient(45deg, #f09433 20%,#3bd175 25%,#dc2743 50%,#b120be 75%,#bc1888 100%); 
+    background: -webkit-linear-gradient(45deg, #f09433 20%,#3bd175 25%,#dc2743 50%,#b120be 75%,#bc1888 100%); 
+    background: linear-gradient(45deg, #f09433 20%,#3bd175 25%,#dc2743 50%,#b120be 75%,#bc1888 100%);
+    background-size: 200% 200%;
     filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
-    animation: fakeLoading 0.8s ease-out infinite;
-    -moz-animation: fakeLoading 0.8s ease-out infinite;
-    -webkit-animation: fakeLoading 0.8s ease-out infinite;
-    animation-iteration-count:5;
+    animation: fakeLoading 0.8s ease-out 1, waveBg 2s ease infinite;
+    -moz-animation: fakeLoading 0.8s ease-out 1, waveBg 2s ease infinite;
+    -webkit-animation: fakeLoading 0.8s ease-out 1, waveBg 2s ease infinite;
     user-select: none;
 }
 .global__loading{
@@ -1196,6 +1200,9 @@ button:active{
     height: 100%;
     position: relative;
     
+}
+#usersProfile.users--profile--container {
+    padding-top: 19px;
 }
 .messages--main--container{
     width:100% !important;
@@ -1924,9 +1931,6 @@ ul.getting--started--inner{
     font-size:22px;
     cursor:pointer;
 }
-#messages .desktop-comp{
-    padding-top:9px;
-}
 #messages.messages--container .messages--bottom--form{
     position: absolute;
     bottom:0;
@@ -2060,9 +2064,6 @@ ul.getting--started--inner{
 /* ----------user's profile----------- */
 #usersProfile.users--profile--container, .messages--container {
     background-color: var(--light-gray);
-}
-#usersProfile.users--profile--container .desktop-comp{
-    padding-top: 30px;
 }
 #usersProfile.users--profile--container .user--pic--container{
     flex-basis:30%;
@@ -3020,6 +3021,9 @@ a.prof__btn__unfollowed{
     #usersProfile.users--profile--container .profile__display__name{
         font-size:25px;
     }
+    #usersProfile.users--profile--container {
+        padding-top: 4px;
+    }
     #usersProfile .reel--bubble{
         width: 60px;
         margin:0px 10px 10px;
@@ -3223,6 +3227,9 @@ a.prof__btn__unfollowed{
         padding-bottom:50px;
         min-width: 100%;
     }
+    #usersProfile.users--profile--container .desktop--social--row{
+        justify-content: center;
+    }
     #usersProfile.users--profile--container .desktop--social--row p{
         margin-right:5px;
         font-size:13px;
@@ -3288,6 +3295,9 @@ a.prof__btn__unfollowed{
     #messages.messages--container .desktop-comp{
         padding-top:0px !important;
     }
+    #editProfile{
+        padding-top: 0 !important;
+    }
     #editProfile .edit--box{
         padding-top:40px !important;
     }
@@ -3330,6 +3340,10 @@ a.prof__btn__unfollowed{
     .auth--review--pic{
         display:none;
     }
+    #usersProfile.users--profile--container .users--action--row div,
+    #usersProfile.users--profile--container .users--action--row h5{
+        flex-basis:auto; 
+    }
     #usersProfile.users--profile--container .users--profile--posts, #explore.explore-container .explore--upper--row{
         gap:2px !important;
     }
@@ -3344,7 +3358,6 @@ a.prof__btn__unfollowed{
 @media only screen and (min-width:1160px){
     #usersProfile .desktop-comp, #explore .desktop-comp{
         max-width: 935px !important;
-        padding-top:10px;
         margin-left:auto; 
         margin-right:auto;
     }
@@ -3629,30 +3642,23 @@ a.prof__btn__unfollowed{
 @keyframes fakeLoading {
     0% {
         width:0;
-        background-position:10% 0%
     }
     10% {
         width:10%;
-        background-position:20% 25%;
     }
     30% {
         width:30%;
-        background-position:60% 50%;
     }
     50% {
         width:50%;
-        background-position:91% 100%
     }
     70% {
         width:70%;
-        background-position:60% 50%
     }
     80% {
         width:80%;
-        background-position:20% 25%
     }
     100% {
-        background-position:10% 0%;
         width:100%;
     }
 }
@@ -3660,30 +3666,23 @@ a.prof__btn__unfollowed{
 @-moz-keyframes fakeLoading {
     0% {
         width:0;
-        background-position:10% 0%
     }
     10% {
         width:10%;
-        background-position:20% 25%;
     }
     30% {
         width:30%;
-        background-position:60% 50%;
     }
     50% {
         width:50%;
-        background-position:91% 100%
     }
     70% {
         width:70%;
-        background-position:60% 50%
     }
     80% {
         width:80%;
-        background-position:20% 25%
     }
     100% {
-        background-position:10% 0%;
         width:100%;
     }
 }
@@ -3698,60 +3697,46 @@ a.prof__btn__unfollowed{
 @-webkit-keyframes fakeLoading {
     0% {
         width:0;
-        background-position:10% 0%
     }
     10% {
         width:10%;
-        background-position:20% 25%;
     }
     30% {
         width:30%;
-        background-position:60% 50%;
     }
     50% {
         width:50%;
-        background-position:91% 100%
     }
     70% {
         width:70%;
-        background-position:60% 50%
     }
     80% {
         width:80%;
-        background-position:20% 25%
     }
     100% {
-        background-position:10% 0%;
         width:100%;
     }
 }
 @-o-keyframes fakeLoading {
     0% {
         width:0;
-        background-position:10% 0%
     }
     10% {
         width:10%;
-        background-position:20% 25%;
     }
     30% {
         width:30%;
-        background-position:60% 50%;
     }
     50% {
         width:50%;
-        background-position:91% 100%
     }
     70% {
         width:70%;
-        background-position:60% 50%
     }
     80% {
         width:80%;
-        background-position:20% 25%
     }
     100% {
-        background-position:10% 0%;
         width:100%;
     }
 }

@@ -59,7 +59,7 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
                                 const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
                                 if( postIndex !== -1){                            
                                     if((window.innerWidth || document.documentElement.clientWidth) >= 670){
-                                        setTimeout(() => {
+                                        timeouts.current = setTimeout(() => {
                                             changeMainState("currentPostIndex", { index:postIndex, id: postId });
                                         },10)
                                         timeouts.current = setTimeout(() => {

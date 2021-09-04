@@ -80,14 +80,14 @@ const HomeReelItem = (props) => {
     }
     const {reel} = props;
     return(
-        <li onClick={()=> viewReel()} className="home-reel-item flex-column" title={reel?.userName}>
+        <div onClick={()=> viewReel()} className="home-reel-item flex-column" title={reel?.userName}>
             <div className=" home-reel-container flex-column">
                     <Canvas isReelLoading={isReelLoading} className="reel--reel--inner  flex-column">
                         <Avatar className="reels__icon flex-column" src={(reel?.userAvatarUrl || reelDefaultIco)} alt={reel.userName}/>
                     </Canvas>
                     <small className="home--reel--user--name">{reel?.userName}</small>
             </div>
-        </li>
+        </div>
     )
 }
 HomeReelItem.propTypes = {

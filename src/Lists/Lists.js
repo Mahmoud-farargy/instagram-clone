@@ -188,7 +188,6 @@ export const CategoryList = [
 'Yoshoku Restaurant',
 'Youth Organization',
 'Zhejiang Restaurant',
-'Zoo',
-
+'Zoo'
 ];
 

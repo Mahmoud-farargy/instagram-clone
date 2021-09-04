@@ -333,8 +333,9 @@ class Post extends PureComponent {
                       loading="lazy"
                       className="post__card__content"
                       src={contentURL}
-                      alt={`Post by ${userName}`}
+                      alt={`Shared by ${userName} on ${new Date(postDate?.seconds * 1000).toDateString()}`}
                       draggable="false"
+                      decoding="auto"
                     />
                     {this.state.doubleLikeClicked ? (
                       <div>
