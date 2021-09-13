@@ -18,25 +18,32 @@
                 transform: translate(-50%, -50%);
                 position: absolute;
                 background: 0 0;
-                border:none;
+                border: none;
+                border-color: transparent;
                 width:35px;
-                height:40px;
+                height:100%;
                 cursor:auto;
                 &:focus{
                     outline:none;
                 }
                 svg{
                     filter: drop-shadow(0 0px 10px rgba(0,0,0,0.4));
-                    width: 27px;
-                    height: 27px;
+                    width: 30px;
+                    height: 30px;
                     color: #fff;
+                    border-radius: 50%;
+                    border: 1px solid;
+                    border-color: transparent;
+                    &:active{
+                        border-color: #096dd9;
+                    }
                 }
             }
             .home--reel--left--arrow{
                 left:3px;
             }
             .home--reel--right--arrow{
-                right:3px;
+                right:-3px;
             }
     }
 
@@ -45,12 +52,15 @@
         white-space: nowrap;
     }
         .home--reels--ul{
-            box-shadow: inset -5px 0 5px -5px rgba(0,0,0,0.2);
-            padding-right: 12px;
+            .items--wrapper{
+                display:flex;
+                flex-direction: row;
+            }
+            box-shadow: inset -5px 0 7px -5px rgba(0, 0, 0, 0.150);
             width:100%;
                 overflow-x:auto;
                 overflow-y: hidden;
-                max-width: 100%;
+                max-width: 100vw;
                 align-items:center;
                 padding-left:12px;
                 margin-bottom:0;

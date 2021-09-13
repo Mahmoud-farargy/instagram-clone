@@ -35,7 +35,7 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
                 setLoading({...isLoading,loadingMorePosts: false});
                 setCurrLimit(currLimit + 5);
                 window.clearTimeout(timeouts?.current);
-            },1200);
+            },1100);
         }
     } 
     const lastPostElementRef = useCallback(node => {
