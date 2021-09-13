@@ -4,51 +4,51 @@ import "./HomeReels.scss";
 import { auth } from "../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Skeleton from "react-loading-skeleton";
+import Loader from "react-loader-spinner";
 import HomeReelItem from "./HomeReelItem/HomeReelItem";
 import {
   IoIosArrowDropleftCircle,
   IoIosArrowDroprightCircle,
 } from "react-icons/io";
-import Carousel from "react-multi-carousel";
+import Carousel from "react-items-carousel";
 
 const HomeReels = () => {
+  const [activeItemIndex, setActiveItemIndex] = useState(0);
   const context = useContext(AppContext);
   const { homeReels, loadingState } = context;
   const [, loading] = useAuthState(auth);
   const [newReelsArr, setReelsArr] = useState([]);
+  const [itemsPerSide, setItemsPerSlide] = useState(6);
   const getRandom = (length) => {
     const newLength = homeReels.length < 0 || length < 0 ? 0 : length;
     if (newLength >= 0) {
       return Math.floor(Math.random() * newLength);
     }
   };
-  const responsive = {
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 8,
-      slidesToSlide: 3, // optional, default to 1.
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 6,
-      slidesToSlide: 2, // optional, default to 1.
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 5,
-      slidesToSlide: 3, // optional, default to 1.
-    },
-    smallMobile: {
-      breakpoint: { max: 340, min: 0 },
-      items: 3,
-      slidesToSlide: 2, // optional, default to 1.
-    },
-    extraSmallMobile: {
-      breakpoint: { max: 240, min: 0 },
-      items: 1,
-      slidesToSlide: 1, // optional, default to 1.
-    },
-  };
+  useEffect(() => {
+    const currWidth = +window.innerWidth || +document.documentElement.clientWidth;
+    // Responsive reel items count
+    if (currWidth >= 3000) {
+      // Large Desktop
+      setItemsPerSlide(8);
+    } else if (currWidth >= 1366) {
+      // Laptop
+      setItemsPerSlide(7);
+    } else if (currWidth >= 1024) {
+      // Tablet
+      setItemsPerSlide(6);
+    } else if (currWidth >= 464) {
+      // Mobile
+      setItemsPerSlide(5);
+    } else if (currWidth >= 340) {
+      // Small Mobile
+      setItemsPerSlide(3);
+    } else {
+      // Less than usual
+      setItemsPerSlide(2);
+    }
+  }, []);
+
   useEffect(() => {
     if (homeReels && homeReels.length > 0) {
       function shuffleReels(array) {
@@ -67,12 +67,12 @@ const HomeReels = () => {
             const randomGroup = reels?.[getRandom(reels?.length)];
             return {
               ...randomGroup?.reelItems?.[
-                Math.floor(
-                  Math.random() *
-                    (randomGroup?.reelItems?.length > 0
-                      ? randomGroup?.reelItems?.length
-                      : 0)
-                )
+              Math.floor(
+                Math.random() *
+                (randomGroup?.reelItems?.length > 0
+                  ? randomGroup?.reelItems?.length
+                  : 0)
+              )
               ],
               groupId: randomGroup?.id,
             };
@@ -93,27 +93,30 @@ const HomeReels = () => {
               <div className="home--reels--box flex-row">
                 <ul className="home--reels--ul">
                   <Carousel
-                    swipeable={false}
-                    draggable={false}
-                    responsive={responsive}
-                    ssr={true} // means to render carousel on server-side.
-                    infinite={false}
-                    customRightArrow={
-                      <button className="home--reel--right--arrow">
-                        <IoIosArrowDroprightCircle />
-                      </button>
+                    requestToChangeActive={setActiveItemIndex}
+                    activeItemIndex={activeItemIndex}
+                    numberOfCards={itemsPerSide}
+                    infiniteLoop={false}
+                    firstAndLastGutter={true}
+                    enablePlaceholder={true}
+                    gutter={4}
+                    outsideChevron={false}
+                    slidesToScroll={3}
+                    chevronWidth={25}
+                    placeholderItem={
+                      <Loader
+                        type="TailSpin"
+                        color="var(--light-black)"
+                        height={60}
+                        width={60} />
                     }
-                    customLeftArrow={
-                      <button className="home--reel--left--arrow">
-                        <IoIosArrowDropleftCircle />
-                      </button>
-                    }
-                    keyBoardControl={true}
-                    customTransition="all .6"
-                    transitionDuration={500}
-                    // containerClass="carousel-container"
-                    // dotListClass="custom-dot-list-style"
-                    itemClass="reel--carousel--item"
+                    classes={{ wrapper: "items--wrapper", itemsWrapper: "items--wrapper", itemsInnerWrapper: "items--wrapper" }}
+                    rightChevron={<button className="home--reel--right--arrow">
+                      <IoIosArrowDroprightCircle />
+                    </button>}
+                    leftChevron={<button className="home--reel--left--arrow">
+                      <IoIosArrowDropleftCircle />
+                    </button>}
                   >
                     {newReelsArr.map((reel, i) => (
                       <HomeReelItem key={reel.id + i} reel={reel} />

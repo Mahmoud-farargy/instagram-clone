@@ -51,10 +51,11 @@
                     text-align:center;
                     svg{
                         color: var(--light-black);
-                        transition: color 0.3s linear;
+                        transition: all 0.3s linear;
                         &:hover{
                             color: var(--secondary-clr);
-                            }
+                            transform: translateY(-2px);
+                        }
                         }
                 }
             }

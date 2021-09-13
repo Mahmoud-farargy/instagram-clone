@@ -6,103 +6,108 @@ import { RiSearchLine, RiMic2Fill } from "react-icons/ri";
 import { TiDelete } from "react-icons/ti";
 import { BsMicFill } from "react-icons/bs";
 import Loader from "react-loader-spinner";
+import { debounce } from "../../Utilities/Debounce";
 const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
 
 const DesktopSearch = ({ controlSearchBox, openSearchBox }) => {
-    const [searchVal, setSearchVal] = useState("");
-    const [openVoiceBox, setVoiceBox] = useState(false);
-    const isVoiceSearching = useRef(false);
-    const { searchInfo, convertSpeech, searchUsers, pauseMedia } = useContext(AppContext);
-    const _isMounted = useRef(true);
-    useEffect(() => {
-        if(_isMounted?.current){
-            if (searchVal && searchVal !== "") {
-                if(!openVoiceBox){
-                    searchUsers(searchVal, "regular");
-                }
-            controlSearchBox(true);
-          } else {
-            controlSearchBox(false);
-            setSearchVal("");
-          }
+  const [searchVal, setSearchVal] = useState("");
+  const [openVoiceBox, setVoiceBox] = useState(false);
+  const isVoiceSearching = useRef(false);
+  const timeIntervalId = useRef(null);
+  const { searchInfo, convertSpeech, searchUsers, pauseMedia, changeMainState } = useContext(AppContext);
+  const _isMounted = useRef(true);
+  useEffect(() => {
+    if (_isMounted?.current) {
+      if (searchVal && searchVal !== "") {
+        if (!openVoiceBox) {
+          (debounce(function () {
+            searchUsers(searchVal, "regular");
+          }, 900, timeIntervalId, false))();
         }
-      }, [searchVal]);
-    useEffect(() => ()=> {
-      searchByVoice("stop");
-      _isMounted.current = false;
-    },[]);
-    const searchByVoice = (actionProp) => {
-        if(actionProp === "start"){
-          isVoiceSearching.current = true;
-          convertSpeech({type: "stt", action: "start"}).then(sentence =>{
-                if(_isMounted?.current && sentence && isVoiceSearching?.current){
-                  setSearchVal(sentence);
-                    searchUsers(sentence, "regular").then((results) => {
-                      isVoiceSearching.current = false;
-                        setVoiceBox(false);
-                        if(_isMounted?.current && results){
-                            if(results.length > 0){
-                                convertSpeech({type: "tts", phrase: `Here are the results found for ${sentence}`});
-                            }else{
-                                convertSpeech({type: "tts", phrase: `No results found. Please try another word or speak more clearly`});
-                            }
-                        }
-                    })
-                }
-            });
-        }else if(actionProp === "stop"){
-          isVoiceSearching.current = false;
-          convertSpeech({type: "stt", action: "stop"});
+        controlSearchBox(true);
+      } else {
+        controlSearchBox(false);
+        clearSearchBox();
+      }
+    }
+  }, [searchVal]);
+  useEffect(() => () => {
+    searchByVoice("stop");
+    _isMounted.current = false;
+  }, []);
+  const searchByVoice = (actionProp) => {
+    if (actionProp === "start") {
+      isVoiceSearching.current = true;
+      convertSpeech({ type: "stt", action: "start" }).then(sentence => {
+        if (_isMounted?.current && sentence && isVoiceSearching?.current) {
+          setSearchVal(sentence);
+          searchUsers(sentence, "regular").then((results) => {
+            isVoiceSearching.current = false;
+            setVoiceBox(false);
+            if (_isMounted?.current && results) {
+              if (results.length > 0) {
+                convertSpeech({ type: "tts", phrase: `Here are the results found for ${sentence}` });
+              } else {
+                convertSpeech({ type: "tts", phrase: `No results found. Please try another word or speak more clearly` });
+              }
+            }
+          })
         }
+      });
+    } else if (actionProp === "stop") {
+      isVoiceSearching.current = false;
+      convertSpeech({ type: "stt", action: "stop" });
+    }
 
-      }
-    const clearSearchBox = () => {
-        setSearchVal("");
-    };
-    useEffect(() => {
-      if(openVoiceBox){
-        document.body.style.overflow = "hidden";
-      }else{
-        document.body.style.overflow = "visible";
-      }
-      return () => document.body.style.overflow = "visible";
-    }, [openVoiceBox]);
-    return(
-        <>
-        {/* modals */}
-        {openVoiceBox && (
-              <OptionsModal closeModalFunc={(k) => setVoiceBox(k)}>
-                <div id="logoutModal" className="desktop--search">
-                    <div className="logout--modal ">
-                           <h3 className="flex-column pt-3">Search with your voice</h3>
-                           <p>To search by voice, go to your browser settings and allow access to microphone</p>
-                    </div>
-                  <div className="voice__search__option flex-column py-3" >
-                      <div className="flex-column align-items-center justify-content-center text-align-center">
-                          <RiMic2Fill onClick={()=> searchByVoice(!pauseMedia ? "start" : "stop")} className={`voice__search__btn ${pauseMedia && "boundingEffect"}`} /> 
-                          <div className="voice__speach__listening fadeEffect">
-                            {pauseMedia && <h5>Listening..</h5>}
-                          </div>
-                          
-                      </div>
-                     
-                  </div>
-                  <span >
-                    Cancel
-                  </span>
+  }
+  const clearSearchBox = () => {
+    setSearchVal("");
+    changeMainState("searchInfo", { results: [], loading: false });
+  };
+  useEffect(() => {
+    if (openVoiceBox) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "visible";
+    }
+    return () => document.body.style.overflow = "visible";
+  }, [openVoiceBox]);
+  return (
+    <>
+      {/* modals */}
+      {openVoiceBox && (
+        <OptionsModal closeModalFunc={(k) => setVoiceBox(k)}>
+          <div id="logoutModal" className="desktop--search">
+            <div className="logout--modal ">
+              <h3 className="flex-column pt-3">Search with your voice</h3>
+              <p>To search by voice, go to your browser settings and allow access to microphone</p>
+            </div>
+            <div className="voice__search__option flex-column py-3" >
+              <div className="flex-column align-items-center justify-content-center text-align-center">
+                <RiMic2Fill onClick={() => searchByVoice(!pauseMedia ? "start" : "stop")} className={`voice__search__btn ${pauseMedia && "boundingEffect"}`} />
+                <div className="voice__speach__listening fadeEffect">
+                  {pauseMedia && <h5>Listening..</h5>}
                 </div>
-              </OptionsModal>
-        )}
-        <div
-            style={{
-              opacity: openVoiceBox ? "1" : "0",
-              display: openVoiceBox ? "block" : "none",
-              transition: "all 0.5s ease",
-            }}
-            className="backdrop "
-            onClick={() => setVoiceBox(false)}
-          ></div>
-        <div className="search--bar--container">
+
+              </div>
+
+            </div>
+            <span >
+              Cancel
+                  </span>
+          </div>
+        </OptionsModal>
+      )}
+      <div
+        style={{
+          opacity: openVoiceBox ? "1" : "0",
+          display: openVoiceBox ? "block" : "none",
+          transition: "all 0.5s ease",
+        }}
+        className="backdrop "
+        onClick={() => setVoiceBox(false)}
+      ></div>
+      <div className="search--bar--container">
         <input
           value={searchVal}
           onChange={(e) => setSearchVal(e.target.value)}
@@ -133,11 +138,11 @@ const DesktopSearch = ({ controlSearchBox, openSearchBox }) => {
             <TiDelete />
           </span>
         ) : <span
-              onClick={() => setVoiceBox(true)}
-              className="clear--search--box voice__search__icon"
-            >
-            <BsMicFill/>
-          </span>}
+          onClick={() => setVoiceBox(true)}
+          className="clear--search--box voice__search__icon"
+        >
+              <BsMicFill />
+            </span>}
 
         <div
           style={{
@@ -160,32 +165,32 @@ const DesktopSearch = ({ controlSearchBox, openSearchBox }) => {
                     />
                   );
                 })
-              ):  searchInfo?.loading ?
-                (
-                  <div className="empty--box flex-row">
-                    <Loader
-                      type="TailSpin"
-                      color="#919191"
-                      height={35}
-                      width={35}
-                      timeout={5000}
-                    />
-                  </div>
-                )
-               : (
-                <div className="empty--box flex-row">
-                  <h4>No Results found</h4>
-                </div>
-              )}
+              ) : searchInfo?.loading ?
+                  (
+                    <div className="empty--box flex-row">
+                      <Loader
+                        type="TailSpin"
+                        color="#919191"
+                        height={35}
+                        width={35}
+                        timeout={5000}
+                      />
+                    </div>
+                  )
+                  : (
+                    <div className="empty--box flex-row">
+                      <h4>No Results found</h4>
+                    </div>
+                  )}
               <div className="noti__transparent"></div>
             </ul>
           </div>
         </div>
       </div>
-      </>
-    )
+    </>
+  )
 }
 DesktopSearch.propTypes = {
-    controlSearchBox: PropTypes.func.isRequired
+  controlSearchBox: PropTypes.func.isRequired
 }
 export default DesktopSearch;

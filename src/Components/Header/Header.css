@@ -269,7 +269,7 @@
     margin-right: 10px;
 }
 .noti__transparent{
-    background:linear-gradient(to bottom,var(--white), rgb(212, 209, 209,0.2));
+    background:linear-gradient(to top,var(--white), rgba(230, 228, 228, 0.05));
     width:100%;
     height:20px;
     position: absolute;

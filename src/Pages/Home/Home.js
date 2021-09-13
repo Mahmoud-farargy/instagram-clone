@@ -73,7 +73,7 @@ const Home = (props) => {
           <div className="main--home--inner desktop-comp">
             <div className="home--posts--side flex-column">
               {
-                homeReels && <HomeReels />
+                homeReels && homeReels.length > 0 && <HomeReels />
               } 
               {!loading && posts?.length >= 1 ? (
                 posts?.map((post, i) => {
