@@ -1854,11 +1854,12 @@ ul.getting--started--inner{
     margin:0 auto;
     cursor: pointer;
 }
-.hashtag{
+.link--element{
     color: rgb(39, 108, 211);
     cursor: pointer;
+    display: inline;
 }
-.hashtag:hover{
+.link--element:hover{
     text-decoration: underline;
 }
 #home .suggest--item--container .suggestion--item .MuiAvatar-root{
