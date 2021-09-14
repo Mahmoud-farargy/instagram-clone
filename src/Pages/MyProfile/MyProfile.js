@@ -21,7 +21,7 @@ import { HiOutlinePlus } from "react-icons/hi";
 import { FiLogOut, FiVideoOff } from "react-icons/fi";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import { trimText } from "../../Utilities/TrimText";
-import { findNReplaceHash } from "../../Utilities/ReplaceHashes";
+import { linkifyText } from "../../Utilities/ReplaceHashes";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 
 const MyProfile =()=>{
@@ -79,7 +79,7 @@ const MyProfile =()=>{
     const changeDirection = (index, id) => {
         changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? index : index - 1, activeID:  id}); history.push("/edit-profile")
     }
-    const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0]? receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0] : "" ;
+    const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?\:\/\/|www\.)/i, "") || "";
     const isBirthday = ((receivedData?.profileInfo?.birthday) && (new Date().getMonth() + 1 === new Date(receivedData?.profileInfo?.birthday).getMonth() + 1) && (new Date().getDate() === new Date(receivedData?.profileInfo?.birthday).getDate()));
 
     const HeaderBottom = (
@@ -103,7 +103,7 @@ const MyProfile =()=>{
                                     receivedData?.profileInfo && receivedData?.profileInfo?.bio &&
                                     <div className="bottom--row--user-info flex-column">
                                         <span dangerouslySetInnerHTML={{
-                                            __html: trimText(findNReplaceHash(receivedData?.profileInfo?.bio, 1000)),
+                                            __html: trimText(linkifyText(receivedData?.profileInfo?.bio), 1000),
                                         }}></span>
                                     </div>
                                 }

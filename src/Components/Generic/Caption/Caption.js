@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Auxiliary from "../../HOC/Auxiliary";
 import PropTypes from "prop-types";
 import { trimText } from "../../../Utilities/TrimText";
-import { findNReplaceHash } from "../../../Utilities/ReplaceHashes";
+import { linkifyText } from "../../../Utilities/ReplaceHashes";
 
 const Caption = ({ caption, userName = "", isFullCaption = false }) => {
   const [viewFullCaption, setViewFullCap] = useState(isFullCaption || false);
@@ -15,13 +15,13 @@ const Caption = ({ caption, userName = "", isFullCaption = false }) => {
             style={{ cursor: "pointer" }}
             onClick={() => setViewFullCap(true)}
             dangerouslySetInnerHTML={{
-              __html: trimText(findNReplaceHash(caption), 200),
+              __html: trimText(linkifyText(caption), 200),
             }}
           ></p>
         ) : (
           <p
             className="article__post"
-            dangerouslySetInnerHTML={{ __html: findNReplaceHash(caption) }}
+            dangerouslySetInnerHTML={{ __html: linkifyText(caption) }}
           ></p>
         )}
       </span>

@@ -6,7 +6,7 @@ import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import { Avatar } from "@material-ui/core";
 import { trimText } from "../../Utilities/TrimText";
-import { findNReplaceHash } from "../../Utilities/ReplaceHashes";
+import { linkifyText } from "../../Utilities/ReplaceHashes";
 
 const Commment =(props)=>{
     var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, browseUser} = props;
@@ -28,7 +28,7 @@ const Commment =(props)=>{
                 <span  title={comment?.userName} className="post__top__comment">
                       <p className="comment__text"> <strong onClick={() => directTo()}>{trimText(comment?.userName, 19)}</strong> 
                           <span dangerouslySetInnerHTML={{
-                            __html: trimText(findNReplaceHash(comment?.comment, 600)),
+                            __html: trimText(linkifyText(comment?.comment), 600),
                             }} ></span>
                       </p>
                 </span>   
@@ -77,7 +77,9 @@ const Commment =(props)=>{
                                                             {<Avatar className="comment__user__avatar" loading="lazy" src={subComment?.userAvatarUrl} alt={subComment?.senderName}/>}
                                                                 <div title={subComment?.senderName} className="post__top__comment flex-column">
                                                                     <strong onClick={() => browseUser( subComment?.senderUid, subComment?.senderName )} >{trimText(subComment?.senderName, 19)}</strong>
-                                                                    <span> {trimText(subComment?.commentText, 600)}</span>
+                                                                    <span dangerouslySetInnerHTML={{
+                                                                    __html: trimText(linkifyText(subComment?.commentText), 600),
+                                                                    }} ></span>
                                                                 </div>
                                                                 {
                                                                     !subComment?.likes?.some(el => el.id === uid) ?
