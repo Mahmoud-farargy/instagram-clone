@@ -126,7 +126,7 @@ const EditProfileOption = (props) => {
         uploadedPhoto.size <= 12378523
       ) {
         if (uploadedPhoto?.name.split("").length <= 200) {
-          notify("In progress");
+          notify("In progress...");
           const uploadContent = storage
             .ref(`avatars/${receivedData?.uid}`)
             .put(uploadedPhoto, metadata);

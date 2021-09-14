@@ -13,6 +13,11 @@ A social media platform similar to Instagram that people can actually use.
 <img src="/Screenshots/Capture5.png" />
 <img src="/Screenshots/Capture3.gif" />
 
+<h2>Demo</h2>
+
+<a href="https://instagram-clone-21d9b.web.app" style="color: #cb3837; display: block; margin-bottom: 4px;">Click here to go to the Live Demo 🔥 🔥</a> <br/>
+Give me a star if you like it. ⭐
+
 <h2>Core Features</h2>
 
  <ul class="bullet--1">
@@ -176,6 +181,3 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-👇 Live Demo - <br/>
-<a href="https://instagram-clone-21d9b.web.app">Click here </a> to go to the Live Demo 🔥 🔥 <br/>
-Give me a star if you like it.

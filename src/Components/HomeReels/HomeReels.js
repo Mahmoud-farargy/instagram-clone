@@ -40,8 +40,11 @@ const HomeReels = () => {
     } else if (currWidth >= 464) {
       // Mobile
       setItemsPerSlide(5);
-    } else if (currWidth >= 340) {
+    } else if (currWidth >= 350) {
       // Small Mobile
+      setItemsPerSlide(4);
+    } else if (currWidth >= 250) {
+      // Smaller Mobile
       setItemsPerSlide(3);
     } else {
       // Less than usual
