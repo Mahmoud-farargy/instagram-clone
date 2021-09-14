@@ -177,5 +177,5 @@ Your app is ready to be deployed!
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 👇 Live Demo - <br/>
-<a href="https://voxgram.netlify.app/">Click here </a> to go to the Live Demo 🔥 🔥 <br/>
+<a href="https://instagram-clone-21d9b.web.app">Click here </a> to go to the Live Demo 🔥 🔥 <br/>
 Give me a star if you like it.
