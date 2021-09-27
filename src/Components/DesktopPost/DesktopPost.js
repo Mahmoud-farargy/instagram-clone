@@ -34,7 +34,8 @@ import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriend
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import { trimText } from "../../Utilities/TrimText";
 import VideoPostComp from "../../Components/VideoPost/VideoPost";
-const EmojiPicker = React.lazy(() =>  import("../../Components/Generic/EmojiPicker/EmojiPicker"));
+import { retry } from "../../Utilities/RetryImport";
+const EmojiPicker = React.lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
 
 const DesktopPost = (props) => {
   const { browseUser, disableArrows } = props;

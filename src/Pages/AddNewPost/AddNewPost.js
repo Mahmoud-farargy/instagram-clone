@@ -7,10 +7,11 @@ import InputForm from "../../Components/Generic/InpuForm/InputForm";
 import {updateObject} from "../../Utilities/Utility";
 import Files from "react-files";
 import * as Consts from "../../Utilities/Consts";
+import { retry } from "../../Utilities/RetryImport";
+const CropMediaPhase = lazy(() => retry(() => import("./CropMediaPhase/CropMediaPhase")));
+const FilterMediaPhase = lazy(() => retry(() => import("./FilterMediaPhase/FilterMediaPhase")));
+const ShareMediaPhase = lazy(() => retry(() => import("./ShareMediaPhase/ShareMediaPhase")));
 
-const CropMediaPhase = lazy(() => import("./CropMediaPhase/CropMediaPhase"));
-const FilterMediaPhase = lazy(() => import("./FilterMediaPhase/FilterMediaPhase"));
-const ShareMediaPhase = lazy(() => import("./ShareMediaPhase/ShareMediaPhase"));
 class AddNewPost extends PureComponent {
   constructor(props) {
     super(props);

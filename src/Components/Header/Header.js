@@ -3,7 +3,7 @@ import Auxiliary from "../HOC/Auxiliary";
 import { NavLink, Link } from "react-router-dom";
 import "./Header.css";
 import { HiHome } from "react-icons/hi";
-import { FaHeart , FaFacebookMessenger } from "react-icons/fa";
+import { FaHeart, FaFacebookMessenger } from "react-icons/fa";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import { Avatar } from "@material-ui/core";
 import { auth } from "../../Config/firebase";
@@ -17,9 +17,10 @@ import Loader from "react-loader-spinner";
 import LoadingScreen from "../../Components/Generic/LoadingScreen/LoadingScreen";
 import HeaderLogoLight from "../../Assets/instagram-icon-logo.c1dbcbd5.svg";
 import HeaderLogoDark from "../../Assets/instagram-icon-logo-loading.e195cbde.svg";
-import {IoIosCompass} from "react-icons/io";
+import { IoIosCompass } from "react-icons/io";
 import DeskTopSearch from "../../Components/DesktopSearch/DesktopSearch";
-const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
+import { retry } from "../../Utilities/RetryImport";
+const OptionsModal = lazy(() => retry(() => import("../../Components/Generic/OptionsModal/OptionsModal")));
 
 const Header = (props) => {
   const {
@@ -44,7 +45,7 @@ const Header = (props) => {
   const [user] = useAuthState(auth);
   const [openLogoutModal, setLogoutModal] = useState(false);
   const [scrolled, setScrollingState] = useState(false);
-   // --xx--//
+  // --xx--//
   const reverseNotiState = (type) => {
     const notiUpdate = receivedData?.notifications?.isUpdate;
     const notiMsg = receivedData?.notifications?.isNewMsg;
@@ -57,97 +58,97 @@ const Header = (props) => {
   // callbacks
   const memoizedControlSearchBox = useCallback((val) => {
     setSeachBox(val);
-    },[],
+  }, [],
   )
   // useEffects
   useEffect(() => {
-    if(_isMounted?.current && ((window.innerWidth || document.documentElement.clientWidth) >= 670)){
-        window.addEventListener("scroll", () =>{
-        if(headerRef && headerRef.current){
-          if(window.scrollY > 0){
+    if (_isMounted?.current && ((window.innerWidth || document.documentElement.clientWidth) >= 670)) {
+      window.addEventListener("scroll", () => {
+        if (headerRef && headerRef.current) {
+          if (window.scrollY > 0) {
             headerRef.current?.classList && headerRef.current.classList.add("shorter_header");
             setScrollingState(true);
-          }else{
+          } else {
             setScrollingState(false);
             headerRef?.current?.classList && headerRef.current.classList.remove("shorter_header");
           }
         }
       })
     }
-        
-    return () =>{
-      window.removeEventListener("scroll", ()=> {});
+
+    return () => {
+      window.removeEventListener("scroll", () => { });
       window.clearTimeout(timeouts?.current);
       headerRef.current = false;
       setNoti(false);
       setLogoutModal(false);
       setScrollingState(false);
       _isMounted.current = false;
-  }
+    }
   }, []);
-// ---xxx-- //
+  // ---xxx-- //
   const onLoggingOut = () => {
-   setLogoutModal(true);
-   setProf(false);
-     
-       timeouts.current = setTimeout(() => {
-        authLogout(history).then(() => {
-          if(_isMounted?.current){
+    setLogoutModal(true);
+    setProf(false);
+
+    timeouts.current = setTimeout(() => {
+      authLogout(history).then(() => {
+        if (_isMounted?.current) {
           setLogoutModal(false);
-          }
-        }).catch(() => {
-          if(_isMounted?.current){
-              setLogoutModal(false);
-             window.clearTimeout(timeouts?.current);
-          }
-        });
-      },1400);
+        }
+      }).catch(() => {
+        if (_isMounted?.current) {
+          setLogoutModal(false);
+          window.clearTimeout(timeouts?.current);
+        }
+      });
+    }, 1400);
   }
   const closeNotificationOnClick = (w) => {
     w.persist();
-    if(w.target.tagName === "H6" && _isMounted?.current){
+    if (w.target.tagName === "H6" && _isMounted?.current) {
       timeouts.current = setTimeout(() => {
         setNoti(false);
         window.clearTimeout(timeouts?.current);
-      },900);
+      }, 900);
     }
   }
   return (
     <Auxiliary>
       {/* modals */}
       <Suspense fallback={<LoadingScreen />}>
-          {openLogoutModal && (
-              <OptionsModal>
-                <div id="logoutModal">
-                    <div className="logout--modal flex-column">
-                  <h2>Logging Out</h2>
-                  <p>You need to log back in.</p>
-                  <Loader
-                    type="Oval"
-                            color="var(--secondary-clr)"
-                            height={18}
-                            width={18}
-                            timeout={5000}
-                    />
-                  </div>
-                  <span onClick={() => history.replace("/auth")}>
-                    Log In
+        {openLogoutModal && (
+          <OptionsModal>
+            <div id="logoutModal">
+              <div className="logout--modal flex-column">
+                <h2>Logging Out</h2>
+                <p>You need to log back in.</p>
+                <Loader
+                  type="Oval"
+                  color="var(--secondary-clr)"
+                  height={18}
+                  width={18}
+                  timeout={5000}
+                />
+              </div>
+              <span onClick={() => history.replace("/auth")}>
+                Log In
                   </span>
-                </div>
-              
-              </OptionsModal>
-            )}
+            </div>
+
+          </OptionsModal>
+        )}
       </Suspense>
-          <div
-            style={{
-              opacity: openLogoutModal ? "1" : "0",
-              display: openLogoutModal ? "block" : "none",
-              transition: "all 0.5s ease",
-            }}
-            className="backdrop "
-            onClick={() => setLogoutModal(false)}
-          ></div>
-        {/* --xx-- */}
+      <div
+        style={{
+          opacity: openLogoutModal ? "1" : "0",
+          display: openLogoutModal ? "block" : "none",
+          transition: "all 0.5s ease",
+        }}
+        className="backdrop "
+        onClick={() => setLogoutModal(false)}
+      ></div>
+      {/* --xx-- */}
 
       <header ref={headerRef} id="header" className="main--header flex-row">
         <div className="header--inner flex-row">
@@ -159,8 +160,8 @@ const Header = (props) => {
               animation: "0.5s ease-in disappear-item 1",
               // animationDelay: "0.5s"
             }}
-            onClick={() => history.push("/")} className="ig--logo--img" >
-              <img src={receivedData?.profileInfo?.theme === "lightMode" ? HeaderLogoLight : (receivedData?.profileInfo?.theme === "darkMode" || receivedData?.profileInfo?.theme === "blueIzis" || (receivedData?.profileInfo?.theme === "lightDarkAuto" && !isDayTime)) || receivedData?.profileInfo?.theme === "snorkelBlue" || receivedData?.profileInfo?.theme === "icedCoffee" ? HeaderLogoDark : HeaderLogoLight } alt="Instagram Logo" />
+              onClick={() => history.push("/")} className="ig--logo--img" >
+              <img src={receivedData?.profileInfo?.theme === "lightMode" ? HeaderLogoLight : (receivedData?.profileInfo?.theme === "darkMode" || receivedData?.profileInfo?.theme === "blueIzis" || (receivedData?.profileInfo?.theme === "lightDarkAuto" && !isDayTime)) || receivedData?.profileInfo?.theme === "snorkelBlue" || receivedData?.profileInfo?.theme === "icedCoffee" ? HeaderLogoDark : HeaderLogoLight} alt="Instagram Logo" />
             </div>
             <div style={{
               opacity: scrolled ? "0" : "1",
@@ -169,13 +170,13 @@ const Header = (props) => {
               animation: "disappear-item",
               animationDelay: "0.5s"
             }}
-            className="logo--verti--divider"></div>
+              className="logo--verti--divider"></div>
             <Link to="/">
               <h1 className="logoText">Voxgram</h1>
-            </Link> 
+            </Link>
           </div>
-          
-         <DeskTopSearch controlSearchBox={memoizedControlSearchBox} openSearchBox={openSearchBox}  />
+
+          <DeskTopSearch controlSearchBox={memoizedControlSearchBox} openSearchBox={openSearchBox} />
           <nav className="header--nav flex-row">
             <ul className="header--ul flex-row">
               <li title="Home">
@@ -199,9 +200,9 @@ const Header = (props) => {
                     >
                       <FaFacebookMessenger />
                       {receivedData?.notifications?.isNewMsg &&
-                      location.pathname !== "/messages" ? (
-                        <div className="like__noti__dot mt-1"></div>
-                      ) : null}
+                        location.pathname !== "/messages" ? (
+                          <div className="like__noti__dot mt-1"></div>
+                        ) : null}
                     </NavLink>
                   </li>
                   <li className="like__icon__item" title="Explore">
@@ -211,7 +212,7 @@ const Header = (props) => {
                       aria-label="Find People"
                     >
                       <IoIosCompass className="compass__explore__icon" />
-                     
+
                     </NavLink>
                   </li>
                   <li title="Add New">
@@ -237,9 +238,9 @@ const Header = (props) => {
                         style={{ color: openNoti ? "var(--secondary-clr)" : "var(--main-black)" }}
                       />
                       {receivedData?.notifications?.isUpdate &&
-                      receivedData.notifications?.list?.length >= 1 ? (
-                        <div className="like__noti__dot"></div>
-                      ) : null}
+                        receivedData.notifications?.list?.length >= 1 ? (
+                          <div className="like__noti__dot"></div>
+                        ) : null}
                     </span>
                     <div
                       style={{
@@ -252,7 +253,7 @@ const Header = (props) => {
                       <div className="noti--popup--arrow"> </div>
                       <div className="noti--popup--inner">
                         {openNoti && <Notifications closeNotificationOnClick={closeNotificationOnClick} />}
-                       
+
                       </div>
                       <div className="noti__transparent"></div>
                     </div>
@@ -261,7 +262,7 @@ const Header = (props) => {
                     <span title={receivedData?.userName} onClick={() => setProf(true)}>
                       <Avatar
                         loading="lazy"
-                        style={{border: (openProf || location.pathname?.toLowerCase() === "/profile" || location.pathname?.toLowerCase() === "/edit-profile") ? "2px solid var(--light-black)" : ""}}
+                        style={{ border: (openProf || location.pathname?.toLowerCase() === "/profile" || location.pathname?.toLowerCase() === "/edit-profile") ? "2px solid var(--light-black)" : "" }}
                         src={receivedData?.userAvatarUrl}
                         alt={receivedData?.userName}
                         className="header__user__avatar flex-column"
@@ -291,18 +292,18 @@ const Header = (props) => {
                             to="/edit-profile"
                           >
                             <li>
-                            <span className="prof--item--inner flex-row">
-                              <BiCog className="prof__popup" /> <span>Settings</span>
+                              <span className="prof--item--inner flex-row">
+                                <BiCog className="prof__popup" /> <span>Settings</span>
                               </span>
                             </li>
                           </Link>
                           <Link
-                            onClick={() => {changeMainState("activeProfileSection", {activeIndex: 3, activeID: "saved" }); setProf(false)}}
+                            onClick={() => { changeMainState("activeProfileSection", { activeIndex: 3, activeID: "saved" }); setProf(false) }}
                             to="/profile"
                           >
                             <li>
-                            <span className="prof--item--inner flex-row">
-                              <RiBookmarkLine className="prof__popup" /> <span>Saved</span>
+                              <span className="prof--item--inner flex-row">
+                                <RiBookmarkLine className="prof__popup" /> <span>Saved</span>
                               </span>
                             </li>
                           </Link>
@@ -311,15 +312,15 @@ const Header = (props) => {
                             to="/about"
                           >
                             <li>
-                            <span className="prof--item--inner flex-row">
-                              <BiInfoCircle className="prof__popup" /> <span>About</span>
+                              <span className="prof--item--inner flex-row">
+                                <BiInfoCircle className="prof__popup" /> <span>About</span>
                               </span>
                             </li>
                           </Link>
                           <li
                             onClick={() => onLoggingOut()}
                           >
-                             <span className="prof--item--inner flex-row">
+                            <span className="prof--item--inner flex-row">
                               <BiPowerOff className="prof__popup" /> <span>Log Out</span>
                             </span>
                           </li>

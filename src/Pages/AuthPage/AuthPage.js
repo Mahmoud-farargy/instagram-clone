@@ -105,8 +105,6 @@ const AuthPage = (props) => {
   };
   const loginWithEmail = (email, password) => {
     var {
-      updateUID,
-      updateUserState,
       notify,
       receivedData,
       currentUser,
@@ -125,10 +123,6 @@ const AuthPage = (props) => {
               )
               .then(() => {
               if(_isMounted?.current){
-                  auth.onAuthStateChanged((authUser) => {
-                    updateUserState(true);
-                    updateUID(authUser?.uid);
-                  });
                   localStorage.setItem(
                     "user",
                     JSON.stringify({

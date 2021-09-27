@@ -9,21 +9,21 @@ const Caption = ({ caption, userName = "", isFullCaption = false }) => {
   return (
     <Auxiliary>
       <span className="post__caption flex-row">
-       {userName && <strong>{userName}</strong>}
+        {userName && <strong>{userName}</strong>}
         {!viewFullCaption ? (
           <p
             style={{ cursor: "pointer" }}
             onClick={() => setViewFullCap(true)}
             dangerouslySetInnerHTML={{
-              __html: trimText(linkifyText(caption), 200),
+              __html: trimText(linkifyText(caption), 350)
             }}
-          ></p>
+          />
         ) : (
-          <p
-            className="article__post"
-            dangerouslySetInnerHTML={{ __html: linkifyText(caption) }}
-          ></p>
-        )}
+            <p
+              className="article__post"
+              dangerouslySetInnerHTML={{ __html: linkifyText(caption) }}
+            />
+          )}
       </span>
     </Auxiliary>
   );

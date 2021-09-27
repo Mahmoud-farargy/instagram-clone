@@ -7,7 +7,9 @@ import { TiDelete } from "react-icons/ti";
 import SearchItem from "../../Components/SearchItem/SearchItem";
 import { BsMicFill } from "react-icons/bs";
 import { debounce } from "../../Utilities/Debounce";
-const Explore = lazy(() => import("../../Pages/Explore/Explore"));
+import { retry } from "../../Utilities/RetryImport";
+
+const Explore = lazy(() => retry(() => import("../../Pages/Explore/Explore")));
 
 const MobileSearch = () => {
   const { explore, searchUsers, searchInfo, notify, changeMainState } = useContext(AppContext);

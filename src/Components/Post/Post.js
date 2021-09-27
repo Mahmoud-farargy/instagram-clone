@@ -22,7 +22,9 @@ import NewMsgModal from "../../Components/NewMsgModal/NewMsgModal";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
 import {AppContext} from "../../Context";
 import VideoPostComp from "../../Components/VideoPost/VideoPost";
-const EmojiPicker = React.lazy(() =>  import("../../Components/Generic/EmojiPicker/EmojiPicker"));
+import { retry } from "../../Utilities/RetryImport";
+const EmojiPicker = React.lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
+
 class Post extends PureComponent {
   constructor(props) {
     super(props);
@@ -33,7 +35,6 @@ class Post extends PureComponent {
     this.state = {
       insertedComment: "",
       btnClicks: 0,
-      viewFullCaption: false,
       doubleLikeClicked: false,
       showInputForm: false,
       replayData: {},

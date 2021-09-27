@@ -7,7 +7,8 @@ import { TiDelete } from "react-icons/ti";
 import { BsMicFill } from "react-icons/bs";
 import Loader from "react-loader-spinner";
 import { debounce } from "../../Utilities/Debounce";
-const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
+import { retry } from "../../Utilities/RetryImport" ;
+const OptionsModal = lazy(() => retry(() => import("../../Components/Generic/OptionsModal/OptionsModal")));
 
 const DesktopSearch = ({ controlSearchBox, openSearchBox }) => {
   const [searchVal, setSearchVal] = useState("");

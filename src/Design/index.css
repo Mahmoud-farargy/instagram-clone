@@ -291,6 +291,7 @@ span.clear--search--box.voice__search__icon{
 }
 .rhap_container{
     background-color: var(--white) !important;
+    overflow: hidden;
 }
 .rhap_time{
     color: var(--light-black) !important;
@@ -1517,22 +1518,7 @@ button:active{
     object-fit: cover;
     cursor: pointer;
     background-color:var(--gray) ;
-    min-height: 300px;
-}
-.audio--content .post__card__content{
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-}
-.audio--content .song--details--container{
-    position: absolute;
-    top:0;
-    left:0;
-    color: #fff;
-    width: 100%;
-    height: 85%;
-    background-color: rgba(0,0,0,.2);
+    min-height: 100%;
 }
 .rhap_container div{
     flex-direction: row;
@@ -2947,7 +2933,16 @@ a.prof__btn__unfollowed{
     overflow: hidden;
   }
 /* -------x------------Empty page--------x-------- */
+  /*----------
+  RESPONSIVE
+  ===========*/
 /* -----------Query less than or equal 250px------------ */
+@media only screen and (max-width: 250px){
+    .rhap_container{
+        padding: 10px 1px;
+    }
+}
+/* -----------Query less than or equal 300px------------ */
 @media only screen and (max-width: 300px){
     #usersProfile.users--profile--container .users--profile--posts, #explore.explore-container .explore--upper--row{
         grid-template-columns: 1fr !important;
@@ -2974,7 +2969,6 @@ a.prof__btn__unfollowed{
         flex-direction: column;
     }
 }
-/* ------x-----Query less than or equal 250px-----x------- */
 /* -----------Query less than or equal 670px------------ */
 
 @media only screen and (max-width: 670px){
