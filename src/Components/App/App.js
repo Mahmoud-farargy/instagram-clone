@@ -11,34 +11,35 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import 'react-h5-audio-player/lib/styles.css';
 import $ from "jquery";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
+import { retry } from "../../Utilities/RetryImport";
 
 //lazy loading
-const Header = lazy(()=> import("../Header/Header"));
-const UsersModal = lazy(()=> import("../../Components/UsersModal/UsersModal"));
-const UnfollowModal = lazy(()=> import( "../UnfollowModal/UnfollowModal"));
-const CommentsModal = lazy(( ) => import("../../Components/CommentsModal/CommentsModal"));
-const Home = lazy(() => import("../../Pages/Home/Home"));
-const Footer = lazy(() => import("../../Components/Footer/Footer"));
-const AuthPage = lazy(() => import("../../Pages/AuthPage/AuthPage"));
-const CreatePage = lazy(() => import("../../Pages/AddNewPost/CreatePage"));
-const UsersProfile = lazy(() =>
+const Header = lazy(()=> retry(()=> import("../Header/Header")));
+const UsersModal = lazy(()=>  retry(()=> import("../../Components/UsersModal/UsersModal")));
+const UnfollowModal = lazy(()=> retry(()=> import( "../UnfollowModal/UnfollowModal")));
+const CommentsModal = lazy(() => retry(()=> import("../../Components/CommentsModal/CommentsModal")));
+const Home = lazy(() => retry(()=> import("../../Pages/Home/Home")));
+const Footer = lazy(() => retry(()=> import("../../Components/Footer/Footer")));
+const AuthPage = lazy(() => retry(()=> import("../../Pages/AuthPage/AuthPage")));
+const CreatePage = lazy(() => retry(()=> import("../../Pages/AddNewPost/CreatePage")));
+const UsersProfile = lazy(() => retry(()=> 
   import("../../Pages/UsersProfile/UsersProfile")
-);
-const PostPage = lazy(() => import("../../Pages/PostPage/PostPage"));
-const Messages = lazy(() => import("../../Pages/Messages/Messages"));
-const MobileNav = lazy(() => import("../MobileNav/MobileNav"));
-const MobileNotifications = lazy(() =>
+));
+const PostPage = lazy(() => retry(()=> import("../../Pages/PostPage/PostPage")));
+const Messages = lazy(() => retry(()=> import("../../Pages/Messages/Messages")));
+const MobileNav = lazy(() => retry(()=> import("../MobileNav/MobileNav")));
+const MobileNotifications = lazy(() => retry(()=> 
   import("../../Pages/MobileNotifications/MobileNotifications")
-);
-const MyProfile = lazy(() => import("../../Pages/MyProfile/MyProfile"));
-const EditProfile = lazy(() => import("../../Pages/EditProfile/EditProfile"));
-const Reels = lazy(() => import("../../Pages/Reels/Reels"));
-const About = lazy(() => import("../../Pages/About/About"));
-const Explore = lazy(() => import("../../Pages/Explore/Explore"));
-const ErrorRoute = lazy(() => import("../../Pages/ErrorRoute/ErrorRoute"));
-const MobileHeader = lazy(() =>  import("../../Components/MobileHeader/MobileHeader"));
-const MobileSearch = lazy(() => import("../../Pages/MobileSearch/MobileSearch"));
-const Suggestions = lazy(() => import("../../Pages/Suggestions/Suggestions"));
+));
+const MyProfile = lazy(() => retry(()=> import("../../Pages/MyProfile/MyProfile")));
+const EditProfile = lazy(() => retry(()=> import("../../Pages/EditProfile/EditProfile")));
+const Reels = lazy(() => retry(()=> import("../../Pages/Reels/Reels")));
+const About = lazy(() => retry(()=> import("../../Pages/About/About")));
+const Explore = lazy(() => retry(()=> import("../../Pages/Explore/Explore")));
+const ErrorRoute = lazy(() => retry(()=> import("../../Pages/ErrorRoute/ErrorRoute")));
+const MobileHeader = lazy(() => retry(()=> import("../../Components/MobileHeader/MobileHeader")));
+const MobileSearch = lazy(() => retry(()=>  import("../../Pages/MobileSearch/MobileSearch")));
+const Suggestions = lazy(() => retry(()=>  import("../../Pages/Suggestions/Suggestions")));
 //--xx---//
 
 const App = () => {
@@ -85,11 +86,12 @@ const App = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        updateSuggestionsList();
-        changeMainState("currentUser", authUser);
         updateUserState(true);
-        updateUID(authUser?.uid);
-        updatedReceivedData();
+        updateUID(authUser?.uid).then(() => {
+          changeMainState("currentUser", authUser);
+          updatedReceivedData();
+          updateSuggestionsList();
+        });
         changeConnectivityStatus(authUser?.uid);
         testStorageConnection();
       } else {

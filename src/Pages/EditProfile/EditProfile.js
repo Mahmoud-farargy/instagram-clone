@@ -5,14 +5,15 @@ import { AppContext } from "../../Context";
 import { withRouter } from "react-router-dom";
 import fbimg from "../../Assets/f0e27bf15519.png";
 import MenuOption from "./MenuOption";
+import { retry } from "../../Utilities/RetryImport";
 
 // ------------lazy loading-------------
-const EditProfileOption = lazy(() => import("./MenuOptions/EditProfileOption"));
-const ProfessionalAccount = lazy(() => import("./MenuOptions/ProfessionalAccount"));
-const ChangePassNEmail = lazy(() => import("./MenuOptions/ChangePassNEmail"));
-const BlockList = lazy(() => import("./MenuOptions/BlockList/BlockList"));
-const Feedback = lazy(() => import("./MenuOptions/Feedback"));
-const Themes = lazy(() => import("./MenuOptions/Themes"));
+const EditProfileOption = lazy(() => retry(() => import("./MenuOptions/EditProfileOption")));
+const ProfessionalAccount = lazy(() => retry(() => import("./MenuOptions/ProfessionalAccount")));
+const ChangePassNEmail = lazy(() => retry(() => import("./MenuOptions/ChangePassNEmail")));
+const BlockList = lazy(() => retry(() => import("./MenuOptions/BlockList/BlockList")));
+const Feedback = lazy(() => retry(() => import("./MenuOptions/Feedback")));
+const Themes = lazy(() => retry(() => import("./MenuOptions/Themes")));
 // -------x---- lazy loading --------x------
 class EditProfile extends PureComponent {
   state = {

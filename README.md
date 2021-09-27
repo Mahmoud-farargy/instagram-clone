@@ -15,7 +15,8 @@ A social media platform similar to Instagram that people can actually use.
 
 <h2>Demo</h2>
 
-<a href="https://instagram-clone-21d9b.web.app" style="color: #cb3837; display: block; margin-bottom: 4px;">Click here to go to the Live Demo 🔥 🔥</a> <br/>
+<a href="https://instagram-clone-21d9b.web.app" style="color: #cb3837; display: block; margin-bottom: 4px;">Click here to go to the Live Demo</a> 🔥 🔥 <br/>
+<a href="https://www.youtube.com/watch?v=hODQDV1sJJs">Youtube demo</a>
 Give me a star if you like it. ⭐
 
 <h2>Core Features</h2>
@@ -58,8 +59,8 @@ Give me a star if you like it. ⭐
                                                 <ul class="bullet--2">
                                                     <li><p>Feed is based on who the user follow</p></li>
                                                     <li><p>Users can post pictures and videos from a camera or gallery</p></li>
-                                                    <li><p>Crop and filter post before sharing</p></li>
                                                     <li><p>They can also post audio like songs or mini podcasts</p></li>
+                                                    <li><p>Crop and filter post before sharing</p></li>
                                                     <li><p>Like/Dislike posts
                                                         <ul class="bullet--3">
                                                             <li><p>View all likes and who liked it</p></li>

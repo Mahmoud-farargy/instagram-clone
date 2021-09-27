@@ -12,10 +12,12 @@ import { updateObject } from "../../../Utilities/Utility";
 import { withRouter } from "react-router-dom";
 import CheckboxIOS from "../../../Components/Generic/CheckboxIOS/CheckboxIOS";
 import Moment from "react-moment";
+import { retry } from "../../../Utilities/RetryImport" ;
 
 const InputForm = lazy(() =>
-  import("../../../Components/Generic/InpuForm/InputForm")
-);
+  retry(() =>
+    import("../../../Components/Generic/InpuForm/InputForm")
+));
 const ProfessionalAccount = (props) => {
   const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser, handleFollowRequests, updateSuggestionsList } = useContext(AppContext);
   //useState

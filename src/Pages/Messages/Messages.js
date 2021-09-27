@@ -23,8 +23,10 @@ import { insertIntoText } from "../../Utilities/InsertIntoText";
 import NewMsgModal from "../../Components/NewMsgModal/NewMsgModal";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import MSGUsers from "./Users/Users";
-const EmojiPicker = lazy(() =>  import("../../Components/Generic/EmojiPicker/EmojiPicker"));
-const OptionsModal = lazy(() => import("../../Components/Generic/OptionsModal/OptionsModal"));
+import { retry } from "../../Utilities/RetryImport";
+
+const EmojiPicker = lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
+const OptionsModal = lazy(() => retry(() => import("../../Components/Generic/OptionsModal/OptionsModal")));
 
 const Messages = (props) => {
     const { location, history } = props;

@@ -21,7 +21,8 @@ import * as Consts from "../../Utilities/Consts";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import VideoPostComp from "../../Components/VideoPost/VideoPost";
-const EmojiPicker = lazy(() => import("../../Components/Generic/EmojiPicker/EmojiPicker"))
+import { retry } from "../../Utilities/RetryImport";
+const EmojiPicker = lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
 
 const PostPage  = (props) => {
   const context = useContext(AppContext);

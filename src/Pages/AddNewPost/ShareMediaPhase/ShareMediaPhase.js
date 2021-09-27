@@ -182,15 +182,18 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
             .then((url) => {
               if(_isMounted?.current){
                       //submits post
-                  if(method.toLowerCase() === Consts.Post){
+                  if(method?.toLowerCase() === Consts.Post){
                     if (shareState.caption.split(" ").length < 250 && shareState.caption.split(" ").length > 0) {
                       if (contentName !== "" && uploadedItem && shareState.alteredUrl) {
                         // upload area
                         // audio
-                        if(contentType.toLowerCase() === "audio"){
+                        if(contentType?.toLowerCase() === "audio"){
                           if(shareState.songName || shareState.artist){
                             if(shareState.songName && shareState.artist){
-                                  API().get(`/?method=track.getinfo&api_key=${lastFMKey}&artist=${shareState.artist.trim().toLowerCase()}&track=${shareState.songName.trim().toLowerCase()}&format=json`).then(res => {
+                                
+                                function getSongInfo (songLyrics) {
+                                  // Get additional info
+                                  API().get(`/?method=track.getinfo&api_key=${lastFMKey}&artist=${shareState.artist?.trim()?.toLowerCase()}&track=${shareState.songName?.trim()?.toLowerCase()}&format=json`).then(res => {
                                     if(_isMounted?.current){
                                       const trackInfo = res?.data?.track;
                                       const songInfo = {
@@ -202,6 +205,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                         albumFMUrl: trackInfo?.album.url || "",
                                         album: trackInfo?.album?.title || "",
                                         playCountFM: trackInfo?.playcount || "",
+                                        songLyrics: songLyrics || "",
                                         summary: trackInfo?.wiki?.summary || "",
                                         publishedDate: trackInfo?.wiki?.published || "",
                                         tags: (trackInfo?.topTags && trackInfo?.topTags?.tag?.length >0) ? trackInfo?.topTags?.tag : []
@@ -214,6 +218,18 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                       onDataAdding({type: Consts.Post, url: url});
                                     }
                                   });
+                                }
+                                // Get lyrics
+                                  API("lyricsovh").get(`/v1/${shareState.artist?.trim()}/${shareState.songName?.trim()}`).then((res) => {
+                                    if(_isMounted?.current){
+                                        getSongInfo(res?.data?.lyrics?.replace(/Paroles de la chanson /, "") || "");
+                                    }
+                                  }).catch(() => {
+                                      if(_isMounted?.current){
+                                        getSongInfo("");
+                                      }
+                                  });
+
                             }else{
                               notify(`${!shareState.songName ? "Song Name" : "Artist"} field is required`,"info");
                             }

@@ -8,10 +8,12 @@ import OptionsModal from "../../../Components/Generic/OptionsModal/OptionsModal"
 import $ from "jquery";
 import { storage, storageRef } from "../../../Config/firebase";
 import { GoVerified } from "react-icons/go";
+import { retry } from "../../../Utilities/RetryImport";
 
-const InputForm = lazy(() =>
+const InputForm = lazy(() => 
+    retry(() =>
   import("../../../Components/Generic/InpuForm/InputForm")
-);
+));
 
 const EditProfileOption = (props) => {
   // refs

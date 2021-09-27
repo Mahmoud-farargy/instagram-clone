@@ -135,6 +135,7 @@ const MyProfile =()=>{
                     <span onClick={() => changeDirection(3, "Blocked_Users")}>Manage blocked accounts</span>
                     <span onClick={() =>  changeDirection(5, "Themes")}>Change Theme</span>
                     <span onClick={() =>  changeDirection(4, "Feedback") }>Report a problem/Rate app</span>
+                    <span className="mobile-only" onClick={() =>  history.push("/about")}>About</span>
                     <span onClick={()=> authLogout(history)}>Log out</span>
                     <span>Cancel</span>
                 </OptionsModal>

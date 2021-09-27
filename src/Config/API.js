@@ -1,18 +1,18 @@
 import axios from "axios";
-import { audioscrobbler } from "./app-config.json";
+import { audioscrobbler, lyricsOvh } from "./app-config.json";
 
-const API = () => {
+const API = (urlBaseType) => {
     const axiosInstance = axios.create({
-        baseURL: audioscrobbler,
+        baseURL: urlBaseType === "lyricsovh" ? lyricsOvh : audioscrobbler,
         headers: {
             Accept: "application/json",
             "Content-Type": "application.json"
         }
     })
     axios.defaults.timeout = 10000;
-    axiosInstance.interceptors.request.use( request => {
+    axiosInstance.interceptors.request.use(request => {
         return request;
-    },err => {
+    }, err => {
         return Promise.reject(err);
     })
     return axiosInstance;
