@@ -102,10 +102,10 @@ const DesktopPost = (props) => {
   useEffect(() => { 
     updateUsersWhoLiked();
     if(compState.insertedComment) setCompState({...compState, insertedComment: ""});
-}, [currentPostIndex?.index]);
+}, [currentPostIndex.index]);
 useEffect(() => {
   (scrollToBottom && scrollToBottom.current && scrollToBottom.current?.scrollIntoView) && scrollToBottom.current.scrollIntoView({block: "end"});
-},[comments?.length]);
+},[comments.length]);
   var postLiked = usersProfileData?.posts && usersProfileData?.posts[currentPostIndex?.index]?.likes?.people?.some((el) => el.id === uid);
   const areCommentsDisabled = (usersProfileData?.profileInfo?.professionalAcc?.disableComments || disableComments);
   const handleCurrLikes = (boolean) => {

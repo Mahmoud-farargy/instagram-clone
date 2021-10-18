@@ -219,15 +219,11 @@ class Post extends PureComponent {
     }, 150);
   }
   handleVideoPlaying(type){
-    if(this.state.preLoad === "none"){
-      this.setState({...this.state, preLoad: "metadata"});
-    }
-    if(this.videoPost && this.state.isVidLoaded && !this.state.isVidEnded && this.videoPost?.current && this.state.preLoad === "metadata" && !this.isVidBuffering){
+    ( this.state.preLoad === "none" && type.toLowerCase() === "on-view") && this.setState({...this.state, preLoad: "metadata"});
+    if(this.videoPost && this.state.isVidLoaded && !this.state.isVidEnded && this.videoPost?.current && this.state.preLoad === "metadata"){
         if(type.toLowerCase() === "on-view" && !this.state.isVideoPlaying && typeof this.videoPost.current?.play === "function"){
-          // this.videoPost.current.play();
           this.setState({...this.state, isVideoPlaying: true});
         }else if(type.toLowerCase() === "out-of-view" && this.state.isVideoPlaying){
-          // this.videoPost.current.pause();
           this.setState({...this.state, isVideoPlaying: false });
         }
     }
@@ -362,7 +358,6 @@ class Post extends PureComponent {
                   <VideoPostComp
                       ref={this.videoPost}
                       src={contentURL}
-                      clickEvent={() => this.doubleClickEvent()}
                       isMuted={true}
                       preload={this.state.preLoad}
                       isVidPlaying={ this.state.isVideoPlaying}

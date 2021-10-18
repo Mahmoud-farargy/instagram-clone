@@ -5,17 +5,20 @@ import { disableReactDevTools } from "./Utilities/Utility";
 import "./Design/index.css";
 import { AppProvider } from "./Context";
 import { BrowserRouter } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css"
+import "font-awesome/css/font-awesome.min.css";
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
 disableReactDevTools();
 
 const mainApp = (
-  <AppProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </AppProvider>
+  <React.StrictMode>
+    <AppProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </AppProvider>
+  </React.StrictMode>
+
 );
 
 ReactDOM.render(mainApp, document.getElementById("react-root"));

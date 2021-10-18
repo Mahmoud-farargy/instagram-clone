@@ -60,11 +60,15 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
                                 if( postIndex !== -1){                            
                                     if((window.innerWidth || document.documentElement.clientWidth) >= 670){
                                         timeouts.current = setTimeout(() => {
-                                            changeMainState("currentPostIndex", { index:postIndex, id: postId });
+                                            if(_isMounted?.current){
+                                                changeMainState("currentPostIndex", { index:postIndex, id: postId });
+                                            }
                                         },10)
                                         timeouts.current = setTimeout(() => {
-                                            changeModalState("post", true);
-                                            window.clearTimeout(timeouts?.current);
+                                            if(_isMounted?.current){
+                                                changeModalState("post", true);
+                                                window.clearTimeout(timeouts?.current);
+                                            }
                                         },200);
                                     }else{
                                         changeMainState("currentPostIndex", { index:postIndex, id: postId });
@@ -119,14 +123,13 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
                         {
                             parentClass !== "explore--upper--row" &&
                             <div className="increase--posts--count flex-column">
-                               {  isLoading?.loadingMorePosts &&
                                 <img
+                                    className={`${!isLoading?.loadingMorePosts && "hide__loading__animation"}`}
                                     loading="lazy"
                                     src={loadingGif}
-                                    alt="Loading..."                           
+                                    alt="Loading..."
                                 />
-                                } 
-                            </div>  
+                            </div>
                         }    
                         
                     {isLoading?.openingPost && <div className="global__loading"><span className="global__loading__inner"></span></div>}

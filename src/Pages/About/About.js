@@ -3,7 +3,6 @@ import "./About.scss";
 import { ImGithub } from "react-icons/im";
 import { MdEmail } from "react-icons/md";
 import { AiFillInstagram, AiFillCodepenCircle } from "react-icons/ai";
-import { AiTwotonePhone } from "react-icons/ai";
 
 const About = (props) => {
     const { changeMainState } = props
@@ -15,7 +14,6 @@ const About = (props) => {
         {type: "gmail", title: "Email",url: "mailto:mahmoudfarargy9@gmail.com", icon: (<MdEmail style={{ fontSize: "35px" }} />), id: "gmail"},
         {type: "instagram", title: "Instagram",url: "https://www.instagram.com/codepugilist", icon: (<AiFillInstagram style={{ fontSize: "35px" }} />), id: "instagram"},
         {type: "codepen", title: "Code Pen",url: "https://codepen.io/mahmoud-farargy/pens/public", icon: (<AiFillCodepenCircle style={{ fontSize: "35px" }} />), id: "codepen"},
-        {type: "phoneNumber", title: "Call me only if you have a job offer",url: "tel:+201152559760", icon: (<AiTwotonePhone style={{ fontSize: "34px" }} />), id: "phoneNumber"}
     ]);
     
     return (

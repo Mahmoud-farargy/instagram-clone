@@ -11,7 +11,7 @@ import LoadContentFail from "../LoadContentFail/LoadContentFail";
 
 const VideoPost = React.forwardRef(
   (
-    { className, clickEvent, whenLoadedData, whenEnded, whenCanPlay, isMuted = false, isVidPlaying, ...props },
+    { className, whenLoadedData, whenEnded, whenCanPlay, isMuted = false, isVidPlaying, ...props },
     ref
   ) => {
     const [vid, setVideo] = useState({
@@ -44,11 +44,7 @@ const VideoPost = React.forwardRef(
       }
     },[vid, ref]);
     useEffect(() => {
-      if(!isVidPlaying){
-          setVideo({ ...vid, isPlaying: true });
-      }else{
-        setVideo({ ...vid, isPlaying: false });
-      }
+        setVideo({ ...vid, isPlaying: !isVidPlaying });
     },[isVidPlaying]);
     useEffect(() => {
         if (pauseMedia && ref && ref.current){
@@ -72,7 +68,6 @@ const VideoPost = React.forwardRef(
       }
     };
     const triggerClick = (event) => {
-      clickEvent && typeof clickEvent === "function" && clickEvent();
       handleVideo("play", event);
     }
     const triggerLoadedData = (event) => {
@@ -90,8 +85,9 @@ const VideoPost = React.forwardRef(
       whenCanPlay && typeof whenCanPlay === "function" && whenCanPlay(false);
       setVideo({ ...vid, isBuffering: false });
     };
-    const triggerError = () => {
-        setVideo({ ...vid, hasError: true });
+    const triggerError = (event) => {
+      event.persist();
+      setVideo({ ...vid, hasError: true });
     }
     return (
       <Fragment>
@@ -106,6 +102,8 @@ const VideoPost = React.forwardRef(
                     draggable="false"
                     className="post__card__content"
                     onError={(k) => triggerError(k)}
+                    playsInline
+                    webkit-playsinline
                 />
             {
                 vid?.isBuffering ?

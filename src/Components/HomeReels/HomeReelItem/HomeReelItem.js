@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 import { AppContext } from "../../../Context";
 import Styled from "styled-components";
- const Canvas = Styled.div`
+const Canvas = Styled.div`
         position: relative;
         border: 2px solid transparent;
         margin:auto;
@@ -50,42 +50,42 @@ import Styled from "styled-components";
             } 
     }
     `;
-    
+
 const HomeReelItem = (props) => {
-    const {  openReel } = useContext(AppContext);
+    const { openReel } = useContext(AppContext);
     const [isReelLoading, setLoadingReel] = useState(false);
     const _isMounted = useRef(true);
     const timeouts = useRef(null);
     const history = useHistory();
-    useEffect(() =>{
-        return ()=> {
+    useEffect(() => {
+        return () => {
             window.clearTimeout(timeouts.current);
             _isMounted.current = false;
         }
-    },[]);
+    }, []);
     const viewReel = () => {
-        if(reel?.id){
+        if (reel?.id) {
             setLoadingReel(true);
             timeouts.current = setTimeout(() => {
-                
-                openReel({ reelId: reel?.id, groupId: reel?.groupId , reelUid: reel?.reelOwnerId }).then(() => {
-                    if(_isMounted?.current){
+
+                openReel({ reelId: reel?.id, groupId: reel?.groupId, reelUid: reel?.reelOwnerId }).then(() => {
+                    if (_isMounted?.current) {
                         setLoadingReel(false);
                         history.push("/reels");
                     }
                 });
                 window.clearTimeout(timeouts.current);
-            },1500);
+            }, 1500);
         }
     }
-    const {reel} = props;
-    return(
-        <div onClick={()=> viewReel()} className="home-reel-item flex-column" title={reel?.userName}>
+    const { reel } = props;
+    return (
+        <div onClick={() => viewReel()} className="home-reel-item flex-column" title={reel?.userName}>
             <div className=" home-reel-container flex-column">
-                    <Canvas isReelLoading={isReelLoading} className="reel--reel--inner  flex-column">
-                        <Avatar className="reels__icon flex-column" src={(reel?.userAvatarUrl || reelDefaultIco)} alt={reel.userName}/>
-                    </Canvas>
-                    <small className="home--reel--user--name">{reel?.userName}</small>
+                <Canvas isReelLoading={isReelLoading} className="reel--reel--inner  flex-column">
+                    <Avatar className="reels__icon flex-column" src={(reel?.userAvatarUrl || reelDefaultIco)} alt={reel.userName} />
+                </Canvas>
+                <small className="home--reel--user--name">{reel?.userName}</small>
             </div>
         </div>
     )

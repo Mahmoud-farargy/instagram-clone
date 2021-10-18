@@ -110,17 +110,18 @@ function ReelItem(props) {
       setShowingOptions(false);
     }
   }
-  const detectBuffering = (event) =>{
-    event.persist();
-    setBuffering(false);
-  }
   useEffect(() => {
     if(currentPlayingReel !== index){
       reelVideo && reelVideo.current.pause();
       setVideoPlaying(false);
     }
   },[currentPlayingReel, index]);
-  useEffect(() => () => window.clearTimeout(timeouts?.current),[]);
+  useEffect(() => {
+    reelVideo.current.addEventListener("loadedmetadata", () =>{
+      setBuffering(false);
+    })
+    return () => window.clearTimeout(timeouts?.current);
+  }, []);
   return (
     <Fragment>
       {/* Modal(s) */}
@@ -165,8 +166,9 @@ function ReelItem(props) {
               ref={reelVideo}
               src={item?.contentURL}
               loop
-              onCanPlay={(k) => detectBuffering(k)}
               onError={() => setErrorState(true)}
+              playsInline
+              webkit-playsinline
             />
         {
           showOptions &&

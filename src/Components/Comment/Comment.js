@@ -103,10 +103,10 @@ const Commment =(props)=>{
                                                                             <span className="acc-action clickable" onClick={()=> changeModalState("users",true, subComment?.likes, Consts.LIKES)}>{subComment?.likes?.length.toLocaleString()} {subComment?.likes?.length > 1 ? "likes" : "like"}</span>
                                                                         : null
                                                                     } 
-                                                                    <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid, comment?.commentId); setSubComments(true)}}> Replay</span>      
+                                                                    <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(subComment?.senderName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid, comment?.commentId); setSubComments(true)}}> Replay</span>      
                                                                     {
                                                                         subComment?.senderUid === uid && (<span style={{cursor:"pointer"}} className="ml-1" onClick={() => deleteComment({type: "subComment", ownerUid: subComment?.senderUid, commentArr: comment ,postIndex, postId: comment?.postId , commentIndex,  subCommentArr:subComment, subCommentIndex: i, postOwnerId})}>Delete</span>)
-                                                                    }                             
+                                                                    }
                                                             </div>
                                                         </li>
                                                     )
