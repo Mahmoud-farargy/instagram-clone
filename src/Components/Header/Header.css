@@ -164,11 +164,8 @@
     height:14px;
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
-    /* box-shadow: 0 0 5px 1px rgb(0, 0, 0, 10%);
-    -webkit-box-shadow: 0 0 5px 1px rgb(0, 0, 0, 10%); */
-    border-left: 1px solid var(--gray);
-    border-top: 1px solid var(--gray);
-    /* border: 1px solid rgba(255,255,255,1); */
+    border-left: 1px solid var(--shadow-white);
+    border-top: 1px solid var(--shadow-white);
     background-color:var(--white);
     z-index:9;
 }
@@ -181,6 +178,9 @@
     -webkit-box-shadow: 0 0 5px 1px rgba(0,0,0,0.0979);
     transform-origin: top center;
     -webkit-transform-origin: top center;
+}
+.darkMode .noti--popup--window, .darkMode .search--pop--window, .snorkelBlue .noti--popup--window, .snorkelBlue .search--pop--window, .blueIzis .noti--popup--window, .blueIzis .search--pop--window, .icedCoffee .noti--popup--window, .icedCoffee .search--pop--window, .honeysucle .noti--popup--window, .honeysucle .search--pop--window, .butterCup .noti--popup--window, .butterCup .search--pop--window{
+    box-shadow: 0 0 5px 1px var(--shadow-white);
 }
 #notifications .noti--popup--arrow{
     top:-8.5px;

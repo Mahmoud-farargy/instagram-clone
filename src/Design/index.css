@@ -47,6 +47,20 @@ body, button, input, textarea {
     font-size: 6px;
     line-height: normal;
 }
+.mapper__container {
+    position: relative;
+}
+
+.mapper__tooltip {
+    position: absolute;
+    color: #fff;
+    padding: 10px;
+    background: rgba(0,0,0,0.8);
+    transform: translate3d(-50%, -50%, 0);
+    border-radius: 5px;
+    pointer-events: none;
+    z-index: 1000;
+}
 input {
     writing-mode: horizontal-tb;
     -webkit-writing-mode: horizontal-tb !important;
@@ -89,6 +103,8 @@ input {
     --shadow-white: #efefef;
     --bluish-sky: #00376b;
     --ultimate-black: #000;
+    --links-clr: #276cd3;
+    /* borders */
     --main-border:  1px solid var(--gray);
     /* transitions */
     --mild-transition: all 0.2s ease;
@@ -111,6 +127,7 @@ input {
     --bluish-sky: #4e8bc4;
     --light-black: #999999;
     --ultimate-black: #fff;
+    --links-clr: #9595f3;
 }
 .darkMode img,.darkMode video{
     filter: brightness(95%);
@@ -136,6 +153,7 @@ input {
     --light-black: #999999;
     --ultimate-black: #fff;
     --secondary-clr: #21a0fa;
+    --links-clr: #a8a8f7;
 }
 /* ---x----dusty cedar theme--x---- */
 /* -------dusty cedar theme------ */
@@ -150,6 +168,7 @@ input {
     --bluish-sky: #4e8bc4;
     --light-black: #999999;
     --ultimate-black: #fff;
+    --links-clr: #a8a8f7;
 }
 /* ---x----dusty cedar theme--x---- */
 /* -------Iced Coffee theme------ */
@@ -165,6 +184,7 @@ input {
     --light-black: #999999;
     --ultimate-black: #fff;
     --secondary-clr:#55bafd;
+    --links-clr: #a8a8f7;
 }
 /* ----x---Iced Coffee theme---x--- */
 /* -------Buttercup theme------ */
@@ -174,6 +194,7 @@ input {
     --gray: #fae03c;
     --secondary-clr:#d4b905;
     --sugg-btn-clr: #f8e35b;
+    --links-clr: #a8a8f7;
 }
 /* ----x---Buttercup theme---x--- */
 /* -------Iced Coffee theme------ */
@@ -186,6 +207,7 @@ input {
     --secondary-clr:#aa529a;
     --sugg-btn-clr: #d66ac2;
     --shadow-white: #fff;
+    --links-clr: #6666f7;
 }
 /* ----x---Iced Coffee theme---x--- */
 
@@ -645,6 +667,7 @@ time{
     word-break: keep-all;
     display:flex;
     color:var(--font-black);
+    padding: 10px 0;
 }
 .MuiAvatar-root{
     object-fit: contain;
@@ -680,6 +703,10 @@ time{
     text-align:center;
     color:#0c8add;
     cursor:pointer;
+}
+.auth--input--form .recaptcha__box{
+    width: 100%;
+    margin-top:40px;
 }
 .auth--input--form .back__Btn{
     background: linear-gradient(90deg,rgb(255, 81, 0), rgb(211, 42, 20));
@@ -761,10 +788,10 @@ time{
     font-weight:600;
     padding:0;
     color: var(--secondary-clr);
-    margin-left:8px;
     cursor:pointer;
     transition: color 0.2s ease;
     font-size: 14px;
+    margin: 0 1px 0 6px;
 }
 .auth .auth--bottom--card span h6:active{
    color:#0e60ad; 
@@ -1113,8 +1140,10 @@ button:active{
     margin-bottom: 0;
 }
 .sub--comments--nav .post--comment--item{
-    padding:12px 0;
+    padding:12px 7px;
     width: auto;
+    background-color: var(--shadow-white);
+    border-radius: 5px;
 }
 .sub--comments--nav .post--comment--item:last-of-type{
     padding-bottom: 0;
@@ -1404,6 +1433,11 @@ button:active{
 }
 .mobile-only{
     display:none ;
+}
+.hide__loading__animation{
+    display: none;
+    opacity: 0;
+    margin:0;
 }
 #messages .messages--user{
     cursor:pointer;
@@ -1841,7 +1875,7 @@ ul.getting--started--inner{
     cursor: pointer;
 }
 .link--element{
-    color: rgb(39, 108, 211);
+    color: var(--links-clr);
     cursor: pointer;
     display: inline;
 }

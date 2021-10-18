@@ -89,7 +89,7 @@ const App = () => {
         updateUserState(true);
         updateUID(authUser?.uid).then(() => {
           changeMainState("currentUser", authUser);
-          updatedReceivedData();
+          updatedReceivedData(authUser?.uid);
           updateSuggestionsList();
         });
         changeConnectivityStatus(authUser?.uid);

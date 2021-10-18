@@ -2,7 +2,7 @@ import React, { Fragment, memo } from "react";
 import PropTypes from "prop-types";
 import Loader from "react-loader-spinner";
 
-const AuthSubmissionBtn = ({type = "login",value = "Log In",formState = {}, loading = false, inProgress = false}) => {
+const AuthSubmissionBtn = ({type = "login",value = "Log In",formState = {}, loading = false, inProgress = false, isRecapVerified = false}) => {
     const disabledConfig = () => {
         let isInvalid
         switch(type) {
@@ -10,7 +10,7 @@ const AuthSubmissionBtn = ({type = "login",value = "Log In",formState = {}, load
             isInvalid = loading || inProgress || (!formState.loginEmail?.val || !formState.loginPassword?.val);
             break;
             case "signUp":
-            isInvalid = loading || inProgress || (!formState.signUpEmail?.val ||
+            isInvalid = loading || inProgress || !isRecapVerified || (!formState.signUpEmail?.val ||
             !formState.signUpPassword?.val ||
             !formState.signUpUsername?.val ||
             !formState.fullName?.val);
@@ -25,7 +25,7 @@ const AuthSubmissionBtn = ({type = "login",value = "Log In",formState = {}, load
        <Fragment>
               {loading || inProgress ? (
                           <button
-                            className={"disabled loading__btn flex-row"}
+                            className="disabled loading__btn flex-row"
                             disabled={true}
                           >
                             <Loader
@@ -57,6 +57,7 @@ AuthSubmissionBtn.propTypes = {
     value: PropTypes.string.isRequired,
     formState: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
-    inProgress: PropTypes.bool.isRequired
+    inProgress: PropTypes.bool.isRequired,
+    isRecapVerified: PropTypes.bool.isRequired
 }
 export default memo(AuthSubmissionBtn);

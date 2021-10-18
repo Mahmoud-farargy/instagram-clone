@@ -153,7 +153,7 @@
         font-size: 18px;
         word-break: break-word;
         margin-top: 30px;
-        color: var(--shadow-white);
+        color: #efefef;
         border-bottom: 1px solid rgb(77, 77, 77);
         padding-bottom: 30px;
 }
@@ -177,7 +177,6 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     text-decoration: underline rgba(253, 102, 51, 0.2);
-    
     overflow: hidden;
     margin: 4px 0px;
     background-repeat: no-repeat, no-repeat, repeat-x;
@@ -194,10 +193,10 @@
     color: rgb(95, 143, 204);
 }
 .post--audio--container .song--details--container .post-song--stats .post--song--stat--item strong{
-    color: var(--white);
+    color: #fff;
 }
 .post--audio--container .song--details--container .post-song--stats .post--song--stat--item{
-    color: var(--gray);
+    color: #dbdbdb;
 }
 .post--audio--container .song--details--container .post-song--stats .post--song--tags{
     align-items: center;

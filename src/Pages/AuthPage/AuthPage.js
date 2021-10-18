@@ -5,8 +5,9 @@ import gpStore from "../../Assets/get-app-gp.png";
 import { GrInstagram } from "react-icons/gr";
 import SignInOption from "./SignInOption/SignInOption";
 import * as Consts from "../../Utilities/Consts";
-import { anonInfo } from "../../info";
+import { anonInfo, recaptchaSitekey } from "../../info";
 import AuthSubmissionBtn from "./AuthSubmissionBtn/AuthSubmissionBtn";
+import ReCAPTCHA from "react-google-recaptcha";
 import {
   auth,
   db,
@@ -45,6 +46,7 @@ const AuthPage = (props) => {
   const [inProgress, setLoading] = useState(false);
   const [getPasswordMode, setPasswordMode] = useState(false);
   const [greeting, setGreeting] = useState("Good Morning");
+  const [isRecapVerified, setRecaptcha] = useState(false);
   //-----x------ states--------x--------------
  //----------- ref(s)----------------------
  const _isMounted = useRef(true);
@@ -183,7 +185,8 @@ const AuthPage = (props) => {
             if (formState.fullName?.isValid) {
               if (formState.signUpUsername?.isValid) {
                 if (formState.signUpPassword?.isValid) {
-                          auth
+                  if(isRecapVerified){
+                        auth
                             .createUserWithEmailAndPassword(
                               formState.signUpEmail.val?.toLowerCase().trim(),
                               formState.signUpPassword?.val
@@ -273,6 +276,14 @@ const AuthPage = (props) => {
                                 notify(err.message, "error");
                               }
                             }); 
+                  }else{
+                    setLoading(false);
+                    notify(
+                      "reCaptcha is required to verify you are not a robot.",
+                      "error"
+                    );
+                  }
+
                 } else {
                   setLoading(false);
                   notify(
@@ -317,7 +328,7 @@ const AuthPage = (props) => {
         auth
           .signInWithPopup(googleProvider)
           .then((cred) => {
-            if(_isMounted?.current){
+            // if(_isMounted?.current){
                 setLoading(false);
                 const {
                   profile: { email, name, picture, given_name },
@@ -402,7 +413,7 @@ const AuthPage = (props) => {
                     password: "3039ur3uff",
                   })
                 );
-            }
+            // }
           })
           .catch((err) => {
             if(_isMounted?.current){
@@ -674,6 +685,9 @@ const AuthPage = (props) => {
         : txt
     }`;
   };
+  const onRecapChange = () => {
+    setRecaptcha(true);
+  } 
   return (
     <Auxiliary>
       <section className="auth--main flex-column">
@@ -713,7 +727,7 @@ const AuthPage = (props) => {
                       <div className="flex-column">
                         <AuthInput inputType="text" type="email" val={formState.loginEmail?.val} title="Email" name="loginEmail" required autoFocus onInputChange={onInputChange} isValid={formState.loginEmail?.isValid} isSubmitted={isSubmitted}/>
                         <AuthInput inputType="password" val={formState.loginPassword?.val} required title="Password" name="loginPassword" onInputChange={onInputChange} isValid={formState.loginPassword?.isValid} isSubmitted={isSubmitted}/>
-                        <AuthSubmissionBtn value="Log In" type="login" formState={formState} inProgress={inProgress} loading={loading} />
+                        <AuthSubmissionBtn value="Log In" type="login" formState={formState} isRecapVerified={true} inProgress={inProgress} loading={loading} />
                         <span
                           onClick={() => setPasswordMode(true)}
                           className="forgot__pass"
@@ -787,7 +801,12 @@ const AuthPage = (props) => {
                       <AuthInput inputType="text" type="text" val={formState.signUpUsername?.val?.charAt(0).toUpperCase() +
                           formState.signUpUsername?.val?.slice(1)} title="Username" name="signUpUsername" required onInputChange={onInputChange} isValid={formState.signUpUsername?.isValid} isSubmitted={isSubmitted}/>
                       <AuthInput  inputType="password" val={formState.signUpPassword?.val} required title="password" name="signUpPassword" onInputChange={onInputChange} isValid={formState.signUpPassword?.isValid} isSubmitted={isSubmitted}/>
-                      <AuthSubmissionBtn value="Sign Up" type="signUp" formState={formState} inProgress={inProgress} loading={loading} />
+                      <ReCAPTCHA
+                          className="recaptcha__box"
+                          sitekey={recaptchaSitekey}
+                          onChange={(x) => onRecapChange(x)}
+                        />
+                      <AuthSubmissionBtn value="Sign Up" type="signUp" formState={formState} isRecapVerified={isRecapVerified} inProgress={inProgress} loading={loading} />
                     </form>
                   </div>
                 )
