@@ -14,7 +14,7 @@ const SuggestItem =(props)=>{
     const mutuals = receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.filter(el => el.receiverUid !== receivedData?.uid && followers?.sort((a,b) => b?.date?.seconds -  a?.date?.seconds).some(item => item?.senderUid === el?.receiverUid)).slice(0,1);
     return(
         <Fragment>
-            <div className="suggest--item--container">
+            <>
                {
                 // SKELETON
                 loadingState?.suggList ?
@@ -52,7 +52,7 @@ const SuggestItem =(props)=>{
                     <FollowUnfollowBtn shape="tertiary" userData={{userId: userUid, uName: userName,uAvatarUrl: userAvatarUrl, isVerified: isVerified}}/>
                 </li> 
                } 
-            </div>
+            </>
         </Fragment>
     )
 }

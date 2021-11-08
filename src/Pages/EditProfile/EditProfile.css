@@ -54,7 +54,7 @@
 @media only screen and (max-width: 670px) {
   #editProfile .edit--box .left--side {
     width: 100%;
-    min-height: 200px;
+    min-height: 250px;
   }
 }
 

@@ -24,6 +24,7 @@ import FollowUnfollowBtn from "../../../Components/FollowUnfollowBtn/FollowUnfol
 function ReelItem(props) {
   const reelVideo = useRef(null);
   const timeouts = useRef(null);
+  const _isMounted = useRef(true);
   const context = useContext(AppContext);
   const [isVideoPlaying, setVideoPlaying] = useState(false);
   const [muteVolume, setVolumeState] = useState(false);
@@ -99,9 +100,11 @@ function ReelItem(props) {
       s.stopPropagation();
     handleReels({type: "comment", comment: commentTxt});
     timeouts.current = setTimeout(() => {
-        setCommentTxt("");
-        notify("Sent");
-        window.clearTimeout(timeouts?.current);
+      if(_isMounted.current){
+          setCommentTxt("");
+          notify("Sent");
+          window.clearTimeout(timeouts?.current); 
+      }
     },500);
   }
   const eventDelegation =(k)=> {
@@ -118,9 +121,15 @@ function ReelItem(props) {
   },[currentPlayingReel, index]);
   useEffect(() => {
     reelVideo.current.addEventListener("loadedmetadata", () =>{
-      setBuffering(false);
+      if(_isMounted.current){
+          setBuffering(false);
+      }
     })
-    return () => window.clearTimeout(timeouts?.current);
+    return () => {
+      _isMounted.current = false;
+      reelVideo.current = false;
+      window.clearTimeout(timeouts?.current);
+    };
   }, []);
   return (
     <Fragment>
@@ -168,7 +177,7 @@ function ReelItem(props) {
               loop
               onError={() => setErrorState(true)}
               playsInline
-              webkit-playsinline
+              // webkit-playsinline
             />
         {
           showOptions &&

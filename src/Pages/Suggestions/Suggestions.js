@@ -37,7 +37,7 @@ const Suggestions = (props) => {
                         <button className={`profile__btn prof__btn__unfollowed ${newUsers?.length <= 0 && "disabled"}`} onClick={() => newUsers?.length > 0 && showUsers("new", newUsers)}>New members this week ({newUsers?.length})</button><br />
                         <button className={`profile__btn prof__btn__unfollowed  ${upcomingBirthdays?.length <= 0 && "disabled"}`} onClick={() => upcomingBirthdays?.length > 0 && showUsers("birthdays", upcomingBirthdays )}>Upcoming birthdays this month ({upcomingBirthdays?.length})</button>
                         <h4 className="mt-3">Suggested</h4>
-                        <h6 className="online__title">Online users ({onlineList?.length})</h6>
+                        <h5 className="online__title">Online users ({onlineList?.length})</h5>
                         
                         <ul className="suggestions--p--ul">
                             {

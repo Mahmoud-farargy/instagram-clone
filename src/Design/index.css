@@ -43,23 +43,9 @@ body, button, input, textarea {
     height: 22px;
     width: 22px;
     padding:0;
-                margin:0;
+    margin:0;
     font-size: 6px;
     line-height: normal;
-}
-.mapper__container {
-    position: relative;
-}
-
-.mapper__tooltip {
-    position: absolute;
-    color: #fff;
-    padding: 10px;
-    background: rgba(0,0,0,0.8);
-    transform: translate3d(-50%, -50%, 0);
-    border-radius: 5px;
-    pointer-events: none;
-    z-index: 1000;
 }
 input {
     writing-mode: horizontal-tb;
@@ -784,7 +770,7 @@ time{
 .auth--input--form input[type="submit"]:hover{
     background-color:#1d8cd6;
 }
-.auth .auth--bottom--card span h6{
+.auth .auth--bottom--card span strong{
     font-weight:600;
     padding:0;
     color: var(--secondary-clr);
@@ -793,17 +779,15 @@ time{
     font-size: 14px;
     margin: 0 1px 0 6px;
 }
-.auth .auth--bottom--card span h6:active{
-   color:#0e60ad; 
+.auth .auth--bottom--card span strong:active{
+   color:#3b658b; 
 }
+
 .auth--signup--msg{
     text-align:center;
     padding: 0 20px;
     font-size:17px;
     color: var(--second--gray);
-}
-.auth .auth--bottom--card span h6:hover{
-    text-decoration: underline;
 }
 .auth__get__app{
     text-align:center;
@@ -1834,7 +1818,7 @@ ul.getting--started--inner{
     width:0px;
     display:none;
 }
-#usersProfile .suggest--item--container{
+#usersProfile ul.suggestions--p--ul{
     max-width: 100%;
     overflow-x: auto;
 }
@@ -1882,7 +1866,7 @@ ul.getting--started--inner{
 .link--element:hover{
     text-decoration: underline;
 }
-#home .suggest--item--container .suggestion--item .MuiAvatar-root{
+#home .suggestion--item .MuiAvatar-root{
     width:32px;
     height:32px;
     cursor: pointer;
@@ -2214,10 +2198,6 @@ ul.getting--started--inner{
 }
 .new--msg--body .suggestions--list ul li.suggestion--item:hover{
     background-color: var(--shadow-white);
-}
-.new--msg--body .suggestions--list ul .suggest--item--container{
-  padding:0;
-  margin:0;
 }
 .new--msg--body input.new__msg__radio{
     cursor:pointer;

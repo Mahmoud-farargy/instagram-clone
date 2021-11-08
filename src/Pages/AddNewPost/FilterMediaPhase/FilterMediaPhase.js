@@ -27,6 +27,7 @@ const FilterMediaPhase = ({ setCurrentPhase, contentPreview }) => {
                 {
                     selectedFilter !== "normal" ?
                     <ImageFilter
+                        className="original--review"
                         image={contentPreview}
                         filter={ selectedFilter } // see docs beneath
                         colorOne={ [40, 250, 250] }

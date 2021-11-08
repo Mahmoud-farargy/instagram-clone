@@ -19,7 +19,7 @@ const AuthInput = ({ inputType, type, val, title, onInputChange, isSubmitted, is
         <Fragment>
             <div className={`animate--input ${!isValid && isSubmitted && "invalid__input"
                 } ${(val || isFocused) && "active__input"}`}>
-                <label>{title}</label>
+                <label htmlFor={title}>{title}</label>
                 {
                     inputType?.toLowerCase() === "text" ?
                         <input
@@ -32,6 +32,7 @@ const AuthInput = ({ inputType, type, val, title, onInputChange, isSubmitted, is
                             name={name}
                             data-cy={type}
                             data-testid={`${type}-auth-input`}
+                            id={title}
                         />
                         : inputType?.toLowerCase() === "password" ?
                             < >
@@ -46,6 +47,7 @@ const AuthInput = ({ inputType, type, val, title, onInputChange, isSubmitted, is
                                     autoComplete="off"
                                     name={name}
                                     data-cy="password"
+                                    id={title}
                                 />
                                 <span onClick={() => togglePassVisibility()} className="password__visibiliry__ico">
                                     {
@@ -65,6 +67,7 @@ const AuthInput = ({ inputType, type, val, title, onInputChange, isSubmitted, is
                                 onChange={(e) => onInputChange(e.target.value, name)}
                                 type="text"
                                 data-cy={type}
+                                id={title}
                             />
                 }
             </div>

@@ -31,10 +31,13 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
         if(hasMore){
             setLoading({...isLoading,loadingMorePosts: true});
             if(currLimit >= finalLimit) setLimit(false);
-            if(_isMounted.current) timeouts.current = setTimeout(() => {
-                setLoading({...isLoading,loadingMorePosts: false});
-                setCurrLimit(currLimit + 5);
-                window.clearTimeout(timeouts?.current);
+            timeouts.current = setTimeout(() => {
+                if(_isMounted.current) {
+                        setLoading({...isLoading,loadingMorePosts: false});
+                        setCurrLimit(currLimit + 5);
+                        window.clearTimeout(timeouts?.current);  
+                }
+
             },1100);
         }
     } 

@@ -271,7 +271,7 @@ const PostPage  = (props) => {
                         ) : null}{" "}
                       </h5>
                     </span>
-                    <span tabIndex="0" aria-disabled="false" role="button">
+                    <span tabIndex="0" aria-disabled="false" role="button" aria-label="View location">
                       <p>
                         <TruncateMarkup line={1} ellipsis="...">
                           {location}
@@ -368,7 +368,7 @@ const PostPage  = (props) => {
                 </div>
                 {likes?.people?.length >= 1 && compState?.alsoLiked?.length > 0 ?
                   <div className="people--also--liked flex-row">
-                    <Avatar src={compState?.alsoLiked?.[0]?.receiverAvatarUrl} />
+                    <Avatar src={compState?.alsoLiked?.[0]?.receiverAvatarUrl} alt="people who also liked this feed"/>
                         <p className="flex-row" onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}>Liked by
                           <span className="flex-row">
                             {

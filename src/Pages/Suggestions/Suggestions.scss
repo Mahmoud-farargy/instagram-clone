@@ -19,8 +19,6 @@
             margin:0;
             background-color: var(--white);
             width: 100%;
-            .suggest--item--container{
-                width: 100%;
                 .suggestion--item {
                     width: 100%;
                     padding:0;
@@ -36,16 +34,12 @@
                 button:focus{
                     outline: none;
                 }
-            }
         }
         @media only screen and (max-width: 670px){
             width: 100%;
             overflow-y:auto;
             h4, .online__title{
                 padding-left:10px;
-            }
-            ul.suggestions--p--ul{
-                 max-height: 80vh;
             }
         }
     }

@@ -285,7 +285,7 @@ class Post extends PureComponent {
                   alt={userName}
                 />
                 <div className="post--header--user--info flex-column">
-                  <span tabIndex="0" aria-disabled="false" role="button">
+                  <span tabIndex="0" aria-disabled="false" role="button" aria-label="Visit user page">
                     <h5 className="flex-row">
                       <Link
                         to={`/profile`}
@@ -305,7 +305,7 @@ class Post extends PureComponent {
                       </Link>{" "}
                     </h5>
                   </span>
-                  <span tabIndex="0" aria-disabled="false" role="button">
+                  <span tabIndex="0" aria-disabled="false" role="button" aria-label="View location">
                     <p>
                       <TruncateMarkup line={1} ellipsis="...">
                         {location}
@@ -418,7 +418,7 @@ class Post extends PureComponent {
               </div>
               {likes?.people?.length >= 1 && this.state.alsoLiked?.length > 0 ?
                   <div className="people--also--liked flex-row">
-                    <Avatar src={this.state.alsoLiked?.[0]?.receiverAvatarUrl} />
+                    <Avatar src={this.state.alsoLiked?.[0]?.receiverAvatarUrl} alt="people who also liked this feed"/>
                         <p className="flex-row" onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}>Liked by
                           <span className="flex-row">
                             {

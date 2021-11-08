@@ -87,8 +87,13 @@
 }
 #upload.post--uploading--container .original--review{
         max-width: 300px;
-        max-height: 300px;
-        min-height: 100%;
+        min-height: 50px;
+        object-fit: contain;
+}
+#upload.post--uploading--container .custom__marker{
+    background-color: var(--ultimate-black);
+    border-radius: 5px;
+    color: #fff;
 }
 #upload.post--uploading--container .phase--media--right .phase__media__next_btn{
     justify-self: end;

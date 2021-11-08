@@ -64,7 +64,7 @@ const Header = (props) => {
   useEffect(() => {
     if (_isMounted?.current && ((window.innerWidth || document.documentElement.clientWidth) >= 670)) {
       window.addEventListener("scroll", () => {
-        if (headerRef && headerRef.current) {
+        if (headerRef && headerRef.current && _isMounted.current) {
           if (window.scrollY > 0) {
             headerRef.current?.classList && headerRef.current.classList.add("shorter_header");
             setScrollingState(true);
@@ -184,21 +184,21 @@ const Header = (props) => {
                   exact
                   to="/"
                   activeClassName={!openNoti ? "active-nav-link" : ""}
-                  aria-label="Home"
+                  tabIndex="0"
                 >
-                  <HiHome style={{ fontSize: "26px" }} />
+                  <HiHome style={{ fontSize: "26px" }} aria-label="Home"/>
                 </NavLink>
               </li>
               {user ? (
-                <div className="flex-row" style={{ alignItems: "center" }}>
+                <>
                   <li className="like__icon__item" title="Messages">
                     <NavLink
                       onClick={() => reverseNotiState("isNewMsg")}
                       to="/messages"
                       activeClassName={!openNoti ? "active-nav-link" : ""}
-                      aria-label="Messages"
+                      tabIndex="0"
                     >
-                      <FaFacebookMessenger />
+                      <FaFacebookMessenger aria-label="Messages"/>
                       {receivedData?.notifications?.isNewMsg &&
                         location.pathname !== "/messages" ? (
                           <div className="like__noti__dot mt-1"></div>
@@ -209,9 +209,9 @@ const Header = (props) => {
                     <NavLink
                       to="/explore"
                       activeClassName={!openNoti ? "active-nav-link" : ""}
-                      aria-label="Find People"
+                      tabIndex="0"
                     >
-                      <IoIosCompass className="compass__explore__icon" />
+                      <IoIosCompass className="compass__explore__icon" aria-label="Find People"/>
 
                     </NavLink>
                   </li>
@@ -219,9 +219,9 @@ const Header = (props) => {
                     <NavLink
                       to="/add-post"
                       activeClassName={!openNoti ? "active-nav-link" : ""}
-                      aria-label="Add New"
+                      tabIndex="0"
                     >
-                      <BsFillPlusCircleFill />
+                      <BsFillPlusCircleFill aria-label="Add New"/>
                     </NavLink>
                   </li>
                   <li
@@ -328,7 +328,7 @@ const Header = (props) => {
                       </div>
                     </div>
                   </li>
-                </div>
+                </>
               ) : null}
             </ul>
             {openProf || openNoti || openSearchBox ? (
