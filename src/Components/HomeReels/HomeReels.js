@@ -114,10 +114,10 @@ const HomeReels = () => {
                         width={60} />
                     }
                     classes={{ wrapper: "items--wrapper", itemsWrapper: "items--wrapper", itemsInnerWrapper: "items--wrapper" }}
-                    rightChevron={<button className="home--reel--right--arrow">
+                    rightChevron={<button aria-label="Scroll right" className="home--reel--right--arrow">
                       <IoIosArrowDroprightCircle />
                     </button>}
-                    leftChevron={<button className="home--reel--left--arrow">
+                    leftChevron={<button aria-label="Scroll left" className="home--reel--left--arrow">
                       <IoIosArrowDropleftCircle />
                     </button>}
                   >

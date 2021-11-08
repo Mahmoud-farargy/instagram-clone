@@ -153,16 +153,20 @@ useEffect(() => {
         doubleLikeClicked: true,
       });
       timeouts.current = setTimeout(() => {
-        setCompState({
-          ...compState,
-          doubleLikeClicked: false,
-        });
-        window.clearTimeout(timeouts.current);
+        if(_isMounted){
+            setCompState({
+              ...compState,
+              doubleLikeClicked: false,
+            });
+            window.clearTimeout(timeouts.current);  
+        }
       }, 1100);
     }
     timeouts.current = setTimeout(() => {
-      resetCounter();
-      window.clearTimeout(timeouts.current);
+      if(_isMounted){
+        resetCounter();
+         window.clearTimeout(timeouts.current); 
+      }
     }, 1000);
   };
   const updateUsersWhoLiked = () => {
@@ -467,7 +471,7 @@ useEffect(() => {
                            </span>
                           </h5>
                         </span>
-                        <span tabIndex="0" aria-disabled="false" role="button">
+                        <span tabIndex="0" aria-disabled="false" role="button" aria-label="View location">
                           <p style={{minHeight:"20px"}}>
                             <TruncateMarkup line={1} ellipsis="...">
                               {location}
@@ -582,7 +586,7 @@ useEffect(() => {
                     </div>
                     {likes?.people?.length >= 1 && compState?.alsoLiked?.length > 0 ?
                   <div className="people--also--liked flex-row">
-                    <Avatar src={compState?.alsoLiked?.[0]?.receiverAvatarUrl} />
+                    <Avatar src={compState?.alsoLiked?.[0]?.receiverAvatarUrl} alt="people who also liked this feed"/>
                         <p onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}>Liked by
                           <span>
                             {

@@ -94,7 +94,10 @@
     margin: 0; 
     height: 100%;
     border-right: 1px solid var(--gray);
-    min-height:70vh;
+    min-height:80vh;
+    @media only screen and (min-width: 670px){
+      overflow-y: auto;
+    }
     @media only screen and (max-width: 670px){
       width:100%;
       min-height:200px;

@@ -685,9 +685,10 @@ const AuthPage = (props) => {
         : txt
     }`;
   };
-  const onRecapChange = () => {
-    setRecaptcha(true);
-  } 
+  const onRecapChange = (val) => {
+    setRecaptcha(val);
+  };
+  
   return (
     <Auxiliary>
       <section className="auth--main flex-column">
@@ -804,7 +805,9 @@ const AuthPage = (props) => {
                       <ReCAPTCHA
                           className="recaptcha__box"
                           sitekey={recaptchaSitekey}
-                          onChange={(x) => onRecapChange(x)}
+                          onChange={() => onRecapChange(true)}
+                          onErrored={(() => onRecapChange(false))}
+                          onExpired={(() => onRecapChange(false))}
                         />
                       <AuthSubmissionBtn value="Sign Up" type="signUp" formState={formState} isRecapVerified={isRecapVerified} inProgress={inProgress} loading={loading} />
                     </form>
@@ -816,12 +819,12 @@ const AuthPage = (props) => {
               {!signUpState ? (
                 <span>
                   Don't have an account?{" "}
-                  <h6 onClick={() => switchToSignUp(!signUpState)}>Sign up</h6>
+                  <strong onClick={() => switchToSignUp(!signUpState)}>Sign up</strong>
                 </span>
               ) : (
                 <span>
                   Have an account?{" "}
-                  <h6 onClick={() => switchToSignUp(!signUpState)}>Log in</h6>
+                  <strong onClick={() => switchToSignUp(!signUpState)}>Log in</strong>
                 </span>
               )}
             </div>

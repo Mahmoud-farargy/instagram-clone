@@ -12,6 +12,7 @@ import { Avatar } from "@material-ui/core";
 import { GoVerified } from "react-icons/go";
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import ImageMarker from 'react-image-marker';
 
 const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploadedItem, contentName }) => {
     const { mutateLoadingState, loadingState, receivedData } = context;
@@ -20,6 +21,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
     const [loadState, setLoadState] = useState({
       submitted: false
     });
+    const [markers, setMarkers] = useState([]);
     const [shareState, setShareState] = useState({
       caption: "",
       location: "",
@@ -284,6 +286,12 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
     );      
   }
 }
+  const CustomMarker = (props) => {
+    console.log(props);
+    return (
+        <p className="custom__marker">My custom marker - {props.itemNumber}</p>
+    );
+  };
     // xxxxxx
     const isValid = (method.toLowerCase() === Consts.Post) ? shareState.caption && contentType : method.toLowerCase() === Consts.Reel? (contentType && (shareState.selectedReelGroup ||  shareState.newGroupName)) : null;
     return (
@@ -315,7 +323,21 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                   :
                     (contentType === "image" ?
                     <div className="original--review">
-                        <img loading="lazy" className="unselectable" src={contentPreview || ""} alt="new post" />   
+                        {/* <img loading="lazy" className="unselectable" src={contentPreview || ""} alt="new post" />    */}
+                        <ImageMarker
+                        loading="lazy" 
+                        src={contentPreview || ""}
+                        markers={markers}
+                        alt="new post"
+                        className="unselectable"
+                        markerComponent={CustomMarker}
+                        onAddMarker={(marker) => setMarkers([...markers, {
+                          name: "user",
+                          ...marker
+                        }])}
+                        draggable="false"
+                        decoding="auto"
+                        />
                     </div>
                     : contentType === "video" ?
                     <div className="original--review">

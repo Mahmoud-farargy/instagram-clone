@@ -103,7 +103,7 @@ const VideoPost = React.forwardRef(
                     className="post__card__content"
                     onError={(k) => triggerError(k)}
                     playsInline
-                    webkit-playsinline
+                    // webkit-playsinline
                 />
             {
                 vid?.isBuffering ?

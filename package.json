@@ -30,7 +30,7 @@
     "react-h5-audio-player": "^3.7.1",
     "react-icons": "^3.11.0",
     "react-image-filter": "^0.1.2",
-    "react-image-mapper": "0.0.15",
+    "react-image-marker": "^1.2.0",
     "react-items-carousel": "^2.8.0",
     "react-loader-spinner": "^4.0.0",
     "react-loading-skeleton": "^2.2.0",
