@@ -121,6 +121,7 @@
         margin:0 auto;
     }
     #upload.post--uploading--container{
+        border-radius: 0;
         padding-bottom:50px;
         justify-content: flex-start;
         align-items: flex-start;

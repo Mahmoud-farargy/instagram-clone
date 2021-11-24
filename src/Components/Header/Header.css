@@ -221,6 +221,7 @@
 #header .search--result--item{
     width:100%;
     cursor: pointer;
+    transition: background-color 0.2s linear;
 }
 #header .search--result--item:hover{
     background-color: var(--light-gray);

@@ -34,7 +34,7 @@ const SuggList = (props) => {
                                   title={item?.userName}
                                   className="acc__name trim__txt"
                                 >
-                                  { trimText(item?.userName, 21)}
+                                  { trimText(item?.userName, 20)}
                                   {item?.isVerified && (
                                     <GoVerified className="verified_icon" />
                                   )} 
@@ -43,7 +43,7 @@ const SuggList = (props) => {
                                   className="user__name mb-2"
                                   title={item?.userName}
                                 >
-                                  {item?.profileInfo?.name}
+                                  {trimText(item?.profileInfo?.name,20)}
                                 </span>
                               </div>
                                <FollowUnfollowBtn shape="secondary" userData={{userId: item?.uid, uName: item?.userName, uAvatarUrl: item?.userAvatarUrl, isVerified: item?.isVerified}} />

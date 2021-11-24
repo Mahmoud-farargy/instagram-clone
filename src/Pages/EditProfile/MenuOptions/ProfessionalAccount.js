@@ -5,6 +5,7 @@ import React, {
   Fragment,
   useState,
   useEffect,
+  useRef
 } from "react";
 import { AppContext } from "../../../Context";
 import { CategoryList } from "../../../Lists/Lists";
@@ -14,11 +15,14 @@ import CheckboxIOS from "../../../Components/Generic/CheckboxIOS/CheckboxIOS";
 import Moment from "react-moment";
 import { retry } from "../../../Utilities/RetryImport" ;
 
+// lazy loading
 const InputForm = lazy(() =>
   retry(() =>
     import("../../../Components/Generic/InpuForm/InputForm")
 ));
+
 const ProfessionalAccount = (props) => {
+  const _isMounted = useRef(true);
   const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser, handleFollowRequests, updateSuggestionsList } = useContext(AppContext);
   //useState
   const [formState, setForm] = useState({
@@ -39,6 +43,7 @@ const ProfessionalAccount = (props) => {
       professionalAcc: { ...formState.professionalAcc, notificationBell:{...formState.professionalAcc.notificationBell, [name]: val} },
     });
   }
+  useEffect(() => () => _isMounted.current = false, []);
   useEffect(() => {
     setForm({
       ...formState,
@@ -70,10 +75,17 @@ const ProfessionalAccount = (props) => {
           handleFollowRequests({type: "confirm", userId: uid, userAvatarUrl, userName, isVerified});
         })      
       }
-      handleEditingProfile(formState?.professionalAcc, "professionalAcc");
-      updateSuggestionsList();
-      notify("Profile updated", "success");
-      props.history.push("/profile");
+      handleEditingProfile(formState?.professionalAcc, "professionalAcc").then(( ) => {
+        if(_isMounted.current){
+            updateSuggestionsList();
+            notify("Profile updated", "success");
+            props.history.push("/profile");
+        }
+      }).catch((err) => {
+        if(_isMounted.current){
+           notify( err?.message || "An error occurred. Try again later.", "error");
+        }
+      });
     }
   };
   const onDeleteAccount = (x) => {

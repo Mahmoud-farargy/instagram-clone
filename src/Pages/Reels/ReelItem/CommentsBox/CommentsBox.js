@@ -57,7 +57,7 @@ const CommentsBox = (props) => {
                         ))
                         :
                         <div className="flex-row w-100 h-100 useModal--empty--users">
-                             <h3>No comments yet.<br /> Don't be shy and add a comment.</h3>
+                             <h5>No comments yet.<br /> Don't be shy and add a comment.</h5>
                         </div>
                     }
                 </ul>
@@ -78,6 +78,7 @@ const CommentsBox = (props) => {
                     aria-label="Add a commment.."
                     autoComplete="off"
                     name="add-comment"
+                    spellCheck="true"
                     autoFocus
                   />
                   <button

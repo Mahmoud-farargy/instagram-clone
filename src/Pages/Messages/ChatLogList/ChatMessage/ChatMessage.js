@@ -96,7 +96,7 @@ const Message = (props) => {
                 </div> :
                 message?.type === "video" ?
                   <div className="message--video message--content">
-                    <video src={message?.contentUrl} controls></video>
+                    <video src={message?.contentUrl} controls controlsList="nodownload" playsInline></video>
                   </div> :
                   message?.type === "picture" ?
                     <div className="message--picture message--content">

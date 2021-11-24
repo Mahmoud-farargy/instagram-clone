@@ -79,6 +79,10 @@ const Extra = () => {
           setHasRated(true);
           notify("Thanks for your feedback.","success");
         }
+      }).catch(() => {
+        if(_isMounted?.current){
+          notify("An error occurred while submitting your feedback. Please try again later.","error");
+        }
       });
     }
     useEffect(() => {
@@ -148,6 +152,7 @@ const Extra = () => {
                       rows={12}
                       disabled={hasRated}
                       defaultValue={reviewTxt}
+                      spellCheck="true"
                       placeholder="Your opinion matters. Tell me your experience with the app and how can I make it better or if you faced any bug so I can work on it."
                       onChange={(k) => setReviewTxt(k.target.value)} />
                    

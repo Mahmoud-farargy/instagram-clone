@@ -319,6 +319,7 @@ const PostPage  = (props) => {
                       src={contentURL}
                       isVidPlaying={true}
                       ref={vidRef}
+                      isMuted={true}
                        /> 
                     </div>
                   </div>
@@ -468,6 +469,7 @@ const PostPage  = (props) => {
                         className="post__bottom__input"
                         type="text"
                         placeholder="Add a commment.."
+                        spellCheck="true"
                       />
                       </div>
                     </div>

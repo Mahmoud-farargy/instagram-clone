@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useContext } from "react";
+import React, { Fragment, useState, useEffect, useContext, useRef } from "react";
 import "./VideoPost.scss";
 import { IoMdVideocam } from "react-icons/io";
 import { FaPlay, FaVolumeMute } from "react-icons/fa";
@@ -6,28 +6,41 @@ import { ImVolumeMedium } from "react-icons/im";
 import Loader from "react-loader-spinner";
 import PropTypes from "prop-types";
 import { AppContext } from "../../Context";
-import $ from "jquery";
 import LoadContentFail from "../LoadContentFail/LoadContentFail";
 
 const VideoPost = React.forwardRef(
   (
-    { className, whenLoadedData, whenEnded, whenCanPlay, isMuted = false, isVidPlaying, ...props },
+    { className, whenLoadedData,  whenCanPlay, isMuted = true, isVidPlaying, ...props },
     ref
   ) => {
+    const _isMounted = useRef(true);
     const [vid, setVideo] = useState({
       hasMuted:  false,
       isPlaying: false,
       hasLoaded: false,
       isBuffering: true,
-      hasEnded: false,
       canPlay: false,
       hasError: false,
     });
     const { pauseMedia } = useContext(AppContext);
     useEffect(() => {
-       $(document).ready(() => {
-        typeof isMuted === "boolean" && setVideo({ ...vid, hasMuted: isMuted });
-       });
+      // listeners
+      if(ref.current && _isMounted.current){
+          ref.current.addEventListener("loadedmetadata", () => {
+              if(_isMounted.current){
+                triggerLoadedData();
+                whenCanPlay && typeof whenCanPlay === "function" && whenCanPlay(false);
+              }
+          });
+      }
+        if(typeof isMuted === "boolean"){
+          setVideo({ ...vid, hasMuted: isMuted });
+          ref.current.muted = true;
+        }
+        return () => { 
+          ref.current = false;
+          _isMounted.current = false;
+        }
     },[]);
     useEffect(() => {
       if(!vid.isBuffering && vid?.hasLoaded && ref && ref.current && ref.current?.preload !== "none"){
@@ -37,9 +50,9 @@ const VideoPost = React.forwardRef(
            ref.current.play();
         }
         if (!vid?.hasMuted) {
-           ref.current.volume = 1;
+           ref.current.muted = true;
         } else {
-           ref.current.volume = 0.0;
+           ref.current.muted = false;
         }
       }
     },[vid, ref]);
@@ -59,31 +72,20 @@ const VideoPost = React.forwardRef(
         } else {
           setVideo({ ...vid, isPlaying: true });
         }
-      } else if (type === "mute" && vid?.hasLoaded) {
-        if (vid?.hasMuted) {
-          setVideo({ ...vid, hasMuted: false });
-        } else {
-          setVideo({ ...vid, hasMuted: true });
-        }
+      } else if (type === "mute" && vid?.hasLoaded) { 
+            if (vid?.hasMuted) {
+              setVideo({ ...vid, hasMuted: false });
+            } else {
+              setVideo({ ...vid, hasMuted: true });
+            }
       }
     };
     const triggerClick = (event) => {
       handleVideo("play", event);
     }
-    const triggerLoadedData = (event) => {
-      event.persist();
+    const triggerLoadedData = () => {
       whenLoadedData && typeof whenLoadedData === "function" && whenLoadedData();
-      setVideo({ ...vid, hasLoaded: true });
-    };
-    const triggerEnded = (event) => {
-      event.persist();
-      whenEnded && typeof whenEnded === "function" && whenEnded();
-      setVideo({ ...vid, hasEnded: true });
-    };
-    const triggerCanPlay = (event) => {
-      event.persist();
-      whenCanPlay && typeof whenCanPlay === "function" && whenCanPlay(false);
-      setVideo({ ...vid, isBuffering: false });
+      setVideo({ ...vid, hasLoaded: true, isBuffering: false  });
     };
     const triggerError = (event) => {
       event.persist();
@@ -96,14 +98,10 @@ const VideoPost = React.forwardRef(
                     onClick={(s) => triggerClick(s)}
                     ref={ref}
                     {...props}
-                    onLoadedData={(k) => triggerLoadedData(k)}
-                    onEnded={(k) => triggerEnded(k)}
-                    onCanPlay={(k) => triggerCanPlay(k)}
                     draggable="false"
                     className="post__card__content"
                     onError={(k) => triggerError(k)}
                     playsInline
-                    // webkit-playsinline
                 />
             {
                 vid?.isBuffering ?
@@ -128,18 +126,20 @@ const VideoPost = React.forwardRef(
                 <IoMdVideocam className="video__top__icon" />
                 {vid.isPlaying && <FaPlay onClick={(s) => handleVideo("play", s)} className="video__play__icon fadeEffect" />}
                 <div className="video--volume--outer">
-                  {!vid?.hasMuted ? (
+                  {(vid?.hasMuted) ? (
+                    <span onClick={(l) => handleVideo("mute", l)}>
                       <ImVolumeMedium
-                      data-cy="vid-unmuted"
-                      onClick={(l) => handleVideo("mute", l)}
-                      className="video__volume__icon"
+                        data-cy="vid-unmuted"
+                        className="video__volume__icon"
                       />
+                    </span>
                   ) : (
-                      <FaVolumeMute
-                      data-cy="vid-muted"
-                      onClick={(l) => handleVideo("mute", l)}
-                      className="video__volume__icon"
-                      />
+                    <span onClick={(l) => handleVideo("mute", l)}>
+                          <FaVolumeMute
+                            data-cy="vid-muted"
+                            className="video__volume__icon"
+                          />  
+                    </span>
                   )} 
                 </div>
              </>
@@ -154,7 +154,6 @@ VideoPost.propTypes = {
   className: PropTypes.string,
   clickEvent: PropTypes.func,
   whenLoadedData: PropTypes.func,
-  whenEnded: PropTypes.func,
   whenCanPlay: PropTypes.func,
   isMuted: PropTypes.bool,
   isVidPlaying: PropTypes.bool

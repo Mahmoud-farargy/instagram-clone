@@ -74,10 +74,17 @@ const EditProfileOption = (props) => {
       curr.updateProfile({
         displayName: formState.name,
         phoneNumber: formState.phoneNumber,
+      }).then(() => {
+        if(_isMounted.current){
+            handleEditingProfile(formState, "editProfile");
+            notify("Profile updated", "success");
+            props.history.push("/profile");
+        }
+      }).catch((err) => {
+        if(_isMounted.current){
+            notify(err?.message || "An error occurred. Please try again later", "error");
+        }
       });
-      handleEditingProfile(formState, "editProfile");
-      notify("Profile updated", "success");
-      props.history.push("/profile");
     }
   };
 

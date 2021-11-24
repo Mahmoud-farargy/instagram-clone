@@ -462,6 +462,7 @@ const Messages = (props) => {
                                     placeholder="Message..."
                                     onFocus={() => typing(true)}
                                     onBlur={() => typing(false)}
+                                    spellCheck="true"
                                   />
                                 </div>
                             </div>

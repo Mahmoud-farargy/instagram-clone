@@ -15,6 +15,7 @@ import {
   twitterProvider,
   facebookProvider,
   githubProvider,
+  firebase
 } from "../../Config/firebase";
 import { withRouter, Link } from "react-router-dom";
 import { AppContext } from "../../Context";
@@ -66,7 +67,32 @@ const AuthPage = (props) => {
     setSubmission(false);
   }
   let activeSlideIndex = 0;
+  const isUserNameUsed = (nameToMatch) => {
+    return new Promise((resolve, reject) => {
+      if(nameToMatch){
+          firebase.database().ref('/userNames/').once("value").then((res) => {
+            const dataObj = res.val();
+            if(dataObj !== null){
+               if(typeof dataObj === "object"){
+                    resolve(Object.values(dataObj)?.some(name => name?.toLowerCase() === nameToMatch.toLowerCase()));
+                }else{
+                  context.notify("An unexpected error occurred. Please try again later.", "error");
+                  reject(null);
+                } 
+            }else{
+                resolve(false);
+            }
 
+          }).catch(() => {
+              context.notify("An unexpected error occurred. Please try again later.", "error");
+              reject(null);
+          }); 
+      }else{
+          context.notify("Please type a username.");
+          reject(null);
+      }
+    });
+  };
   const slide = () => {
           const slideContainer = document.querySelector("#slideContent");
           if( slideContainer){
@@ -105,7 +131,7 @@ const AuthPage = (props) => {
       })
     );
   };
-  const loginWithEmail = (email, password) => {
+  const loginWithEmail = (email, password, isAnonymous = false) => {
     var {
       notify,
       receivedData,
@@ -135,11 +161,16 @@ const AuthPage = (props) => {
                   resetForm();
                   timeouts.current = setTimeout(() => {
                     updatedReceivedData();
+                    !isAnonymous ? 
                     notify(
                       `${greeting}, ${
                         receivedData?.userName || currentUser?.displayName || "User"
                       }`
-                    );
+                    ) : 
+                    notify(`Hello stranger, This is an anonymous account which means your messages,
+                    posts, settings, etc. are public and changeable by other users. To have privacy,
+                    create your own account.`, "info");
+
                     setLoading(false);
                     props.history.push("/");
                   }, 150);
@@ -183,121 +214,154 @@ const AuthPage = (props) => {
           //avoids data overlapping
           if (formState.signUpEmail?.isValid) {
             if (formState.fullName?.isValid) {
-              if (formState.signUpUsername?.isValid) {
-                if (formState.signUpPassword?.isValid) {
-                  if(isRecapVerified){
-                        auth
-                            .createUserWithEmailAndPassword(
-                              formState.signUpEmail.val?.toLowerCase().trim(),
-                              formState.signUpPassword?.val
-                            )
-                            .then((cred) => {
-                              if(_isMounted?.current){
-                                db.collection(Consts.USERS)
-                                  .doc(cred.user.uid)
-                                  .set({
-                                    uid: cred.user.uid,
-                                    userName: formState.signUpUsername?.val,
-                                    posts: [],
-                                    followers: [],
-                                    following: [],
-                                    followRequests: {received:[], sent: []},
-                                    messages: [],
-                                    profileInfo: {
-                                      bio: "",
-                                      website: "",
-                                      gender: "Male",
-                                      status: "Single",
-                                      name: formState.fullName?.val.trim(),
-                                      phoneNumber: "",
-                                      birthday: "",
-                                      theme: "lightMode",
-                                      professionalAcc: {
-                                        show: true,
-                                        category: "Just For Fun",
-                                        suggested: true,
-                                        status: true,
-                                        reelsForFollowing: false,
-                                        notificationBell: { state: false, type: "Both" },
-                                        private: false,
-                                        suggNotFollowed: false,
-                                        disableComments: false
-                                      },
-                                      sort: {
-                                        sortBy: "Random",
-                                        sortDirection: "Descending",
-                                        filter: "None",
-                                      },
-                                      accountCreationDate: new Date(),
-                                      registrationMethod: "email",
-                                    },
-                                    homePosts: [],
-                                    reels: [],
-                                    latestLikedPosts: [],
-                                    savedposts: [],
-                                    stories: [],
-                                    blockList: [],
-                                    notifications: {
-                                      isNewMsg: false,
-                                      isUpdate: false,
-                                      list: [],
-                                    },
-                                    isVerified: false,
-                                    userAvatarUrl: "",
-                                  })
-                                  .then(() => {
-                                    if(_isMounted?.current){
-                                      auth.currentUser.updateProfile({
-                                        displayName: formState.signUpUsername?.val,
-                                      });
-                                      localStorage.setItem(
-                                        "user",
-                                        JSON.stringify({
-                                          email: formState.signUpEmail?.val.toLowerCase(),
-                                          password: decipherPassword(formState.signUpPassword?.val),
-                                        })
-                                      );
-                                      resetForm();
-                                      updatedReceivedData();
-                                      timeouts.current = setTimeout(() => {
-                                        notify(
-                                          "Welcome to Voxgram. Start by adding posts to your account."
-                                        );
-                                        setLoading(false);
-                                        props.history.push("/");
-                                      }, 150);
-                                    }
-                                  });
-                              }
-                            })
-                            .catch((err) => {
-                              if(_isMounted?.current){
-                                setLoading(false);
-                                notify(err.message, "error");
-                              }
-                            }); 
-                  }else{
-                    setLoading(false);
-                    notify(
-                      "reCaptcha is required to verify you are not a robot.",
-                      "error"
-                    );
-                  }
+            isUserNameUsed(formState.signUpUsername?.val).then((backResult) => {
+              if(_isMounted?.current){
+                if(typeof backResult === "boolean"){
+                  if(!backResult){
+                    if (formState.signUpUsername?.isValid) {
+                      if (formState.signUpPassword?.isValid) {
+                        if(isRecapVerified){
+                                          auth
+                                            .createUserWithEmailAndPassword(
+                                              formState.signUpEmail.val?.toLowerCase().trim(),
+                                              formState.signUpPassword?.val
+                                            )
+                                            .then((cred) => {
+                                              if(_isMounted?.current){
+                                                db.collection(Consts.USERS)
+                                                  .doc(cred.user.uid)
+                                                  .set({
+                                                    uid: cred.user.uid,
+                                                    userName: formState.signUpUsername?.val,
+                                                    posts: [],
+                                                    followers: [],
+                                                    following: [],
+                                                    followRequests: {received:[], sent: []},
+                                                    messages: [],
+                                                    profileInfo: {
+                                                      bio: "",
+                                                      website: "",
+                                                      gender: "Male",
+                                                      status: "Single",
+                                                      name: formState.fullName?.val.trim(),
+                                                      phoneNumber: "",
+                                                      birthday: "",
+                                                      theme: "lightMode",
+                                                      professionalAcc: {
+                                                        show: true,
+                                                        category: "Just For Fun",
+                                                        suggested: true,
+                                                        status: true,
+                                                        reelsForFollowing: false,
+                                                        notificationBell: { state: false, type: "Both" },
+                                                        private: false,
+                                                        suggNotFollowed: false,
+                                                        disableComments: false
+                                                      },
+                                                      sort: {
+                                                        sortBy: "Random",
+                                                        sortDirection: "Descending",
+                                                        filter: "None",
+                                                      },
+                                                      accountCreationDate: new Date(),
+                                                      registrationMethod: "email",
+                                                    },
+                                                    homePosts: [],
+                                                    reels: [],
+                                                    latestLikedPosts: [],
+                                                    savedposts: [],
+                                                    stories: [],
+                                                    blockList: [],
+                                                    notifications: {
+                                                      isNewMsg: false,
+                                                      isUpdate: false,
+                                                      list: [],
+                                                    },
+                                                    isVerified: false,
+                                                    userAvatarUrl: "",
+                                                  })
+                                                  .then(() => {
+                                                    if(_isMounted?.current){
+                                                      auth.currentUser.updateProfile({
+                                                        displayName: formState.signUpUsername?.val,
+                                                      });
+                                                      localStorage.setItem(
+                                                        "user",
+                                                        JSON.stringify({
+                                                          email: formState.signUpEmail?.val.toLowerCase(),
+                                                          password: decipherPassword(formState.signUpPassword?.val),
+                                                        })
+                                                      );
+                                                      resetForm();
+                                                      updatedReceivedData();
+                                                      if(formState.signUpUsername?.val){
+                                                          const userNamesDB = firebase.database().ref(`/userNames`);
+                                                          userNamesDB.push(formState.signUpUsername?.val);
+                                                      }
+                                                      timeouts.current = setTimeout(() => {
+                                                        notify(
+                                                          "Welcome to Voxgram. Start by adding posts to your account."
+                                                        );
+                                                        setLoading(false);
+                                                        props.history.push("/");
+                                                      }, 150);
+                                                    }
+                                                  });
+                                              }
+                                            })
+                                            .catch((err) => {
+                                              if(_isMounted?.current){
+                                                setLoading(false);
+                                                notify(err.message, "error");
+                                              }
+                                            });  
+                                  
+                                
 
-                } else {
-                  setLoading(false);
-                  notify(
-                    formState.signUpPassword?.errorMsg,
-                    "error"
-                  );
+                            }else{
+                              setLoading(false);
+                              notify(
+                                "reCaptcha is required to verify you are not a robot.",
+                                "error"
+                              );
+                            }
+
+                          } else {
+                            setLoading(false);
+                            notify(
+                              formState.signUpPassword?.errorMsg,
+                              "error"
+                            );
+                          }
+                    } else {
+                      setLoading(false);
+                      notify(
+                        formState.signUpUsername?.errorMsg,
+                        "error"
+                      );
+                    }
+                  }else{
+                        setLoading(false);
+                            setFormState({
+                                ...formState,
+                                signUpUsername: {...formState.signUpUsername, isValid: false}
+                            });
+                        notify(`The Username ${formState.signUpUsername?.val} is not available. Please try another one`, "error");
+                  }
+                }else{
+                      setLoading(false);
+                      notify(
+                          "Error occurred. Please try later.",
+                          "error"
+                      );
                 }
-              } else {
-                setLoading(false);
-                notify(
-                  formState.signUpUsername?.errorMsg,
-                  "error"
-                );
               }
+            }).catch(() =>{
+                  if(_isMounted?.current){
+                        setLoading(false);
+                  }
+            });
+
             } else {
               setLoading(false);
               notify(
@@ -432,7 +496,7 @@ const AuthPage = (props) => {
       case "anonymousProvider":
         setLoading(true);
         const { email, pass } = anonInfo;
-        loginWithEmail(email, pass);
+        loginWithEmail(email, pass, true);
       break;
       case "twitterProvider":
         setLoading(true);

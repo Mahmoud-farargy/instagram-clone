@@ -33,7 +33,7 @@ const Themes = () => {
         <Fragment>
          <div id="theme" className="option--container">
             <FormControl component="fieldset">
-            <FormLabel component="legend">Pick a theme</FormLabel>
+            <FormLabel component="legend"><h5>Pick a theme</h5></FormLabel>
             <RadioGroup aria-label="gender" name="gender1" value={themeSelected} defaultValue={themeSelected} onChange={handleChange}>
                 {
                     themeList && themeList.length > 0 &&

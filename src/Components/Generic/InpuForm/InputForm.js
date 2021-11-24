@@ -30,6 +30,7 @@ const InputForm = (props) => {
                 autoComplete="off"
                 max={props.max}
                 min={props.min}
+                spellCheck={(props.inputType === "number" || props.inputType === "password" || props.inputType === "tel") ? "false" : "true"}
               />
               {props.extraText ? props.extraText : null}
               {/*You can also use props.children with closing tag*/}
@@ -107,7 +108,7 @@ const InputForm = (props) => {
                 value={props.val || ""}
                 type={props.inputType}
                 name={props.label}
-                onChange={(x) => props.changeInput(x.target.value, props.name)}
+                onChange={(x) => props.changeInput(x.target.checked, props.name)}
                 placeholder={props.label}
               />
               {props.extraText ? props.extraText : null}

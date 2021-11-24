@@ -28,7 +28,7 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
         _isMounted.current= false;
     }, []);
     const increasePostsBy5 = () => {
-        if(hasMore){
+        if(hasMore && _isMounted.current){
             setLoading({...isLoading,loadingMorePosts: true});
             if(currLimit >= finalLimit) setLimit(false);
             timeouts.current = setTimeout(() => {
@@ -95,7 +95,7 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
     },[]);
     const onLoadingFail = useCallback(( postOwnerId, postId ) => {
         //automatically removes elements that have failed to load denoting they don't exist and got removed from the main source
-        if( listType.toLowerCase() === "post" && isSavedPost && healthyStorageConnection && navigator.onLine && postOwnerId && postId){
+        if( listType?.toLowerCase() === "post" && isSavedPost && healthyStorageConnection && navigator.onLine && postOwnerId && postId){
             getUsersProfile(postOwnerId).then((data) => {
                 if(_isMounted?.current){
                     const postsCopy = data?.posts;

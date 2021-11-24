@@ -23,6 +23,7 @@ import { trimText } from "../../../Utilities/TrimText";
 import FollowUnfollowBtn from "../../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 function ReelItem(props) {
   const reelVideo = useRef(null);
+  const commentInputRef = useRef(null);
   const timeouts = useRef(null);
   const _isMounted = useRef(true);
   const context = useContext(AppContext);
@@ -44,26 +45,27 @@ function ReelItem(props) {
   } = context;
 
   const onVideoClick = () => {
-    if (isVideoPlaying) {
-      reelVideo && reelVideo.current.pause();
-      setVideoPlaying(false);
-    } else {
-      reelVideo && reelVideo.current.play();
-      setVideoPlaying(true);
-      setCurrPlayingReel(index);
+    if(reelVideo?.current){
+      if (!reelVideo.current?.paused) {
+        reelVideo && reelVideo.current.pause();
+        setVideoPlaying(false);
+      } else {
+        reelVideo && reelVideo.current.play();
+        setVideoPlaying(true);
+        setCurrPlayingReel(index);
+      }
     }
+
   };
   const setVolume = (event) => {
-    event.stopPropagation();
-    if (muteVolume) {
-      if (reelVideo) {
-        setVolumeState(false);
-        reelVideo.current.volume = 1;
-      }
-    } else {
-      if (reelVideo) {
-        setVolumeState(true);
-        reelVideo.current.volume = 0.0;
+    event && event.stopPropagation();
+    if (reelVideo && reelVideo.current) {
+      if (reelVideo.current?.muted) {
+          setVolumeState(false);
+          reelVideo.current.muted = false;
+      } else {
+          setVolumeState(true);
+          reelVideo.current.muted = true;
       }
     }
   };
@@ -114,23 +116,34 @@ function ReelItem(props) {
     }
   }
   useEffect(() => {
-    if(currentPlayingReel !== index){
+    if((currentPlayingReel !== index) && reelVideo.current){
       reelVideo && reelVideo.current.pause();
       setVideoPlaying(false);
     }
   },[currentPlayingReel, index]);
   useEffect(() => {
-    reelVideo.current.addEventListener("loadedmetadata", () =>{
-      if(_isMounted.current){
-          setBuffering(false);
-      }
-    })
+    document.addEventListener("keydown", (event) => {
+      (event.key === "m" || event.code === "KeyM") && setVolume();
+    });
+    if(reelVideo?.current){
+        reelVideo.current.addEventListener("loadedmetadata", () =>{
+          if(_isMounted.current){
+              setBuffering(false);
+          }
+        })  
+    }
     return () => {
       _isMounted.current = false;
       reelVideo.current = false;
+      document.removeEventListener("keydown", () => {});
       window.clearTimeout(timeouts?.current);
     };
   }, []);
+  const togglePlayingOnSpaceClick = (e) => {
+    e.preventDefault();
+    e.code === "Space" && onVideoClick();
+  }
+
   return (
     <Fragment>
       {/* Modal(s) */}
@@ -171,13 +184,13 @@ function ReelItem(props) {
          }  
          <video
               onClick={() => onVideoClick()}
-              onKeyPress={(event) => event.charCode === 32 && onVideoClick()}
               ref={reelVideo}
               src={item?.contentURL}
+              onKeyDown={(c) => togglePlayingOnSpaceClick(c)}
               loop
               onError={() => setErrorState(true)}
               playsInline
-              // webkit-playsinline
+              tabIndex="0"
             />
         {
           showOptions &&
@@ -271,7 +284,7 @@ function ReelItem(props) {
           </header>
           <footer className="reel--footer w-100 flex-row">
             <form onSubmit={(s) => submitComment(s)} className="reel--comment w-100 flex-row">
-                                <input type="text" value={commentTxt} onChange={(f) => setCommentTxt(f.target.value)} placeholder={`Replay to ${reelsProfile?.userName}...`} />  
+                                <input type="text" ref={commentInputRef} value={commentTxt} onChange={(f) => setCommentTxt(f.target.value)} placeholder={`Replay to ${reelsProfile?.userName}...`} />  
                                 {
                                     commentTxt && <span className="send__reel__comment">Send</span>
                                 }

@@ -47,6 +47,7 @@ const AuthInput = ({ inputType, type, val, title, onInputChange, isSubmitted, is
                                     autoComplete="off"
                                     name={name}
                                     data-cy="password"
+                                    spellCheck="false"
                                     id={title}
                                 />
                                 <span onClick={() => togglePassVisibility()} className="password__visibiliry__ico">
