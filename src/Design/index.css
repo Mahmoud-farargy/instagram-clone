@@ -28,6 +28,7 @@ div{
 /* ---------------Global classes-------------- */
 .disabled{
     opacity:0.5;
+    pointer-events: none;
     cursor:not-allowed !important;
 }
 .disabled:focus{
@@ -1425,6 +1426,7 @@ button:active{
 }
 #messages .messages--user{
     cursor:pointer;
+    transition: all 0.2s linear;
 }
 #messages .messages--user:hover{
     
@@ -1828,6 +1830,9 @@ ul.getting--started--inner{
     font-size: 25px;
     color: var(--font-black);
 }
+.ReactModal__Overlay{
+    z-index: 6000;
+}
 #usersProfile .suggestion--item, .getting--started--box{
     padding:20px;
     position: relative;
@@ -1840,6 +1845,12 @@ ul.getting--started--inner{
     align-items:center;
     justify-content: center;
     text-align:center;
+}
+#usersProfile .suggestion--item span, #usersProfile .suggestion--item p,.getting--started--box span, .getting--started--box p{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
 }
 #usersProfile .acc__name, #usersProfile .user__name{
     font-weight:600;
@@ -2034,6 +2045,8 @@ ul.getting--started--inner{
 }
 #contentUploader, #fileUploader {
     display: none;
+    visibility: hidden;
+    opacity: 0;
 }
 
 #messages.messages--container .loading--message--container{

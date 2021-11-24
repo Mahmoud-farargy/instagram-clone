@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useContext, Suspense, lazy } from "react";
+import React, { Fragment, useEffect, useContext, Suspense, lazy , useState } from "react";
 import { Switch, Route, useHistory } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { auth, changeConnectivityStatus } from "../../Config/firebase";
@@ -12,6 +12,7 @@ import 'react-h5-audio-player/lib/styles.css';
 import $ from "jquery";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
 import { retry } from "../../Utilities/RetryImport";
+import LostConnectivity from "../LostConnectivity/LostConnectivity";
 
 //lazy loading
 const Header = lazy(()=> retry(()=> import("../Header/Header")));
@@ -56,7 +57,6 @@ const App = () => {
     // returnPassword,
     suggestionsList,
     modalsState,
-    notify,
     changeModalState,
     usersModalList,
     unfollowModal,
@@ -71,9 +71,10 @@ const App = () => {
     closeNotificationAlert,
     isDayTime
   } = context;
-  const isAnyModalOpen = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
+  const [isAnyModalOpen, setAllModalsState] = useState(false);
   const [user,loading] = useAuthState(auth);
   const history = useHistory();
+  const [isConnected, setConnectivity] = useState(navigator.onLine);
   const renderHeader = (
     <Header
       receivedData = {receivedData}
@@ -84,7 +85,9 @@ const App = () => {
      />
   )
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+    window.addEventListener('offline', ()=> setConnectivity(false));
+    window.addEventListener('online', () => setConnectivity(true));
+    const unsubscribe = isConnected && auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         updateUserState(true);
         updateUID(authUser?.uid).then(() => {
@@ -111,19 +114,21 @@ const App = () => {
     // ----------------------
     return () => {
       //performs some clearn up actions
-      unsubscribe();
+      typeof unsubscribe === "function" && unsubscribe();
+      window.removeEventListener('offline', () => {});
+      window.removeEventListener('online', () => {});
     };
-  }, []);
-
+  }, [isConnected]);
   useEffect(() => {
-    $(document).ready(() => {
-      if (isAnyModalOpen) { //we could also use a ref in here
+    const isAnyoneOpening = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
+    setAllModalsState(isAnyoneOpening);
+      if (isAnyoneOpening) { //we could also use a ref in here
         $("body").css("overflow", "hidden");
       } else {
         $("body").css("overflow", "visible");
       }
-    });
-  }, [isAnyModalOpen]);
+  },[modalsState]);
+
   useEffect(() => {
     const currTheme = receivedData?.profileInfo?.theme;
     const changeBodyClass  = newClass => document.body.setAttribute("class",newClass );
@@ -138,11 +143,8 @@ const App = () => {
   },[receivedData?.profileInfo?.theme]);
   useEffect(() => {
     document.title = `${currentPage && currentPage + " • "}${AppConfig.title}`;
-    if(!navigator.onLine){
-      notify("You are Offline! Please reconnect and try again.", "error");
-      history.replace("/auth");
-    }
   }, [currentPage]);
+
   return (
     <Fragment>
       <main className="main--app">
@@ -168,6 +170,7 @@ const App = () => {
               ></div> 
          }          
         </Suspense>
+        {!isConnected && <LostConnectivity />}
         
         {/* Notifications container */}
         <ToastContainer />
@@ -176,10 +179,14 @@ const App = () => {
           <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div><LoadingScreen /></div>}>
             <Switch>
             <Route exact path="/">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 ? renderHeader : <LoadingScreen />}
-              <MobileHeader />
-              <Home />
-              <MobileNav />
+              {(user && receivedData && Object.keys(receivedData).length) > 0 ?
+                <>
+                {renderHeader}
+                <MobileHeader />
+                <Home />
+                <MobileNav />
+                </>
+              : isConnected && <LoadingScreen />}
             </Route>
             <Route exact path="/auth" component={AuthPage} />
             <Route exact path="/messages">
@@ -318,7 +325,7 @@ const App = () => {
             </Route>
             </Switch>
           </Suspense>
-         
+
         
       </main>
     </Fragment>

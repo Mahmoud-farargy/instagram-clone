@@ -33,8 +33,10 @@ const DesktopSearch = ({ controlSearchBox, openSearchBox }) => {
     }
   }, [searchVal]);
   useEffect(() => () => {
-    searchByVoice("stop");
-    _isMounted.current = false;
+    ("SpeechRecognition" in window && window.SpeechRecognition) && searchByVoice("stop");
+    return () => {
+       _isMounted.current = false;
+    }
   }, []);
   const searchByVoice = (actionProp) => {
     if (actionProp === "start") {

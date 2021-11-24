@@ -10,14 +10,15 @@ import reelPlaceholder from "../../Assets/reels-instagram-logo-white_1379-5039.j
 
 const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index, className, withOwnersName, isSavedPost , onLoadingFail }, ref) => {
   const videoPost = useRef(null);
+  const _isMounted = useRef(true);
   const [isBuffering, setBuffering] = useState(true);
-  const [isVideoLoaded, setVidLoading] = useState(false);
+  const [hasVideoLoaded, setVidLoaded] = useState(false);
   const [loadContentFailed, setFailingState] = useState(false);
   const [isVidPlaying, setPlayingState] = useState(false); 
   const [preLoad, setPreLoad] = useState("none");
   const handleVideoPlaying =(type) => {
     if(preLoad === "none") setPreLoad("metadata");
-    if(isVideoLoaded && !isBuffering && videoPost && videoPost?.current && preLoad !== "none"){
+    if(hasVideoLoaded && !isBuffering && videoPost && videoPost?.current && preLoad !== "none"){
         if(type.toLowerCase() === "on-view"){
           setPlayingState(true);
         }else if(type.toLowerCase() === "out-of-view"){
@@ -26,14 +27,29 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
     }
   }
   useEffect(() => {
-    if(isVideoLoaded && !isBuffering && videoPost && videoPost?.current && preLoad !== "none"){
+    if(videoPost.current && _isMounted.current){
+      videoPost.current.addEventListener("loadedmetadata", () =>{
+        if(_isMounted.current){
+          setVidLoaded(true);
+          setBuffering(false);
+          loadContentFailed && setFailingState(false); 
+        }
+      });
+    }
+    return () => {
+      _isMounted.current = false;
+      videoPost.current = false;
+    }
+  }, []);
+  useEffect(() => {
+    if(hasVideoLoaded && !isBuffering && videoPost && videoPost?.current && preLoad !== "none"){
       if(!isVidPlaying && typeof videoPost.current.play === "function"){
         videoPost.current.play();
       }else if(isVidPlaying && typeof videoPost.current.pause === "function"){
         videoPost.current.pause();
       }
-  }
-  },[preLoad, isBuffering, isVidPlaying, isVideoLoaded]);
+    }
+  },[preLoad, isBuffering, isVidPlaying, hasVideoLoaded]);
   const onFailing = () => {
     if(isSavedPost) onLoadingFail(post?.postOwnerId, post?.id);
     setFailingState(true);
@@ -71,16 +87,14 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
             ) : post?.contentType === "video" ? (
               <ScrollTrigger onEnter={() => handleVideoPlaying("on-view")} onExit={() => handleVideoPlaying("out-of-view")} >
               <video
+                ref={videoPost}
+                src={post?.contentURL}
                 className="users__profile__image"
                 muted
-                disabled
-                ref={videoPost}
                 loop
+                playsInline
                 contextMenu="users__profile__image"
                 onContextMenu={() => false}
-                src={post?.contentURL}
-                onCanPlay={(x) => {setBuffering(false); x.persist()}}
-                onLoadedData={(k)=> {setVidLoading(true); (loadContentFailed && setFailingState(false)); k.persist()}}
                 onError={() => onFailing()}
               />
                 {isBuffering &&

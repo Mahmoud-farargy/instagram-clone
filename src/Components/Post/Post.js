@@ -41,7 +41,6 @@ class Post extends PureComponent {
       openOptionsModal: false,
       openNewMsgModal: false,
       isVidLoaded: false,
-      isVidEnded: false,
       isVideoPlaying: false,
       alsoLiked: [],
       preLoad: (this.props.contentType === "video" && this.props.index === 0) ? "metadata" : "none"
@@ -220,7 +219,7 @@ class Post extends PureComponent {
   }
   handleVideoPlaying(type){
     ( this.state.preLoad === "none" && type.toLowerCase() === "on-view") && this.setState({...this.state, preLoad: "metadata"});
-    if(this.videoPost && this.state.isVidLoaded && !this.state.isVidEnded && this.videoPost?.current && this.state.preLoad === "metadata"){
+    if(this.videoPost && this.state.isVidLoaded && this.videoPost?.current && this.state.preLoad === "metadata"){
         if(type.toLowerCase() === "on-view" && !this.state.isVideoPlaying && typeof this.videoPost.current?.play === "function"){
           this.setState({...this.state, isVideoPlaying: true});
         }else if(type.toLowerCase() === "out-of-view" && this.state.isVideoPlaying){
@@ -362,7 +361,6 @@ class Post extends PureComponent {
                       preload={this.state.preLoad}
                       isVidPlaying={ this.state.isVideoPlaying}
                       whenLoadedData={()=> this.setState( { ...this.state, isVidLoaded: true })}
-                      whenEnded={()=> this.setState( { ...this.state, isVidEnded: true } )}
                       whenCanPlay={() => this.isVidBuffering = false} />
                   </ScrollTrigger>
                 </div>
@@ -495,6 +493,7 @@ class Post extends PureComponent {
                         placeholder="Add a commment.."
                         aria-label="Add a commment.."
                         autoComplete="off"
+                        spellCheck="true"
                         name="add-comment"
                       />
                     </div>

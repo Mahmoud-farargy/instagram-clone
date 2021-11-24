@@ -341,7 +341,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                     </div>
                     : contentType === "video" ?
                     <div className="original--review">
-                        <video src={contentPreview || ""} controls controlsList="nodownload" autoPlay> </video>
+                        <video src={contentPreview || ""} controls controlsList="nodownload" playsInline autoPlay> </video>
                     </div>
                     : contentType === "audio" ?
                     <div className="original--review">

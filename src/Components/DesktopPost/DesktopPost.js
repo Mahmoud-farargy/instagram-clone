@@ -281,10 +281,12 @@ useEffect(() => {
    
   };
   const navigate = (event) => {
-    if (event.keyCode === 37) {
-      onPostMovement("left");
-    } else if (event.keyCode === 39) {
-      onPostMovement("right");
+    if(document.activeElement !== inputField.current){
+        if (event.keyCode === 37) {
+          onPostMovement("left");
+        } else if (event.keyCode === 39) {
+          onPostMovement("right");
+        }  
     }
   };
   const onEmojiClick = (e, x) => {
@@ -431,7 +433,7 @@ useEffect(() => {
                     <div className="w-100 h-100" style={{position: "relative"}}>
                       <VideoPostComp
                         src={contentURL}
-                        // autoPlay
+                        isMuted={true}
                         ref={vidRef}
                         isVidPlaying={true}
                         />
@@ -645,6 +647,7 @@ useEffect(() => {
                                     className="post__bottom__input"
                                     type="text"
                                     placeholder="Add a commment.."
+                                    spellCheck="true"
                                 />
                               </div>
                           </div>
