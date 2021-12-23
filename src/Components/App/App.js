@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useContext, Suspense, lazy , useState } from "react";
-import { Switch, Route, useHistory } from "react-router-dom";
+import { Switch, Route, useHistory, useLocation } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { auth, changeConnectivityStatus } from "../../Config/firebase";
 import AppConfig from "../../Config/app-config.json";
@@ -9,10 +9,10 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import 'react-h5-audio-player/lib/styles.css';
-import $ from "jquery";
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
 import { retry } from "../../Utilities/RetryImport";
 import LostConnectivity from "../LostConnectivity/LostConnectivity";
+import { disableReactDevTools } from "../../Utilities/Utility";
 
 //lazy loading
 const Header = lazy(()=> retry(()=> import("../Header/Header")));
@@ -74,6 +74,7 @@ const App = () => {
   const [isAnyModalOpen, setAllModalsState] = useState(false);
   const [user,loading] = useAuthState(auth);
   const history = useHistory();
+  const location = useLocation();
   const [isConnected, setConnectivity] = useState(navigator.onLine);
   const renderHeader = (
     <Header
@@ -85,6 +86,29 @@ const App = () => {
      />
   )
   useEffect(() => {
+    window.scrollTo({
+      top:0,
+      left:0,
+      behavior: "auto"
+    });
+  },[location]);
+  useEffect(() => {
+    let consoleStyles= [ 
+      "font-size: 12px", 
+      "font-family: monospace", 
+      "background: white", 
+      "display: inline-block", 
+      "color: black", 
+      "padding: 8px 19px", 
+      "border: 1px dashed;" 
+  ].join(";") 
+    console.log(`%c Hi 👋 ! Glad you made it down here. Welcome to a console.log() adventure.`, consoleStyles);
+    console.log('%c If you like Voxgram, I suggest you see more projects on my portfolio: https://mahmoud-farargy.web.app. Kiss from me 😘', 'background: #ee11cc; color: #eee; font-size: 15px');
+    if(process.env.NODE_ENV === "development"){
+          typeof window !== "undefined" && (window.React = React);
+    }else{
+      disableReactDevTools();
+    }
     window.addEventListener('offline', ()=> setConnectivity(false));
     window.addEventListener('online', () => setConnectivity(true));
     const unsubscribe = isConnected && auth.onAuthStateChanged((authUser) => {
@@ -98,17 +122,9 @@ const App = () => {
         changeConnectivityStatus(authUser?.uid);
         testStorageConnection();
       } else {
-        // const recievedAuth = localStorage.getItem("user");
-        // if (recievedAuth) {
-            //attempts to log in again using local storage data
-          //   debugger
-          // const { email, password } = JSON.parse(recievedAuth);
-          // auth.signInWithEmailAndPassword(email, returnPassword(password));
-        // }else{
             // user logged out
              history.push("/auth");
              updateUserState(false);
-        // }
       }
     });
     // ----------------------
@@ -122,11 +138,7 @@ const App = () => {
   useEffect(() => {
     const isAnyoneOpening = Object.keys(modalsState).map(w => modalsState[w]).some( p => p === true);
     setAllModalsState(isAnyoneOpening);
-      if (isAnyoneOpening) { //we could also use a ref in here
-        $("body").css("overflow", "hidden");
-      } else {
-        $("body").css("overflow", "visible");
-      }
+    document.body.style.overflowY = isAnyoneOpening ? "hidden" : "visible";
   },[modalsState]);
 
   useEffect(() => {

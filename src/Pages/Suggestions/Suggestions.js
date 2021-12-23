@@ -21,7 +21,6 @@ const Suggestions = (props) => {
             });
             suggestionsList && setNewUsers(suggestionsList.filter(user => (withinPeriod({date: user.profileInfo?.accountCreationDate?.seconds, period:604800000}))));
             suggestionsList && setBirthdays(suggestionsList.filter(user => (new Date().getMonth() + 1 === new Date(user?.profileInfo?.birthday).getMonth() + 1) && (new Date().getDate() <= new Date(user?.profileInfo?.birthday).getDate())));
-            window.scrollTo(0,0);
             changeMainState("currentPage", "Suggestions");
         
         return () => _isMounted.current = false;

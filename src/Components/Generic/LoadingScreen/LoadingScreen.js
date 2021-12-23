@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, memo, useState, Fragment} from "react";
 import "./LoadingStyling.scss";
-import loadingImg from "../../../Assets/2412274-min.png";
+import loadingImg from "../../../Assets/instagram-icon-logo-loading.e195cbde.svg";
 import { AiOutlineReload } from "react-icons/ai";
 import { useHistory } from "react-router-dom";
 
@@ -35,7 +35,7 @@ const LoadingScreen = () => {
                         {
                             !showAnim ?
                             <div className="flex-column loading--screen--inner">
-                                <img loading="lazy" className="boundingEffect unselectable" src={loadingImg} alt="Loading..." />
+                                <img loading="lazy" className="unselectable" src={loadingImg} alt="Loading..." />
                             </div> 
                             :
                             <div className="flex-column loading--screen--inner loading--timeout--bg fadeEffect">

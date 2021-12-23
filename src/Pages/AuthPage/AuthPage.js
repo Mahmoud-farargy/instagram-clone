@@ -346,7 +346,7 @@ const AuthPage = (props) => {
                                 ...formState,
                                 signUpUsername: {...formState.signUpUsername, isValid: false}
                             });
-                        notify(`The Username ${formState.signUpUsername?.val} is not available. Please try another one`, "error");
+                        notify(`The Username "${formState.signUpUsername?.val}" is already taken. Please try another one`, "error");
                   }
                 }else{
                       setLoading(false);
@@ -830,22 +830,30 @@ const AuthPage = (props) => {
                     <div className="signIn--options--box">
                       <SignInOption
                         method="anonymous"
+                        methTitle="Log in without credentials just to experiment with the app. However, you may not get all the features Voxgram offers. Also, all your information will be public."
                         isLoading={(loading || inProgress)}
                         signInFunc={(x) => signInMethods(x)}
                       />
                       <SignInOption
                         method="google"
+                        methTitle="Login/create account with Google."
                         isLoading={(loading || inProgress)}
                         signInFunc={(x) => signInMethods(x)}
                       />
-                      {/* <SignInOption method="facebook" signInFunc={(x)=> signInMethods(x)} /> */}
+                      {/* <SignInOption
+                          method="facebook"
+                          methTitle="Login/create account with Facebook"
+                          isLoading={(loading || inProgress)}
+                          signInFunc={(x)=> signInMethods(x)} /> */}
                       {/* <SignInOption
                         method="twitter"
+                        methTitle="Login/create account with Twitter"
                         isLoading={(loading || inProgress)}
                         signInFunc={(x) => signInMethods(x)}
                       /> */}
                       <SignInOption
                         method="github"
+                        methTitle="Login/create account with Github."
                         isLoading={(loading || inProgress)}
                         signInFunc={(x) => signInMethods(x)}
                       />

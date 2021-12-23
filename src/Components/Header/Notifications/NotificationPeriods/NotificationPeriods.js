@@ -6,9 +6,9 @@ import PropTypes from "prop-types";
 const NotificationPeriods = ({list = [],closeNotificationOnClick}) => {
     const today = list?.filter(noti => (withinPeriod({ date: noti?.date?.seconds, period: 86400000})));
     const yesterday = list?.filter(noti => (withinPeriod({ date: noti?.date?.seconds, period: 172800000, min: 86400000 })));
-    const thisWeek = list?.filter(noti => (withinPeriod({ date: noti?.date?.seconds, period: 604800000, min: 172800000 })));
-    const thisMonth = list?.filter(noti => (withinPeriod({ date: noti?.date?.seconds, period: 262800000000, min: 604800000 })));
-    const earlier = list?.filter(noti => (withinPeriod({ date: noti?.date?.seconds, min:262800000000 })));
+    const thisWeek = list?.filter(noti => (withinPeriod({ date: noti?.date?.seconds, period: 604800016, min: 172800000 })));
+    const thisMonth = list?.filter(noti => (withinPeriod({ date: noti?.date?.seconds, period: 2629800000, min: 604800016 })));
+    const earlier = list?.filter(noti => (withinPeriod({ date: noti?.date?.seconds, min:2629800000 })));
     return(
         <Fragment>
             <div onClick={(s) => closeNotificationOnClick && closeNotificationOnClick(s)}>

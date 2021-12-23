@@ -51,6 +51,7 @@ const InputForm = (props) => {
                 name={props.label}
                 disabled={props.disabled}
                 autoFocus={props.autoFocus}
+                maxLength={props.maxLength}
                 onChange={(x) => props.changeInput(x.target.value, props.name)}
                 placeholder={props.label}
                 defaultValue={props.val || ""}

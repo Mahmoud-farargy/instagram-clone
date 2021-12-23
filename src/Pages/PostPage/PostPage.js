@@ -21,7 +21,9 @@ import * as Consts from "../../Utilities/Consts";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import VideoPostComp from "../../Components/VideoPost/VideoPost";
+import TweetContent from "../../Components/TweetContent/TweetContent";
 import { retry } from "../../Utilities/RetryImport";
+
 const EmojiPicker = lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
 
 const PostPage  = (props) => {
@@ -45,7 +47,6 @@ const PostPage  = (props) => {
   const scrollToBottom = useRef(null);
   //----------------------
   useEffect(() => {
-    window.scrollTo(0,0);
     changeMainState("currentPage", "Post");
     return () => {
       window.clearTimeout(timeouts?.current);
@@ -67,10 +68,11 @@ const PostPage  = (props) => {
         postOwnerId,
         contentURL,
         contentType,
+        id
       } = postsData[currentPostIndex?.index];
       handlePeopleLikes(
         boolean,
-        currentPostIndex?.index,
+        id,
         postOwnerId,
         receivedData?.userName,
         receivedData?.userAvatarUrl,
@@ -123,7 +125,7 @@ const PostPage  = (props) => {
       if (compState.insertedComment !== "") {
         //subcomment
         if (
-          compState.replayData !== {} &&
+         Object.keys(compState.replayData).length >0 &&
           /^[@]/.test(compState.insertedComment)
         ) {
           handleSubComments(
@@ -137,7 +139,6 @@ const PostPage  = (props) => {
         } else {
           //comment
           handleSubmittingComments(
-            currentPostIndex?.index,
             uid,
             receivedData?.userName,
             compState.insertedComment,
@@ -159,7 +160,7 @@ const PostPage  = (props) => {
       }
     }
   }
-  const replayFunc = (postOwnerName, commentIndex, postIndex, postId, postOwnerId, senderUid) => {
+  const replayFunc = (postOwnerName, commentIndex, postIndex, postId, postOwnerId, senderUid, commentId) => {
     inputField.current.focus();
     setCompState({
       ...compState,
@@ -169,7 +170,8 @@ const PostPage  = (props) => {
         postIndex,
         postId,
         postOwnerId,
-        senderUid
+        senderUid,
+        commentId
       },
       insertedComment: `@${postOwnerName} `,
     });
@@ -202,7 +204,7 @@ const PostPage  = (props) => {
     },[following, likes]);
     useEffect(() => {
       (scrollToBottom && scrollToBottom.current && scrollToBottom.current?.scrollIntoView) && scrollToBottom.current.scrollIntoView({block: "end"});
-    },[comments]);
+    },[comments?.length]);
     const similarsStr = (likes?.people?.some(el => el?.id === uid) && likes?.people?.length >3) ? (likes?.people?.length?.toLocaleString() -3) : (likes?.people?.length?.toLocaleString() -2);
     const areCommentsDisabled = (usersProfileData?.profileInfo?.professionalAcc?.disableComments || disableComments);
     return (
@@ -286,7 +288,7 @@ const PostPage  = (props) => {
               </div>
               <div className="post--card--body">
                 <div className="post__card__content__outer" >
-                {contentType === "image" ? (
+                {contentType === Consts.Image ? (
                   <div className="post__card__content__middle" role="button" tabIndex="1" onClick={() => doubleClickEvent()}>
                     <img
                       loading="lazy"
@@ -312,7 +314,7 @@ const PostPage  = (props) => {
                       </div>
                     ) : null}
                   </div>
-                ) : contentType === "video" ? (
+                ) : contentType === Consts.Video ? (
                   <div className="post__card__content__middle" >
                     <div className="post__card__content__video">
                       <VideoPostComp
@@ -323,9 +325,12 @@ const PostPage  = (props) => {
                        /> 
                     </div>
                   </div>
-                ) : contentType === "audio" ? (
+                ) : contentType === Consts.Audio ? (
                   <AudioContent autoPlay url={contentURL} songInfo={songInfo || {}} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()} />
-              ): null}
+                ): 
+                  contentType === Consts.Tweet ?
+                  <TweetContent text={contentURL} doubleClickEvent={() => doubleClickEvent()}/>
+                : null}
                 </div>
               </div>
               <div className="post--card--footer flex-column">
@@ -408,7 +413,7 @@ const PostPage  = (props) => {
                 !areCommentsDisabled ?
                 (comments?.length >= 1 ? (
                   <div className="post--comments--layout" ref={autoScroll}>
-                    {comments?.length > 1 ? (
+                    {comments?.length > 2 ? (
                       <h5
                         className="post__comments__count"
                         onClick={() => changeModalState("comments", true)}
@@ -429,6 +434,7 @@ const PostPage  = (props) => {
                           date={comment?.date}
                           replayFunc={replayFunc}
                           postIndex={currentPostIndex.index}
+                          postId={usersProfileData?.posts[currentPostIndex?.index]?.id || ""}
                           myName={receivedData?.userName}
                           likes={likes}
                           userAvatar={receivedData?.userAvatarUrl}

@@ -35,7 +35,7 @@ class CommentsModal extends PureComponent{
                  if( this.state.replayData !== {}   && /^[@]/.test(this.state.insertedComment)){
                  handleSubComments(this.state.replayData, this.state.insertedComment, receivedData?.userAvatarUrl, false, contentURL, contentType);
                 }else{//comment
-                    handleSubmittingComments(currentPostIndex?.index, uid, receivedData?.userName, this.state.insertedComment, receivedData?.userAvatarUrl, id, postOwnerId, contentURL, contentType);
+                    handleSubmittingComments(uid, receivedData?.userName, this.state.insertedComment, receivedData?.userAvatarUrl, id, postOwnerId, contentURL, contentType);
                 }
                 this.setState({
                     insertedComment: "",

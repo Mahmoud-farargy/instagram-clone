@@ -7,6 +7,9 @@ import ScrollTrigger from 'react-scroll-trigger';
 import LoadContentFail from "../../Components/LoadContentFail/LoadContentFail";
 import Loader from "react-loader-spinner";
 import reelPlaceholder from "../../Assets/reels-instagram-logo-white_1379-5039.jpeg";
+import * as Consts from "../../Utilities/Consts";
+import { lowerCaseString } from "../../Utilities/Utility";
+import { trimText } from "../../Utilities/TrimText";
 
 const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index, className, withOwnersName, isSavedPost , onLoadingFail }, ref) => {
   const videoPost = useRef(null);
@@ -19,9 +22,9 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
   const handleVideoPlaying =(type) => {
     if(preLoad === "none") setPreLoad("metadata");
     if(hasVideoLoaded && !isBuffering && videoPost && videoPost?.current && preLoad !== "none"){
-        if(type.toLowerCase() === "on-view"){
+        if(lowerCaseString(type) === "on-view"){
           setPlayingState(true);
-        }else if(type.toLowerCase() === "out-of-view"){
+        }else if(lowerCaseString(type) === "out-of-view"){
           setPlayingState(false);
         }
     }
@@ -59,13 +62,13 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
       <div ref={ref} className={`profile--posts--container w-100 ${className ? className : ""}`}>
         
      {
-       itemType.toLowerCase() === "post" ?
+       lowerCaseString(itemType) === Consts.Post ?
        //POST
         <div
-            onClick={() => openPost({type: itemType.toLowerCase(), postId: post?.id, postOwnerId: post?.postOwnerId})}
+            onClick={() => openPost({type: lowerCaseString(itemType), postId: post?.id, postOwnerId: post?.postOwnerId})}
             className="user--img--container flex-column fadeEffect"
           >
-            {post?.contentType === "image" ? (
+            {post?.contentType === Consts.Image ? (
               <>
               <img
                 loading="lazy"
@@ -84,7 +87,7 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
                   </div>
                   }
               </>
-            ) : post?.contentType === "video" ? (
+            ) : post?.contentType === Consts.Video ? (
               <ScrollTrigger onEnter={() => handleVideoPlaying("on-view")} onExit={() => handleVideoPlaying("out-of-view")} >
               <video
                 ref={videoPost}
@@ -101,7 +104,7 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
                   <div className="buffererror flex-column">
                       {
                           loadContentFailed ?
-                        <LoadContentFail contentType="video" />
+                        <LoadContentFail contentType={Consts.Video} />
                           :
                           <div className="vid--buffer">
                               <Loader
@@ -115,11 +118,17 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
                   </div>
                   }
               </ScrollTrigger>
-            ) : post?.contentType === "audio" ?
-              <img className="users__profile__image" src={post?.songInfo?.artwork || igAudioImg} loading="lazy" alt={`post #${index}`} />
-              : (
-              <h4>Not found</h4>
-            )}
+            ) : post?.contentType === Consts.Audio ? (
+              <img className="users__profile__image" src={post?.songInfo?.artwork || igAudioImg} loading="lazy" alt={`post #${index}`} />)
+              : post?.contentType === Consts.Tweet?
+              <div className="users__profile__image">
+                  <div lang="en" dir="auto" className="profile--item--tweet">
+                    <span>{trimText(post?.contentURL, 150)}</span>
+                </div>
+              </div>
+
+              :<h4>Not found</h4>
+            }
 
             <div className="user--img--cover flex-column fadeEffect">
               {
@@ -144,10 +153,10 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
               }
             </div>
           </div>
-          :  itemType.toLowerCase() === "reel" ?
+          :  lowerCaseString(itemType) === Consts.Reel ?
           //REEL
           <div
-          onClick={() => post?.id && openPost({type: itemType.toLowerCase(), reelId: post?.id, groupId: post?.groupId , reelUid: post?.reelOwnerId})}
+          onClick={() => post?.id && openPost({type: lowerCaseString(itemType), reelId: post?.id, groupId: post?.groupId , reelUid: post?.reelOwnerId})}
           className="user--img--container flex-column"
         >
           <img

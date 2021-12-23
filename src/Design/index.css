@@ -5,14 +5,15 @@
     box-sizing:border-box;
     -webkit-box-sizing:border-box;
 }
-html{
-    /* scroll-behavior: smooth; */
+html, body{
     width:100%;
+}
+html{
     -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
     scroll-snap-type: y mandatory;
 }
 body{
-    width:100%;
     margin:0;
     line-height:18px;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -85,12 +86,13 @@ input {
     --second--gray:#8e8e8e;
     --secondary-clr:#0095f6;
     --sugg-btn-clr: #63baf4;
-    --font-black: #262626;
+    --font-black: #262626; 
     --main-black: #363636;
     --shadow-white: #efefef;
     --bluish-sky: #00376b;
     --ultimate-black: #000;
     --links-clr: #276cd3;
+    --tweet-txt-clr: rgb(15, 20, 25);
     /* borders */
     --main-border:  1px solid var(--gray);
     /* transitions */
@@ -115,16 +117,17 @@ input {
     --light-black: #999999;
     --ultimate-black: #fff;
     --links-clr: #9595f3;
+    --tweet-txt-clr:#dbdbdb;
 }
 .darkMode img,.darkMode video{
     filter: brightness(95%);
 }
-.darkMode textarea, input, select{
+textarea, input, select{
     background-color: var(--shadow-white);
-    color: var(--font-black);
+    color: var(--ultimate-black);
 }
-.darkMode textarea::placeholder, input::placeholder, select::placeholder{
-    color: var(--second--gray);
+textarea::placeholder, input::placeholder, select::placeholder{
+    color: var(--font-black);
 }
 /* ----x---dark theme----x----- */
 /* -------dusty cedar theme------ */
@@ -141,6 +144,7 @@ input {
     --ultimate-black: #fff;
     --secondary-clr: #21a0fa;
     --links-clr: #a8a8f7;
+    --tweet-txt-clr:#dbdbdb;
 }
 /* ---x----dusty cedar theme--x---- */
 /* -------dusty cedar theme------ */
@@ -156,6 +160,7 @@ input {
     --light-black: #999999;
     --ultimate-black: #fff;
     --links-clr: #a8a8f7;
+    --tweet-txt-clr:#dbdbdb;
 }
 /* ---x----dusty cedar theme--x---- */
 /* -------Iced Coffee theme------ */
@@ -172,6 +177,7 @@ input {
     --ultimate-black: #fff;
     --secondary-clr:#55bafd;
     --links-clr: #a8a8f7;
+    --tweet-txt-clr:#dbdbdb;
 }
 /* ----x---Iced Coffee theme---x--- */
 /* -------Buttercup theme------ */
@@ -195,6 +201,7 @@ input {
     --sugg-btn-clr: #d66ac2;
     --shadow-white: #fff;
     --links-clr: #6666f7;
+    --tweet-txt-clr:#dbdbdb;
 }
 /* ----x---Iced Coffee theme---x--- */
 
@@ -221,10 +228,39 @@ a:visited{
     animation-iteration-count: 1;
     animation-play-state: running;
 }
-.boundingEffect{
-    animation: boundLoading 1.5s ease-out infinite;
-    -moz-animation: boundLoading 1.5s ease-out infinite;
-    -webkit-animation: boundLoading 1.5s ease-out infinite;
+.profile--item--tweet, .tweet__text{
+    display: inline;
+    white-space: pre-wrap;
+    position: relative;
+    background-color: var(--light-gray);
+   
+    text-overflow: ellipsis;
+}   
+.profile--item--tweet span, .tweet__text span{
+    color: var(--tweet-txt-clr);
+    font-family: "Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size: inherit;
+    font-weight: inherit;
+    overflow-wrap: break-word;
+    min-width: 0;
+    font-weight: 400;
+}
+.tweet__text{
+    overflow-y: auto;
+    font-size: 23px;
+    padding: 0.6rem 0.8rem 0.6rem 1rem;
+}
+.profile--item--tweet{
+    border:1px solid var(--gray);
+    margin: auto 0;
+    font-size: 15px;
+    padding: 0.4rem 0.6rem;
+}
+.tweet__text span{
+    line-height: 28px;
+}
+.profile--item--tweet span{
+    line-height: 20px;
 }
 .rotate__anim{
     animation: rotateAnim 1.5s ease-out;
@@ -2729,7 +2765,7 @@ a.prof__btn__unfollowed{
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
     max-height:750px;
-    min-height:300px;
+    min-height:130px;
 }
 .post__card__content__middle{
     position: relative;
@@ -3017,6 +3053,9 @@ a.prof__btn__unfollowed{
     }
     .loading--message--container .loading--message--inner{
         width: 50%;
+    }
+    form#tweetEditor{
+        width: 100%;
     }
     .auth{
         width:85%;
@@ -3541,123 +3580,6 @@ a.prof__btn__unfollowed{
     }
     100%{
         opacity: 1;
-    }
-}
-
-@keyframes boundLoading {
-    0%{
-        transform: scale(1);
-    }
-    10%{
-        transform: scale(1.02);
-    }
-    15%{
-        transform: scale(1.05);
-    }
-    30%{
-        transform: scale(1.1);
-    }
-    50%{
-        transform: scale(1.1);
-    }
-    70%{
-        transform: scale(1.1);
-    }
-    90%{
-        transform: scale(1.05);
-    }
-    95%{
-        transform: scale(1.02);
-    }
-    100%{
-        transform: scale(1);
-    }
-}
-@-webkit-keyframes boundLoading {
-    0%{
-        transform: scale(1);
-    }
-    10%{
-        transform: scale(1.02);
-    }
-    15%{
-        transform: scale(1.05);
-    }
-    30%{
-        transform: scale(1.1);
-    }
-    50%{
-        transform: scale(1.1);
-    }
-    70%{
-        transform: scale(1.1);
-    }
-    90%{
-        transform: scale(1.05);
-    }
-    95%{
-        transform: scale(1.02);
-    }
-    100%{
-        transform: scale(1);
-    }
-}
-@-moz-keyframes boundLoading {
-    0%{
-        transform: scale(1);
-    }
-    10%{
-        transform: scale(1.02);
-    }
-    15%{
-        transform: scale(1.05);
-    }
-    30%{
-        transform: scale(1.1);
-    }
-    50%{
-        transform: scale(1.1);
-    }
-    70%{
-        transform: scale(1.1);
-    }
-    90%{
-        transform: scale(1.05);
-    }
-    95%{
-        transform: scale(1.02);
-    }
-    100%{
-        transform: scale(1);
-    }
-}
-@-o-keyframes boundLoading {
-    0%{
-        transform: scale(1);
-    }
-    10%{
-        transform: scale(1.02);
-    }
-    15%{
-        transform: scale(1.05);
-    }
-    30%{
-        transform: scale(1.1);
-    }
-    50%{
-        transform: scale(1.1);
-    }
-    70%{
-        transform: scale(1.1);
-    }
-    90%{
-        transform: scale(1.05);
-    }
-    95%{
-        transform: scale(1.02);
-    }
-    100%{
-        transform: scale(1);
     }
 }
 

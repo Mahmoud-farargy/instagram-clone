@@ -1,6 +1,12 @@
-// POST TYPES
+// CONTENT TYPES
 export const Post = "post";
 export const Reel = "reel";
+// POST TYPES
+export const Tweet = "tweet";
+export const Video = "video";
+export const Image = "image";
+export const Audio = "audio";
+
 // MAIN COLLECTION
 export const USERS = "users";
 // MODALS

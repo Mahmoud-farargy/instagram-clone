@@ -29,7 +29,7 @@ const FilterMediaPhase = ({ setCurrentPhase, contentPreview }) => {
                     <ImageFilter
                         className="original--review"
                         image={contentPreview}
-                        filter={ selectedFilter } // see docs beneath
+                        filter={ selectedFilter }
                         colorOne={ [40, 250, 250] }
                         colorTwo={ [250, 150, 30] }
                     />

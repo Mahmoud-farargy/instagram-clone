@@ -91,7 +91,6 @@ const UsersProfile = () => {
     if(!usersProfileData && userId){
       getUsersProfile(userId);
     }
-    window.scrollTo(0, 0);
     return () => {
       setCurrProfIndex({activeIndex: 0, activeID: "grid" });
       window.clearTimeout(timeouts?.current);
@@ -145,7 +144,7 @@ const UsersProfile = () => {
   }
 
   const similarFollowers = (usersProfileData?.uid !== receivedData?.uid) && (receivedData?.blockList?.filter(w => w.blockedUid !== usersProfileData?.uid)) ? receivedData?.following.filter(el => el.receiverUid !== receivedData?.uid && usersProfileData?.followers.some(item => item.senderUid === el.receiverUid)) : [];
-  const websiteToView = usersProfileData?.profileInfo?.website.replace(/^(?:https?\:\/\/|www\.)/i, "") || "";
+  const websiteToView = usersProfileData?.profileInfo?.website.replace(/^(?:https?:\/\/|www\.)/i, "") || "";
   const notBlockedOrBlockingUser = receivedData?.blockList && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid) && usersProfileData?.blockList && !usersProfileData?.blockList?.some(a => a.blockedUid === receivedData?.uid);
   const isPrivate = usersProfileData?.profileInfo?.professionalAcc?.private;
   const isBirthday = ((usersProfileData?.uid !== receivedData?.uid) && (usersProfileData?.profileInfo?.birthday) && (new Date().getMonth() + 1 === new Date(usersProfileData?.profileInfo?.birthday).getMonth() + 1) && (new Date().getDate() === new Date(usersProfileData?.profileInfo?.birthday).getDate()));

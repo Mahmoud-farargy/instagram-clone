@@ -48,7 +48,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
       }
     }
   useEffect(() =>{
-      if(new URL(contentPreview).protocol === 'blob:'){
+      if(contentPreview && new URL(contentPreview).protocol === 'blob:'){
         async function convertBlobToFile() {
           return await fetch(contentPreview).then(r => r.blob());
         }
@@ -286,7 +286,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
     );      
   }
 }
-  const CustomMarker = (props) => {
+  const customMarker = (props) => {
     console.log(props);
     return (
         <p className="custom__marker">My custom marker - {props.itemNumber}</p>
@@ -330,7 +330,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                         markers={markers}
                         alt="new post"
                         className="unselectable"
-                        markerComponent={CustomMarker}
+                        markerComponent={customMarker}
                         onAddMarker={(marker) => setMarkers([...markers, {
                           name: "user",
                           ...marker

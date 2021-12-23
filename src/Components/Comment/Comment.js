@@ -9,7 +9,7 @@ import { trimText } from "../../Utilities/TrimText";
 import { linkifyText } from "../../Utilities/ReplaceHashes";
 
 const Commment =(props)=>{
-    var {comment, replayFunc, postIndex , commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, browseUser} = props;
+    var {comment, replayFunc, postIndex , postId,commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, browseUser, updateHomePost} = props;
     const [viewSubComments, setSubComments] = useState(false); 
     const [postLiked, setPostLiked] = useState(false);
     useEffect(()=>{
@@ -20,9 +20,26 @@ const Commment =(props)=>{
              changeModalState("users", false, "", "");
         });
     }
+
+    const likeComment = ({...rest}) => {
+        handleLikingComments({...rest}).then(() => {
+            if(typeof updateHomePost === "function"){
+                updateHomePost({uid: postOwnerId, postID: postId});
+            }
+        })
+    }   
+
+    const delComment = ({...rest}) => {
+        deleteComment({...rest}).then(() => {
+            if(typeof updateHomePost === "function"){
+                updateHomePost({uid: postOwnerId, postID: postId});
+            }
+        });
+    }  
     return(
         <Fragment>
         <div className="post--comment--item">
+                {/* COMMENTS */}
                <div className="flex-row post--comment--row">
                 { <Avatar className="comment__user__avatar" loading="lazy" src={comment?.userAvatarUrl} alt={comment?.userName}/>}
                 <span  title={comment?.userName} className="post__top__comment">
@@ -35,10 +52,10 @@ const Commment =(props)=>{
 
                    {
                        !postLiked ?
-                       <span onClick={()=>  handleLikingComments({type:"comment",bool:true, postIndex, postOwnerId,userName: myName,  userAvatarUrl: userAvatar, myId: uid, commentIndex,commentText: comment?.comment, contentURL, contentType, comment, subComment : []})}
+                       <span onClick={()=>  likeComment({type:"comment",bool:true, postIndex, postId, postOwnerId,userName: myName,  userAvatarUrl: userAvatar, myId: uid, commentIndex,commentText: comment?.comment, contentURL, contentType, comment, subComment : []})}
                            ><FiHeart/></span>
                        :
-                           <span onClick={()=>  handleLikingComments({type:"comment",bool:false, postIndex, postOwnerId,userName: myName,  userAvatarUrl: userAvatar, myId: uid, commentIndex,commentText: comment?.comment, contentURL, contentType, comment, subComment: []})} 
+                           <span onClick={()=>  likeComment({type:"comment",bool:false, postIndex, postId, postOwnerId,userName: myName,  userAvatarUrl: userAvatar, myId: uid, commentIndex,commentText: comment?.comment, contentURL, contentType, comment, subComment: []})} 
                                style={{
                                    animation: "boundHeart 0.5s forwards ease"
                                }}
@@ -58,9 +75,10 @@ const Commment =(props)=>{
                       }
                        <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(comment?.userName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid, comment?.commentId); setSubComments(true)}}> Replay</span>      
                     {
-                        comment?.uid === uid && (<span style={{cursor:"pointer"}} className="ml-1" onClick={() => deleteComment({type: "comment", ownerUid: comment?.uid, postId: comment?.postId , commentArr: comment, postIndex, commentIndex, postOwnerId})}>Delete</span>)
+                        comment?.uid === uid && (<span style={{cursor:"pointer"}} className="ml-1" onClick={() => delComment({type: "comment", ownerUid: comment?.uid, postId: comment?.postId , commentArr: comment, postIndex, commentIndex, postOwnerId})}>Delete</span>)
                     }
                </div>
+               {/* SUBCOMMENTS */}
                     {
                         comment.subComments?.length >=1 ?
                         <div>
@@ -83,10 +101,10 @@ const Commment =(props)=>{
                                                                 </div>
                                                                 {
                                                                     !subComment?.likes?.some(el => el.id === uid) ?
-                                                                    <span onClick={()=> handleLikingComments({type:"subComment",bool: true, postIndex, postOwnerId, userName: myName,userAvatarUrl: userAvatar, myId: uid, commentIndex, commentText: subComment?.commentText, contentURL, contentType,subCommentIndex: i, subComment: subComment,comment})}
+                                                                    <span onClick={()=> likeComment({type:"subComment",bool: true, postId, postIndex, postOwnerId, userName: myName,userAvatarUrl: userAvatar, myId: uid, commentIndex, commentText: subComment?.commentText, contentURL, contentType,subCommentIndex: i, subComment: subComment,comment})}
                                                                         ><FiHeart/></span>
                                                                     :
-                                                                        <span onClick={()=> handleLikingComments({type:"subComment",bool: false, postIndex, postOwnerId, userName: myName,userAvatarUrl: userAvatar, myId: uid, commentIndex, commentText: subComment?.commentText, contentURL, contentType,subCommentIndex: i, subComment: subComment,comment})}
+                                                                        <span onClick={()=> likeComment({type:"subComment",bool: false, postId, postIndex, postOwnerId, userName: myName,userAvatarUrl: userAvatar, myId: uid, commentIndex, commentText: subComment?.commentText, contentURL, contentType,subCommentIndex: i, subComment: subComment,comment})}
                                                                             style={{
                                                                                 animation: "boundHeart 0.5s forwards ease"
                                                                             }}
@@ -105,7 +123,7 @@ const Commment =(props)=>{
                                                                     } 
                                                                     <span style={{cursor:"pointer"}} onClick={()=> {replayFunc(subComment?.senderName, commentIndex , postIndex, comment?.postId , comment?.ownerId, uid, comment?.commentId); setSubComments(true)}}> Replay</span>      
                                                                     {
-                                                                        subComment?.senderUid === uid && (<span style={{cursor:"pointer"}} className="ml-1" onClick={() => deleteComment({type: "subComment", ownerUid: subComment?.senderUid, commentArr: comment ,postIndex, postId: comment?.postId , commentIndex,  subCommentArr:subComment, subCommentIndex: i, postOwnerId})}>Delete</span>)
+                                                                        subComment?.senderUid === uid && (<span style={{cursor:"pointer"}} className="ml-1" onClick={() => delComment({type: "subComment", ownerUid: subComment?.senderUid, commentArr: comment ,postIndex, postId: comment?.postId , commentIndex,  subCommentArr:subComment, subCommentIndex: i, postOwnerId})}>Delete</span>)
                                                                     }
                                                             </div>
                                                         </li>
