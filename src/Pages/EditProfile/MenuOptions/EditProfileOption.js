@@ -5,7 +5,6 @@ import { AppContext } from "../../../Context";
 import { auth } from "../../../Config/firebase";
 import { withRouter } from "react-router-dom";
 import OptionsModal from "../../../Components/Generic/OptionsModal/OptionsModal";
-import $ from "jquery";
 import { storage, storageRef } from "../../../Config/firebase";
 import { GoVerified } from "react-icons/go";
 import { retry } from "../../../Utilities/RetryImport";
@@ -18,6 +17,7 @@ const InputForm = lazy(() =>
 const EditProfileOption = (props) => {
   // refs
   const _isMounted = useRef(true);
+  const fileUploader = useRef(null);
   // --x--end of refs-x--//
   // state
   const [formState, setForm] = useState({
@@ -96,7 +96,7 @@ const EditProfileOption = (props) => {
   };
   const changePhoto = (process) => {
     if (process === "update") {
-      $("#fileUploader").trigger("click");
+      fileUploader?.current && fileUploader.current.click();
     } else if (process === "delete") {
       if(receivedData?.profileInfo?.registrationMethod?.toLowerCase() === "email"){
           (async function (myUid){
@@ -185,7 +185,7 @@ const EditProfileOption = (props) => {
       {/* modals */}
       {modalsState?.options && (
         <OptionsModal>
-          <div className="py-4 text-dark option__font text-center">
+          <div className="py-4 profile--img--title option__font text-center">
             Change Profile Photo
           </div>
           <span
@@ -208,6 +208,7 @@ const EditProfileOption = (props) => {
       )}
       <input
         type="file"
+        ref={fileUploader}
         id="fileUploader"
         accept="image/*"
         onChange={(e) => onPhotoChange(e)}
@@ -247,7 +248,7 @@ const EditProfileOption = (props) => {
               submitted={submitted}
               extraText={
                 <small>
-                  (Required) <br/>
+                  <strong>(Required)</strong>
                   Help people discover your account by using the name you're
                   known by: either your full name, nickname, or business name.
                   <br /> You can only change your name twice within 14 days.
@@ -334,11 +335,12 @@ const EditProfileOption = (props) => {
               name="bio"
               val={formState?.bio}
               submitted={submitted}
+              maxLength={100}
               extraText={
                 <div>
                   <h2>Personal Information</h2>
                   <small>
-                    (Required) <br/>
+                  <strong>(Required)</strong>
                     Provide your personal information, even if the account is used
                     for a business, a pet or something else.
                     <br /> This won't be a part of your public profile.
@@ -358,7 +360,7 @@ const EditProfileOption = (props) => {
               min={`${new Date().getFullYear() - 90}-01-01`}
               extraText={
                 <small>
-                  (Required) <br/>
+                  <strong>(Required)</strong>
                   Set your birthday so that your friends get notified when your birthday comes.
                 </small>
               }

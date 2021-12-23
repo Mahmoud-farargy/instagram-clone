@@ -40,6 +40,14 @@
 #upload.post--uploading--container .post--uploading--inner{
     align-items:center;
 }
+#upload.post--uploading--container .showing--upladed--content .content--input{
+    height: 330px;
+    display: grid;
+    place-items: center;
+}
+.form-group:last-of-type{
+    margin-bottom: 0;
+}
 #upload.post--uploading--container .showing--upladed--content img, #upload.post--uploading--container .showing--upladed--content video{
  width:95%;
  object-fit:contain;
@@ -80,7 +88,6 @@
     border-left: 1px solid var(--gray);
 }
 #upload.post--uploading--container .phase--media--right .phase--media--choices{
-    flex: 1 1 auto;
     min-height: 0;
     min-width: 0;
     width: 100%;
@@ -88,6 +95,9 @@
 #upload.post--uploading--container .original--review{
         max-width: 300px;
         min-height: 50px;
+        position: relative;
+}
+#upload.post--uploading--container .original--review img{
         object-fit: contain;
 }
 #upload.post--uploading--container .custom__marker{
@@ -112,6 +122,11 @@
     height: 100%;
 }
 @media only screen and (max-width: 670px){
+    #upload.post--uploading--container{
+        min-height: 95vh;
+        overflow-y: auto;
+    }
+
     #upload.post--uploading--container .post--uploading--card form{
         display:flex;
        flex-direction:column;
@@ -137,7 +152,10 @@
         max-width: 35%;
     }
 }
-@media only screen and (min-width: 670px){
+@media only screen and (min-width: 670px){ 
+    #upload.post--uploading--container .phase--media--right .phase--media--choices{
+        flex: 1 1 auto;
+    }
     #upload.post--uploading--container .post--uploading--card{
         background-color: var(--white);
         border: 1px solid var(--gray);

@@ -8,6 +8,7 @@ import { MdSort } from "react-icons/md";
 import Modal from "react-modal";
 import InputForm from "../../Components/Generic/InpuForm/InputForm";
 import { BiCog } from "react-icons/bi";
+import * as Consts from "../../Utilities/Consts";
 import { CgUnavailable } from "react-icons/cg";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 import LoadingComponent from "../../Components/Generic/LoadingScreen/LoadingComponent";
@@ -98,16 +99,21 @@ const Explore = () => {
         break;
         case "images_only":
           exploreAlteredArr = explore?.map(user => user?.filter(post => {
-           return post?.contentType === "image"
+           return post?.contentType === Consts.Image;
           }));
         break;
         case "audio_only":
           exploreAlteredArr = explore?.map(user => user?.filter(post => {
-           return post?.contentType === "audio"
+           return post?.contentType === Consts.Audio;
           }));
         break;
         case "videos_only":
-          exploreAlteredArr = explore?.map(user => user?.filter(post => post?.contentType === "video"));
+          exploreAlteredArr = explore?.map(user => user?.filter(post => post?.contentType === Consts.Video));
+        break;
+        case "tweets_only":
+          exploreAlteredArr = explore?.map(user => user?.filter(post => {
+            return post?.contentType === Consts.Tweet
+           }));
         break;
         case "None":
           exploreAlteredArr = explore;
@@ -256,7 +262,7 @@ const Explore = () => {
                             type="select"
                             name="filter"
                             label="filter"
-                            options={["None", "Posts By People I Follow", "Images Only", "Videos Only", "Audio Only"]}
+                            options={["None", "Posts By People I Follow", "Images Only", "Videos Only", "Audio Only", "Tweets Only"]}
                             val={sortForm?.filter}
                             changeInput={onInputChange}
                             submitted={submitted}

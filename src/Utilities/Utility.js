@@ -26,3 +26,5 @@ export function disableReactDevTools() {
       }
     }
   }
+
+export const lowerCaseString = (txt) => typeof txt === "string" ? txt?.toLowerCase() : "";

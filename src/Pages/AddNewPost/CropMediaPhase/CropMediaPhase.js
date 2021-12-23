@@ -19,7 +19,7 @@ const CropMedia = ({ contentType, contentPreview, setCurrentPhase, changeContent
     const onCropComplete = useCallback((_, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
       }, []);
-      const [cropMethods] = useState([
+    const cropMethods = Object.freeze([
         {option: "Original", id:"original"},
         {option: "Custom Crop", id: "customCrop"}
     ]);

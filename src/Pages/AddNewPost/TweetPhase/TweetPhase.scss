@@ -1,0 +1,36 @@
+#tweetEditor{
+    width: 90%;
+    margin: 0 auto;
+    padding:1rem;
+    textarea.tweet__text__area{
+        width: 100%;
+        min-height: 250px;
+        resize: vertical;
+        padding: 0.8rem 0.3rem 0.4rem 0.8rem;
+        border-radius: 0.9rem;
+        border: 2px solid var(--gray);
+        transition: border-color 0.3s linear;
+        max-height: 300px;
+        font-size: 1.5rem;
+        line-height: normal;
+        &:focus{
+            outline: none;
+            border-color: var(--secondary-clr) !important;
+        }
+        caret-color: var(--secondary-clr);
+    }
+    .errors--box{
+        margin-top: 0.5rem;
+        min-height: 30px;
+    }
+    .tweet--btns{
+        margin: 0.5rem 0;
+        display: block;
+        span{
+            margin-left: 0.7rem;
+            padding: 0.3rem 0.9rem;
+            border-radius: 7px;
+            background-color: var(--light-gray);
+        }
+    }
+}

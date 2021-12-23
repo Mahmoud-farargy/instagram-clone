@@ -22,7 +22,7 @@ import { GOU } from "../../Utilities/GetOnlineUsers";
 const Home = (props) => {
   let {
     receivedData,
-    handleMyLikes,
+    handlePeopleLikes,
     handleSubmittingComments,
     suggestionsList,
     uid,
@@ -35,9 +35,14 @@ const Home = (props) => {
     isUserOnline,
     homeReels,
     loadingState,
-    handleSavingPosts
+    handleSavingPosts,
+    homeFeed
   } = useContext(AppContext);
-  let posts = receivedData?.posts;
+
+  let posts = [...homeFeed,...receivedData?.posts]?.sort((a,b) => b.date?.seconds - a.date?.seconds); 
+  posts = Array.from(
+    new Set(posts.map((itemId) => itemId.id))
+  ).map((ID) => posts.find((el) => el.id === ID));
   const _isMounted = useRef(true);
   let [user, loading] = useAuthState(auth);
   const [onlineList, setOnlineList] = useState([]);
@@ -61,7 +66,6 @@ const Home = (props) => {
       }
     });
     changeMainState("currentPage", "Home");
-    window.scrollTo(0, 0);
     return () => _isMounted.current = false;
   }, []);
 
@@ -86,16 +90,17 @@ const Home = (props) => {
                       contentType={post?.contentType}
                       contentURL={post?.contentURL}
                       contentName={post?.contentName}
-                      comments={post?.comments}
-                      likes={post?.likes}
+                      initialComments={post?.comments}
+                      initialLikes={post?.likes}
                       postDate={post?.date}
                       id={uid}
                       location={post?.location}
                       index={i}
                       postId={post?.id}
+                      myAvatar={receivedData?.userAvatarUrl}
                       postOwnerId={post?.postOwnerId}
-                      userAvatar={receivedData?.userAvatarUrl}
-                      handleMyLikes={handleMyLikes}
+                      userAvatar={post?.userAvatarUrl}
+                      handlePeopleLikes={handlePeopleLikes}
                       handleSubmittingComments={handleSubmittingComments}
                       handleSubComments={handleSubComments}
                       handleLikingComments={handleLikingComments}
@@ -103,7 +108,6 @@ const Home = (props) => {
                       changeModalState={changeModalState}
                       deletePost={deletePost}
                       onCommentDeletion={onCommentDeletion}
-                      posts={receivedData?.posts}
                       handleSavingPosts={handleSavingPosts}
                       savedPosts={receivedData?.savedposts}
                       following={receivedData?.following}

@@ -35,6 +35,7 @@ import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollow
 import { trimText } from "../../Utilities/TrimText";
 import VideoPostComp from "../../Components/VideoPost/VideoPost";
 import { retry } from "../../Utilities/RetryImport";
+import TweetContent from "../TweetContent/TweetContent";
 const EmojiPicker = React.lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
 
 const DesktopPost = (props) => {
@@ -111,12 +112,12 @@ useEffect(() => {
   const handleCurrLikes = (boolean) => {
     let postsData = usersProfileData?.posts;
     if (postsData) {
-      const { postOwnerId, contentURL, contentType } = postsData[
+      const { postOwnerId, contentURL, contentType, id } = postsData[
         currentPostIndex?.index
       ];
       handlePeopleLikes(
         boolean,
-        currentPostIndex?.index,
+        id,
         postOwnerId,
         receivedData?.userName,
         receivedData?.userAvatarUrl,
@@ -187,23 +188,25 @@ useEffect(() => {
         currentPostIndex?.index
       ];
       if (compState.insertedComment !== "") {
-        //subcomment
+        // //subcomment
         if (
-          compState.replayData !== {} &&
+          Object.keys(compState.replayData).length > 0 &&
           /^[@]/.test(compState.insertedComment)
         ) {
-          handleSubComments(
-            compState.replayData,
-            compState.insertedComment,
-            receivedData?.userAvatarUrl,
-            false,
-            contentURL,
-            contentType
-          );
+          if(compState){
+              handleSubComments(
+              compState.replayData,
+              compState.insertedComment,
+              receivedData?.userAvatarUrl,
+              false,
+              contentURL,
+              contentType
+            );
+          }
+
         } else {
           //comment
           handleSubmittingComments(
-            currentPostIndex?.index,
             uid,
             receivedData?.userName,
             compState.insertedComment,
@@ -276,6 +279,7 @@ useEffect(() => {
           changeMainState("currentPostIndex", {
             ...currentPostIndex,
             index: currentDirection,
+            postId: usersProfileData?.posts?.[currentDirection]?.id || ""
           });
     }
    
@@ -401,7 +405,7 @@ useEffect(() => {
             <div id="post" className="post--card--container fadeEffect post--page">
               <article className="post--card--article">
               <div className="post--card--body desktop--left">
-                  {contentType === "image" ? (
+                  {contentType === Consts.Image ? (
                     <div className="w-100 h-100" style={{position: "relative"}}>
                       <img
                         loading="lazy"
@@ -429,7 +433,7 @@ useEffect(() => {
                         </div>
                       ) : null}
                     </div>
-                  ) : contentType === "video" ? (
+                  ) : contentType === Consts.Video ? (
                     <div className="w-100 h-100" style={{position: "relative"}}>
                       <VideoPostComp
                         src={contentURL}
@@ -438,11 +442,13 @@ useEffect(() => {
                         isVidPlaying={true}
                         />
                     </div>
-                  ) :  contentType === "audio" ? (
+                  ) :  contentType === Consts.Audio ? (
                     <div className="post__card__content__outer">
                         <AudioContent autoPlay url={contentURL} songInfo={songInfo || {}} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()}/>
                     </div>
-                  ) : null}
+                  ) : contentType === Consts.Tweet ?
+                        <TweetContent text={contentURL} doubleClickEvent={() => doubleClickEvent()}/>
+                    : null}
                 </div>
                 <div className="desktop--right desktop-only">
                   <div className="post--card--header flex-row">
@@ -520,6 +526,7 @@ useEffect(() => {
                                 comment={comment}
                                 handleLikingComments={handleLikingComments}
                                 postOwnerId={postOwnerId}
+                                postId={id}
                                 commentIndex={i}
                                 date={comment?.date}
                                 replayFunc={replayFunc}
@@ -573,16 +580,16 @@ useEffect(() => {
                           <FaRegComment />
                         </span>
                         }
-                        <span>
+                        <span >
                           <FiSend />
                         </span>
                       </div>
                       <div className="bookmark__icon">
                       {
                       receivedData?.savedposts?.some(sp => (sp.postOwnerId === postOwnerId && sp.id === id)) ?
-                      <RiBookmarkFill onClick={() => context.handleSavingPosts({boolean:false,data: {postOwnerId, id, userName, contentName, contentURL,contentType, date}})} />
+                      <RiBookmarkFill onClick={() => (contentType === Consts.Image || contentType === Consts.Video) && context.handleSavingPosts({boolean:false,data: {postOwnerId, id, userName, contentName, contentURL,contentType, date}})} />
                       :
-                      <RiBookmarkLine onClick={() => context.handleSavingPosts({boolean:true,data: {postOwnerId, id, userName, contentName, contentURL,contentType, date}})}/>
+                      <RiBookmarkLine onClick={() => (contentType === Consts.Image || contentType === Consts.Video) && context.handleSavingPosts({boolean:true,data: {postOwnerId, id, userName, contentName, contentURL,contentType, date}})}/>
                     }
                       </div>
                     </div>

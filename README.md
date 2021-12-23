@@ -61,6 +61,7 @@ Give me a star if you like it. ⭐
                                                     <li><p>Users can post pictures and videos from a camera or gallery</p></li>
                                                     <li><p>They can also post audio like songs or mini podcasts</p></li>
                                                     <li><p>Crop and filter post before sharing</p></li>
+                                                    <li>Publish a Tweet</li>
                                                     <li><p>Like/Dislike posts
                                                         <ul class="bullet--3">
                                                             <li><p>View all likes and who liked it</p></li>

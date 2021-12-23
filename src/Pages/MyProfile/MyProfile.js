@@ -38,7 +38,6 @@ const MyProfile =()=>{
     const [reelsList, setReelsList] = useState([]);
     const { receivedData,changeModalState, authLogout, usersProfileData, changeMainState, uid, currentPostIndex, modalsState, updateReelsProfile, activeProfileSection, testStorageConnection } = useContext(AppContext);
     useEffect(()=>{
-        window.scrollTo(0,0);
         changeMainState("currentPage", "Profile");
        
         return () => {
@@ -79,7 +78,7 @@ const MyProfile =()=>{
     const changeDirection = (index, id) => {
         changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? index : index - 1, activeID:  id}); history.push("/edit-profile")
     }
-    const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?\:\/\/|www\.)/i, "") || "";
+    const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/|www\.)/i, "") || "";
     const isBirthday = ((receivedData?.profileInfo?.birthday) && (new Date().getMonth() + 1 === new Date(receivedData?.profileInfo?.birthday).getMonth() + 1) && (new Date().getDate() === new Date(receivedData?.profileInfo?.birthday).getDate()));
 
     const HeaderBottom = (

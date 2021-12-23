@@ -7,7 +7,7 @@ import { IoIosArrowBack } from "react-icons/io";
 const CreatePostModal = ({ closeCreateModal, currentPhase, setCurrentPhase }) => {
     const { loadingState } = useContext(AppContext);
     const goBack = () => {
-        currentPhase > 1 ? setCurrentPhase(currentPhase -1) : closeCreateModal();
+        currentPhase > 1 ? setCurrentPhase(currentPhase === 4 ? 0 :currentPhase -1) : closeCreateModal();
     }
     return (
         <Fragment>
@@ -36,12 +36,16 @@ const CreatePostModal = ({ closeCreateModal, currentPhase, setCurrentPhase }) =>
                                        :
                                        currentPhase === 3 ?
                                           "Compose"
-                                       : "Create"
+                                       : currentPhase === 4 ?
+                                          "Tweet"
+                                       :  "Create"
                                    }
                                 </h1>
-                                <span className={`create--post--close ${loadingState.uploading ? "disabled" : ""}` } onClick={() => !loadingState.uploading && closeCreateModal()}>
-                                    &times;
-                                </span>
+                                <div>
+                                    <span className={`create--post--close ${loadingState.uploading ? "disabled" : ""}` } onClick={() => !loadingState.uploading && closeCreateModal()}>
+                                        &times;
+                                    </span>  
+                                </div>
                             </div>
                         </div>
                         {/* Body */}

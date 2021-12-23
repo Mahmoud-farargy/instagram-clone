@@ -9,21 +9,23 @@ import { FaRegComment , FaRegCommentDots} from "react-icons/fa";
 import { RiBookmarkLine, RiBookmarkFill } from "react-icons/ri";
 import CommentsList from "./Comments/Comments";
 import { GoVerified } from "react-icons/go";
-import { Link } from "react-router-dom";
+import { db } from "../../Config/firebase";
 import { updateObject } from "../../Utilities/Utility";
+import { trimText } from "../../Utilities/TrimText";
 import OptionsModal from "../Generic/OptionsModal/OptionsModal";
 import * as Consts from "../../Utilities/Consts";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import ScrollTrigger from 'react-scroll-trigger';
-import Caption from "../../Components/Generic/Caption/Caption";
+import Caption from "../Generic/Caption/Caption";
 import { insertIntoText } from "../../Utilities/InsertIntoText";
-import AudioContent from "../../Components/AudioContent/AudioContent";
-import NewMsgModal from "../../Components/NewMsgModal/NewMsgModal";
+import AudioContent from "../AudioContent/AudioContent";
+import NewMsgModal from "../NewMsgModal/NewMsgModal";
 import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriendsItem";
 import {AppContext} from "../../Context";
-import VideoPostComp from "../../Components/VideoPost/VideoPost";
+import VideoPostComp from "../VideoPost/VideoPost";
+import TweetContent from "../TweetContent/TweetContent";
 import { retry } from "../../Utilities/RetryImport";
-const EmojiPicker = React.lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
+const EmojiPicker = React.lazy(() => retry(() => import("../Generic/EmojiPicker/EmojiPicker")));
 
 class Post extends PureComponent {
   constructor(props) {
@@ -42,11 +44,14 @@ class Post extends PureComponent {
       openNewMsgModal: false,
       isVidLoaded: false,
       isVideoPlaying: false,
+      isPostLoading: false,
+      likes: {},
+      comments: [],
       alsoLiked: [],
       preLoad: (this.props.contentType === "video" && this.props.index === 0) ? "metadata" : "none"
     };
     this._isMounted = true;
-    this.similarsStr = (this.props.likes?.people?.some(el => el?.id === this.props.id) && this.props.likes?.people?.length >3) ? (this.props.likes?.people?.length?.toLocaleString() -3) : (this.props.likes?.people?.length?.toLocaleString() -2);
+    this.similarsStr = (this.state.likes?.people?.some(el => el?.id === this.props.id) && this.state.likes?.people?.length >3) ? (this.state.likes?.people?.length?.toLocaleString() -3) : (this.state.likes?.people?.length?.toLocaleString() -2);
     this.updateUsersWhoLiked = this.updateUsersWhoLiked.bind(this);
     this.handleCurrLikes = this.handleCurrLikes.bind(this);
     this.openPost = this.openPost.bind(this);
@@ -56,17 +61,25 @@ class Post extends PureComponent {
     this.onCommentBtnClick = this.onCommentBtnClick.bind(this);
     this.onEmojiClick = this.onEmojiClick.bind(this);
     this.closeAllModals = this.closeAllModals.bind(this);
+    this.updateLikesNComments = this.updateLikesNComments.bind(this);
   }
   static contextType = AppContext;
   updateUsersWhoLiked(){
-    var { likes, following } = this.props;
+    const { likes } = this.state;
+    var {  following } = this.props;
     this.setState({
       ...this.state,
       alsoLiked: following?.filter(user => likes?.people?.some((el) => (user?.receiverUid !== this.context.receivedData?.uid) && (user?.receiverUid === el?.id))).slice(0,2)
     })
   }
   componentDidMount() {
-    this.updateUsersWhoLiked();
+    const { initialLikes, initialComments } = this.props;
+    this.setState({
+      ...this.state,
+      comments: initialComments,
+      likes: initialLikes
+    },() => this.updateUsersWhoLiked());
+    
   }
   componentWillUnmount(){
     this.isVidBuffering = false;
@@ -75,19 +88,35 @@ class Post extends PureComponent {
     window.clearTimeout(this.timeouts?.current);
     this._isMounted = false;
   }
-  componentDidUpdate(prevProps) {
-    if((prevProps.following !== this.props.following) || (prevProps.likes !== this.props.likes)){
+  componentDidUpdate(prevProps, prevState) {
+    if((prevProps.following !== this.props.following) || (prevState.likes !== this.state.likes)){
        this.updateUsersWhoLiked();
+    }
+    if((prevProps.initialLikes !== this.props.initialLikes) || (prevProps.initialComments !== this.props.initialComments)){
+      const { initialLikes, initialComments } = this.props;
+      this.setState({
+        ...this.state,
+        comments: initialComments,
+        likes: initialLikes
+      })
     }
   }
 
   handleCurrLikes(boolean){
-    const { index, handleMyLikes, id, userName, userAvatar } = this.props;
-    handleMyLikes(boolean, index, id, userName, userAvatar, true);
+    const { postId, handlePeopleLikes, postOwnerId , myName,myAvatar,id, contentURL,contentType } = this.props;
+    (postOwnerId !== id) && this.setState({...this.state, isPostLoading: true});
+    handlePeopleLikes(boolean, postId, postOwnerId, myName, myAvatar, id, contentURL, contentType).then(() => {
+        this.updateLikesNComments({uid: postOwnerId, postID: postId});
+    }).catch(() => {
+      this.setState({...this.state, isPostLoading: false});
+      const { notify} = this.context;
+      notify("Error has occurred. Please try again later","error");
+    });
   };
+  // const update 
   openPost(postId){
-    const { changeMainState,changeModalState, receivedData, notify, getUsersProfile} = this.context
-    if(postId){
+    const { changeMainState,changeModalState, receivedData, notify, postOwnerId,id, getUsersProfile} = this.context
+    if(postOwnerId === id && postId){
         getUsersProfile(receivedData?.uid).then((data) => {
           if(this._isMounted){
             const postsCopy = data?.posts;
@@ -132,55 +161,71 @@ class Post extends PureComponent {
           doubleLikeClicked: false,
         });
         window.clearTimeout(this.timeouts?.current);
-      }, 1100);
+      }, 1000);
     }
     this.timeouts.current = setTimeout(() => {
       resetCounter();
       window.clearTimeout(this.timeouts?.current);
-    }, 1000);
+    }, 800);
   };
-
+  resetCommentForm(){
+    this.setState({
+      insertedComment: "",
+      replayData: {},
+    });
+  }
   submitComment(v) {
     v.preventDefault();
     const {
-      index,
       id,
-      userName,
-      userAvatar,
+      myName,
+      myAvatar,
       handleSubmittingComments,
       postId,
       postOwnerId,
       handleSubComments,
+      contentURL,
+      contentType
     } = this.props;
-    if (this.state.insertedComment !== "") {
-      //sub comment (nested comment)
-      if (
-        this.state.replayData !== {} &&
-        /^[@]/.test(this.state.insertedComment)
-      ) {
-        handleSubComments(
-          this.state.replayData,
-          this.state.insertedComment,
-          userAvatar,
-          true
-        );
-      } else {
-        //regular comment
-        handleSubmittingComments(
-          index,
-          id,
-          userName,
-          this.state.insertedComment,
-          userAvatar,
-          postId,
-          postOwnerId
-        );
-      }
-      this.setState({
-        insertedComment: "",
-        replayData: {},
-      });
-    }
+    if (this.state.insertedComment !== "") { 
+      ( postOwnerId !== id) && this.setState({...this.state, isPostLoading: true});
+            //sub comment (nested comment)
+        if (
+            Object.keys(this.state.replayData) &&
+            /^[@]/.test(this.state.insertedComment)
+        ) {
+
+          handleSubComments(
+                this.state.replayData,
+                this.state.insertedComment,
+                myAvatar,
+                postOwnerId === id,
+                contentURL,
+                contentType
+          ).then(() => {
+            this.updateLikesNComments({uid: postOwnerId, postID: postId});
+            this.resetCommentForm();
+          }).catch(() => {
+            this.setState({...this.state, isPostLoading: false});
+          })
+        } else {   //regular comment
+            handleSubmittingComments(
+              id,
+              myName,
+              this.state.insertedComment,
+              myAvatar,
+              postId,
+              postOwnerId,
+              contentURL,
+              contentType
+            ).then(() => {
+              this.updateLikesNComments({uid: postOwnerId, postID: postId});
+              this.resetCommentForm();
+            }).catch(() => {
+              this.setState({...this.state, isPostLoading: false});
+            });
+        }
+  }
   }
 
   replayFunc(postOwnerName, commentIndex, postIndex, postId, postOwnerId, senderUid, commentId) {
@@ -240,6 +285,48 @@ class Post extends PureComponent {
   closeAllModals(){
     this.setState({...this.state, openOptionsModal: false, openNewMsgModal: false });
   }
+  delPost () {
+      const {postId, index, contentName, contentURL, postOwnerId, id, deletePost} = this.props;
+      if(postOwnerId === id){
+          deletePost( postId, index, contentName, contentURL );
+          this.setState({...this.state, openOptionsModal:false})
+      }
+  }
+  directTo = () => {
+    const {postOwnerId, id, browseUser, history} = this.props;
+    if(postOwnerId === id){
+        history.push("/profile");
+    }else{
+      //   browseUser(id, usersProfileData?.userName ).then(() => {
+      //   if(_isMounted?.current){
+      //       changeModalState("users", false, "", "");
+      //   }
+      // }) 
+    }
+  }
+
+  updateLikesNComments({uid, postID}){
+    if(uid && postID && (uid !== this.props.id)){
+          db.collection(Consts.USERS)
+            .doc(uid)
+            .get()
+            .then((items) => {
+            const dataCopy = items?.data()?.posts || [];
+                const postIndex = dataCopy?.length > 0 ? (dataCopy.map(x => x.id).indexOf(postID)) : -1;
+                  if(dataCopy && postIndex !== -1 && dataCopy[postIndex]){
+                    const { likes, comments} = dataCopy[postIndex];
+                  (comments && likes) && this.setState({
+                      ...this.state,
+                      likes: likes,
+                      comments: comments,
+                      isPostLoading: false
+                    });
+                  }
+            }).catch(() => {
+              this.setState({...this.state, isPostLoading: false});
+            });
+    }
+  }
   render() {
     const {
       userName,
@@ -247,8 +334,6 @@ class Post extends PureComponent {
       contentType,
       contentURL,
       contentName,
-      comments,
-      likes,
       location,
       postDate,
       handleLikingComments,
@@ -259,7 +344,6 @@ class Post extends PureComponent {
       id,
       changeModalState,
       onCommentDeletion,
-      deletePost,
       index,
       postId,
       handleSavingPosts,
@@ -267,13 +351,15 @@ class Post extends PureComponent {
       songInfo,
       areCommentsDisabled
     } = this.props;
+    const { likes, comments, openNewMsgModal, isPostLoading, doubleLikeClicked } = this.state;
     return (
       <Fragment>
           {
-            this.state.openNewMsgModal &&
+            openNewMsgModal &&
               <NewMsgModal closeModal={this.closeAllModals} sendPostForm={{postOwnerId, userAvatar ,userName, caption, contentType, contentURL, location, postId, isVerified}} />
           }
         <div id="post" className="post--card--container">
+          {isPostLoading && <div id="postLoading"><span></span></div>}
           <article className="post--card--article">
             <div className="post--card--header flex-row">
               <header className="post--header--avatar flex-row">
@@ -286,8 +372,9 @@ class Post extends PureComponent {
                 <div className="post--header--user--info flex-column">
                   <span tabIndex="0" aria-disabled="false" role="button" aria-label="Visit user page">
                     <h5 className="flex-row">
-                      <Link
-                        to={`/profile`}
+                      <span
+                        title={userName}
+                        onClick={() => this.directTo()}
                         style={{
                           whiteSpace: "nowrap",
                           wordBreak: "keep-all",
@@ -295,13 +382,13 @@ class Post extends PureComponent {
                           flexWrap: "nowrap",
                         }}
                       >
-                        <TruncateMarkup line={1} ellipsis="...">
-                          {userName}
-                        </TruncateMarkup>
+                        <span line={1} ellipsis="...">
+                          {trimText(userName, 24)}
+                        </span>
                         {isVerified ? (
                           <GoVerified className="verified_icon" />
                         ) : null}{" "}
-                      </Link>{" "}
+                      </span>
                     </h5>
                   </span>
                   <span tabIndex="0" aria-disabled="false" role="button" aria-label="View location">
@@ -322,7 +409,7 @@ class Post extends PureComponent {
             </div>
             <div className="post--card--body">
               <div className="post__card__content__outer" >
-              {contentType === "image" ? (
+              {contentType === Consts.Image ? (
                 
                   <div className="post__card__content__middle" role="button" tabIndex="-1" onClick={() => this.doubleClickEvent()}>
                     <img
@@ -333,13 +420,13 @@ class Post extends PureComponent {
                       draggable="false"
                       decoding="auto"
                     />
-                    {this.state.doubleLikeClicked ? (
+                    {doubleLikeClicked ? (
                       <div>
                         <div className="liked__double__click__layout"></div>
                         <div className="liked__double__click">
                           <span
                             style={{
-                              animation: this.state.doubleLikeClicked
+                              animation: doubleLikeClicked
                                 ? "boundHeartOnDouble 0.9s forwards ease-out"
                                 : null,
                             }}
@@ -351,7 +438,7 @@ class Post extends PureComponent {
                     ) : null}
                   </div> 
 
-              ) : contentType === "video" ? (
+              ) : contentType === Consts.Video ? (
                 <div className="post__card__content__middle" >
                   <ScrollTrigger className="post__card__content__video" onEnter={() => this.handleVideoPlaying("on-view")} onExit={() => this.handleVideoPlaying("out-of-view")} >
                   <VideoPostComp
@@ -364,9 +451,11 @@ class Post extends PureComponent {
                       whenCanPlay={() => this.isVidBuffering = false} />
                   </ScrollTrigger>
                 </div>
-              ) : contentType === "audio" ? (
+              ) : contentType === Consts.Audio ? (
                     <AudioContent url={contentURL} songInfo={songInfo || {}} userName={userName} doubleClickEvent={() => this.doubleClickEvent()} />
-              ): null}
+              ): contentType === Consts.Tweet ? 
+                    <TweetContent text={contentURL} doubleClickEvent={() => this.doubleClickEvent()}/>
+              : null}
               </div>
           </div>
             <div className="post--card--footer flex-column">
@@ -408,9 +497,9 @@ class Post extends PureComponent {
                 <div className="bookmark__icon">
                   {
                     savedPosts?.some(sp => (sp.postOwnerId === postOwnerId && sp.id === postId)) ?
-                    <RiBookmarkFill onClick={() => handleSavingPosts({boolean:false,data: {postOwnerId, id: postId, userName, contentName, contentURL,contentType, postDate}})} />
+                    <RiBookmarkFill onClick={() => (contentType === Consts.Image || contentType === Consts.Video) && handleSavingPosts({boolean:false,data: {postOwnerId, id: postId, userName, contentName, contentURL,contentType, postDate}})} />
                     :
-                    <RiBookmarkLine onClick={() => handleSavingPosts({boolean:true,data: {postOwnerId, id: postId, userName, contentName, contentURL,contentType, postDate}})} />
+                    <RiBookmarkLine onClick={() => (contentType === Consts.Image || contentType === Consts.Video) && handleSavingPosts({boolean:true,data: {postOwnerId, id: postId, userName, contentName, contentURL,contentType, postDate}})} />
                   }
                 </div>
               </div>
@@ -461,10 +550,12 @@ class Post extends PureComponent {
                 likes={likes}
                 userAvatar={userAvatar}
                 userId={id}
+                updateHomePost={this.updateLikesNComments}
                 myName={myName}
                 changeModalState={changeModalState}
                 contentURL={contentURL}
                 postIndex={index}
+                postId={postId} 
                 replayFunc={this.replayFunc}
               />
 
@@ -516,23 +607,27 @@ class Post extends PureComponent {
         {/* Modals */}
           {this.state.openOptionsModal && (
             <OptionsModal>
-              <span className="text-danger font-weight-bold"
-                onClick={() => {
-                  deletePost( postId, index, contentName, contentURL );
-                  this.setState({...this.state, openOptionsModal:false})
-                }}
-              >
-                {" "}
-                Delete post
-              </span>
-              <span
-                onClick={() => this.openPost(postId)} >
-                Go to post
-              </span>
+             { postOwnerId === id &&
+              <>  
+                <span className="text-danger font-weight-bold"
+                    onClick={() => this.delPost()}
+                  >
+                    {" "}
+                    Delete post
+                  </span>
+                  
+                  <span
+                    onClick={() => this.openPost(postId)} >
+                    Go to post
+                  </span>
+                </>
+              }
               <span onClick={() => this.setState({openOptionsModal:false})}>
                 {" "}
                 Cancel
               </span>
+             
+
             </OptionsModal>
           )}
           <div

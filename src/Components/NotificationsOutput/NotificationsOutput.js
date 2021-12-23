@@ -7,6 +7,8 @@ import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 import reelDefaultPic from "../../Assets/reels-instagram-logo-white_1379-5039.jpeg"
 import { trimText } from "../../Utilities/TrimText";
 import { GoVerified } from "react-icons/go";
+import * as Consts from "../../Utilities/Consts";
+import { FaTwitter } from "react-icons/fa";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 
 const NotificationOutput =(props)=>{
@@ -37,9 +39,12 @@ const NotificationOutput =(props)=>{
                             : null
                         }
                         {
-                             notification?.type !== "follow" ?
-                             <div onClick={(e)=> redirectMeToPost(e)}><img loading="lazy" alt="Post" className="noti__bar__img unselectable" src={notification?.contentType ==="image" ? (notification?.contentURL) : notification?.contentType ==="video" ? igVideoImg : notification?.contentType === "reel" ? reelDefaultPic : notification?.contentType === "audio" ? igAudioImg: null } /></div>
-                             : null
+                             notification?.type !== "follow" ?(
+                             notification?.contentType === Consts.Tweet ?
+                                <FaTwitter/>
+                             :
+                             <div onClick={(e)=> redirectMeToPost(e)}><img loading="lazy" alt="Post" className="noti__bar__img unselectable" src={notification?.contentType === Consts.Image ? (notification?.contentURL) : notification?.contentType === Consts.Video ? igVideoImg : notification?.contentType === Consts.Reel ? reelDefaultPic : notification?.contentType === Consts.Audio ? igAudioImg: null } /></div>
+                             ): null
                         }
 
                     </div>

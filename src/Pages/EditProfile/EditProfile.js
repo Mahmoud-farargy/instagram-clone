@@ -28,7 +28,6 @@ class EditProfile extends PureComponent {
   };
   static contextType = AppContext;
   componentDidMount() {
-    window.scrollTo(0,0);
     const { changeMainState} = this.context;
     changeMainState("currentPage", "Edit profile");
   }

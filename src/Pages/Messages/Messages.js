@@ -86,7 +86,6 @@ const Messages = (props) => {
             makeADefaultSelection();
           }
     }
-    window.scrollTo(0,0);
     return () => {
       fileUploadEl.current =false;
       autoScroll.current = false;

@@ -16,13 +16,15 @@ const Comments = (props) => {
             changeModalState,
             contentURL,
             postIndex,
-            replayFunc
+            postId,
+            replayFunc,
+            updateHomePost
         } = props;
     const [ showFullComments, setShowingFullComments] = useState(false);
     if(!areCommentsDisabled){
         return (comments?.length >= 1 ? (
                 <div>
-                {comments?.length > 1 ? (
+                {comments?.length > 2 ? (
                     <h5
                     className="post__comments__count mt-1"
                     onClick={() =>
@@ -38,51 +40,33 @@ const Comments = (props) => {
                 ) : (
                     <h5 className="post__comments__count">Comments</h5>
                 )}
-                {!showFullComments
-                    ? comments?.slice(0, 2).map((comment, i) => {
-                        return (
-                        <Comment
-                            key={i}
-                            comment={comment}
-                            handleLikingComments={handleLikingComments}
-                            postOwnerId={postOwnerId}
-                            commentIndex={i}
-                            replayFunc={replayFunc}
-                            postIndex={postIndex}
-                            myName={myName}
-                            date={comment?.date}
-                            likes={likes}
-                            userAvatar={userAvatar}
-                            contentType={contentType}
-                            contentURL={contentURL}
-                            changeModalState={changeModalState}
-                            uid={userId}
-                            deleteComment={onCommentDeletion}
-                        />
-                        );
-                    })
-                    : comments?.map((comment, i) => {
-                        return (
-                        <Comment
-                            key={i}
-                            comment={comment}
-                            handleLikingComments={handleLikingComments}
-                            postOwnerId={postOwnerId}
-                            commentIndex={i}
-                            replayFunc={replayFunc}
-                            postIndex={postIndex}
-                            myName={myName}
-                            date={comment?.date}
-                            likes={likes}
-                            userAvatar={userAvatar}
-                            contentType={contentType}
-                            contentURL={contentURL}
-                            changeModalState={changeModalState}
-                            uid={userId}
-                            deleteComment={onCommentDeletion}
-                        />
-                        );
-                    })}
+                
+                   {
+                    comments?.slice(0,(!showFullComments? 2: comments.length)).map((comment, i) => {
+                            return (
+                            <Comment
+                                key={i}
+                                comment={comment}
+                                handleLikingComments={handleLikingComments}
+                                postOwnerId={postOwnerId}
+                                commentIndex={i}
+                                replayFunc={replayFunc}
+                                postIndex={postIndex}
+                                postId={postId}
+                                myName={myName}
+                                date={comment?.date}
+                                likes={likes}
+                                userAvatar={userAvatar}
+                                contentType={contentType}
+                                contentURL={contentURL}
+                                changeModalState={changeModalState}
+                                uid={userId}
+                                updateHomePost={updateHomePost}
+                                deleteComment={onCommentDeletion}
+                            />
+                            );
+                        })
+                    }
                 </div>
             ) : null)
         }else{

@@ -27,7 +27,7 @@ const CreatePage = (props) => {
                           <p>If you leave now, you will lose any changes you've made.</p>
                       </div>
                       <span className="text-danger font-weight-bold"
-                        onClick={() => history.goBack()}
+                        onClick={() => setCurrentPhase(0)}
                       >
                         Discard
                       </span>
@@ -46,7 +46,7 @@ const CreatePage = (props) => {
                     />
                 </div>
             }
-            {/* --xx-- Modals --xx-- */}
+            {/* --xx-- Modal(s) --xx-- */}
             <div id="createPage">
 
                 <CreatePostModal closeCreateModal={closeCreateModal} setCurrentPhase={setCurrentPhase} currentPhase={currentPhase} />

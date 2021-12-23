@@ -14,7 +14,6 @@
     "enzyme": "^3.11.0",
     "firebase": "^7.24.0",
     "font-awesome": "^4.7.0",
-    "jquery": "^3.6.0",
     "material-ui": "^0.20.2",
     "moment": "^2.29.1",
     "node-sass": "^4.14.1",
