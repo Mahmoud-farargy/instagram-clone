@@ -49,7 +49,7 @@ class AddNewPost extends PureComponent {
     uploadedItem && this.setState({
       ...this.state,
       contentName: fileName,
-      uploadedItem: uploadedItem,
+      uploadedItem,
       contentPreview: URL.createObjectURL(uploadedItem),
       contentType: lowerCaseString(this.state.method) === Consts.Reel ? Consts.Video : itemType,
     });
@@ -68,11 +68,11 @@ class AddNewPost extends PureComponent {
                 /(image|video|audio)/g.test(uploadedItem?.type) &&
                 uploadedItem.size <= 12378523
               ) {
-                if (uploadedItem.name.split("").length < 300) {
+                if (uploadedItem.name.split("").length < 400) {
                   this.storeItem({ uploadedItem, fileName, itemType });
                 } else {
                   notify(
-                    `The name of the ${itemType} is too long. it should not exceed 300 characters`,
+                    `The name of the ${itemType} is too long. it should not exceed 400 characters`,
                     "info"
                   );
                 }
@@ -168,7 +168,7 @@ class AddNewPost extends PureComponent {
                 </div>
               </div>
             : 
-          (currentPhase > 0 && currentPhase < 4) && this.state.contentType ?
+          (currentPhase > 0 && currentPhase <= 4) && this.state.contentType &&
                   (<div className="post--uploading--crop">
                     {
                       this.state.contentType === Consts.Image ?
@@ -186,16 +186,13 @@ class AddNewPost extends PureComponent {
                         }
                         </Suspense>
                         :
-                        this.state.contentType === Consts.Video ?
+                        (this.state.contentType === Consts.Video || this.state.contentType === Consts.Audio) ?
                           <ShareMediaPhase contentName={this.state.contentName} uploadedItem={this.state.uploadedItem} context={this.context} method={this.state.method} setCurrentPhase={setCurrentPhase} contentType = {this.state.contentType} changeContentPreview={this.changeContentPreview} contentPreview = {this.state.contentPreview}/>
+                        : (currentPhase === 4 && this.state.contentType === Consts.Tweet)?
+                            <TweetPhase />
                         : null
-
                      }
-                
                   </div>)
-                  : (currentPhase === 4 && this.state.contentType === Consts.Tweet)?
-                     <TweetPhase />
-                  : null
        } 
          
         </section>
