@@ -1,5 +1,5 @@
 <h2>Description</h2>
-A social media platform similar to Instagram that people can actually use.
+A social media app similar to Instagram that people can actually use.
 
 <h2>Preview</h2>
 
