@@ -299,7 +299,7 @@ const EditProfileOption = (props) => {
               extraText={
                 <small>
                 {
-                  receivedData?.profileInfo?.registrationMethod === "email" &&
+                  (receivedData?.profileInfo?.registrationMethod === "email" && receivedData?.uid !== "L9nP3dEZpyTg7AMIg8JBkrGQIji2") &&
                     <span
                       className="change__prof__pic"
                       onClick={() => props.changeIndex(2, "Change_Password_or_Email")}

@@ -1,7 +1,8 @@
 import React, { Fragment, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import "./CropMedia.scss";
-import Slider from '@material-ui/core/Slider'
+import Slider from '@material-ui/core/Slider';
+import * as Consts from "../../../Utilities/Consts";
 import Cropper from 'react-easy-crop';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -40,14 +41,14 @@ const CropMedia = ({ contentType, contentPreview, setCurrentPhase, changeContent
       }, [croppedAreaPixels, rotation, contentPreview, changeContentPreview]);
     const nextPhase = () => {
         selectedCrop !== "original" && showCroppedImage();
-        setCurrentPhase( contentType === "image" ? 2 : 3 );
+        setCurrentPhase({index: contentType === Consts.Image ? 2 : 3,title: "post"});
     }
     return (
         <Fragment>
             <div id="cropMedia" className="uploadPhase flex-row">
                 <div className="crop--media--preview">
                     {
-                        contentType === "audio" ?
+                        contentType === Consts.Audio ?
                             <audio src={contentPreview} controls controlsList="nodownload" autoPlay> </audio>
                         :
                         <div className="crop--media--img--video flex-column">

@@ -7,9 +7,10 @@ import GetFormattedDate from "../../Utilities/FormatDate";
 import { Avatar } from "@material-ui/core";
 import { trimText } from "../../Utilities/TrimText";
 import { linkifyText } from "../../Utilities/ReplaceHashes";
+import PropTypes from "prop-types";
 
 const Commment =(props)=>{
-    var {comment, replayFunc, postIndex , postId,commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, browseUser, updateHomePost} = props;
+    var { comment, replayFunc, postIndex , postId,commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, browseUser, updateHomePost, handleHomePostLoading } = props;
     const [viewSubComments, setSubComments] = useState(false); 
     const [postLiked, setPostLiked] = useState(false);
     useEffect(()=>{
@@ -20,21 +21,21 @@ const Commment =(props)=>{
              changeModalState("users", false, "", "");
         });
     }
-
+    const funcValidator = (func, ...args) => {
+        return typeof func === "function" && func(...args);
+    }
     const likeComment = ({...rest}) => {
+        funcValidator(handleHomePostLoading, true);
         handleLikingComments({...rest}).then(() => {
-            if(typeof updateHomePost === "function"){
-                updateHomePost({uid: postOwnerId, postID: postId});
-            }
-        })
+            funcValidator(updateHomePost,{uid: postOwnerId, postID: postId});
+        }).catch(() => funcValidator(handleHomePostLoading, false));
     }   
 
     const delComment = ({...rest}) => {
+        funcValidator(handleHomePostLoading, true);
         deleteComment({...rest}).then(() => {
-            if(typeof updateHomePost === "function"){
-                updateHomePost({uid: postOwnerId, postID: postId});
-            }
-        });
+            funcValidator(updateHomePost,{uid: postOwnerId, postID: postId});
+        }).catch(() => funcValidator(handleHomePostLoading, false));
     }  
     return(
         <Fragment>
@@ -140,5 +141,24 @@ const Commment =(props)=>{
                </div>
         </Fragment>
     )
+};
+Comment.propTypes = {
+    comment: PropTypes.object.isRequired,
+    replayFunc: PropTypes.func.isRequired,
+    postIndex: PropTypes.number.isRequired,
+    postId: PropTypes.string.isRequired,
+    commentIndex: PropTypes.number.isRequired,
+    handleLikingComments: PropTypes.func.isRequired,
+    postOwnerId: PropTypes.string.isRequired,
+    myName: PropTypes.string.isRequired,
+    uid: PropTypes.string.isRequired,
+    userAvatar: PropTypes.string.isRequired,
+    changeModalState: PropTypes.func.isRequired,
+    contentURL: PropTypes.string.isRequired,
+    contentType: PropTypes.string.isRequired,
+    deleteComment: PropTypes.func.isRequired,
+    browseUser: PropTypes.func.isRequired,
+    updateHomePost: PropTypes.func,
+    handleHomePostLoading: PropTypes.func
 }
 export default withBrowseUser(Commment);

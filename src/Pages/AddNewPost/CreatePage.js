@@ -8,11 +8,11 @@ import PropTypes from "prop-types";
 const CreatePage = (props) => {
   const { loadingState } = props;
     const history = useHistory();
-    const [currentPhase, setCurrentPhase] = useState(0);
+    const [currentPhase, setCurrentPhase] = useState({index: 0, title: "post"});
     const [dismissModal, setDismissModal] = useState(false);
     const closeCreateModal = () => {
       if(!loadingState.uploading){
-          currentPhase > 0 ? setDismissModal(true): history.goBack();
+          currentPhase.index > 0 ? setDismissModal(true): history.goBack();
       }
     }
     return (
@@ -27,7 +27,7 @@ const CreatePage = (props) => {
                           <p>If you leave now, you will lose any changes you've made.</p>
                       </div>
                       <span className="text-danger font-weight-bold"
-                        onClick={() => setCurrentPhase(0)}
+                        onClick={() => setCurrentPhase({index: 0, title: "post"})}
                       >
                         Discard
                       </span>

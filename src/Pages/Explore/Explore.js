@@ -9,6 +9,7 @@ import Modal from "react-modal";
 import InputForm from "../../Components/Generic/InpuForm/InputForm";
 import { BiCog } from "react-icons/bi";
 import * as Consts from "../../Utilities/Consts";
+import { lowerCaseString } from "../../Utilities/Utility";
 import { CgUnavailable } from "react-icons/cg";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 import LoadingComponent from "../../Components/Generic/LoadingScreen/LoadingComponent";
@@ -93,27 +94,30 @@ const Explore = () => {
     if(explore && explore.length > 0){
       let exploreAlteredArr;
       // filter
+      const filterByType = (type) => {
+        exploreAlteredArr = explore?.map(user => user?.filter(post => lowerCaseString(post?.contentType) === lowerCaseString(type)));
+      }
       switch(alteredSortFilter){
         case "posts_by_people_i_follow":
           exploreAlteredArr = explore?.filter(user => user?.some(post => receivedData?.following?.some(item => item?.receiverUid === post?.postOwnerId)));
         break;
         case "images_only":
-          exploreAlteredArr = explore?.map(user => user?.filter(post => {
-           return post?.contentType === Consts.Image;
-          }));
+          filterByType(Consts.Image);
         break;
         case "audio_only":
-          exploreAlteredArr = explore?.map(user => user?.filter(post => {
-           return post?.contentType === Consts.Audio;
-          }));
+          filterByType(Consts.Audio);
         break;
         case "videos_only":
-          exploreAlteredArr = explore?.map(user => user?.filter(post => post?.contentType === Consts.Video));
+          filterByType(Consts.Video);
         break;
         case "tweets_only":
-          exploreAlteredArr = explore?.map(user => user?.filter(post => {
-            return post?.contentType === Consts.Tweet
-           }));
+          filterByType(Consts.Tweet);
+        break;
+        case "polls_only":
+          filterByType(Consts.Poll);
+        break;
+        case "youtube_only":
+          filterByType(Consts.YoutubeVid);
         break;
         case "None":
           exploreAlteredArr = explore;
@@ -154,6 +158,8 @@ const Explore = () => {
                     default :
                     return randomPosts() || [];
                 }
+      }else{
+          return [];
       }
      
     }else{
@@ -161,7 +167,7 @@ const Explore = () => {
     }
   }
   const updateSortedElements = () => {
-    setExploreArr(sortPosts());
+    setExploreArr(sortPosts().filter(Boolean));
   }
   useEffect(() => {
     if (explore && explore.length > 0) {
@@ -262,7 +268,7 @@ const Explore = () => {
                             type="select"
                             name="filter"
                             label="filter"
-                            options={["None", "Posts By People I Follow", "Images Only", "Videos Only", "Audio Only", "Tweets Only"]}
+                            options={["None", "Posts By People I Follow", "Images Only", "Videos Only", "Audio Only", "Tweets Only", "Polls only", "Youtube only"]}
                             val={sortForm?.filter}
                             changeInput={onInputChange}
                             submitted={submitted}
@@ -288,11 +294,12 @@ const Explore = () => {
             <div className="explore--options--btn">
                 <button onClick={()=> setSortingModal(true)}><MdSort /></button>
             </div>
-            {newExploreArr ? (
+            {  (loadingState?.suggList || loading) ? (
+                <LoadingComponent />
+              ) :
+              (newExploreArr && newExploreArr.length > 0) ? (
               explore &&
-              explore?.length > 0 &&
-              newExploreArr.length >= 1 &&
-               (!loading || !loadingState?.suggList) ? (
+              explore?.length > 0 ? (
                 <div>
                   <div>
                    {newExploreArr?.length > 0 && <ProfilePosts listType="post" list={ newExploreArr.slice(0,2) } className="explore--upper--row--item" withOwnersName={true} parentClass="explore--upper--row"/>}
@@ -301,8 +308,6 @@ const Explore = () => {
                       {newExploreArr?.length >= 2 && <ProfilePosts listType="post" list={ newExploreArr.slice(2) } parentClass="users--profile--posts" withOwnersName={true} />}
                   </div>
                 </div>
-              ) : loadingState?.suggList ? (
-                <LoadingComponent />
               ) : (
                 <div className="empty--posts--container flex-column">
                   <div className="empty--posts--inner mx-auto flex-column">

@@ -59,7 +59,7 @@ const FilterMediaPhase = ({ setCurrentPhase, contentPreview }) => {
                     </div>
                     </div>
                     <span className="phase__media__next_btn mt-4">
-                       <button className="profile__btn primary__btn" onClick={() => setCurrentPhase(3)}>Next</button> 
+                       <button className="profile__btn primary__btn" onClick={() => setCurrentPhase({index: 3, title: "post"})}>Next</button> 
                     </span>
                 </div>
             </div>

@@ -3,13 +3,12 @@ import "../../Components/Post/Post.css";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Avatar } from "@material-ui/core";
 import TruncateMarkup from "react-truncate";
-import { FiHeart, FiSend } from "react-icons/fi";
+import { FiSend } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import { RiBookmarkLine, RiBookmarkFill } from "react-icons/ri";
 import { AppContext } from "../../Context";
 import Comment from "../../Components/Comment/Comment";
-import { GoVerified } from "react-icons/go";
 import { withRouter } from "react-router-dom";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
@@ -22,13 +21,17 @@ import MutualLikes from "../../Pages/UsersProfile/MutualFriendsList/MutualFriend
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import VideoPostComp from "../../Components/VideoPost/VideoPost";
 import TweetContent from "../../Components/TweetContent/TweetContent";
+import PollContent from "../../Components/PollContent/PollContent";
+import PostUserName from "../../Components/Generic/PostUserName/PostUserName";
+import YoutubeContent from "../../Components/YoutubeContent/YoutubeContent";
+import LikePost from "../../Components/Generic/LikePost/LikePost";
 import { retry } from "../../Utilities/RetryImport";
 
 const EmojiPicker = lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
 
 const PostPage  = (props) => {
   const context = useContext(AppContext);
-  const { changeMainState, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState,  handleUserBlocking, modalsState,handleLikingComments, onCommentDeletion, deletePost, handleSavingPosts } = context;
+  const { changeMainState, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState,  handleUserBlocking, handleVoting, modalsState, handleLikingComments, onCommentDeletion, deletePost, handleSavingPosts } = context;
   const [compState, setCompState] = useState({
         postLiked: false,
         insertedComment: "",
@@ -124,7 +127,7 @@ const PostPage  = (props) => {
       ];
       if (compState.insertedComment !== "") {
         //subcomment
-        if (
+        if ( compState.replayData &&
          Object.keys(compState.replayData).length >0 &&
           /^[@]/.test(compState.insertedComment)
         ) {
@@ -190,7 +193,7 @@ const PostPage  = (props) => {
     })
   }
 
-    var {caption = "",contentType,contentURL = "",comments = [],likes= {},location = "",date = {},postOwnerId = "", id = "", userName, contentName="", songInfo = {}, disableComments = false } = usersProfileData?.posts[currentPostIndex?.index];       
+    var {caption = "",contentType,contentURL = "",comments = [],likes= {},location = "",date = {},postOwnerId = "", id = "", pollData = {}, youtubeData = {},userName, contentName="", songInfo = {}, disableComments = false } = usersProfileData?.posts[currentPostIndex?.index];       
     var isVerified = usersProfileData?.isVerified;
     var following = receivedData?.following;
     const updateUsersWhoLiked = () => {
@@ -251,28 +254,8 @@ const PostPage  = (props) => {
                     alt={usersProfileData?.userName}
                   />
                   <div
-                    className="post--header--user--info flex-column"
-                    onClick={() =>
-                      props.browseUser(usersProfileData?.uid, usersProfileData?.userName)
-                    }
-                  >
-                    <span
-                      tabIndex="0"
-                      aria-disabled="false"
-                      role="button"
-                      className="flex-row"
-                    >
-                      <h5 className="flex-row w-100">
-                        <TruncateMarkup line={1} ellipsis="...">
-                          {usersProfileData?.userName}
-                        </TruncateMarkup>
-                        {isVerified ? (
-                          <span>
-                            <GoVerified className="verified_icon" />
-                          </span>
-                        ) : null}{" "}
-                      </h5>
-                    </span>
+                    className="post--header--user--info flex-column">
+                    <PostUserName changeModalState= {changeModalState} isVerified={isVerified} postOwnerId={usersProfileData?.uid} userName={usersProfileData?.userName} />
                     <span tabIndex="0" aria-disabled="false" role="button" aria-label="View location">
                       <p>
                         <TruncateMarkup line={1} ellipsis="...">
@@ -330,29 +313,20 @@ const PostPage  = (props) => {
                 ): 
                   contentType === Consts.Tweet ?
                   <TweetContent text={contentURL} doubleClickEvent={() => doubleClickEvent()}/>
-                : null}
+                : 
+                (contentType === Consts.Poll && pollData && Object.keys(pollData).length > 0) ?
+                  <PollContent pollData={pollData} postId={id} postOwnerId={postOwnerId} uid={uid} handleVoting={handleVoting}/>
+                :
+                (contentType === Consts.YoutubeVid && youtubeData && Object.keys(youtubeData).length > 0) ?
+                <YoutubeContent youtubeData={youtubeData} />
+                : null
+              }
                 </div>
               </div>
               <div className="post--card--footer flex-column">
                 <div className="post--footer--upper--row flex-row">
                   <div className=" flex-row">
-                    {!likesCheck() ? (
-                      <span onClick={() => handleCurrLikes(true)}>
-                        <FiHeart />
-                      </span>
-                    ) : (
-                      <span
-                        onClick={() => handleCurrLikes(false)}
-                        style={{
-                          animation: likesCheck()
-                            ? "boundHeart 0.5s forwards ease-out"
-                            : null,
-                        }}
-                        className="liked__heart"
-                      >
-                        <FaHeart />
-                      </span>
-                    )}
+                    <LikePost isPostLiked={likesCheck()} handleCurrLikes={handleCurrLikes}/>
                    {
                      !areCommentsDisabled &&
                       <span onClick={() => inputField?.current && inputField.current?.focus()}>

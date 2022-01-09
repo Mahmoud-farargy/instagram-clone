@@ -114,6 +114,7 @@ const VideoPost = React.forwardRef(
                             <Loader
                             type="TailSpin"
                             color="var(--light-black)"
+                            arialLabel="loading-indicator"
                             height={60}
                             width={60}/>  
                         </div>

@@ -110,6 +110,7 @@ const HomeReels = () => {
                       <Loader
                         type="TailSpin"
                         color="var(--light-black)"
+                        arialLabel="loading-indicator"
                         height={60}
                         width={60} />
                     }

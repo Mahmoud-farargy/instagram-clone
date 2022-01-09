@@ -75,7 +75,7 @@ const HomeReelItem = (props) => {
                     }
                 });
                 window.clearTimeout(timeouts.current);
-            }, 1500);
+            }, 1000);
         }
     }
     const { reel } = props;

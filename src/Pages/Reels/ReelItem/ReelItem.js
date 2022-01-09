@@ -122,9 +122,6 @@ function ReelItem(props) {
     }
   },[currentPlayingReel, index]);
   useEffect(() => {
-    document.addEventListener("keydown", (event) => {
-      (event.key === "m" || event.code === "KeyM") && setVolume();
-    });
     if(reelVideo?.current){
         reelVideo.current.addEventListener("loadedmetadata", () =>{
           if(_isMounted.current){
@@ -135,13 +132,24 @@ function ReelItem(props) {
     return () => {
       _isMounted.current = false;
       reelVideo.current = false;
-      document.removeEventListener("keydown", () => {});
       window.clearTimeout(timeouts?.current);
     };
   }, []);
-  const togglePlayingOnSpaceClick = (e) => {
-    e.preventDefault();
-    e.code === "Space" && onVideoClick();
+  const onKeyPressing = (e) => {
+    if(document.activeElement.tagName !== "INPUT"){
+      switch(e.code){
+        case "KeyM":
+          e.preventDefault();
+          setVolume();
+        break;
+        case "Space":
+          onVideoClick();
+          e.preventDefault();
+        break;
+        default: {}
+      }  
+    }
+
   }
 
   return (
@@ -177,7 +185,9 @@ function ReelItem(props) {
                       type="TailSpin"
                       color="var(--white)"
                       height={60}
-                      width={60}/>
+                      width={60}
+                      arialLabel="loading-indicator"
+                      />
               </div>
              }
            </div> 
@@ -186,7 +196,7 @@ function ReelItem(props) {
               onClick={() => onVideoClick()}
               ref={reelVideo}
               src={item?.contentURL}
-              onKeyDown={(c) => togglePlayingOnSpaceClick(c)}
+              onKeyDown={(c) => onKeyPressing(c)}
               loop
               onError={() => setErrorState(true)}
               playsInline

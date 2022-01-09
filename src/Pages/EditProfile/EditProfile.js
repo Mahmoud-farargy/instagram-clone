@@ -33,7 +33,6 @@ class EditProfile extends PureComponent {
   }
   onMenuChange(index, ID) {
     this.context.changeMainState("activeOption", {activeIndex: index, activeID: ID});
-    // this.autoScroll && this.autoScroll?.current.scrollIntoView&& this.autoScroll.current.scrollIntoView({behavior: "smooth", block: "start"});
   }
 
   render() {
@@ -69,7 +68,7 @@ class EditProfile extends PureComponent {
                 </ul>
                 {/* end left side */}
                 <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div></div>}>
-                    <div className="flex-column right--side" ref={this.autoScroll}>
+                    <div className="flex-column right--side">
                     {activeOption.activeID === this.state.sideMenuOptions[0].id ? (
                       <EditProfileOption
                         changeIndex={(i,id) => this.onMenuChange(i, id)}

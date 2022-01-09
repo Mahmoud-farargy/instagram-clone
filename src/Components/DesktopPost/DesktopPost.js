@@ -10,7 +10,7 @@ import "../../Components/Post/Post.css";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Avatar } from "@material-ui/core";
 import TruncateMarkup from "react-truncate";
-import { FiHeart, FiSend } from "react-icons/fi";
+import { FiSend } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import {
@@ -36,6 +36,9 @@ import { trimText } from "../../Utilities/TrimText";
 import VideoPostComp from "../../Components/VideoPost/VideoPost";
 import { retry } from "../../Utilities/RetryImport";
 import TweetContent from "../TweetContent/TweetContent";
+import PollContent from "../PollContent/PollContent";
+import YoutubeContent from "../YoutubeContent/YoutubeContent";
+import LikePost from "../Generic/LikePost/LikePost";
 const EmojiPicker = React.lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
 
 const DesktopPost = (props) => {
@@ -57,6 +60,7 @@ const DesktopPost = (props) => {
     onCommentDeletion,
     modalsState,
     deletePost,
+    handleVoting
   } = context;
   const [compState, setCompState] = useState({
     postLiked: false,
@@ -87,6 +91,8 @@ const DesktopPost = (props) => {
     contentName= "",
     userName= "",
     songInfo= {},
+    pollData= {},
+    youtubeData = {},
     disableComments
   } = usersProfileData?.posts[currentPostIndex?.index];
   useEffect(() => {
@@ -189,7 +195,7 @@ useEffect(() => {
       ];
       if (compState.insertedComment !== "") {
         // //subcomment
-        if (
+        if ( compState.replayData && 
           Object.keys(compState.replayData).length > 0 &&
           /^[@]/.test(compState.insertedComment)
         ) {
@@ -448,7 +454,11 @@ useEffect(() => {
                     </div>
                   ) : contentType === Consts.Tweet ?
                         <TweetContent text={contentURL} doubleClickEvent={() => doubleClickEvent()}/>
-                    : null}
+                    : (contentType === Consts.Poll && pollData && Object.keys(pollData).length > 0) ?
+                        <PollContent pollData={pollData} postId={id} postOwnerId={postOwnerId} uid={uid} handleVoting={handleVoting}/>
+                    : (contentType === Consts.YoutubeVid && youtubeData && Object.keys(youtubeData).length > 0) ?
+                        <YoutubeContent youtubeData={youtubeData} />
+                  : null}
                 </div>
                 <div className="desktop--right desktop-only">
                   <div className="post--card--header flex-row">
@@ -556,24 +566,7 @@ useEffect(() => {
                   <div className="post--card--footer flex-column">
                     <div className="post--footer--upper--row flex-row">
                       <div className=" flex-row">
-                        {!postLiked ? (
-                          <span data-cy="like" className="post--like--icon" onClick={() => handleCurrLikes(true)}>
-                            <FiHeart />
-                          </span>
-                        ) : (
-                          <span
-                            data-cy="like"
-                            onClick={() => handleCurrLikes(false)}
-                            style={{
-                              animation: postLiked
-                                ? "boundHeart 0.5s forwards ease"
-                                : null,
-                            }}
-                            className="liked__heart"
-                          >
-                            <FaHeart />
-                          </span>
-                        )}
+                        <LikePost isPostLiked={postLiked} handleCurrLikes={handleCurrLikes}/>
                         { 
                           !areCommentsDisabled && 
                           <span onClick={() =>inputField && inputField?.current && inputField?.current?.focus()}>

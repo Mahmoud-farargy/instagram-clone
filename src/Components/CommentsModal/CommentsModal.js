@@ -25,7 +25,7 @@ class CommentsModal extends PureComponent{
     submitComment(v){
         v.preventDefault();
         if(this.autoScroll?.scrollIntoView){
-            this.autoScroll.scrollIntoView({behavior:"smooth"});
+            this.autoScroll.scrollIntoView({block: 'center', behavior:"smooth"});
         }
         const {usersProfileData , handleSubmittingComments , handleSubComments,  currentPostIndex, uid, receivedData} = this.props.context;
         let postsData = usersProfileData?.posts;

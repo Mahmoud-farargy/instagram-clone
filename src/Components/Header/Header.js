@@ -126,6 +126,7 @@ const Header = (props) => {
                 <Loader
                   type="Oval"
                   color="var(--secondary-clr)"
+                  arialLabel="loading-indicator"
                   height={18}
                   width={18}
                   timeout={5000}

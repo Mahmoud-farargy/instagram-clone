@@ -1,0 +1,65 @@
+#youtubePhase{
+    overflow-y: auto;
+    width: 100%;
+    height: 100%;
+    padding: 1rem 0;
+    display: grid;
+    place-content: center;
+    .youtube--phase--inner{
+        justify-content: center;
+        flex-basis: 100%;
+        width: 100%;
+        gap: 0.3rem 0.5rem;
+        .form-group,
+        .form--input--side {
+          width: 100% !important;
+        }
+        flex-wrap: wrap;
+        .youtube--preview{
+            min-height: 390px;
+            min-width: 240px;
+            background-color: #111;
+            border-radius: 5px;
+            .checking--video{
+                width: 100%;
+                height: 100%;
+                display: grid;
+                place-content: center;
+                color: var(--white);
+            }
+            .youtube__idle__icon{
+                font-size: 3rem;
+                color: var(--err-clr);
+            }
+        }
+        .youtube--preview, .youtube--form--container{
+            padding: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .youtube--form--container{
+            input[type="submit"]{
+               display: block;
+               width: 100%;
+               margin-top: 20px;
+            }    
+            #input--form--field{
+                .form-group.flex-row{
+                    flex-direction: column !important;
+                }
+            }
+        }
+    }
+    #YTVideo{
+        min-height: 300px;
+    }
+    @media (min-width: 670px) {
+        .youtube--phase--inner{
+            padding: 2rem 1rem;
+            border-radius: 9px;
+            box-shadow: 0px 2px 13px rgba(0, 0, 0, 0.1);
+        }
+    }
+}

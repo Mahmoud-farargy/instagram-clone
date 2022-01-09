@@ -6,6 +6,8 @@ export const Tweet = "tweet";
 export const Video = "video";
 export const Image = "image";
 export const Audio = "audio";
+export const Poll = "poll";
+export const YoutubeVid = "youtube";
 
 // MAIN COLLECTION
 export const USERS = "users";

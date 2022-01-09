@@ -14,9 +14,22 @@
             text-align:left;
         }
         .form--input--side{
+           position: relative;
            width: 80%; 
            @media only screen and (max-width: 670px){
                width: 100%;
+           }
+           .delete__input__icon{
+               position: absolute;
+               top: 50%;
+               right:-0.5rem;
+               z-index: 4;
+               transform: translate(-50%, -50%);
+               width: 30px;
+               height: 30px;
+               padding: 0.4rem;
+               font-size: 25px;
+               cursor: pointer;
            }
         }
         input, select{
@@ -26,16 +39,23 @@
         border: 1px solid var(--gray);
         font-size: 16px;
         height: 32px;
-        padding: 0 10px;
+        padding: 1px 10px;
         color: var(--font-black);
         border-radius: 3px;
-        
+        transition: border-color 0.2s linear;
+            &:hover{
+                border-color: #c4c4c4;
+            }
+            &:focus{
+                outline: 2px solid var(--sugg-btn-clr);
+            }
         }
         textarea{
         @extend input;
         width: 100%;
         resize: vertical;
         min-height: 70px;
+        max-height: 150px;
         padding: 10px;
         }
         small{
@@ -58,6 +78,7 @@
         ::placeholder{
             text-transform: capitalize;
             font-size:14px;
+            color: rgb(150, 150, 150);
         }
     }
 }
