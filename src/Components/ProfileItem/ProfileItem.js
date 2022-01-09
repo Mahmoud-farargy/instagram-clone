@@ -9,7 +9,8 @@ import Loader from "react-loader-spinner";
 import reelPlaceholder from "../../Assets/reels-instagram-logo-white_1379-5039.jpeg";
 import * as Consts from "../../Utilities/Consts";
 import { lowerCaseString } from "../../Utilities/Utility";
-import { trimText } from "../../Utilities/TrimText";
+import YoutubeItem from "./YoutubeItem/YoutubeItem";
+import TextItem from "./TextItem/TextItem";
 
 const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index, className, withOwnersName, isSavedPost , onLoadingFail }, ref) => {
   const videoPost = useRef(null);
@@ -57,7 +58,7 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
     if(isSavedPost) onLoadingFail(post?.postOwnerId, post?.id);
     setFailingState(true);
   }
-  return (
+  return post &&(
         <Fragment>
       <div ref={ref} className={`profile--posts--container w-100 ${className ? className : ""}`}>
         
@@ -110,6 +111,7 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
                               <Loader
                               type="ThreeDots"
                               color="var(--light-black)"
+                              arialLabel="loading-indicator"
                               height={30}
                               width={30}/>
                           </div>
@@ -121,13 +123,12 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
             ) : post?.contentType === Consts.Audio ? (
               <img className="users__profile__image" src={post?.songInfo?.artwork || igAudioImg} loading="lazy" alt={`post #${index}`} />)
               : post?.contentType === Consts.Tweet?
-              <div className="users__profile__image">
-                  <div lang="en" dir="auto" className="profile--item--tweet">
-                    <span>{trimText(post?.contentURL, 150)}</span>
-                </div>
-              </div>
-
-              :<h4>Not found</h4>
+                <TextItem txt={post.contentURL} />
+              : (post?.contentType === Consts.Poll && post.pollData?.question) ?
+                <TextItem txt={post.pollData.question} />
+              : (post?.contentType === Consts.YoutubeVid && post.youtubeData) ?
+                <YoutubeItem thumbnail={post.youtubeData.thumbnail} index={index}/>
+              : <h4>Not found</h4>
             }
 
             <div className="user--img--cover flex-column fadeEffect">

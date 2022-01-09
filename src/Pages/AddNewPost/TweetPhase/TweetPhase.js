@@ -58,7 +58,7 @@ class TweetPhase extends PureComponent {
             const addedPost = {
                 caption: "",
                 id: generateNewId(),
-                contentType: "tweet",
+                contentType: Consts.Tweet,
                 contentURL: `${textValue?.charAt(0)?.toUpperCase()}${textValue?.slice(1)}`,
                 comments: [],
                 date: new Date(),

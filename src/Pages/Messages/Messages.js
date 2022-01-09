@@ -433,6 +433,7 @@ const Messages = (props) => {
                             color="var(--white)"
                             height={60}
                             width={60}
+                            arialLabel="loading-indicator"
                             timeout={100000}
                           /> 
                           <h5 className="mt-3">{compState?.loading?.progress}%</h5>

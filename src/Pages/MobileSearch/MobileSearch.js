@@ -66,6 +66,7 @@ const MobileSearch = () => {
                         color="#919191"
                         height={19}
                         width={19}
+                        arialLabel="loading-indicator"
                         timeout={5000}
                       />
                     </span>

@@ -8,7 +8,8 @@ import reelDefaultPic from "../../Assets/reels-instagram-logo-white_1379-5039.jp
 import { trimText } from "../../Utilities/TrimText";
 import { GoVerified } from "react-icons/go";
 import * as Consts from "../../Utilities/Consts";
-import { FaTwitter } from "react-icons/fa";
+import { FaTwitter, FaYoutube } from "react-icons/fa";
+import { MdPoll } from "react-icons/md";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 
 const NotificationOutput =(props)=>{
@@ -43,6 +44,12 @@ const NotificationOutput =(props)=>{
                              notification?.contentType === Consts.Tweet ?
                                 <FaTwitter/>
                              :
+                             notification?.contentType === Consts.Poll ?
+                                <MdPoll />
+                             :
+                             notification?.contentType === Consts.YoutubeVid ?
+                                <FaYoutube />
+                            :
                              <div onClick={(e)=> redirectMeToPost(e)}><img loading="lazy" alt="Post" className="noti__bar__img unselectable" src={notification?.contentType === Consts.Image ? (notification?.contentURL) : notification?.contentType === Consts.Video ? igVideoImg : notification?.contentType === Consts.Reel ? reelDefaultPic : notification?.contentType === Consts.Audio ? igAudioImg: null } /></div>
                              ): null
                         }

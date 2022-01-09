@@ -2,6 +2,7 @@
     width: 90%;
     margin: 0 auto;
     padding:1rem;
+    overflow-y: auto;
     textarea.tweet__text__area{
         width: 100%;
         min-height: 250px;
@@ -16,6 +17,9 @@
         &:focus{
             outline: none;
             border-color: var(--secondary-clr) !important;
+        }
+        &::placeholder{
+            color: rgb(150, 150, 150);
         }
         caret-color: var(--secondary-clr);
     }

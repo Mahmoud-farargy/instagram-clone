@@ -26,5 +26,5 @@ export function disableReactDevTools() {
       }
     }
   }
-
+export const capFirstLetter = (txt) => typeof txt === "string" ? (`${txt.charAt(0)?.toUpperCase()}${txt.slice(1)}`): "";
 export const lowerCaseString = (txt) => typeof txt === "string" ? txt?.toLowerCase() : "";

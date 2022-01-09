@@ -19,9 +19,10 @@ const Message = (props) => {
       unsendMessage({ user: user, id: message?.id, type: message?.type, pathname: message?.contentName });
     } else if (type === "copy") {
       const $body = document.getElementsByTagName("body")[0];
-      const $tempInput = document.createElement("INPUT");
+      const $tempInput = document.createElement("textarea");
       $body.appendChild($tempInput);
-      $tempInput.setAttribute("value", message?.textMsg);
+      $tempInput.innerHTML = message?.textMsg;
+      $tempInput.style.whiteSpace = "pre-wrap";
       $tempInput.select();
       $tempInput.setSelectionRange(0, 99999);
       document.execCommand("copy");

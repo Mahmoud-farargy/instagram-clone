@@ -91,7 +91,8 @@ const Home = (props) => {
                       contentURL={post?.contentURL}
                       contentName={post?.contentName}
                       initialComments={post?.comments}
-                      initialLikes={post?.likes}
+                      initialLikes={post?.likes || {}}
+                      initialPollData={post?.pollData || {}}
                       postDate={post?.date}
                       id={uid}
                       location={post?.location}
@@ -111,6 +112,7 @@ const Home = (props) => {
                       handleSavingPosts={handleSavingPosts}
                       savedPosts={receivedData?.savedposts}
                       following={receivedData?.following}
+                      youtubeData={post?.youtubeData || {}}
                       history={props.history}
                       songInfo={post?.songInfo ? post?.songInfo : {}}
                       areCommentsDisabled= {(receivedData?.profileInfo?.professionalAcc?.disableComments || post?.disableComments) || false}

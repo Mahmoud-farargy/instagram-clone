@@ -287,7 +287,6 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
   }
 }
   const customMarker = (props) => {
-    console.log(props);
     return (
         <p className="custom__marker">My custom marker - {props.itemNumber}</p>
     );
@@ -321,7 +320,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                         </div>
                     </div>
                   :
-                    (contentType === "image" ?
+                    (contentType === Consts.Image ?
                     <div className="original--review">
                         {/* <img loading="lazy" className="unselectable" src={contentPreview || ""} alt="new post" />    */}
                         <ImageMarker
@@ -339,11 +338,11 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                         decoding="auto"
                         />
                     </div>
-                    : contentType === "video" ?
+                    : contentType === Consts.Video ?
                     <div className="original--review">
                         <video src={contentPreview || ""} controls controlsList="nodownload" playsInline autoPlay> </video>
                     </div>
-                    : contentType === "audio" ?
+                    : contentType === Consts.Audio ?
                     <div className="original--review">
                       <audio src={contentPreview || ""} controls controlsList="nodownload" autoPlay> </audio>
                     </div>
@@ -391,7 +390,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                     disabled={loadingState.uploading}
                                   />
                                 {
-                                  (contentType && contentType === "audio") &&
+                                  (contentType && contentType === Consts.Audio) &&
                                   <>
                                   <InputForm
                                     type="text"

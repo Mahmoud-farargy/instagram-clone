@@ -1,21 +1,58 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 import "./About.scss";
 import { ImGithub } from "react-icons/im";
 import { MdEmail } from "react-icons/md";
-import { AiFillInstagram, AiFillCodepenCircle } from "react-icons/ai";
+import { AiFillInstagram, AiFillCodepenCircle, AiOutlineStar, AiOutlineFork } from "react-icons/ai";
+import Api from "../../Config/API";
+import Loader from "react-loader-spinner";
 
 const About = (props) => {
-    const { changeMainState } = props
+    const _isMounted = useRef(true);
+    const [isLoading, setLoading] = useState(false);
+    const [githubInfo, setGithubInfo] = useState({
+        starts: null,
+        forks: null,
+        repoUrl: ""
+    });
+    const { changeMainState } = props;
     useEffect(() => {
         changeMainState("currentPage", "About");
     }, [changeMainState]);
     const contactList = Object.freeze([
-        {type: "github", title: "Github",url: "https://github.com/Mahmoud-farargy/instagram-clone", icon: (<ImGithub style={{ fontSize: "30px" }} />), id: "github"},
-        {type: "gmail", title: "Email",url: "mailto:mahmoudfarargy9@gmail.com", icon: (<MdEmail style={{ fontSize: "35px" }} />), id: "gmail"},
-        {type: "instagram", title: "Instagram",url: "https://www.instagram.com/codepugilist", icon: (<AiFillInstagram style={{ fontSize: "35px" }} />), id: "instagram"},
-        {type: "codepen", title: "Code Pen",url: "https://codepen.io/mahmoud-farargy/pens/public", icon: (<AiFillCodepenCircle style={{ fontSize: "35px" }} />), id: "codepen"},
+        { type: "github", title: "Github", url: "https://github.com/Mahmoud-farargy", icon: (<ImGithub style={{ fontSize: "30px" }} />), id: "github" },
+        { type: "gmail", title: "Email", url: "mailto:mahmoudfarargy9@gmail.com", icon: (<MdEmail style={{ fontSize: "35px" }} />), id: "gmail" },
+        { type: "instagram", title: "Instagram", url: "https://www.instagram.com/codepugilist", icon: (<AiFillInstagram style={{ fontSize: "35px" }} />), id: "instagram" },
+        { type: "codepen", title: "Code Pen", url: "https://codepen.io/mahmoud-farargy/pens/public", icon: (<AiFillCodepenCircle style={{ fontSize: "35px" }} />), id: "codepen" }
     ]);
-    
+    useEffect(() => {
+        if(process.env.NODE_ENV !== "production"){
+            return;
+        }
+        setLoading(true);
+        Api().get('https://api.github.com/repos/Mahmoud-farargy/instagram-clone').then(response => {
+            if (_isMounted.current) {
+                setLoading(false);
+                const { stargazers_count = 100, forks_count = 100, html_url = "https://github.com/Mahmoud-farargy/instagram-clone" } = response.data;
+                if (response.data) {
+                    setGithubInfo({
+                        ...githubInfo,
+                        starts: stargazers_count,
+                        forks: forks_count,
+                        repoUrl: html_url
+                    })
+                }
+
+            }
+        }).catch(err => {
+            if (_isMounted.current) {
+                setLoading(false);
+                console.error(err);
+            }
+        });
+        return () => {
+            _isMounted.current = false;
+        }
+    }, []);
     return (
         <Fragment>
             <div id="about--container" className="flex-column">
@@ -40,7 +77,39 @@ const About = (props) => {
                                     })
                                 }
                             </ul>
+                            <div tabIndex="-1" className="github--repo--info flex-row">
+                                <a href={githubInfo.repoUrl} rel="noopener noreferrer" target="_blank">
+                                    <p>Give me a fork and star on Github</p>
 
+                                    <strong>
+                                        {
+                                            isLoading ?
+                                                <Loader
+                                                    type="Rings"
+                                                    color="var(--bluish-sky)"
+                                                    arialLabel="loading-indicator"
+                                                    height={30}
+                                                    width={30}
+                                                    timeout={3000}
+                                                />
+                                                :
+                                                <>
+                                                    <em>
+                                                        <AiOutlineStar />
+                                                        <span>{githubInfo.starts?.toLocaleString()}</span>
+                                                    </em>
+                                                    <em>
+                                                        <AiOutlineFork />
+                                                        <span>{githubInfo.forks?.toLocaleString()}</span>
+                                                    </em>
+                                                </>
+                                        }
+                                    </strong>
+
+
+                                </a>
+
+                            </div>
                         </div>
                     </div>
                 </div>

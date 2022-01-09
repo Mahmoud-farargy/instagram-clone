@@ -174,6 +174,7 @@ const DesktopSearch = ({ controlSearchBox, openSearchBox }) => {
                       <Loader
                         type="TailSpin"
                         color="#919191"
+                        arialLabel="loading-indicator"
                         height={35}
                         width={35}
                         timeout={5000}

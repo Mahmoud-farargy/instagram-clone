@@ -59,9 +59,11 @@ Give me a star if you like it. ⭐
                                                 <ul class="bullet--2">
                                                     <li><p>Feed is based on who the user follow</p></li>
                                                     <li><p>Users can post pictures and videos from a camera or gallery</p></li>
-                                                    <li><p>They can also post audio like songs or mini podcasts</p></li>
-                                                    <li><p>Crop and filter post before sharing</p></li>
-                                                    <li>Publish a Tweet</li>
+                                                    <li><p>Crop and filter posts before sharing</p></li>
+                                                    <li><p>Post audio content like songs or mini podcasts</p></li>
+                                                    <li>Publish a tweet</li>
+                                                    <li>Post a poll question</li>
+                                                    <li>Post a YouTube video</li>
                                                     <li><p>Like/Dislike posts
                                                         <ul class="bullet--3">
                                                             <li><p>View all likes and who liked it</p></li>

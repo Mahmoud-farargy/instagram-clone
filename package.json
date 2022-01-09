@@ -41,6 +41,7 @@
     "react-scroll-trigger": "^0.6.10",
     "react-toastify": "^7.0.4",
     "react-truncate": "^2.4.0",
+    "react-youtube": "^7.14.0",
     "save": "^2.4.0",
     "styled-components": "^5.3.0"
   },

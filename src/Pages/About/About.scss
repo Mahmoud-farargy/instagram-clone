@@ -1,69 +1,100 @@
-#about--container{
-    padding:20px;
-    align-items: center;
-    justify-content:center;
-    min-height:65vh;
-    height:auto;
-    .about--inner{
-        .about-sub{
-            width:100%;
-            padding:55px 0 0;
-            justify-content:center;
-            align-items:center;
-        }
-        .about-section-inner{
-            width:60%;
-            @media only screen and (max-width:670px){
-                width:100%;
-            }
-        }
-        .about-section-inner h2{
-            text-align:center;
-            color: var(--font-black);;
-            font-weight:bolder;
-            letter-spacing: 3px;
-        }
-        .about-section-inner p{
-            color:var(--second--gray);
-            margin-top: 15px;
-            line-height: 1.5;
-        }
-        .about-section-inner p a{
-            text-decoration: none;
-        }
-        .about-section-inner .my-image{
-            width:100px;
-            height:100px;
-            object-fit: contain;
-            text-align:center;
-            margin:15px auto;
-            box-shadow: 1px 4px 10px rgba(0,0,0,0.2);
-        }
-        .socials--links{
-            padding:0;
-            margin: 10px 0 0;
-            width:100%;
-            flex-wrap: wrap;
-            justify-content:center;
-            align-items: center;
-            list-style: none;
-            li{
-                a{
-                    padding: 13px;
-                    text-align:center;
-                    svg{
-                        color: var(--light-black);
-                        transition: all 0.3s linear;
-                        &:hover{
-                            color: var(--secondary-clr);
-                            transform: translateY(-2px);
-                        }
-                        }
-                }
-            }
-            
-        }
-
+#about--container {
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+  min-height: 65vh;
+  height: auto;
+  .about--inner {
+    .about-sub {
+      width: 100%;
+      padding: 55px 0 0;
+      justify-content: center;
+      align-items: center;
     }
-    
+    .about-section-inner {
+      width: 60%;
+      @media only screen and (max-width: 670px) {
+        width: 100%;
+      }
+      h2 {
+        text-align: center;
+        color: var(--font-black);
+        font-weight: bolder;
+        letter-spacing: 3px;
+      }
+      p {
+        color: var(--second--gray);
+        margin-top: 15px;
+        line-height: 1.5;
+        a {
+          text-decoration: none;
+        }
+      }
+      
+      .my-image {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        text-align: center;
+        margin: 15px auto;
+        box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.2);
+      }
+      .github--repo--info {
+          text-align: center;
+          justify-content: center;
+          p{
+              margin-bottom: 0.7rem;
+          }
+          a{
+             text-decoration: none;
+             strong, em{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+             }
+             strong{
+                color: var(--font-black); 
+                 transition: color 0.2s linear;
+                &:hover{
+                    color: var(--bluish-sky);
+                } 
+                justify-content: center;
+                gap: 0.4rem 0.6rem;
+                font-weight: 400;
+                span{
+                    margin-left: 0.2rem;
+                }
+                svg{
+                    font-size: 1.2rem;
+                }
+             }
+ 
+          }
+
+      }
+    }
+    .socials--links {
+      padding: 0;
+      margin: 10px 0 0;
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      list-style: none;
+      li {
+        a {
+          padding: 13px;
+          text-align: center;
+          svg {
+            color: var(--light-black);
+            transition: all 0.3s linear;
+            &:hover {
+              color: var(--secondary-clr);
+              transform: translateY(-2px);
+            }
+          }
+        }
+      }
+    }
+  }
 }

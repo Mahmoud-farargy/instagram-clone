@@ -57,6 +57,7 @@ function Reels(props) {
                                 type="TailSpin"
                                 color="var(--white)"
                                 height={50}
+                                arialLabel="loading-indicator"
                                 width={50}/>
                             </div>
                         }                           

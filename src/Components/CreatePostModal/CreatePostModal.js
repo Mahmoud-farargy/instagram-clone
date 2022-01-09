@@ -7,7 +7,7 @@ import { IoIosArrowBack } from "react-icons/io";
 const CreatePostModal = ({ closeCreateModal, currentPhase, setCurrentPhase }) => {
     const { loadingState } = useContext(AppContext);
     const goBack = () => {
-        currentPhase > 1 ? setCurrentPhase(currentPhase === 4 ? 0 :currentPhase -1) : closeCreateModal();
+        currentPhase.index > 1 ? setCurrentPhase({index: currentPhase.index > 3 ? 0 :currentPhase.index -1, title: currentPhase.title}) : closeCreateModal();
     }
     return (
         <Fragment>
@@ -19,26 +19,26 @@ const CreatePostModal = ({ closeCreateModal, currentPhase, setCurrentPhase }) =>
                             <div className="create--post--header--inner flex-row">
                                 <span className={loadingState.uploading ? "disabled" : ""}>
                                   {
-                                    currentPhase > 0 &&
+                                    currentPhase.index > 0 &&
                                       <IoIosArrowBack className="go__back__icon" onClick={() => !loadingState.uploading && goBack()} />
                                   }
                                 </span>
                                 <h1>
                                    {
-                                       currentPhase === 0 ?
+                                       currentPhase.index === 0 ?
                                         "New Post/Reel"
                                        : 
-                                       currentPhase === 1 ?
+                                       currentPhase.index === 1 ?
                                          "Crop"
                                        :
-                                       currentPhase === 2 ?
+                                       currentPhase.index === 2 ?
                                          "Filter"
                                        :
-                                       currentPhase === 3 ?
-                                          "Compose"
-                                       : currentPhase === 4 ?
-                                          "Tweet"
-                                       :  "Create"
+                                       currentPhase.index === 3 ?
+                                         "Compose"
+                                       : currentPhase.index >= 4 ?
+                                            currentPhase.title
+                                       : "Create"
                                    }
                                 </h1>
                                 <div>

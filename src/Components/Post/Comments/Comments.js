@@ -18,7 +18,8 @@ const Comments = (props) => {
             postIndex,
             postId,
             replayFunc,
-            updateHomePost
+            updateHomePost,
+            handleHomePostLoading
         } = props;
     const [ showFullComments, setShowingFullComments] = useState(false);
     if(!areCommentsDisabled){
@@ -61,6 +62,7 @@ const Comments = (props) => {
                                 contentURL={contentURL}
                                 changeModalState={changeModalState}
                                 uid={userId}
+                                handleHomePostLoading={handleHomePostLoading}
                                 updateHomePost={updateHomePost}
                                 deleteComment={onCommentDeletion}
                             />
@@ -89,6 +91,9 @@ Comments.propTypes= {
         changeModalState: PropTypes.func.isRequired,
         contentURL: PropTypes.string.isRequired,
         postIndex: PropTypes.number.isRequired,
-        replayFunc: PropTypes.func.isRequired
+        replayFunc: PropTypes.func.isRequired,
+        handleHomePostLoading: PropTypes.func,
+        updateHomePost: PropTypes.func,
+        deleteComment: PropTypes.func
 }
 export default memo(Comments);
