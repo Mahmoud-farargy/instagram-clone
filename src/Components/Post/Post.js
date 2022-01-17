@@ -27,6 +27,7 @@ import PollContent from "../PollContent/PollContent";
 import YoutubeContent from "../YoutubeContent/YoutubeContent";
 import PostUserName from "../Generic/PostUserName/PostUserName";
 import LikePost from "../Generic/LikePost/LikePost";
+import FollowUnfollowBtn from "../FollowUnfollowBtn/FollowUnfollowBtn";
 const EmojiPicker = React.lazy(() => retry(() => import("../Generic/EmojiPicker/EmojiPicker")));
 
 class Post extends PureComponent {
@@ -586,7 +587,7 @@ class Post extends PureComponent {
         {/* Modals */}
           {this.state.openOptionsModal && (
             <OptionsModal>
-             { postOwnerId === id &&
+             { postOwnerId === id ?
               <>  
                 <span className="text-danger font-weight-bold"
                     onClick={() => this.delPost()}
@@ -600,6 +601,8 @@ class Post extends PureComponent {
                     Go to post
                   </span>
                 </>
+                :
+                <FollowUnfollowBtn shape="quaternary" userData={{userId: postOwnerId, uName: userName, uAvatarUrl: userAvatar, isVerified: isVerified}} />
               }
               <span onClick={() => this.setState({openOptionsModal:false})}>
                 {" "}
@@ -611,11 +614,10 @@ class Post extends PureComponent {
           )}
           <div
             style={{
-              opacity: (this.state.openOptionsModal || this.state.openNewMsgModal) ? "1" : "0",
               display: (this.state.openOptionsModal || this.state.openNewMsgModal) ? "block" : "none",
               transition: "all 0.5s ease",
             }}
-            className="backdrop "
+            className="backdrop"
             onClick={() => this.closeAllModals()}
           ></div>
         </div>

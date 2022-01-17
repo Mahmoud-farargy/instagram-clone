@@ -18,6 +18,8 @@ import HomeReels from "../../Components/HomeReels/HomeReels";
 import HomeSuggsList from "../../Components/HomeSuggList/HomeSuggList";
 import GSCardItem from "./GSCardItem/GSCardItem";
 import { GOU } from "../../Utilities/GetOnlineUsers";
+import List from "../../Components/Generic/List/List";
+import appConfig from "../../Config/app-config.json";
 
 const Home = (props) => {
   let {
@@ -79,47 +81,28 @@ const Home = (props) => {
               {
                 homeReels && homeReels.length > 0 && <HomeReels />
               } 
-              {!loading && posts?.length >= 1 ? (
-                posts?.map((post, i) => {
-                  return (
-                    <Post
-                      key={post?.id}
-                      userName={post?.userName}
-                      myName={receivedData?.userName}
-                      caption={post?.caption}
-                      contentType={post?.contentType}
-                      contentURL={post?.contentURL}
-                      contentName={post?.contentName}
-                      initialComments={post?.comments}
-                      initialLikes={post?.likes || {}}
-                      initialPollData={post?.pollData || {}}
-                      postDate={post?.date}
-                      id={uid}
-                      location={post?.location}
-                      index={i}
-                      postId={post?.id}
-                      myAvatar={receivedData?.userAvatarUrl}
-                      postOwnerId={post?.postOwnerId}
-                      userAvatar={post?.userAvatarUrl}
-                      handlePeopleLikes={handlePeopleLikes}
-                      handleSubmittingComments={handleSubmittingComments}
-                      handleSubComments={handleSubComments}
-                      handleLikingComments={handleLikingComments}
-                      isVerified={receivedData?.isVerified}
-                      changeModalState={changeModalState}
-                      deletePost={deletePost}
-                      onCommentDeletion={onCommentDeletion}
-                      handleSavingPosts={handleSavingPosts}
-                      savedPosts={receivedData?.savedposts}
-                      following={receivedData?.following}
-                      youtubeData={post?.youtubeData || {}}
-                      history={props.history}
-                      songInfo={post?.songInfo ? post?.songInfo : {}}
-                      areCommentsDisabled= {(receivedData?.profileInfo?.professionalAcc?.disableComments || post?.disableComments) || false}
-                    />
-                  );
-                })
-              ) : loading ? (
+              {!loading && posts?.length >= 1 ? 
+                    <List list={posts} areHomePosts ={true} parentClass="full--width" intervalTime={900}>
+                          <Post
+                            myName={receivedData?.userName}
+                            id={uid}
+                            myAvatar={receivedData?.userAvatarUrl}
+                            handlePeopleLikes={handlePeopleLikes}
+                            handleSubmittingComments={handleSubmittingComments}
+                            handleSubComments={handleSubComments}
+                            handleLikingComments={handleLikingComments}
+                            isVerified={receivedData?.isVerified}
+                            changeModalState={changeModalState}
+                            deletePost={deletePost}
+                            onCommentDeletion={onCommentDeletion}
+                            handleSavingPosts={handleSavingPosts}
+                            savedPosts={receivedData?.savedposts}
+                            following={receivedData?.following}
+                            history={props.history}
+                            areCommentsDisabled= {(receivedData?.profileInfo?.professionalAcc?.disableComments) || false}
+                          />
+                    </List>
+              : loading ? (
                 <div className="w-100 flex-column">
                   <Skeleton count={6}height={500} className="mb-5" />
                 </div>
@@ -130,7 +113,7 @@ const Home = (props) => {
                       <div className="plus--icon--container flex-column">
                         <AiOutlineHome />
                       </div>
-                      <h2>Welcome to Voxgram</h2>
+                      <h2>Welcome to {appConfig.title}</h2>
                       <h4> When you follow people, you'll see the photos and videos they post here.</h4>
                       <button onClick={() => props.history.push("/explore/people")} className="primary__btn">Find People to Follow</button>
                     </div>

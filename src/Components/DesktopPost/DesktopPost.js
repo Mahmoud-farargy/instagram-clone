@@ -457,7 +457,7 @@ useEffect(() => {
                     : (contentType === Consts.Poll && pollData && Object.keys(pollData).length > 0) ?
                         <PollContent pollData={pollData} postId={id} postOwnerId={postOwnerId} uid={uid} handleVoting={handleVoting}/>
                     : (contentType === Consts.YoutubeVid && youtubeData && Object.keys(youtubeData).length > 0) ?
-                        <YoutubeContent youtubeData={youtubeData} />
+                        <YoutubeContent youtubeData={youtubeData} autoPlay={true} />
                   : null}
                 </div>
                 <div className="desktop--right desktop-only">

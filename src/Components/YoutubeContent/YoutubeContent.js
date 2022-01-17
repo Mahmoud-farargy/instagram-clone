@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import YouTube from 'react-youtube';
 import LoadContentFail from "../LoadContentFail/LoadContentFail";
 import Loader from "react-loader-spinner";
+import PropTypes from "prop-types";
 
-const YoutubeContent = ({ youtubeData }) => {
+const YoutubeContent = ({ youtubeData, autoPlay = false }) => {
     const { id } = youtubeData;
     const [ hasError, setErrorState ] = useState(false);
     const [ isBuffering, setBuffering ] = useState(true);
@@ -11,7 +12,7 @@ const YoutubeContent = ({ youtubeData }) => {
         height: '390',
         width: '240',
         playerVars: {
-            autoplay: 0,
+            autoplay: autoPlay ? 1 : 0,
             color: "#0095f6",
             playsinline: 1,
             modestbranding: 1,
@@ -52,5 +53,13 @@ const YoutubeContent = ({ youtubeData }) => {
         </div>
     )
 };
+YoutubeContent.propTypes = {
+    youtubeData: PropTypes.object.isRequired,
+    autoPlay: PropTypes.bool
+}
+YoutubeContent.defaultProps = {
+    youtubeData: {},
+    autoPlay: false
+}
 
 export default YoutubeContent;

@@ -27,7 +27,7 @@ const CreatePage = (props) => {
                           <p>If you leave now, you will lose any changes you've made.</p>
                       </div>
                       <span className="text-danger font-weight-bold"
-                        onClick={() => setCurrentPhase({index: 0, title: "post"})}
+                        onClick={() => history.goBack()}
                       >
                         Discard
                       </span>

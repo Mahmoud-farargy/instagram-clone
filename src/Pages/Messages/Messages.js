@@ -293,7 +293,7 @@ const Messages = (props) => {
       </Suspense>
         <section id="messages" className="messages--container">
           <input id="contentUploader" type ="file" name="contentUploader" accept={['image/*','video/*','audio/*','application/pdf','text/plain']} ref={fileUploadEl} onChange={(x) => onPickingContent(x)} />
-          <div className="desktop-comp messages--main--container flex-column">
+          <div className="desktop-comp messages--main--container">
             <div className="messages--desktop--card flex-row">
               {/* users side */}
               <div className="messages--users--side desktop-only flex-column">

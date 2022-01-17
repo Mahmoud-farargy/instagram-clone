@@ -300,6 +300,7 @@ const Explore = () => {
               (newExploreArr && newExploreArr.length > 0) ? (
               explore &&
               explore?.length > 0 ? (
+                // TODO: USE CSS GRID INSTEAD
                 <div>
                   <div>
                    {newExploreArr?.length > 0 && <ProfilePosts listType="post" list={ newExploreArr.slice(0,2) } className="explore--upper--row--item" withOwnersName={true} parentClass="explore--upper--row"/>}

@@ -220,7 +220,7 @@ const MyProfile =()=>{
                    <div className="profile--stripe--inner flex-row">
                        {
                            profSections?.map((item, index) => {
-                               return(
+                               return (item.sectionId === "stacked" ? receivedData?.posts?.length > 0 : true) && (
                                    <div key={index}>
                                       <span className="profile--section--item flex-row" style={{color: activeProfileSection?.activeIndex === index ? "var(--main-black)": "var(--second--gray)", borderTop: activeProfileSection?.activeIndex === index ? "1px solid var(--main-black)" : "none"}} onClick={()=> changeMainState("activeProfileSection", {activeIndex: index, activeID: profSections[index].sectionId })} >{item.logo}<strong className="desktop-only">{profSections?.[index].title}</strong></span> 
                                    </div>

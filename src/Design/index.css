@@ -94,6 +94,7 @@ input {
     --links-clr: #276cd3;
     --tweet-txt-clr: rgb(15, 20, 25);
     --err-clr: #FF0000;
+    --modal-clr: #fff;
     /* borders */
     --main-border:  1px solid var(--gray);
     /* transitions */
@@ -107,8 +108,8 @@ input {
 }
 /* -------dark theme------ */
 .darkMode{
-    --light-gray:#161616;
-    --white:#151515;
+    --light-gray:rgba(18,18,18,1);
+    --white:rgba(0,0,0,1);
     --gray: #262626;
     --font-black: #d2d2d2;
     --main-black:  #ececec;
@@ -119,6 +120,7 @@ input {
     --ultimate-black: #fff;
     --links-clr: #9595f3;
     --tweet-txt-clr:#dbdbdb;
+    --modal-clr: rgba(38,38,38,1);
 }
 .darkMode img,.darkMode video{
     filter: brightness(95%);
@@ -146,6 +148,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
     --secondary-clr: #21a0fa;
     --links-clr: #a8a8f7;
     --tweet-txt-clr:#dbdbdb;
+    --modal-clr: #075085;
 }
 /* ---x----dusty cedar theme--x---- */
 /* -------dusty cedar theme------ */
@@ -162,6 +165,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
     --ultimate-black: #fff;
     --links-clr: #a8a8f7;
     --tweet-txt-clr:#dbdbdb;
+    --modal-clr: #3e4074;
 }
 /* ---x----dusty cedar theme--x---- */
 /* -------Iced Coffee theme------ */
@@ -179,6 +183,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
     --secondary-clr:#55bafd;
     --links-clr: #a8a8f7;
     --tweet-txt-clr:#dbdbdb;
+    --modal-clr: #a58057;
 }
 /* ----x---Iced Coffee theme---x--- */
 /* -------Buttercup theme------ */
@@ -189,6 +194,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
     --secondary-clr:#d4b905;
     --sugg-btn-clr: #f8e35b;
     --links-clr: #a8a8f7;
+    --modal-clr: #fdf3b1;
 }
 /* ----x---Buttercup theme---x--- */
 /* -------Iced Coffee theme------ */
@@ -203,6 +209,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
     --shadow-white: #fff;
     --links-clr: #6666f7;
     --tweet-txt-clr:#616161;
+    --modal-clr: #e1c1db;
 }
 /* ----x---Iced Coffee theme---x--- */
 
@@ -466,7 +473,7 @@ span.clear--search--box.voice__search__icon{
     background: var(--light-gray);
 }
 .ReactModal__Content{
-    background-color: var(--white) !important;
+    background-color: var(--modal-clr) !important;
 }
 .desktop-only{
     display:flex;
@@ -524,8 +531,12 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
     border-radius:12px;
     width:100%;
     transition: all 0.5s linear;
-    background-color: var(--white);
+    background-color: var(--modal-clr);
     box-shadow: 0 7px 27px 1px rgba(0,0,0,0.7);
+}
+.react-confirm-alert-body{
+    background: var(--modal-clr);
+    color: var(--tweet-txt-clr);
 }
 .userModal--card--header{
     text-align:center;
@@ -714,6 +725,19 @@ time{
 }
 .MuiAvatar-root{
     object-fit: contain;
+}
+.increase--posts--count{
+    width: 100%;
+    margin-top:15px;
+    padding:15px 0;
+    align-items:center;
+    justify-content: center;
+    min-height: 32px;
+
+}   
+.increase--posts--count img{
+        width: 32px;
+        height: 32px;
 }
 .prof--input--row{
     justify-content: space-between;
@@ -1276,9 +1300,10 @@ button:active{
     padding-top: 19px;
 }
 .messages--main--container{
+    display: grid;
     width:100% !important;
     max-width:1000px;
-    margin: 0 auto;
+    margin: auto;
 }
 #usersProfile.users--profile--container .profile--user--info{
     padding: 0 16px 21px;
@@ -2466,6 +2491,9 @@ a.prof__btn__unfollowed{
 .similar__followers__item:hover{
     text-decoration: underline;
 }
+.full--width {
+    width: 100%;
+}
 .similar__followers__item::after{
     content: ",";
     color: var(--second--gray);
@@ -2543,11 +2571,8 @@ a.prof__btn__unfollowed{
     -webkit-box-direction: normal;
 }
 .users--profile--rowLine{
-    align-items:center;
     margin:0 auto;
     gap:10px;
-}
-.users--profile--rowLine{
     width: 70%;
 }
 .message--pic--fullScreen{
@@ -3031,9 +3056,8 @@ a.prof__btn__unfollowed{
         grid-template-columns: 1fr !important;
         gap:18px;
     }
-    .profile__display__name, .user--pic--container {
-        margin: auto auto 15px;
-        text-align: center;
+    .sender, .receiver{
+        max-width: 80%;
     }
     #messages.messages--container .messages--desktop--card{
         border:none;
@@ -3487,10 +3511,15 @@ a.prof__btn__unfollowed{
         width: 100%;
     }
 }
-/* ---x------Query less than or equal 9300px---x--------- */
-@media only screen and (max-width: 300px){
-     .sender, .receiver{
-        max-width: 80%;
+
+/* ---x------Query less than or equal 480px---x--------- */
+@media screen and (max-width: 480px) {
+    .profile__display__name, .user--pic--container {
+        margin: auto auto 15px;
+        text-align: center;
+    }
+    #usersProfile.users--profile--container .desktop--inner--info{
+        margin: 0 auto;
     }
 }
 /* ----x-- Keyframes Animations --x--- */
