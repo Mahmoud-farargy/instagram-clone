@@ -79,7 +79,7 @@ const About = (props) => {
                             </ul>
                             <div tabIndex="-1" className="github--repo--info flex-row">
                                 <a href={githubInfo.repoUrl} rel="noopener noreferrer" target="_blank">
-                                    <p>Give me a fork and star on Github</p>
+                                    <p>Give me a star on Github</p>
 
                                     <strong>
                                         {

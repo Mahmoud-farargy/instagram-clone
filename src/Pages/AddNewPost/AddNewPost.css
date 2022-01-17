@@ -1,5 +1,5 @@
 #upload.post--uploading--container{
-    background-color: var(--white);
+    background-color: var(--modal-clr);
     justify-content:center;
     align-items:center;
     width: 100%;

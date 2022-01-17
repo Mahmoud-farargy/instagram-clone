@@ -246,7 +246,7 @@ const AuthPage = (props) => {
                                                       name: formState.fullName?.val.trim(),
                                                       phoneNumber: "",
                                                       birthday: "",
-                                                      theme: "lightMode",
+                                                      theme: "lightDarkAuto",
                                                       professionalAcc: {
                                                         show: true,
                                                         category: "Just For Fun",
@@ -417,7 +417,7 @@ const AuthPage = (props) => {
                         name: given_name || "",
                         phoneNumber: "",
                         birthday: "",
-                        theme: "lightMode",
+                        theme: "lightDarkAuto",
                         professionalAcc: {
                           show: true,
                           category: "Just For Fun",
@@ -534,7 +534,7 @@ const AuthPage = (props) => {
                         name: name,
                         phoneNumber: "",
                         birthday: "",
-                        theme: "lightMode",
+                        theme: "lightDarkAuto",
                         professionalAcc: {
                           show: true,
                           category: "Just For Fun",
@@ -635,7 +635,7 @@ const AuthPage = (props) => {
                         name: login || "",
                         phoneNumber: "",
                         birthday: "",
-                        theme: "lightMode",
+                        theme: "lightDarkAuto",
                         professionalAcc: {
                           show: true,
                           category: "Just For Fun",

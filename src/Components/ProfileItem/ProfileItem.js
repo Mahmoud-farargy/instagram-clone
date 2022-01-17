@@ -12,7 +12,7 @@ import { lowerCaseString } from "../../Utilities/Utility";
 import YoutubeItem from "./YoutubeItem/YoutubeItem";
 import TextItem from "./TextItem/TextItem";
 
-const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index, className, withOwnersName, isSavedPost , onLoadingFail }, ref) => {
+const ProfileItem = ({ itemType = "post" ,post, openPost, index, className, withOwnersName, isSavedPost , onLoadingFail }) => {
   const videoPost = useRef(null);
   const _isMounted = useRef(true);
   const [isBuffering, setBuffering] = useState(true);
@@ -60,7 +60,7 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
   }
   return post &&(
         <Fragment>
-      <div ref={ref} className={`profile--posts--container w-100 ${className ? className : ""}`}>
+      <div className={`profile--posts--container w-100 ${className ? className : ""}`}>
         
      {
        lowerCaseString(itemType) === Consts.Post ?
@@ -190,7 +190,7 @@ const ProfileItem = React.forwardRef(({ itemType = "post" ,post, openPost, index
     </Fragment>
   )
 
-});
+};
 ProfileItem.propTypes = {
   itemType: PropTypes.string,
   post: PropTypes.object.isRequired,

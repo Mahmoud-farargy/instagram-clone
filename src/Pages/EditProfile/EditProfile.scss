@@ -91,24 +91,48 @@
   .edit--box .left--side{
     position: relative;
     padding:0;
-    margin: 0; 
-    height: 100%;
+    margin: 0;
     border-right: 1px solid var(--gray);
     @media only screen and (min-width: 670px){
       overflow-y: auto;
-      min-height:80vh;
+      min-height:85vh; 
+      height: auto;
+      .active__menu__option{
+        border-left-color: var(--font-black) !important;
+        border-left: 2px solid;
+      }
+      li{
+        padding: 19px 16px 16px 30px;
+        &:hover{
+          border-left: 2px solid var(--gray);
+        }
+      }
     }
     @media only screen and (max-width: 670px){
       width:100%;
-      min-height:200px;
-      margin-bottom: 20px;
+      height:auto;
+      flex-direction: row !important;
+      overflow-x: auto;
+      &::-webkit-scrollbar{
+        display: none;
+        width: 0;
+      }
+      .active__menu__option{
+        border-bottom: 2px solid;
+        border-bottom-color: var(--font-black) !important;
+      }
+      li{
+        padding: 0.4rem 0.6rem;
+        &:hover{
+          border-bottom: 2px solid var(--gray);
+        }
+      }
+    }
+    .active__menu__option{
+      font-weight:600;
     }
   }
-  .active__menu__option{
-    border-left: 2px solid var(--font-black) !important;
-    font-weight:600;
-    
-  }
+
   .edit--box .left--bottom--side{
     position: absolute;
     bottom: 0;
@@ -127,17 +151,16 @@
   }
   .edit--box .left--side li{
     font-size: 16px;
-    padding: 19px 16px 16px 30px;
     line-height:18px;
     display:list-item;
     border: 2px solid transparent;
     text-transform: capitalize;
     cursor: pointer;
-    transition: all 0.3s linear;
+    transition: 0.3s linear;
+    transition-property: background-color, color, border-bottom-color,border-left-color;
     text-align: -webkit-match-parent;
     &:hover{
       background-color: var(--light-gray);
-      border-left: 2px solid var(--gray);
     }
     &:active{
       color: #b9b9b9 !important;

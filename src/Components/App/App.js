@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useContext, Suspense, lazy , useState } from "react";
+import React, { Fragment, useEffect, useContext, Suspense, lazy , useState, useCallback } from "react";
 import { Switch, Route, useHistory, useLocation } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { auth, changeConnectivityStatus } from "../../Config/firebase";
@@ -42,6 +42,7 @@ const MobileHeader = lazy(() => retry(()=> import("../../Components/MobileHeader
 const MobileSearch = lazy(() => retry(()=>  import("../../Pages/MobileSearch/MobileSearch")));
 const Suggestions = lazy(() => retry(()=>  import("../../Pages/Suggestions/Suggestions")));
 //--xx---//
+// TODO: REFACTOR CODE
 
 const App = () => {
   const context = useContext(AppContext);
@@ -69,7 +70,6 @@ const App = () => {
     loadingState,
     authLogout,
     closeNotificationAlert,
-    isDayTime
   } = context;
   const [isAnyModalOpen, setAllModalsState] = useState(false);
   const [user,loading] = useAuthState(auth);
@@ -82,7 +82,6 @@ const App = () => {
       closeNotificationAlert = {closeNotificationAlert}
       authLogout = {authLogout}
       changeMainState= {changeMainState}
-      isDayTime = {isDayTime}
      />
   )
   useEffect(() => {
@@ -141,18 +140,28 @@ const App = () => {
     document.body.style.overflowY = isAnyoneOpening ? "hidden" : "visible";
   },[modalsState]);
 
+  const changeTheme = useCallback((newTheme) => {
+    if(typeof newTheme === "string"){
+       document.body.setAttribute("class",newTheme); 
+    }
+  }, []);
   useEffect(() => {
     const currTheme = receivedData?.profileInfo?.theme;
-    const changeBodyClass  = newClass => document.body.setAttribute("class",newClass );
-
-        if( currTheme){
+        if(currTheme){
           if(currTheme === "lightDarkAuto"){
-           changeBodyClass( currentHour > 6 && currentHour < 20 ? "lightMode" : "darkMode");
+            changeTheme(
+              window.matchMedia ?
+              (window
+                .matchMedia("(prefers-color-scheme: dark)").matches ? "darkMode" : "lightMode")
+              :
+              ((currentHour > 6 && currentHour < 20) ? "lightMode" : "darkMode")
+            );
+           
           }else{
-            changeBodyClass(currTheme);
+            changeTheme(currTheme);
           }
        }
-  },[receivedData?.profileInfo?.theme]);
+  },[((receivedData?.profileInfo?.theme) && receivedData.profileInfo.theme)]);
   useEffect(() => {
     document.title = `${currentPage && currentPage + " • "}${AppConfig.title}`;
   }, [currentPage]);

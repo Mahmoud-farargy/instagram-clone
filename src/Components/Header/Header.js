@@ -30,7 +30,6 @@ const Header = (props) => {
     closeNotificationAlert,
     authLogout,
     changeMainState,
-    isDayTime
   } = props
   // Refs
   const headerRef = useRef(null);
@@ -45,6 +44,7 @@ const Header = (props) => {
   const [user] = useAuthState(auth);
   const [openLogoutModal, setLogoutModal] = useState(false);
   const [scrolled, setScrollingState] = useState(false);
+  const [bodyCurrClass, setbodyCurrClass] = useState("lightMode");
   // --xx--//
   const reverseNotiState = (type) => {
     const notiUpdate = receivedData?.notifications?.isUpdate;
@@ -86,6 +86,13 @@ const Header = (props) => {
       _isMounted.current = false;
     }
   }, []);
+
+  useEffect(() => { 
+    const bodyActiveClass = document.body?.classList?.[0];
+    if(bodyActiveClass){
+        setbodyCurrClass(bodyActiveClass?.toLowerCase()); 
+    }    
+  }, [((document.body?.classList?.[0]) && document.body.classList[0])]);
   // ---xxx-- //
   const onLoggingOut = () => {
     setLogoutModal(true);
@@ -155,14 +162,10 @@ const Header = (props) => {
         <div className="header--inner flex-row">
           <div title="Voxgram" className="header--logo--box flex-row">
             <div style={{
-              // opacity: scrolled ? "0" : "1",
-              // transform: scrolled ? "translateX(-100%)" : "translateX(0)",
-              // transition: "all 0.5s ease-in",
               animation: "0.5s ease-in disappear-item 1",
-              // animationDelay: "0.5s"
             }}
               onClick={() => history.push("/")} className="ig--logo--img" >
-              <img src={receivedData?.profileInfo?.theme === "lightMode" ? HeaderLogoLight : (receivedData?.profileInfo?.theme === "darkMode" || receivedData?.profileInfo?.theme === "blueIzis" || (receivedData?.profileInfo?.theme === "lightDarkAuto" && !isDayTime)) || receivedData?.profileInfo?.theme === "snorkelBlue" || receivedData?.profileInfo?.theme === "icedCoffee" ? HeaderLogoDark : HeaderLogoLight} alt="Instagram Logo" />
+              <img src={ (bodyCurrClass === "darkmode" || bodyCurrClass === "blueizis" || bodyCurrClass === "snorkelblue" || bodyCurrClass === "icedcoffee") ? HeaderLogoDark : HeaderLogoLight} alt="Instagram Logo" />
             </div>
             <div style={{
               opacity: scrolled ? "0" : "1",

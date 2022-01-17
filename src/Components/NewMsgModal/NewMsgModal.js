@@ -90,12 +90,18 @@ const NewMsgModal = ({sendPostForm, closeModal}) => {
       c.preventDefault();
       commitMessage();
     }
+    const closeModalFunc = () => {
+      if(!isLoading){
+          changeModalState("newMsg", false);
+          sendPostForm && typeof closeModal === "function" && closeModal();  
+      }
+    }
     return (
         <div className="new--msg--conainer usersModal--container flex-column">
               <div className="new--msg--inner usersModal--inner modalShow">
                 <div className="usersModal--card">
                    <div className="new--msg--header flex-row">
-                    <span className="new__msg__close" onClick={() => {changeModalState("newMsg", false); sendPostForm && closeModal() && closeModal()}}><span className="desktop-only">&times;</span><IoIosArrowBack className="mobile-only" /> </span>
+                    <span className="new__msg__close" onClick={() => closeModalFunc()}><span className="desktop-only">&times;</span><IoIosArrowBack className="mobile-only" /> </span>
                     <span className="new__msg__title">New Message</span>
                     <div><button onClick={() => commitMessage()} disabled={(!newMsgData?.sendTo || !newMsgData?.messageText)} className={`msg__send__btn desktop-only ${(!newMsgData?.sendTo || !newMsgData?.messageText) && "disabled"}`} >{ isLoading ? "Sending..." : "Send"}</button></div>
                    </div>

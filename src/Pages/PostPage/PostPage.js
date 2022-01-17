@@ -318,7 +318,7 @@ const PostPage  = (props) => {
                   <PollContent pollData={pollData} postId={id} postOwnerId={postOwnerId} uid={uid} handleVoting={handleVoting}/>
                 :
                 (contentType === Consts.YoutubeVid && youtubeData && Object.keys(youtubeData).length > 0) ?
-                <YoutubeContent youtubeData={youtubeData} />
+                <YoutubeContent youtubeData={youtubeData} autoPlay={true} />
                 : null
               }
                 </div>
