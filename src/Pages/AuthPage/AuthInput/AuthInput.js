@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { BiShowAlt, BiHide } from "react-icons/bi";
 import "./AuthInput.scss";
 
-const AuthInput = ({ inputType, type, val, title, onInputChange, isSubmitted, isValid, name, ...args }) => {
+const AuthInput = ({ inputType, type, val, title, onInputChange, isSubmitted, isValid, errorMsg, name, ...args }) => {
     const [isFocused, setFocusing] = useState(false);
     const [isPassShown, setShowingPass] = useState(false);
     const passInputRef = useRef(null);
@@ -72,7 +72,7 @@ const AuthInput = ({ inputType, type, val, title, onInputChange, isSubmitted, is
                             />
                 }
             </div>
-
+            {(!isValid && isSubmitted && errorMsg) && <small className="text-danger my-1">{errorMsg}</small>}
         </Fragment>
     );
 };

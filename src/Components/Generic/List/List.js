@@ -20,7 +20,7 @@ function List({ children, list, parentClass, childrenClass, parentId, intervalTi
         window.clearTimeout(timeouts?.current);
         _isMounted.current = false;
     }, []);
-    const increasePostsBy5 = () => {
+    const increasePostsBy5 = useCallback(() => {
         if (hasMore && _isMounted.current) {
             setLoading({ ...isLoading, loadingMoreItems: true });
             if (currLimit >= finalLimit) setLimit(false);
@@ -32,7 +32,7 @@ function List({ children, list, parentClass, childrenClass, parentId, intervalTi
                 }
             }, intervalTime);
         }
-    }
+    },[finalLimit, isLoading, currLimit, intervalTime, hasMore]);
     const lastPostElementRef = useCallback(node => {
         if (observer?.current) observer.current.disconnect();
         observer.current = new IntersectionObserver(enteries => {

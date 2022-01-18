@@ -30,6 +30,7 @@ import slide4 from "../../Assets/Login-Slides/slide (4).jpg";
 import slide5 from "../../Assets/Login-Slides/slide (5).jpg";
 // ------x----------Import slides-------x--------
 
+//TODO: REFACTOR THIS PAGE
 const AuthPage = (props) => {
   var context = useContext(AppContext);
   const [, loading] = useAuthState(auth);
@@ -39,7 +40,7 @@ const AuthPage = (props) => {
     signUpEmail:{val:"", isValid: false, regex:/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, errorMsg: "Please type a valid email."},
     signUpPassword:{val:"", isValid: false, regex:/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{7,20}$/, errorMsg: "Password must be between 7 and 20 characters long and contains at least one number, one lowercase letter, and one uppercase letter."},
     signUpUsername:{val:"", isValid: false, regex:/^(?=[a-zA-Z0-9._-]{4,19}$)(?!.*[_.]{2})[^_.].*[^_.]$/, errorMsg: "Username must be between 4 and 19 characters with no spaces. Underscore, dash and dot characters are allowed but should not be placed at the end."},
-    fullName: {val: "", isValid: false, regex: /^[a-zA-Z\s]{3,25}$/ ,errorMsg: "Full Name must contain only letters and not exceed 25 characters."},
+    fullName: {val: "", isValid: false, regex: /^[a-zA-Z\s]{3,25}$/ ,errorMsg: "Full Name must contain only letters and should be between 3 and 25 characters."},
     loginEmail:{val:"", isValid: false, regex:/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, errorMsg: "The email address is badly formatted."},
     loginPassword:{val:"", isValid: true, regex: /^[a-zA-Z0-9 ,_-]+$/,errorMsg: ""}
   })
@@ -227,7 +228,7 @@ const AuthPage = (props) => {
                                               formState.signUpPassword?.val
                                             )
                                             .then((cred) => {
-                                              if(_isMounted?.current){
+                                              // if(_isMounted?.current){
                                                 db.collection(Consts.USERS)
                                                   .doc(cred.user.uid)
                                                   .set({
@@ -307,7 +308,7 @@ const AuthPage = (props) => {
                                                       }, 150);
                                                     }
                                                   });
-                                              }
+                                              // }
                                             })
                                             .catch((err) => {
                                               if(_isMounted?.current){
@@ -328,17 +329,9 @@ const AuthPage = (props) => {
 
                           } else {
                             setLoading(false);
-                            notify(
-                              formState.signUpPassword?.errorMsg,
-                              "error"
-                            );
                           }
                     } else {
                       setLoading(false);
-                      notify(
-                        formState.signUpUsername?.errorMsg,
-                        "error"
-                      );
                     }
                   }else{
                         setLoading(false);
@@ -364,14 +357,9 @@ const AuthPage = (props) => {
 
             } else {
               setLoading(false);
-              notify(
-                formState.fullName?.errorMsg,
-                "error"
-              );
             }
           } else {
             setLoading(false);
-            notify(formState.signUpEmail?.errorMsg, "error");
           }
         } else {
           authLogout(props.history);
@@ -869,11 +857,11 @@ const AuthPage = (props) => {
                       onSubmit={(event) => submitForm(event, "signUp")}
                       className="auth--input--form flex-column"
                     >
-                      <AuthInput inputType="text" type="email" val={formState.signUpEmail?.val} title="Email" required name="signUpEmail" autoFocus onInputChange={onInputChange} isValid={formState.signUpEmail?.isValid} isSubmitted={isSubmitted}/>
-                      <AuthInput inputType="text" type="text" val={formState.fullName?.val} title="Full Name" name="fullName" required onInputChange={onInputChange} isValid={formState.fullName.isValid} isSubmitted={isSubmitted}/>
+                      <AuthInput inputType="text" type="email" val={formState.signUpEmail?.val} errorMsg={formState.signUpEmail?.errorMsg} title="Email" required name="signUpEmail" autoFocus onInputChange={onInputChange} isValid={formState.signUpEmail?.isValid} isSubmitted={isSubmitted}/>
+                      <AuthInput inputType="text" type="text" val={formState.fullName?.val} errorMsg={formState.fullName?.errorMsg} title="Full Name" name="fullName" required onInputChange={onInputChange} isValid={formState.fullName.isValid} isSubmitted={isSubmitted}/>
                       <AuthInput inputType="text" type="text" val={formState.signUpUsername?.val?.charAt(0).toUpperCase() +
-                          formState.signUpUsername?.val?.slice(1)} title="Username" name="signUpUsername" required onInputChange={onInputChange} isValid={formState.signUpUsername?.isValid} isSubmitted={isSubmitted}/>
-                      <AuthInput  inputType="password" val={formState.signUpPassword?.val} required title="password" name="signUpPassword" onInputChange={onInputChange} isValid={formState.signUpPassword?.isValid} isSubmitted={isSubmitted}/>
+                          formState.signUpUsername?.val?.slice(1)} errorMsg={formState.signUpUsername?.errorMsg} title="Username" name="signUpUsername" required onInputChange={onInputChange} isValid={formState.signUpUsername?.isValid} isSubmitted={isSubmitted}/>
+                      <AuthInput  inputType="password" val={formState.signUpPassword?.val} errorMsg={formState.signUpPassword?.errorMsg}  required title="password" name="signUpPassword" onInputChange={onInputChange} isValid={formState.signUpPassword?.isValid} isSubmitted={isSubmitted}/>
                       <ReCAPTCHA
                           className="recaptcha__box"
                           sitekey={recaptchaSitekey}
@@ -891,12 +879,12 @@ const AuthPage = (props) => {
               {!signUpState ? (
                 <span>
                   Don't have an account?{" "}
-                  <strong onClick={() => switchToSignUp(!signUpState)}>Sign up</strong>
+                  <strong onClick={() => (!loading && !inProgress) && switchToSignUp(!signUpState)}>Sign up</strong>
                 </span>
               ) : (
                 <span>
                   Have an account?{" "}
-                  <strong onClick={() => switchToSignUp(!signUpState)}>Log in</strong>
+                  <strong onClick={() => (!loading && !inProgress) && switchToSignUp(!signUpState)}>Log in</strong>
                 </span>
               )}
             </div>
