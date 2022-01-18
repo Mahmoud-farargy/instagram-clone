@@ -147,10 +147,9 @@ Give me a star if you like it. ⭐
                                         </ul>
  <h2>Used technologies</h2>    
   <ul class="bullet--1">
-                                                    <li><p>React</p></li>
+                                                    <li><p>React.js</p></li>
                                                     <li><p>Context API</p></li>
                                                     <li><p>Firebase</p></li>
-                                                    <li><p>jQuery</p></li>
                                                     <li><p>SCSS</p></li>
                                                     <li><p>Styled Components</p></li>
                                                 </ul>
