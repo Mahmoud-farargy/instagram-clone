@@ -40,7 +40,7 @@ Give me a star if you like it. ⭐
                                                     <li><p>Show mutual friends</p></li>
                                                     <li><p>Edit profile</p>
                                                             <ul>
-                                                                <li class="bullet--3"><p>Update profile information and avatar picture</p></li>
+                                                                <li class="bullet--3"><p>Set profile information and avatar picture</p></li>
                                                                 <li class="bullet--3"><p>Manage blocked users</p></li>
                                                             </ul>
                                                         </li>
@@ -59,11 +59,11 @@ Give me a star if you like it. ⭐
                                                 <ul class="bullet--2">
                                                     <li><p>Feed is based on who the user follow</p></li>
                                                     <li><p>Users can post pictures and videos from a camera or gallery</p></li>
-                                                    <li><p>Crop and filter posts before sharing</p></li>
+                                                    <li><p>Crop and filter image posts before sharing</p></li>
                                                     <li><p>Post audio content like songs or mini podcasts</p></li>
-                                                    <li>Publish a tweet</li>
-                                                    <li>Post a poll question</li>
-                                                    <li>Post a YouTube video</li>
+                                                    <li><p>Publish a tweet</p></li>
+                                                    <li><p>Post a poll question</p></li>
+                                                    <li><p>Post a YouTube video</p></li>
                                                     <li><p>Like/Dislike posts
                                                         <ul class="bullet--3">
                                                             <li><p>View all likes and who liked it</p></li>
@@ -77,8 +77,8 @@ Give me a star if you like it. ⭐
                                                                 <li><p>Comment or reply to someone's comment</p></li>
                                                                 <li><p>Like/Dislike comments and sub-comments</p></li>
                                                                 <li><p>View all comments and who liked them</p></li>
-                                                                <li><p>Include emojis among hundreds while commenting<p></li>
-                                                                 <li><p>Turn off commenting on a specific post<p></li>
+                                                                <li><p>Include emojis among hundreds while commenting</p></li>
+                                                                 <li><p>Turn off commenting on a specific post</p></li>
                                                             </ul>
                                                         </p>
                                                     </li>
@@ -122,7 +122,7 @@ Give me a star if you like it. ⭐
                                             <li><p>Account privacy</p></li>
                                             <li><p>Search users</p>
                                                 <ul class="bullet--2">
-                                                 <li><p>Hands-free Voice Search or search by typing</p></li>
+                                                 <li><p>Hands-free voice Search or search by typing</p></li>
                                                 </ul>
                                             </li>
                                             <li>
