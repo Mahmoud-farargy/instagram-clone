@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./Components/App/App";
-import "./Design/index.css";
+import GlobalStyles from "./Design/GlobalStyles";
 import { AppProvider } from "./Context";
 import { BrowserRouter } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
@@ -11,6 +11,7 @@ const mainApp = (
   <React.StrictMode>
     <AppProvider>
       <BrowserRouter>
+      <GlobalStyles />
         <App />
       </BrowserRouter>
     </AppProvider>

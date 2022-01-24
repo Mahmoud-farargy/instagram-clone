@@ -257,7 +257,8 @@ const AuthPage = (props) => {
                                                         notificationBell: { state: false, type: "Both" },
                                                         private: false,
                                                         suggNotFollowed: false,
-                                                        disableComments: false
+                                                        disableComments: false,
+                                                        fontFam: Consts.availableFonts.RALEWAY
                                                       },
                                                       sort: {
                                                         sortBy: "Random",
@@ -415,7 +416,8 @@ const AuthPage = (props) => {
                           notificationBell: { state: false, type: "Both" },
                           private: false,
                           suggNotFollowed: false,
-                          disableComments: false
+                          disableComments: false,
+                          fontFam: Consts.availableFonts.RALEWAY
                         },
                         sort: {
                           sortBy: "Random",
@@ -532,7 +534,8 @@ const AuthPage = (props) => {
                           notificationBell: { state: false, type: "Both" },
                           private: false,
                           suggNotFollowed: false,
-                          disableComments: false
+                          disableComments: false,
+                          fontFam: Consts.availableFonts.RALEWAY
                         },
                         sort: {
                           sortBy: "Random",
@@ -633,7 +636,8 @@ const AuthPage = (props) => {
                           notificationBell: { state: false, type: "Both" },
                           private: false,
                           suggNotFollowed: false,
-                          disableComments: false
+                          disableComments: false,
+                          fontFam: Consts.availableFonts.RALEWAY
                         },
                         sort: {
                           sortBy: "Random",

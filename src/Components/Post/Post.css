@@ -46,6 +46,7 @@
 }
 #post.post--card--container .post--card--article .post--card--header .post--header--user--info span{
     margin:0;
+    font-weight: 600;
 }
 
 #post.post--card--container .post--card--article .post--card--header .post--header--user--info span > h5{

@@ -8,7 +8,6 @@ import { FaHeart } from "react-icons/fa";
 import { FaRegComment , FaRegCommentDots} from "react-icons/fa";
 import { RiBookmarkLine, RiBookmarkFill } from "react-icons/ri";
 import CommentsList from "./Comments/Comments";
-import { db } from "../../Config/firebase";
 import { updateObject } from "../../Utilities/Utility";
 import OptionsModal from "../Generic/OptionsModal/OptionsModal";
 import * as Consts from "../../Utilities/Consts";
@@ -49,14 +48,11 @@ class Post extends PureComponent {
       isVideoPlaying: false,
       isPostLoading: false,
       isPostingComment: false,
-      likes: {},
-      comments: [],
-      pollData: {},
       alsoLiked: [],
       preLoad: (this.props.contentType === Consts.Video && this.props.index === 0) ? "metadata" : "none"
     };
     this._isMounted = true;
-    this.similarsStr = (this.state.likes?.people?.some(el => el?.id === this.props.id) && this.state.likes?.people?.length >3) ? (this.state.likes?.people?.length?.toLocaleString() -3) : (this.state.likes?.people?.length?.toLocaleString() -2);
+    this.similarsStr = (this.props.likes?.people?.some(el => el?.id === this.props.id) && this.props.likes?.people?.length >3) ? (this.props.likes?.people?.length?.toLocaleString() -3) : (this.props.likes?.people?.length?.toLocaleString() -2);
     this.updateUsersWhoLiked = this.updateUsersWhoLiked.bind(this);
     this.handleCurrLikes = this.handleCurrLikes.bind(this);
     this.openPost = this.openPost.bind(this);
@@ -70,7 +66,7 @@ class Post extends PureComponent {
   }
   static contextType = AppContext;
   updateUsersWhoLiked(){
-    const { likes } = this.state;
+    const { likes } = this.props;
     var {  following } = this.props;
     this.setState({
       ...this.state,
@@ -78,14 +74,7 @@ class Post extends PureComponent {
     })
   }
   componentDidMount() {
-    const { initialLikes, initialComments, initialPollData } = this.props;
-    this.setState({
-      ...this.state,
-      comments: initialComments,
-      likes: initialLikes,
-      ...(initialPollData && Object.keys(initialPollData).length >0 ) && {pollData: initialPollData}
-    },() => this.updateUsersWhoLiked());
-    
+      this.updateUsersWhoLiked();
   }
   componentWillUnmount(){
     this.isVidBuffering = false;
@@ -94,19 +83,18 @@ class Post extends PureComponent {
     window.clearTimeout(this.timeouts?.current);
     this._isMounted = false;
   }
-  componentDidUpdate(prevProps, prevState) {
-    if((prevProps.following !== this.props.following) || (prevState.likes !== this.state.likes)){
+  componentDidUpdate(prevProps) {
+    if((prevProps.following !== this.props.following) || (prevProps.likes !== this.props.likes)){
        this.updateUsersWhoLiked();
     }
-    if((prevProps.initialLikes !== this.props.initialLikes) || (prevProps.initialComments !== this.props.initialComments) || (prevProps.initialPollData !== this.props.initialPollData)){
-      const { initialLikes, initialComments, initialPollData } = this.props;
-      this.setState({
-        ...this.state,
-        comments: initialComments,
-        likes: initialLikes,
-        ...(initialPollData && Object.keys(initialPollData).length > 0) && {pollData: initialPollData}
-      })
-    }
+    // if((prevProps.initialLikes !== this.props.initialLikes) || (prevProps.initialComments !== this.props.initialComments) || (prevProps.initialPollData !== this.props.initialPollData)){
+    //   this.setState({
+    //     ...this.state,
+    //     comments: initialComments,
+    //     likes: initialLikes,
+    //     ...(initialPollData && Object.keys(initialPollData).length > 0) && {pollData: initialPollData}
+    //   })
+    // }
   }
   handlePostLoading = (loadState) => {
     typeof loadState === "boolean" && this.setState({...this.state, isPostLoading: loadState, ...(!loadState && this.state.isPostingComment) && { isPostingComment: false }});
@@ -266,7 +254,8 @@ class Post extends PureComponent {
   }
 
   onCommentBtnClick() {
-    !this.props.areCommentsDisabled && this.setState(
+    const {areCommentsDisabled, disableComments} = this.props;
+    (!areCommentsDisabled && !disableComments) && this.setState(
       updateObject(this.state, { showInputForm: !this.state.showInputForm })
     );
 
@@ -311,27 +300,28 @@ class Post extends PureComponent {
   }
   updateLikesNComments({uid, postID}){
     if(uid && postID && (uid !== this.props.id)){
-          db.collection(Consts.USERS)
-            .doc(uid)
-            .get()
-            .then((items) => {
-            const dataCopy = items?.data()?.posts || [];
-                const postIndex = dataCopy?.length > 0 ? (dataCopy.map(x => x.id).indexOf(postID)) : -1;
-                  if(dataCopy && postIndex !== -1 && dataCopy[postIndex]){
-                    const { likes = {}, comments = [], pollData = {} } = dataCopy[postIndex];
-                  ((comments && likes) || pollData) && this.setState({
-                      ...this.state,
-                      likes: likes,
-                      comments: comments,
-                      isPostLoading: false,
-                      ...( pollData && Object.keys(pollData).length > 0) && {pollData}
-                    });
-                  }else{
-                    this.handlePostLoading(false);
-                  }
-            }).catch(() => {
-              this.handlePostLoading(false);
-            });
+          // db.collection(Consts.USERS)
+          //   .doc(uid)
+          //   .get()
+          //   .then((items) => {
+          //   const dataCopy = items?.data()?.posts || [];
+          //       const postIndex = dataCopy?.length > 0 ? (dataCopy.map(x => x.id).indexOf(postID)) : -1;
+          //         if(dataCopy && postIndex !== -1 && dataCopy[postIndex]){
+          //           const { likes = {}, comments = [], pollData = {} } = dataCopy[postIndex];
+          //         ((comments && likes) || pollData) && this.setState({
+          //             ...this.state,
+          //             likes: likes,
+          //             comments: comments,
+          //             isPostLoading: false,
+          //             ...( pollData && Object.keys(pollData).length > 0) && {pollData}
+          //           });
+          //         }else{
+          //           this.handlePostLoading(false);
+          //         }
+          //   }).catch(() => {
+          //     this.handlePostLoading(false);
+          //   });
+          this.context.updateSuggestionsList().then(() => this.handlePostLoading(false)).catch(() => this.handlePostLoading(false));
     }else{
       this.handlePostLoading(false);
     }
@@ -340,8 +330,11 @@ class Post extends PureComponent {
   render() {
     const {
       userName,
+      comments,
+      pollData,
       caption,
       contentType,
+      likes,
       contentURL,
       contentName,
       location,
@@ -361,8 +354,9 @@ class Post extends PureComponent {
       youtubeData,
       songInfo,
       areCommentsDisabled,
+      disableComments
     } = this.props;
-    const { likes, comments, pollData, openNewMsgModal, isPostLoading, doubleLikeClicked } = this.state;
+    const { openNewMsgModal, isPostLoading, doubleLikeClicked } = this.state;
     return (
       <Fragment>
           {
@@ -459,7 +453,7 @@ class Post extends PureComponent {
                 <div className="flex-row">
                   <LikePost isPostLiked={likes?.people?.some((el) => el.id === id)} handleCurrLikes={this.handleCurrLikes}/>
                  {
-                   !areCommentsDisabled &&
+                   (!areCommentsDisabled && !disableComments) &&
                     <span data-cy="comment" onClick={() => this.onCommentBtnClick()}>
                     {
                       this.state.showInputForm ?
@@ -520,7 +514,7 @@ class Post extends PureComponent {
               }
               <Caption caption={caption} userName={userName}  />
               <CommentsList
-                areCommentsDisabled={areCommentsDisabled}
+                areCommentsDisabled={(areCommentsDisabled || disableComments)}
                 handleLikingComments={handleLikingComments}
                 comments={comments}
                 postOwnerId={postOwnerId}
@@ -542,7 +536,7 @@ class Post extends PureComponent {
               <small className="post__date pb-2 ">
                 <GetFormattedDate date={postDate?.seconds} /> • <time>{new Date(postDate?.seconds * 1000).toDateString()}</time>
               </small>
-              {(this.state.showInputForm && !areCommentsDisabled) && (
+              {(this.state.showInputForm && !areCommentsDisabled && !disableComments) && (
                 <form
                   onSubmit={(e) => this.submitComment(e)}
                   className="post--bottom--comment--adding flex-row"
