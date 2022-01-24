@@ -54,9 +54,9 @@ function List({ children, list, parentClass, childrenClass, parentId, intervalTi
                                 contentType: post.contentType ||  "",
                                 contentURL: post.contentURL || "",
                                 contentName: post.contentName ||  "",
-                                initialComments: post.comments ||  [],
-                                initialLikes: post.likes ||  {},
-                                initialPollData: post.pollData ||  {},
+                                comments: post.comments ||  [],
+                                likes: post.likes ||  {},
+                                pollData: post.pollData ||  {},
                                 postDate: post.date ||  {},
                                 location: post.location || "",
                                 postId: post.id ||  "",
@@ -64,7 +64,8 @@ function List({ children, list, parentClass, childrenClass, parentId, intervalTi
                                 userAvatar: post.userAvatarUrl ||  "",
                                 youtubeData: post.youtubeData ||  {},
                                 songInfo: post.songInfo ||  {},
-                                isVerified: post.isVerified ||  false
+                                isVerified: post.isVerified ||  false,
+                                disableComments: post.disableComments || false
                             }
                             if (currLimit === index + 1) {
                                 return post &&

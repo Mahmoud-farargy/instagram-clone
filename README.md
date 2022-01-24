@@ -4,14 +4,15 @@ A social media app similar to Instagram that people can actually use.
 <h2>Preview</h2>
 
 
-<img src="/Screenshots/Capture1.png" />
+<img src="/Screenshots/Capture1.png" alt="demo1"/>
 
-<img src="/Screenshots/Capture2.png" />
+<img src="/Screenshots/Capture2.png" alt="demo2"/>
 
-<img src="/Screenshots/Capture4.png" />
+<img src="/Screenshots/Capture4.png" alt="demo3"/>
 
-<img src="/Screenshots/Capture5.png" />
-<img src="/Screenshots/Capture3.gif" />
+<img src="/Screenshots/Capture5.png" alt="demo4"/>
+
+<img src="/Screenshots/Capture3.gif" alt="demo4"/>
 
 <h2>Demo</h2>
 

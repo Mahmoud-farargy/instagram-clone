@@ -1,7 +1,15 @@
-/* import files */
-@import url("./fonts/fonts.css");
+import { createGlobalStyle } from "styled-components";
+import fonts from "./fonts/fonts";
+
+const GlobalStyles = createGlobalStyle`
+${fonts}
 *{
     margin:0;
+    padding:0;
+}
+*,
+*:before,
+*:after {
     box-sizing:border-box;
     -webkit-box-sizing:border-box;
 }
@@ -11,14 +19,14 @@ html, body{
 html{
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
-    scroll-snap-type: y mandatory;
 }
 body{
+    min-width: 150px;
     margin:0;
     line-height:18px;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     color:var(--font-black);
     transition: background 0.3s linear;
+    -webkit-font-smoothing: antialiased;
 }
 ul{
     list-style:none;
@@ -37,9 +45,9 @@ div{
 }
 body, button, input, textarea {
     color: var(--font-black);
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     font-size: 14px;
     line-height: 18px;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 }
 .nav__icon, .nav__icon svg, .nav__icon path {
     height: 22px;
@@ -100,11 +108,20 @@ input {
     /* transitions */
     --mild-transition: all 0.2s ease;
     /* fonts */
-    --instaFont: "instaLogo";
+    --instaFont: "Billabong";
+    --active-font-family: "Raleway";
     --max-width: 975px;
 }
 .icedCoffee .primary__btn, .butterCup .primary__btn, .honeysucle .primary__btn, .snorkelBlue .primary__btn{
     color: #fff;
+}
+a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video
+MuiTypography-body1{
+  font-family: var(--active-font-family),"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  transition: color var(--mild-transition);
+}
+body{
+    font-family: var(--active-font-family),"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 }
 /* -------dark theme------ */
 .darkMode{
@@ -1069,7 +1086,7 @@ button:active{
     opacity: 0.9;
 }
 .logoText{
-    font-family:"instalogo";
+    font-family:"billabong";
     color: var(--font-black);
     margin-bottom:8px;
     width:103px;
@@ -3780,3 +3797,6 @@ a.prof__btn__unfollowed{
     }
 }
 /* End of key frames */
+`;
+
+export default GlobalStyles

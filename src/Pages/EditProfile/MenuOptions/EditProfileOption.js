@@ -31,6 +31,7 @@ const EditProfileOption = (props) => {
     theme: "lightMode"
   });
   const [submitted, setSubmission] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   // --x--end of state-x--//
   const {
     receivedData,
@@ -71,17 +72,20 @@ const EditProfileOption = (props) => {
     const curr = auth.currentUser;
     setSubmission(true);
     if (formState?.bio && formState?.name && formState?.birthday) {
+      setLoading(true);
       curr.updateProfile({
         displayName: formState.name,
         phoneNumber: formState.phoneNumber,
       }).then(() => {
         if(_isMounted.current){
+            setLoading(false);
             handleEditingProfile(formState, "editProfile");
             notify("Profile updated", "success");
             props.history.push("/profile");
         }
       }).catch((err) => {
         if(_isMounted.current){
+            setLoading(false);
             notify(err?.message || "An error occurred. Please try again later", "error");
         }
       });
@@ -244,6 +248,7 @@ const EditProfileOption = (props) => {
               changeInput={onInputChange}
               label="name *"
               name="name"
+              required={true}
               val={formState?.name}
               submitted={submitted}
               extraText={
@@ -334,6 +339,7 @@ const EditProfileOption = (props) => {
               label="bio *"
               name="bio"
               val={formState?.bio}
+              required={true}
               submitted={submitted}
               maxLength={100}
               extraText={
@@ -354,6 +360,7 @@ const EditProfileOption = (props) => {
               changeInput={onInputChange}
               label="Date of birth *"
               name="birthday"
+              required={true}
               val={formState?.birthday}
               submitted={submitted}
               max={`${new Date().getFullYear() -10}-01-01`}
@@ -393,10 +400,10 @@ const EditProfileOption = (props) => {
           <div className="form--btns flex-row">
             <input
               type="submit"
-              disabled={!isFormValid}
+              disabled={(!isFormValid || isLoading)}
               value="Submit"
               className={
-                !isFormValid
+                (!isFormValid || isLoading)
                   ? "disabled profile__btn primary__btn mb-2"
                   : "profile__btn primary__btn mb-2"
               }

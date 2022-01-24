@@ -9,10 +9,11 @@ import React, {
 } from "react";
 import { AppContext } from "../../../Context";
 import { CategoryList } from "../../../Lists/Lists";
-import { updateObject } from "../../../Utilities/Utility";
+import { updateObject, capFirstLetter } from "../../../Utilities/Utility";
 import { withRouter } from "react-router-dom";
 import CheckboxIOS from "../../../Components/Generic/CheckboxIOS/CheckboxIOS";
 import Moment from "react-moment";
+import * as Consts from "../../../Utilities/Consts";
 import { retry } from "../../../Utilities/RetryImport" ;
 
 // lazy loading
@@ -26,7 +27,7 @@ const ProfessionalAccount = (props) => {
   const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser, handleFollowRequests, updateSuggestionsList } = useContext(AppContext);
   //useState
   const [formState, setForm] = useState({
-    professionalAcc: { category: "", show: true, status: true, suggested: true, reelsForFollowing: false, notificationBell:{state: true, type: "Both"}, private: false, suggNotFollowed: false, disableComments: false},
+    professionalAcc: { category: "", show: true, status: true, suggested: true, reelsForFollowing: false, notificationBell:{state: true, type: "Both"}, private: false, suggNotFollowed: false, disableComments: false, fontFam: Consts.availableFonts.RALEWAY},
     catOptions: CategoryList,
     submitted: false,
   });
@@ -143,6 +144,16 @@ const ProfessionalAccount = (props) => {
               options={formState?.catOptions}
               submitted={formState?.submitted}
               val={formState?.professionalAcc?.category}
+            />  
+            <InputForm
+              type="select"
+              changeInput={onInputChange}
+              label="Font style"
+              name="fontFam"
+              options={Object.values(Consts.availableFonts)?.length > 0 ? Object.values(Consts.availableFonts).map(el => capFirstLetter(el)) : []}
+              titles={Object.keys(Consts.availableFonts)?.length > 0 ? Object.keys(Consts.availableFonts).map(el => capFirstLetter(el)) : []}
+              submitted={formState?.submitted}
+              val={formState?.professionalAcc?.fontFam}
             />
            <div id="input--form--field">
               <div className=" form-group flex-column">
@@ -154,6 +165,7 @@ const ProfessionalAccount = (props) => {
               </div>
               
             </div>
+
             <div id="input--form--field">
               <div className="form-group flex-column">
                 <div className="prof--input--row  flex-row">

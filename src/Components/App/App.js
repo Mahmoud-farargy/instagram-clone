@@ -12,7 +12,8 @@ import 'react-h5-audio-player/lib/styles.css';
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
 import { retry } from "../../Utilities/RetryImport";
 import LostConnectivity from "../LostConnectivity/LostConnectivity";
-import { disableReactDevTools } from "../../Utilities/Utility";
+import { disableReactDevTools, lowerCaseString } from "../../Utilities/Utility";
+import { availableFonts } from "../../Utilities/Consts";
 
 //lazy loading
 const Header = lazy(()=> retry(()=> import("../Header/Header")));
@@ -55,7 +56,6 @@ const App = () => {
     currentPage,
     changeMainState,
     uid,
-    // returnPassword,
     suggestionsList,
     modalsState,
     changeModalState,
@@ -165,6 +165,13 @@ const App = () => {
   useEffect(() => {
     document.title = `${currentPage && currentPage + " • "}${AppConfig.title}`;
   }, [currentPage]);
+  useEffect(() => {
+    const currentFont = receivedData?.profileInfo?.professionalAcc?.fontFam;
+    console.log(currentFont);
+    if(currentFont && Object.values(availableFonts).some(el => lowerCaseString(el) === lowerCaseString(currentFont))){
+      document.documentElement.style.setProperty("--active-font-family", `${currentFont},'Segoe UI', Roboto, Helvetica, Arial, sans-serif`);
+    }
+  },[(receivedData?.profileInfo?.professionalAcc?.fontFam) && receivedData.profileInfo.professionalAcc.fontFam]);
 
   return (
     <Fragment>
