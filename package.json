@@ -9,7 +9,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.21.4",
-    "bootstrap": "^4.6.0",
+    "bootstrap": "^4.3.1",
     "emoji-picker-react": "^3.4.8",
     "enzyme": "^3.11.0",
     "firebase": "^7.24.0",

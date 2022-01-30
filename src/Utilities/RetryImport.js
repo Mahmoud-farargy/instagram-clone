@@ -7,7 +7,7 @@ export const retry = (fn, retriesLeft = 4, interval = 1000) =>{
             if (retriesLeft === 1) {
               // reject('maximum retries exceeded');
               reject(error);
-              alert("Failed to load due to a network error. Please check your internet connection then try again.");
+              alert("Failed to load due to a network error. Please check your internet connection and try again. If the problem still occurs, then use a VPN.");
               return;
             }
   

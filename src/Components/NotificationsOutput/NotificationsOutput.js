@@ -29,7 +29,8 @@ const NotificationOutput =(props)=>{
                         <div><Avatar className="noti__user__img" src={notification?.userAvatarUrl} alt={notification?.userName} /></div>
                         <div className="flex-column noti--user--info" onClick={()=> browseUser(notification?.uid, notification?.userName)}>
                             <h6>{notification?.userName} {notification?.isVerified && <span><GoVerified className="verified_icon"/></span>}</h6>
-                        <p className="noti__text">{trimText(notification?.notiText,200)} <span style={{textOverflow: 'ellipsis'}}><GetFormattedDate date={notification?.date?.seconds} /></span></p>
+                        <p className="noti__text">{trimText(notification?.notiText,150)}</p>
+                        <span className="noti__time" style={{textOverflow: 'ellipsis'}}><GetFormattedDate date={notification?.date?.seconds} /></span>
                         </div> 
                     </div>
                     

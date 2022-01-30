@@ -1,4 +1,4 @@
-import React, { useContext, Fragment, useState, useEffect, useRef } from "react";
+import React, { useContext, Fragment, useState, useEffect, useRef, useCallback } from "react";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
 import { useHistory, Link } from "react-router-dom";
@@ -19,10 +19,10 @@ import appleStore from "../../Assets/get-app-apple.png";
 import gpStore from "../../Assets/get-app-gp.png";
 import { HiOutlinePlus } from "react-icons/hi";
 import { FiLogOut, FiVideoOff } from "react-icons/fi";
-import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
 import { trimText } from "../../Utilities/TrimText";
 import { linkifyText } from "../../Utilities/ReplaceHashes";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
+import ProfileOptionsModal from "./ProfileOptionsModal";
 
 const MyProfile =()=>{
     const _isMounted = useRef(true);
@@ -75,9 +75,12 @@ const MyProfile =()=>{
         });
     }
     const isEmailAndNotAnon = (receivedData?.profileInfo?.registrationMethod === "email" && !receivedData?.uid?.includes("L9nP3dEZpyTg7AMIg8JBkrGQIji2"));
-    const changeDirection = (index, id) => {
+    const changeDirection = useCallback((index, id) => {
         changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? index : index - 1, activeID:  id}); history.push("/edit-profile")
-    }
+    },[]);
+    const memoizedAuthLogout = useCallback(() => {
+        authLogout(history);
+    }, []);
     const websiteToView = receivedData?.profileInfo?.website.replace(/^(?:https?:\/\/|www\.)/i, "") || "";
     const isBirthday = ((receivedData?.profileInfo?.birthday) && (new Date().getMonth() + 1 === new Date(receivedData?.profileInfo?.birthday).getMonth() + 1) && (new Date().getDate() === new Date(receivedData?.profileInfo?.birthday).getDate()));
 
@@ -127,17 +130,7 @@ const MyProfile =()=>{
                 <PostModal/>
             }
             { modalsState?.options && !modalsState?.post &&
-                <OptionsModal>
-                     <span onClick={() => changeDirection(1, "Professional_Account")}>Account settings</span>
-                    {isEmailAndNotAnon &&<span onClick={() => changeDirection(2, "Change_Password_or_Email")}>Change password or email</span>}
-                   
-                    <span onClick={() => changeDirection(3, "Blocked_Users")}>Manage blocked accounts</span>
-                    <span onClick={() =>  changeDirection(5, "Themes")}>Change Theme</span>
-                    <span onClick={() =>  changeDirection(4, "Feedback") }>Report a problem/Rate app</span>
-                    <span className="mobile-only" onClick={() =>  history.push("/about")}>About</span>
-                    <span onClick={()=> authLogout(history)}>Log out</span>
-                    <span>Cancel</span>
-                </OptionsModal>
+            <ProfileOptionsModal changeDirection={changeDirection} authLogout={memoizedAuthLogout} history={history} isEmailAndNotAnon={isEmailAndNotAnon}/>
             }
             <section id="usersProfile" className="users--profile--container ">
                 {/* Header */}

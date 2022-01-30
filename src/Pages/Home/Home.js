@@ -69,7 +69,7 @@ const Home = (props) => {
     });
     changeMainState("currentPage", "Home");
     return () => _isMounted.current = false;
-  }, []);
+  }, [uid]);
 
   const recievedAuth = localStorage.getItem("user");
   return (
@@ -82,7 +82,7 @@ const Home = (props) => {
                 homeReels && homeReels.length > 0 && <HomeReels />
               } 
               {!loading && posts?.length >= 1 ? 
-                    <List list={posts} areHomePosts ={true} parentClass="full--width" intervalTime={900}>
+                    <List list={posts} areHomePosts ={true} parentClass="full--width" increaseBy={4} intervalTime={900}>
                           <Post
                             myName={receivedData?.userName}
                             id={uid}

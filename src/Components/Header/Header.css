@@ -301,6 +301,7 @@
 }
 .noti--popup-item .noti--user--info{
     margin-left:10px;
+    width: 90%;
 }
 .noti--popup-item .noti--user--info h6{
     font-size: 14px;
@@ -308,8 +309,8 @@
     line-height: 18px;
     margin-bottom:0;
 }
-.noti--popup-item .noti--user--info p.noti__text{
-    width:85%;
+p.noti__text{
+    width:100%;
     font-weight:400;
     line-height: 18px;
     font-size: 14px;
@@ -337,7 +338,7 @@
     margin-left:10px;
     padding:5px;
 }
-.noti--user--info p.noti__text time, #messages .messages__user__date{
+.noti--user--info .noti__time, #messages .messages__user__date{
     font-size:11px !important;
     font-weight:800;
     color:var(--second--gray);
@@ -433,6 +434,9 @@
   to {display: none;}
 }
 @media only screen and (max-width:670px){
+    .noti--popup--inner .noti--popup--ul .noti--popup-item{
+        padding: 17px 14px 11px;
+    }
     #mobNav.mobile--nav .header--nav .header--ul{
      justify-content: space-around;
      flex:1;

@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, memo } from "react";
 import "./OptionsModal.scss";
 import {AppContext} from "../../../Context";
 import PropTypes from "prop-types";
@@ -34,4 +34,4 @@ OptionsModal.propTypes ={
   isUnfollowModal: PropTypes.bool,
   closeModalFunc: PropTypes.func
 }
-export default OptionsModal;
+export default memo(OptionsModal);
