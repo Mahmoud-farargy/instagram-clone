@@ -85,7 +85,7 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
            {
                finalLimit > 0 &&
                <section id="profilePosts">
-                        <List list={list} parentClass={parentClass} areHomePosts={false} intervalTime={1100} parentId="userPosts" >
+                        <List list={list} parentClass={parentClass} areHomePosts={false} intervalTime={1100} increaseBy={5} parentId="userPosts" >
                             <ProfileItem itemType={listType} isSavedPost={isSavedPost} {...props} onLoadingFail={onLoadingFail} openPost={openPost}/>
                         </List>
                     {isLoading?.openingPost && <div className="global__loading"><span className="global__loading__inner"></span></div>}

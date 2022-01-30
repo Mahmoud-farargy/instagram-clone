@@ -126,13 +126,16 @@ const Messages = (props) => {
     }
     changeMainState("currentPage", `${ (unreadedMessagesCount && unreadedMessagesCount > 0) ? `(${unreadedMessagesCount}) `: ''} Messages`);
   },[messages, currentChat, compState.loading.state, _isMounted, userInfo]);
+  useEffect(() => {
+    compState.inputValue && setCompState({...compState, inputValue: ""});
+  }, [currUser, compState]);
   const submitMessage = (v) => {
     v.preventDefault();
     if(compState?.inputValue){
         handleSendingMessage({content:compState.inputValue, uid: currUser?.uid, type: "text", pathname: ""});  
         setCompState({
           ...compState,
-          inputValue: "",
+          inputValue: ""
         });
         (inputRef && inputRef?.current) && inputRef.current.blur();
     }

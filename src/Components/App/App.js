@@ -167,7 +167,6 @@ const App = () => {
   }, [currentPage]);
   useEffect(() => {
     const currentFont = receivedData?.profileInfo?.professionalAcc?.fontFam;
-    console.log(currentFont);
     if(currentFont && Object.values(availableFonts).some(el => lowerCaseString(el) === lowerCaseString(currentFont))){
       document.documentElement.style.setProperty("--active-font-family", `${currentFont},'Segoe UI', Roboto, Helvetica, Arial, sans-serif`);
     }

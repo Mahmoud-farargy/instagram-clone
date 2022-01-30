@@ -401,7 +401,7 @@ const EditProfileOption = (props) => {
             <input
               type="submit"
               disabled={(!isFormValid || isLoading)}
-              value="Submit"
+              value="Save"
               className={
                 (!isFormValid || isLoading)
                   ? "disabled profile__btn primary__btn mb-2"

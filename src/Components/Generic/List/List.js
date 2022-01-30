@@ -1,13 +1,13 @@
 import React, { Fragment, useRef, useState, useEffect, useCallback, cloneElement } from 'react';
 import loadingGif from "../../../Assets/loadingGif.gif";
 
-function List({ children, list, parentClass, childrenClass, parentId, intervalTime = 1100, areHomePosts = false }) {
+function List({ children, list, parentClass, childrenClass, parentId, increaseBy = 5 ,intervalTime = 1100, areHomePosts = false }) {
     // refs
     const _isMounted = useRef(true);
     const timeouts = useRef(null);
     const observer = useRef(null);
     // STATE
-    const [currLimit, setCurrLimit] = useState(5);
+    const [currLimit, setCurrLimit] = useState(increaseBy);
     const [hasMore, setLimit] = useState(true);
     const [isLoading, setLoading] = useState({
         loadingMoreItems: false,
@@ -20,14 +20,14 @@ function List({ children, list, parentClass, childrenClass, parentId, intervalTi
         window.clearTimeout(timeouts?.current);
         _isMounted.current = false;
     }, []);
-    const increasePostsBy5 = useCallback(() => {
+    const increasePosts = useCallback(() => {
         if (hasMore && _isMounted.current) {
             setLoading({ ...isLoading, loadingMoreItems: true });
             if (currLimit >= finalLimit) setLimit(false);
             timeouts.current = setTimeout(() => {
                 if (_isMounted.current) {
                     setLoading({ ...isLoading, loadingMoreItems: false });
-                    setCurrLimit(currLimit + 5);
+                    setCurrLimit(currLimit + increaseBy);
                     window.clearTimeout(timeouts?.current);
                 }
             }, intervalTime);
@@ -37,11 +37,11 @@ function List({ children, list, parentClass, childrenClass, parentId, intervalTi
         if (observer?.current) observer.current.disconnect();
         observer.current = new IntersectionObserver(enteries => {
             if (enteries[0].isIntersecting && hasMore && !isLoading?.loadingMoreItems) {
-                increasePostsBy5();
+                increasePosts();
             }
         });
         if (node) observer.current.observe(node);
-    }, [hasMore, increasePostsBy5, isLoading]);
+    }, [hasMore, increasePosts, isLoading]);
 
     return (
         <Fragment>
@@ -103,5 +103,15 @@ function List({ children, list, parentClass, childrenClass, parentId, intervalTi
         </Fragment>
 
     )
+}
+
+List.defaultProps = {
+    list: [],
+    parentClass: "",
+    childrenClass: "",
+    parentId: "",
+    increaseBy: 5,
+    intervalTime: 1100,
+    areHomePosts: false
 }
 export default List;

@@ -25,6 +25,7 @@ body{
     margin:0;
     line-height:18px;
     color:var(--font-black);
+    background-color: var(--light-gray);
     transition: background 0.3s linear;
     -webkit-font-smoothing: antialiased;
 }
@@ -122,6 +123,9 @@ MuiTypography-body1{
 }
 body{
     font-family: var(--active-font-family),"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+.react-confirm-alert-overlay{
+    z-index: 6000;
 }
 /* -------dark theme------ */
 .darkMode{
@@ -2754,18 +2758,12 @@ a.prof__btn__unfollowed{
     font-weight: 700;
 }
 
-#mobNotifications.mob--notifications .noti--popup-item .noti--user--info p.noti__text{
-    width:100%;
-    word-break: break-word;
-    display:inline-block;
-}
 #mobNotifications.mob--notifications .noti--popup-item:after{
     border:none !important;
 }
 .noti--popup-item .noti--row{
     width:70%;
     white-space: normal;
-    text-overflow: ellipsis;
 }
 .follow__loading__ico{
     font-size: 15px !important;
@@ -2975,6 +2973,7 @@ a.prof__btn__unfollowed{
     overflow: hidden;
     text-decoration:none;
     display: inline;
+    width: max-content;
 }
 .prof--acc--name h1{
     display: inline;
@@ -3099,6 +3098,9 @@ a.prof__btn__unfollowed{
     :root{
         --padding-sides: 4vw;
     }
+    .noti--popup-item .noti--row{
+        width:55%;
+    }
     .react-confirm-alert-body{
         width: 90% !important;
         margin: 0 auto;
@@ -3190,7 +3192,7 @@ a.prof__btn__unfollowed{
         max-height: 75vh;
     }
     .global__loading{
-        z-index: 6000;
+        z-index: 6050;
     }
     .users--profile--rowLine .profile--posts--container{
         width: 90%;
@@ -3244,7 +3246,10 @@ a.prof__btn__unfollowed{
         width: 100%;
     }
     #usersProfile.users--profile--container .users--profile--posts, #explore.explore-container .explore--upper--row{
-        gap:2px !important;
+        gap:1px !important;
+    }
+    #explore.explore-container .explore--upper--row{
+        margin-bottom: 1px !important;
     }
     .similar__followers{
         font-size: 13px;
@@ -3467,13 +3472,13 @@ a.prof__btn__unfollowed{
         flex-basis:auto; 
     }
     #usersProfile.users--profile--container .users--profile--posts, #explore.explore-container .explore--upper--row{
-        gap:2px !important;
+        gap:3px;
     }
     #messages .desktop-comp{
         padding:0;
     }
     #explore.explore-container .explore--upper--row{
-        margin-bottom: 3px !important;
+        margin-bottom: 3px;
     }
 }
 /* more than 1160px */
