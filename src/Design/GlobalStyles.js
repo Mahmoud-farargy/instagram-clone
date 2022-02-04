@@ -1,6 +1,19 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, css } from "styled-components";
 import fonts from "./fonts/fonts";
 
+function loopThroughSlides ({start= 1, finish= 5}){
+    let styles = ``;
+    for(let i = start; i<= finish; i++ ){
+        styles += `
+        .auth--slide--content {
+            img:nth-child(${i}){
+                z-index: ${ 88 + (i * 2)};
+            }
+        }
+        `;
+    }
+    return css`${styles}`;
+} 
 const GlobalStyles = createGlobalStyle`
 ${fonts}
 *{
@@ -707,6 +720,7 @@ time{
     -webkit-transition: opacity 1.5s ease-in;
     pointer-events: none;
 }
+${loopThroughSlides({start: 1, finish: 5})}
 #slideContent .active__slide{
     opacity: 1;
     visibility: visible;

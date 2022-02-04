@@ -109,7 +109,7 @@ const Header = (props) => {
           window.clearTimeout(timeouts?.current);
         }
       });
-    }, 1400);
+    }, 500);
   }
   const closeNotificationOnClick = (w) => {
     w.persist();
