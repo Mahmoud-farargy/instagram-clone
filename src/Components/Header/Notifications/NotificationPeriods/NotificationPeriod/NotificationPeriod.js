@@ -13,7 +13,7 @@ const NotificationPeriod = ({list = [], title= ""}) => {
       <div className="noti__period">
         <h3 className="noti__period__title">{title}</h3>
             {list
-            ?.slice(0, 20)
+            ?.slice(0, 250)
             .sort((a, b) => {
                 return b.date.seconds - a.date.seconds;
             })
