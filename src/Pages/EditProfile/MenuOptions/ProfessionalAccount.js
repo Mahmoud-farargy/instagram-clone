@@ -133,7 +133,7 @@ const ProfessionalAccount = (props) => {
   }
   return (
     <Fragment>
-      <div className="option--container">
+      <div className="option--container fadeEffect">
         <form onSubmit={(s) => onSubmission(s)} className="flex-column">
         <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div></div>}>
             <InputForm

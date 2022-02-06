@@ -114,7 +114,7 @@ const Extra = () => {
   }, []);
   return (
     <Fragment >
-      <div id="feedback">
+      <div id="feedback" className="fadeEffect">
         {
           isLoading ?
             <div className="loading--box">

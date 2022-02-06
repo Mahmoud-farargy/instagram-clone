@@ -26,11 +26,13 @@ import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollow
 import { trimText } from "../../Utilities/TrimText";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 import { linkifyText } from "../../Utilities/ReplaceHashes";
+import Loader from "react-loader-spinner";
 
 const UsersProfile = () => {
   const [, loading] = useAuthState(auth);
   // STATES
   const [isFollowed, setFollowingState] = useState(false);
+  const [isInitializingMsg, setMsgInitialization] = useState(false);
   const {userId} = useParams();
   const context = useContext(AppContext);
   const [openSuggestionsBox, setSuggestionsBox] = useState(false);
@@ -72,8 +74,13 @@ const UsersProfile = () => {
     if(newIndex !== -1){
       changeMainState("currentChat",{uid, index: newIndex});
     }
-    initializeChatDialog(uid, username, avatarUrl, isVerified);
+    setMsgInitialization(true);
+    initializeChatDialog(uid, username, avatarUrl, isVerified).then(() => {
       history.push("/messages");
+      setMsgInitialization(false);
+    }).catch(() => {
+      setMsgInitialization(false);
+    });
   };
   useEffect(() => {
     receivedData?.following &&
@@ -243,12 +250,10 @@ const UsersProfile = () => {
     const UID = usersProfileData?.uid;
     initializeChatDialog(UID, usersProfileData?.userName, usersProfileData?.userAvatarUrl, usersProfileData?.isVerified).then(() => {
       if( _isMounted?.current){
-          timeouts.current = setTimeout(() => {
               changeMainState("currentChat", { uid: UID,index: 0 });
               handleSendingMessage({content: `Hey, Happy birthday ${(usersProfileData?.profileInfo?.name || usersProfileData?.userName)}. I wish you the best.🎂`, uid: UID, type: "text", pathname: ""});
               window.clearTimeout(timeouts?.current);
               history.push("/messages");
-          }, 3000);                        
           changeModalState("newMsg", false);
       }
     }).catch(() => {
@@ -261,7 +266,7 @@ const UsersProfile = () => {
     <Fragment> 
        {/* Modals */}
       {
-        modalsState?.post && usersProfileData?.posts[currentPostIndex?.index] &&
+        modalsState?.post &&
           <PostModal />
       }
       {
@@ -307,10 +312,10 @@ const UsersProfile = () => {
                     ) : null}
                   </h5>
                   <div className="flex-row">
-                    {isFollowed && (
+                    {(isFollowed && !receivedData?.blockList?.some(a => a.blockedUid === usersProfileData?.uid)) && (
                       <button
-                        disabled={!usersProfileData?.uid}
-                        className="profile__btn prof__btn__unfollowed"
+                        disabled={(!usersProfileData?.uid || isInitializingMsg)}
+                        className={`profile__btn prof__btn__unfollowed ${isInitializingMsg ? "disabled": ""}`}
                         onClick={() =>
                           message(
                             usersProfileData?.uid,
@@ -320,7 +325,20 @@ const UsersProfile = () => {
                           )
                         }
                       >
-                        Message
+                        {
+                          isInitializingMsg ? 
+                            <Loader
+                              className="loader--btn"
+                              type="TailSpin"
+                              color="#0095f6"
+                              arialLabel="loading-indicator"
+                              height={22}
+                              width={22}
+                            />
+                          :
+                          "Message"
+                        }
+                       
                       </button>
                     )}
 

@@ -14,7 +14,6 @@
        padding:5px;
        width:100%;
        border-top: 1px solid var(--gray);
-       min-height: 300px;
     }
     #feedback {
       padding: 30px 0 25px 0;
@@ -84,7 +83,8 @@
     }
   }
   .edit--box {
-    transition: background 0.3s linear;
+    transition: 0.4s linear;
+    transition-property: background, border;
     background-color: var(--white);
     border: 1px solid var(--gray);
     border-radius: 3px;
@@ -103,6 +103,7 @@
     padding:0;
     margin: 0;
     border-right: 1px solid var(--gray);
+    transition: border-right 0.4s linear;
     @media only screen and (min-width: 670px){
       overflow-y: auto;
       min-height:85vh; 
@@ -150,6 +151,7 @@
     border-top: 1px solid var(--gray);
     padding: 25px 14px;
     justify-content: center;
+    transition: border-top 0.4s linear;
     width:100;
     img{
       width:100%;

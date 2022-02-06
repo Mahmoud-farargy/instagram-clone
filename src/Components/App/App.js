@@ -170,7 +170,7 @@ const App = () => {
     if(currentFont && Object.values(availableFonts).some(el => lowerCaseString(el) === lowerCaseString(currentFont))){
       document.documentElement.style.setProperty("--active-font-family", `${currentFont},'Segoe UI', Roboto, Helvetica, Arial, sans-serif`);
     }
-  },[(receivedData?.profileInfo?.professionalAcc?.fontFam) && receivedData.profileInfo.professionalAcc.fontFam]);
+  },[((receivedData?.profileInfo?.professionalAcc?.fontFam) && receivedData.profileInfo.professionalAcc.fontFam)]);
 
   return (
     <Fragment>

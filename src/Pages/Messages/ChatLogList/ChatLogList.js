@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import Message from "./ChatMessage/ChatMessage";
 const MessageList = (props) => {
-  const { chatLog, messagerUid, receivedData, openSidedrawer } = props;
+  const { chatLog, messagerUid, receivedData, openSidedrawer, isSending } = props;
   return (
     <>
       {chatLog &&
@@ -15,6 +15,7 @@ const MessageList = (props) => {
               receivedData={receivedData}
               message={message}
               index={index}
+              isSending={isSending}
             />
           );
         })}

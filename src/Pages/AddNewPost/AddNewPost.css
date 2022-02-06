@@ -14,7 +14,7 @@
 }
 #upload.post--uploading--container .post--uploading--card{
     width:320px;
-    padding: 50px 20px 20px;
+    padding: 10px 0.2rem;
     border-radius:30px;
     justify-content:center;
     margin:5px;
@@ -90,8 +90,9 @@
     justify-content: center;
     text-align: center;
     width: 100%;
-    height: 100%;
-    padding-top:30px;
+    height: auto;
+    padding:1.25rem 0.725rem;
+    overflow-x: hidden;
 }
 #upload.post--uploading--container .phase--media--right{
     width: 100%;
@@ -106,12 +107,20 @@
     width: 100%;
 }
 #upload.post--uploading--container .original--review{
-        max-width: 300px;
         min-height: 50px;
         position: relative;
+        max-width: 300px;
+        max-height: 300px;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        padding: 0.3rem;
 }
 #upload.post--uploading--container .original--review img{
         object-fit: contain;
+        min-width: 100px;
+        display: block;
+        width: 100%;
 }
 #upload.post--uploading--container .custom__marker{
     background-color: var(--ultimate-black);
@@ -162,7 +171,15 @@
         width: 100%;
     }
     #upload.post--uploading--container .original--review{
-        max-width: 35%;
+        width: 100%;
+    }
+}
+@media (max-width: 740px){
+    #upload.post--uploading--container .original--review video {
+        width: 100%;
+    }
+    #upload.post--uploading--container .original--review, #upload.post--uploading--container .uploadPhase .share--media--container{
+        padding: 0;
     }
 }
 @media only screen and (min-width: 670px){ 

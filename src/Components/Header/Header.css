@@ -10,7 +10,7 @@
     align-items:center;
     padding:6px var(--padding-sides);
     height:70px;
-    transition: all 0.5s ease-in;
+    transition: height 0.5s ease-in, background 0.4s linear, border 0.4s linear;
 }
 #header.main--header .header--inner .header--logo--box{
     align-items:center;
@@ -422,7 +422,7 @@ p.noti__text{
     left:0px;
     z-index:5000;
     background-color:var(--white);
-    border-top: 1px solid var(--shadow-white);
+    border-top: 1px solid var(--mobile-border-clr);
     align-items:center;
     height:50px;
 }

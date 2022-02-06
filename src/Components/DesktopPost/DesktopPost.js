@@ -13,6 +13,7 @@ import TruncateMarkup from "react-truncate";
 import { FiSend } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
+import Loader from "react-loader-spinner";
 import {
   IoIosArrowBack,
   IoIosArrowForward,
@@ -60,8 +61,11 @@ const DesktopPost = (props) => {
     onCommentDeletion,
     modalsState,
     deletePost,
-    handleVoting
+    handleVoting,
+    isOpeningPost
   } = context;
+  const [ currentIDX, setCurrentIDX ] = useState(0);
+  const [isSendingComment, setSendingComment] = useState(false);
   const [compState, setCompState] = useState({
     postLiked: false,
     insertedComment: "",
@@ -94,7 +98,7 @@ const DesktopPost = (props) => {
     pollData= {},
     youtubeData = {},
     disableComments
-  } = usersProfileData?.posts[currentPostIndex?.index];
+  } = usersProfileData?.posts[currentIDX];
   useEffect(() => {
     changeMainState("currentPage", "Post");
     return () => {
@@ -108,18 +112,19 @@ const DesktopPost = (props) => {
   }, []);
   useEffect(() => { 
     updateUsersWhoLiked();
+    setCurrentIDX(currentPostIndex?.index || 0);
     if(compState.insertedComment) setCompState({...compState, insertedComment: ""});
-}, [currentPostIndex.index]);
+}, [((currentPostIndex && currentPostIndex.index) && currentPostIndex.index)]);
 useEffect(() => {
   (scrollToBottom && scrollToBottom.current && scrollToBottom.current?.scrollIntoView) && scrollToBottom.current.scrollIntoView({block: "end"});
 },[comments.length]);
-  var postLiked = usersProfileData?.posts && usersProfileData?.posts[currentPostIndex?.index]?.likes?.people?.some((el) => el.id === uid);
+  var postLiked = usersProfileData?.posts && usersProfileData?.posts[currentIDX]?.likes?.people?.some((el) => el.id === uid);
   const areCommentsDisabled = (usersProfileData?.profileInfo?.professionalAcc?.disableComments || disableComments);
   const handleCurrLikes = (boolean) => {
     let postsData = usersProfileData?.posts;
     if (postsData) {
       const { postOwnerId, contentURL, contentType, id } = postsData[
-        currentPostIndex?.index
+        currentIDX
       ];
       handlePeopleLikes(
         boolean,
@@ -191,9 +196,10 @@ useEffect(() => {
     let postsData = usersProfileData?.posts;
     if (postsData) {
       const { id, postOwnerId, contentURL, contentType } = postsData[
-        currentPostIndex?.index
+        currentIDX
       ];
       if (compState.insertedComment !== "") {
+        setSendingComment(true);
         // //subcomment
         if ( compState.replayData && 
           Object.keys(compState.replayData).length > 0 &&
@@ -207,7 +213,13 @@ useEffect(() => {
               false,
               contentURL,
               contentType
-            );
+            ).then(() => {
+              setSendingComment(false);
+            }).catch(() =>{
+              setSendingComment(false);
+            });
+          }else{
+            setSendingComment(false);
           }
 
         } else {
@@ -221,7 +233,11 @@ useEffect(() => {
             postOwnerId,
             contentURL,
             contentType
-          );
+          ).then(() => {
+            setSendingComment(false);
+          }).catch(() => {
+            setSendingComment(false);
+          });
         }
         setCompState({
           ...compState,
@@ -270,16 +286,15 @@ useEffect(() => {
   const onPostMovement = (direction) => {
     if(usersProfileData?.posts.length > 1 && !disableArrows){
           const finalIndex = usersProfileData?.posts.length - 1;
-          const currentIndex = currentPostIndex?.index;
           let currentDirection;
 
           if (direction === "left") {
-            currentIndex > 0
-              ? (currentDirection = currentIndex - 1)
+            currentIDX > 0
+              ? (currentDirection = currentIDX - 1)
               : (currentDirection = finalIndex);
           } else if (direction === "right") {
-            currentIndex < finalIndex
-              ? (currentDirection = currentIndex + 1)
+            currentIDX < finalIndex
+              ? (currentDirection = currentIDX + 1)
               : (currentDirection = 0);
           }
           changeMainState("currentPostIndex", {
@@ -334,7 +349,7 @@ useEffect(() => {
               <OptionsModal>
                {
                   usersProfileData?.uid === receivedData?.uid ?
-                  <span className="text-danger font-weight-bold" onClick={() => deletePost( usersProfileData?.posts[currentPostIndex?.index]?.id, currentPostIndex?.index, usersProfileData?.posts[currentPostIndex?.index]?.contentName, usersProfileData?.posts[currentPostIndex?.index]?.contentURL )}>
+                  <span className="text-danger font-weight-bold" onClick={() => deletePost( usersProfileData?.posts[currentIDX]?.id, currentIDX, usersProfileData?.posts[currentIDX]?.contentName, usersProfileData?.posts[currentIDX]?.contentURL )}>
                           Delete post
                   </span>
                   :
@@ -381,296 +396,316 @@ useEffect(() => {
           </div>
           
         )}
-        <div className="d--post--container flex-column">
-          <span
-            className={
-              (usersProfileData?.posts.length > 1 && !disableArrows)
-                ? "desktop__left__arrow"
-                : "desktop__left__arrow disabled"
-            }
-            onClick={() => onPostMovement("left")}
-          >
-            <IoIosArrowBack />
-          </span>
-          <span
-            className={
-              (usersProfileData?.posts.length > 1 && !disableArrows)
-                ? "desktop__right__arrow"
-                : "desktop__right__arrow disabled"
-            }
-            onClick={() => onPostMovement("right")}
-          >
-            <IoIosArrowForward />
-          </span>
-          <article
-            className="d--post--box flex-column"
-            tabIndex="0"
-            onKeyDown={navigate}
-          >
-            {/* post start */}
-            <div id="post" className="post--card--container fadeEffect post--page">
-              <article className="post--card--article">
-              <div className="post--card--body desktop--left">
-                  {contentType === Consts.Image ? (
-                    <div className="w-100 h-100" style={{position: "relative"}}>
-                      <img
-                        loading="lazy"
-                        onClick={() => doubleClickEvent()}
-                        className="post__card__content"
-                        src={contentURL}
-                        alt="post"
-                        draggable="false"
-                      />
-                      {compState.doubleLikeClicked ? (
-                        <div>
-                          <div className="liked__double__click__layout"></div>
-                          <div className="liked__double__click">
+        {
+          isOpeningPost ? 
+          <h1>Loading post..</h1>
+          : usersProfileData?.posts?.[currentIDX] ?
+            <div className="d--post--container flex-column">
+              <span
+                className={
+                  (usersProfileData?.posts.length > 1 && !disableArrows)
+                    ? "desktop__left__arrow"
+                    : "desktop__left__arrow disabled"
+                }
+                onClick={() => onPostMovement("left")}
+              >
+                <IoIosArrowBack />
+              </span>
+              <span
+                className={
+                  (usersProfileData?.posts.length > 1 && !disableArrows)
+                    ? "desktop__right__arrow"
+                    : "desktop__right__arrow disabled"
+                }
+                onClick={() => onPostMovement("right")}
+              >
+                <IoIosArrowForward />
+              </span>
+              <article
+                className="d--post--box flex-column"
+                tabIndex="0"
+                onKeyDown={navigate}
+              >
+                {/* post start */}
+                <div id="post" className="post--card--container modalShow post--page">
+                  <article className="post--card--article">
+                  <div className="post--card--body desktop--left">
+                      {contentType === Consts.Image ? (
+                        <div className="w-100 h-100" style={{position: "relative"}}>
+                          <img
+                            loading="lazy"
+                            onClick={() => doubleClickEvent()}
+                            className="post__card__content"
+                            src={contentURL}
+                            alt="post"
+                            draggable="false"
+                          />
+                          {compState.doubleLikeClicked ? (
+                            <div>
+                              <div className="liked__double__click__layout"></div>
+                              <div className="liked__double__click">
+                                <span
+                                  style={{
+                                    animation: compState.doubleLikeClicked
+                                      ? "boundHeartOnDouble 0.9s forwards ease-out"
+                                      : null,
+                                  }}
+                                >
+                                  <FaHeart />
+                                </span>
+                              </div>
+
+                            </div>
+                          ) : null}
+                        </div>
+                      ) : contentType === Consts.Video ? (
+                        <div className="w-100 h-100" style={{position: "relative"}}>
+                          <VideoPostComp
+                            src={contentURL}
+                            isMuted={true}
+                            ref={vidRef}
+                            isVidPlaying={true}
+                            />
+                        </div>
+                      ) :  contentType === Consts.Audio ? (
+                        <div className="post__card__content__outer">
+                            <AudioContent autoPlay url={contentURL} songInfo={songInfo || {}} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()}/>
+                        </div>
+                      ) : contentType === Consts.Tweet ?
+                            <TweetContent text={contentURL} doubleClickEvent={() => doubleClickEvent()}/>
+                        : (contentType === Consts.Poll && pollData && Object.keys(pollData).length > 0) ?
+                            <PollContent pollData={pollData} postId={id} postOwnerId={postOwnerId} uid={uid} handleVoting={handleVoting}/>
+                        : (contentType === Consts.YoutubeVid && youtubeData && Object.keys(youtubeData).length > 0) ?
+                            <YoutubeContent youtubeData={youtubeData} autoPlay={true} />
+                      : null}
+                    </div>
+                    <div className="desktop--right desktop-only">
+                      <div className="post--card--header flex-row">
+                        <header className="post--header--avatar flex-row">
+                          <Avatar
+                            loading="lazy"
+                            className="post__header__avatar"
+                            src={usersProfileData?.userAvatarUrl}
+                            alt={usersProfileData?.userName}
+                          />
+                          <div
+                            className="post--header--user--info flex-column"
+                            onClick={() => directTo()}
+                          >
                             <span
-                              style={{
-                                animation: compState.doubleLikeClicked
-                                  ? "boundHeartOnDouble 0.9s forwards ease-out"
-                                  : null,
-                              }}
+                              tabIndex="0"
+                              aria-disabled="false"
+                              role="button"
+                              className="flex-row align-items-center"
                             >
-                              <FaHeart />
+                              <h5 className="flex-row trim__txt align-items-center">
+                                <TruncateMarkup line={1} ellipsis="...">
+                                  {trimText(usersProfileData?.userName,15)}
+                                </TruncateMarkup>
+                                <span>
+                                {isVerified && (<GoVerified className="verified_icon" />)}
+                                {(usersProfileData?.uid !== receivedData?.uid) && <FollowUnfollowBtn shape="tertiary" userData={{userId: usersProfileData?.uid, uName: usersProfileData?.userName, uAvatarUrl: usersProfileData?.userAvatarUrl, isVerified: usersProfileData?.isVerified}} />}
+                              </span>
+                              </h5>
+                            </span>
+                            <span tabIndex="0" aria-disabled="false" role="button" aria-label="View location">
+                              <p style={{minHeight:"20px"}}>
+                                <TruncateMarkup line={1} ellipsis="...">
+                                  {location}
+                                </TruncateMarkup>
+                              </p>
                             </span>
                           </div>
-
-                        </div>
-                      ) : null}
-                    </div>
-                  ) : contentType === Consts.Video ? (
-                    <div className="w-100 h-100" style={{position: "relative"}}>
-                      <VideoPostComp
-                        src={contentURL}
-                        isMuted={true}
-                        ref={vidRef}
-                        isVidPlaying={true}
-                        />
-                    </div>
-                  ) :  contentType === Consts.Audio ? (
-                    <div className="post__card__content__outer">
-                        <AudioContent autoPlay url={contentURL} songInfo={songInfo || {}} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()}/>
-                    </div>
-                  ) : contentType === Consts.Tweet ?
-                        <TweetContent text={contentURL} doubleClickEvent={() => doubleClickEvent()}/>
-                    : (contentType === Consts.Poll && pollData && Object.keys(pollData).length > 0) ?
-                        <PollContent pollData={pollData} postId={id} postOwnerId={postOwnerId} uid={uid} handleVoting={handleVoting}/>
-                    : (contentType === Consts.YoutubeVid && youtubeData && Object.keys(youtubeData).length > 0) ?
-                        <YoutubeContent youtubeData={youtubeData} autoPlay={true} />
-                  : null}
-                </div>
-                <div className="desktop--right desktop-only">
-                  <div className="post--card--header flex-row">
-                    <header className="post--header--avatar flex-row">
-                      <Avatar
-                        loading="lazy"
-                        className="post__header__avatar"
-                        src={usersProfileData?.userAvatarUrl}
-                        alt={usersProfileData?.userName}
-                      />
-                      <div
-                        className="post--header--user--info flex-column"
-                        onClick={() => directTo()}
-                      >
+                        </header>
                         <span
-                          tabIndex="0"
-                          aria-disabled="false"
-                          role="button"
-                          className="flex-row align-items-center"
+                          className="post--header--options"
+                          onClick={() =>
+                            changeModalState("options", true)
+                          }
                         >
-                          <h5 className="flex-row trim__txt align-items-center">
-                            <TruncateMarkup line={1} ellipsis="...">
-                              {trimText(usersProfileData?.userName,15)}
-                            </TruncateMarkup>
-                            <span>
-                            {isVerified && (<GoVerified className="verified_icon" />)}
-                             {(usersProfileData?.uid !== receivedData?.uid) && <FollowUnfollowBtn shape="tertiary" userData={{userId: usersProfileData?.uid, uName: usersProfileData?.userName, uAvatarUrl: usersProfileData?.userAvatarUrl, isVerified: usersProfileData?.isVerified}} />}
-                           </span>
-                          </h5>
-                        </span>
-                        <span tabIndex="0" aria-disabled="false" role="button" aria-label="View location">
-                          <p style={{minHeight:"20px"}}>
-                            <TruncateMarkup line={1} ellipsis="...">
-                              {location}
-                            </TruncateMarkup>
-                          </p>
+                          <HiDotsHorizontal />
                         </span>
                       </div>
-                    </header>
-                    <span
-                      className="post--header--options"
-                      onClick={() =>
-                        changeModalState("options", true)
-                      }
-                    >
-                      <HiDotsHorizontal />
-                    </span>
-                  </div>
 
-                  
-                    <div className="post--comments--layout"> 
-                      <div className="post--comment--item desktop--caption">
-                            <div className="flex-row post--comment--row">
-                              <Avatar className="comment__user__avatar" loading="lazy" src={usersProfileData?.userAvatarUrl} alt={usersProfileData?.userName} />
-                                  <span title={usersProfileData?.userName} className="post__top__comment">
-                                    <h6  onClick={() => directTo()} className="comment__text mt-1"> <strong>{usersProfileData?.userName}</strong> 
-                                      
-                                    </h6>
-                                    <Caption caption={caption} isFullCaption={true} userName="" />
-                                  </span>
-                            </div>
-                            <div className="post--comment--actions flex-row">
-                              <span><GetFormattedDate date={date?.seconds} ago /></span>
-                            </div>
-                      </div>
-                   
-                    { 
-                    !areCommentsDisabled ?
-                    (comments?.length >= 1 ? 
-                    <div className="h-100 w-100">
-                          {comments?.map((comment, i) => {
-                            return (
-                              <Comment
-                                key={i}
-                                comment={comment}
-                                handleLikingComments={handleLikingComments}
-                                postOwnerId={postOwnerId}
-                                postId={id}
-                                commentIndex={i}
-                                date={comment?.date}
-                                replayFunc={replayFunc}
-                                postIndex={currentPostIndex.index}
-                                myName={receivedData?.userName}
-                                likes={likes}
-                                userAvatar={receivedData?.userAvatarUrl}
-                                uid={uid}
-                                contentType={contentType}
-                                contentURL={contentURL}
-                                changeModalState={changeModalState}
-                                deleteComment={onCommentDeletion}
-                              />
-                            );
-                          })}
-                          <span ref={scrollToBottom}></span>
-                      </div>
-                      : null)
-                      :
-                      <span className="disabled__comments">
-                        Comments are disabled.
-                      </span>
-                    }
-                    </div>
-                 
-
-                  <div className="post--card--footer flex-column">
-                    <div className="post--footer--upper--row flex-row">
-                      <div className=" flex-row">
-                        <LikePost isPostLiked={postLiked} handleCurrLikes={handleCurrLikes}/>
-                        { 
-                          !areCommentsDisabled && 
-                          <span onClick={() =>inputField && inputField?.current && inputField?.current?.focus()}>
-                          <FaRegComment />
-                        </span>
-                        }
-                        <span >
-                          <FiSend />
-                        </span>
-                      </div>
-                      <div className="bookmark__icon">
-                      {
-                      receivedData?.savedposts?.some(sp => (sp.postOwnerId === postOwnerId && sp.id === id)) ?
-                      <RiBookmarkFill onClick={() => (contentType === Consts.Image || contentType === Consts.Video) && context.handleSavingPosts({boolean:false,data: {postOwnerId, id, userName, contentName, contentURL,contentType, date}})} />
-                      :
-                      <RiBookmarkLine onClick={() => (contentType === Consts.Image || contentType === Consts.Video) && context.handleSavingPosts({boolean:true,data: {postOwnerId, id, userName, contentName, contentURL,contentType, date}})}/>
-                    }
-                      </div>
-                    </div>
-                    {likes?.people?.length >= 1 && compState?.alsoLiked?.length > 0 ?
-                  <div className="people--also--liked flex-row">
-                    <Avatar src={compState?.alsoLiked?.[0]?.receiverAvatarUrl} alt="people who also liked this feed"/>
-                        <p onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}>Liked by
-                          <span>
-                            {
-                                compState?.alsoLiked?.map(el => <MutualLikes key={el?.receiverUid}item={el}/> )
-                            }
-                            {
-                              (likes?.people?.some(el => el?.id === uid) ? likes?.people?.length -1 : likes?.people?.length ) > compState?.alsoLiked?.length && similarsStr > 0 &&
-                              <strong className="you--followed">
-                              {likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr !== isNaN ? similarsStr : "many"} {similarsStr < 2 ? " person" : " others"}</strong>
-                              </strong>
-                            }
-                            {
-                              <strong className="you__followed">
-                                 {likes?.people?.some(el => el?.id === uid) && ", and you"}
-                              </strong>
-                            }
-                          </span>
-
-                        </p>
-                  </div>
-
-              : likes?.people?.length >= 1 && compState?.alsoLiked?.length <= 0 ?(
-                <div
-                  className="likes__count"
-                  onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}
-                >
-                  {likes?.people?.length.toLocaleString()}{" "}
-                  {likes?.people?.length === 1 ? "like" : "likes"}
-                </div>
-              )  :  (likes?.people?.length <= 0 && postOwnerId !== id) ?
-                    <span className="like__invitation">Be the first to <strong onClick={() => handleCurrLikes(true)}>like this</strong> </span>
-                : null
-              }
-
-                    <small className="post__date">
-                      <GetFormattedDate date={date?.seconds} /> • <time>{new Date(date?.seconds * 1000).toDateString()}</time>
-                    </small>
-                    {
-                      !areCommentsDisabled &&
-                        <form
-                          onSubmit={(e) => submitComment(e)}
-                          className="post--bottom--comment--adding flex-row"
-                        >
-                          <div className="form--input--container flex-row">
-                              <div className="form--input--container--inner flex-row">
-                                  <EmojiPicker onEmojiClick={onEmojiClick} />
-                                  <input
-                                    ref={inputField}
-                                    value={compState.insertedComment}
-                                    onChange={(event) =>
-                                      setCompState({
-                                        ...compState,
-                                        insertedComment: event.target.value,
-                                      })
-                                    }
-                                    className="post__bottom__input"
-                                    type="text"
-                                    placeholder="Add a commment.."
-                                    spellCheck="true"
-                                />
-                              </div>
+                      
+                        <div className="post--comments--layout"> 
+                          <div className="post--comment--item desktop--caption">
+                                <div className="flex-row post--comment--row">
+                                  <Avatar className="comment__user__avatar" loading="lazy" src={usersProfileData?.userAvatarUrl} alt={usersProfileData?.userName} />
+                                      <span title={usersProfileData?.userName} className="post__top__comment">
+                                        <h6  onClick={() => directTo()} className="comment__text mt-1"> <strong>{usersProfileData?.userName}</strong> 
+                                          
+                                        </h6>
+                                        <Caption caption={caption} isFullCaption={true} userName="" />
+                                      </span>
+                                </div>
+                                <div className="post--comment--actions flex-row">
+                                  <span><GetFormattedDate date={date?.seconds} ago /></span>
+                                </div>
                           </div>
-                          <button
-                            type="submit"
-                            disabled={compState.insertedComment.length < 1}
-                            className={
-                              compState.insertedComment.length >= 1
-                                ? "post__bottom__button"
-                                : "disabled post__bottom__button"
+                      
+                        { 
+                        !areCommentsDisabled ?
+                        (comments?.length >= 1 ? 
+                        <div className="h-100 w-100">
+                              {comments?.map((comment, i) => {
+                                return (
+                                  <Comment
+                                    key={i}
+                                    comment={comment}
+                                    handleLikingComments={handleLikingComments}
+                                    postOwnerId={postOwnerId}
+                                    postId={id}
+                                    commentIndex={i}
+                                    date={comment?.date}
+                                    replayFunc={replayFunc}
+                                    postIndex={currentPostIndex.index}
+                                    myName={receivedData?.userName}
+                                    likes={likes}
+                                    userAvatar={receivedData?.userAvatarUrl}
+                                    uid={uid}
+                                    contentType={contentType}
+                                    contentURL={contentURL}
+                                    changeModalState={changeModalState}
+                                    deleteComment={onCommentDeletion}
+                                  />
+                                );
+                              })}
+                              <span ref={scrollToBottom}></span>
+                          </div>
+                          : null)
+                          :
+                          <span className="disabled__comments">
+                            Comments are disabled.
+                          </span>
+                        }
+                        </div>
+                    
+
+                      <div className="post--card--footer flex-column">
+                        <div className="post--footer--upper--row flex-row">
+                          <div className=" flex-row">
+                            <LikePost isPostLiked={postLiked} handleCurrLikes={handleCurrLikes}/>
+                            { 
+                              !areCommentsDisabled && 
+                              <span onClick={() =>inputField && inputField?.current && inputField?.current?.focus()}>
+                              <FaRegComment />
+                            </span>
                             }
-                          >
-                            Post
-                          </button>
-                        </form> 
-                    }
-                  </div>
+                            <span >
+                              <FiSend />
+                            </span>
+                          </div>
+                          <div className="bookmark__icon">
+                          {
+                          receivedData?.savedposts?.some(sp => (sp.postOwnerId === postOwnerId && sp.id === id)) ?
+                          <RiBookmarkFill onClick={() => (contentType === Consts.Image || contentType === Consts.Video) && context.handleSavingPosts({boolean:false,data: {postOwnerId, id, userName, contentName, contentURL,contentType, date}})} />
+                          :
+                          <RiBookmarkLine onClick={() => (contentType === Consts.Image || contentType === Consts.Video) && context.handleSavingPosts({boolean:true,data: {postOwnerId, id, userName, contentName, contentURL,contentType, date}})}/>
+                        }
+                          </div>
+                        </div>
+                        {likes?.people?.length >= 1 && compState?.alsoLiked?.length > 0 ?
+                      <div className="people--also--liked flex-row">
+                        <Avatar src={compState?.alsoLiked?.[0]?.receiverAvatarUrl} alt="people who also liked this feed"/>
+                            <p onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}>Liked by
+                              <span>
+                                {
+                                    compState?.alsoLiked?.map(el => <MutualLikes key={el?.receiverUid}item={el}/> )
+                                }
+                                {
+                                  (likes?.people?.some(el => el?.id === uid) ? likes?.people?.length -1 : likes?.people?.length ) > compState?.alsoLiked?.length && similarsStr > 0 &&
+                                  <strong className="you--followed">
+                                  {likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr !== isNaN ? similarsStr : "many"} {similarsStr < 2 ? " person" : " others"}</strong>
+                                  </strong>
+                                }
+                                {
+                                  <strong className="you__followed">
+                                    {likes?.people?.some(el => el?.id === uid) && ", and you"}
+                                  </strong>
+                                }
+                              </span>
+
+                            </p>
+                      </div>
+
+                  : likes?.people?.length >= 1 && compState?.alsoLiked?.length <= 0 ?(
+                    <div
+                      className="likes__count"
+                      onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}
+                    >
+                      {likes?.people?.length.toLocaleString()}{" "}
+                      {likes?.people?.length === 1 ? "like" : "likes"}
+                    </div>
+                  )  :  (likes?.people?.length <= 0 && postOwnerId !== id) ?
+                        <span className="like__invitation">Be the first to <strong onClick={() => handleCurrLikes(true)}>like this</strong> </span>
+                    : null
+                  }
+
+                        <small className="post__date">
+                          <GetFormattedDate date={date?.seconds} /> • <time>{new Date(date?.seconds * 1000).toDateString()}</time>
+                        </small>
+                        {
+                          !areCommentsDisabled &&
+                            <form
+                              onSubmit={(e) => submitComment(e)}
+                              className="post--bottom--comment--adding flex-row"
+                            >
+                              <div className="form--input--container flex-row">
+                                  <div className="form--input--container--inner flex-row">
+                                      <EmojiPicker onEmojiClick={onEmojiClick} />
+                                      <input
+                                        ref={inputField}
+                                        value={compState.insertedComment}
+                                        onChange={(event) =>
+                                          setCompState({
+                                            ...compState,
+                                            insertedComment: event.target.value,
+                                          })
+                                        }
+                                        className="post__bottom__input"
+                                        type="text"
+                                        placeholder="Add a commment.."
+                                        spellCheck="true"
+                                    />
+                                  </div>
+                              </div>
+                              {
+                                isSendingComment ?
+                                <Loader
+                                    className="post__bottom__button"
+                                    type="TailSpin"
+                                    color="#0095f6"
+                                    arialLabel="loading-indicator"
+                                    height={23}
+                                    width={23}
+                                  />
+                                :
+                                <button
+                                  type="submit"
+                                  disabled={compState.insertedComment.length < 1}
+                                  className={
+                                    compState.insertedComment.length >= 1
+                                      ? "post__bottom__button"
+                                      : "disabled post__bottom__button"
+                                  }
+                                >
+                                Post
+                              </button>
+                              }
+
+                            </form> 
+                        }
+                      </div>
+                    </div>
+                  </article>
                 </div>
+                {/* post end */}
               </article>
             </div>
-            {/* post end */}
-          </article>
-        </div>
+            :
+            <h1>Post is not available or might be got deleted.</h1>
+        }
       </section>
     </Fragment>
   );

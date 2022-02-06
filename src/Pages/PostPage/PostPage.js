@@ -11,7 +11,6 @@ import { AppContext } from "../../Context";
 import Comment from "../../Components/Comment/Comment";
 import { withRouter } from "react-router-dom";
 import OptionsModal from "../../Components/Generic/OptionsModal/OptionsModal";
-import { withBrowseUser } from "../../Components/HOC/withBrowseUser";
 import GetFormattedDate from "../../Utilities/FormatDate";
 import Caption from "../../Components/Generic/Caption/Caption";
 import { insertIntoText } from "../../Utilities/InsertIntoText";
@@ -25,6 +24,7 @@ import PollContent from "../../Components/PollContent/PollContent";
 import PostUserName from "../../Components/Generic/PostUserName/PostUserName";
 import YoutubeContent from "../../Components/YoutubeContent/YoutubeContent";
 import LikePost from "../../Components/Generic/LikePost/LikePost";
+import Loader from "react-loader-spinner";
 import { retry } from "../../Utilities/RetryImport";
 
 const EmojiPicker = lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
@@ -32,6 +32,7 @@ const EmojiPicker = lazy(() => retry(() => import("../../Components/Generic/Emoj
 const PostPage  = (props) => {
   const context = useContext(AppContext);
   const { changeMainState, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState,  handleUserBlocking, handleVoting, modalsState, handleLikingComments, onCommentDeletion, deletePost, handleSavingPosts } = context;
+  const [isSendingComment, setSendingComment] = useState(false);
   const [compState, setCompState] = useState({
         postLiked: false,
         insertedComment: "",
@@ -126,6 +127,7 @@ const PostPage  = (props) => {
         currentPostIndex?.index
       ];
       if (compState.insertedComment !== "") {
+        setSendingComment(true);
         //subcomment
         if ( compState.replayData &&
          Object.keys(compState.replayData).length >0 &&
@@ -138,7 +140,11 @@ const PostPage  = (props) => {
             false,
             contentURL,
             contentType
-          );
+          ).then(() => {
+            setSendingComment(false);
+          }).catch(() =>{
+            setSendingComment(false);
+          });
         } else {
           //comment
           handleSubmittingComments(
@@ -150,7 +156,11 @@ const PostPage  = (props) => {
             postOwnerId,
             contentURL,
             contentType
-          );
+          ).then(() => {
+            setSendingComment(false);
+          }).catch(() => {
+            setSendingComment(false);
+          });
         }
         setCompState({
           ...compState,
@@ -453,17 +463,28 @@ const PostPage  = (props) => {
                       />
                       </div>
                     </div>
-                    <button
-                      type="submit"
-                      disabled={compState.insertedComment.length < 1}
-                      className={
-                        compState.insertedComment.length >= 1
-                          ? "post__bottom__button"
-                          : "disabled post__bottom__button"
-                      }
-                    >
-                      Post
-                    </button>
+                    {
+                        isSendingComment ?
+                          <Loader
+                            className="post__bottom__button"
+                            type="TailSpin"
+                            color="#0095f6"
+                            arialLabel="loading-indicator"
+                            height={23}
+                            width={23}
+                          /> 
+                        :
+                        <button
+                          type="submit"
+                          disabled={compState.insertedComment.length < 1}
+                          className={`
+                            mr-2
+                            ${compState.insertedComment.length >= 1  ? "post__bottom__button" : "disabled post__bottom__button"}`}
+                        >
+                          Post
+                        </button>
+                    }
+
                   </form>
                } 
               </div>
@@ -476,4 +497,4 @@ const PostPage  = (props) => {
     );
   
 }
-export default withBrowseUser(withRouter(PostPage));
+export default withRouter(PostPage);

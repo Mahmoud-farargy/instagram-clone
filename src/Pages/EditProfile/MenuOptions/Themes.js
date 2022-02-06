@@ -31,7 +31,7 @@ const Themes = () => {
     }
     return(
         <Fragment>
-         <div id="theme" className="option--container">
+         <div id="theme" className="option--container fadeEffect">
             <FormControl component="fieldset">
             <FormLabel component="legend"><h5>Pick a theme</h5></FormLabel>
             <RadioGroup aria-label="gender" name="gender1" value={themeSelected} defaultValue={themeSelected} onChange={handleChange}>

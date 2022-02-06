@@ -5,18 +5,12 @@ import { AppContext } from "../../Context";
 import { useHistory } from "react-router-dom";
 import List from "../Generic/List/List";
 const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profile--posts", isSavedPost = false, ...props }) => {
-    const { getUsersProfile, changeMainState, notify, changeModalState, handleSavingPosts, healthyStorageConnection, openReel } = useContext(AppContext);
+    const { getUsersProfile, changeMainState, notify, changeModalState, handleSavingPosts, healthyStorageConnection, openReel, isOpeningPost } = useContext(AppContext);
     const history = useHistory();
     // REFS
     const _isMounted = useRef(true);
     const timeouts = useRef(null);
     // ----x---REFS---x-----
-    // STATE
-    const [isLoading, setLoading] = useState({
-        loadingMorePosts: false,
-        openingPost: false
-    });
-    // ----x--State---x-----
     const finalLimit = list?.length || null;
 
     useEffect(() => () => {
@@ -27,10 +21,10 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
     const openPost = useCallback(({type, postId, postOwnerId, reelId, groupId , reelUid}) =>{
         if(type === "post"){
                 if(postOwnerId && postId){
-                    setLoading({...isLoading,openingPost: true});
+                    changeMainState("isOpeningPost", true, {usersProfileData: []});
                     getUsersProfile(postOwnerId).then((data) => {
                         if(_isMounted?.current){
-                            setLoading({...isLoading,openingPost: false});
+                            changeMainState("isOpeningPost", false);
                                 const postsCopy = data?.posts;
                                 const postIndex = postsCopy?.map(post => post?.id).indexOf(postId);
                                 if( postIndex !== -1){                            
@@ -54,6 +48,8 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
                                     notify("An error occurred", "error");
                                 }
                         }
+                    }).catch(() => {
+                        changeMainState("isOpeningPost", false);
                     });
                 }else{
                     notify("An error occurred", "error");
@@ -88,7 +84,7 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
                         <List list={list} parentClass={parentClass} areHomePosts={false} intervalTime={1100} increaseBy={5} parentId="userPosts" >
                             <ProfileItem itemType={listType} isSavedPost={isSavedPost} {...props} onLoadingFail={onLoadingFail} openPost={openPost}/>
                         </List>
-                    {isLoading?.openingPost && <div className="global__loading"><span className="global__loading__inner"></span></div>}
+                    {isOpeningPost && <div className="global__loading"><span className="global__loading__inner"></span></div>}
                 </section>
             } 
            

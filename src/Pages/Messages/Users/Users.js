@@ -4,7 +4,7 @@ import { GOU } from "../../../Utilities/GetOnlineUsers";
 import User from "./User/User";
 
 const Users = (props) => {
-  const { messages, uid, blockList } = props;
+  const { messages, uid, blockList, isSending } = props;
   const [onlineList, setOnlineList] = useState([]);
   const _isMounted = useRef(true);
   useEffect(() => {
@@ -35,7 +35,6 @@ const Users = (props) => {
             // )
             .map((user, index) => {
               return (
-                //Desktop
                 <div key={user?.uid + index}>
                   {!blockList?.some(
                     (el) => el?.blockedUid === user?.uid
@@ -44,6 +43,7 @@ const Users = (props) => {
                       user={user}
                       isOnline={onlineList?.some((c) => c.uid === user?.uid)}
                       index={index}
+                      isSending={isSending}
                     />
                   )}
                 </div>

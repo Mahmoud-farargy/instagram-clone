@@ -12,7 +12,7 @@ import { AiOutlinePicture } from "react-icons/ai";
 import { AppContext } from "../../../../Context";
 import { GoVerified } from "react-icons/go";
 
-const User = ({ user, index, isOnline }) => {
+const User = ({ user, index, isOnline, isSending }) => {
   const {
     currentChat,
     closeNewMsgNoti,
@@ -21,6 +21,7 @@ const User = ({ user, index, isOnline }) => {
   } = useContext(AppContext);
   const logData = user?.chatLog;
   const viewUsersMessages = (loadedUid, loadedIndex) => {
+    if(isSending) {return};
     const checkIndex = receivedData?.messages
       ?.map((user) => user.uid)
       .indexOf(loadedUid);
@@ -66,16 +67,14 @@ const User = ({ user, index, isOnline }) => {
           <div style={{ flex: 1, width: "60%" }}>
             <span className="flex-row" title={user?.userName}>
               <p>
-                <TruncateMarkup line={1} ellipsis="..">
-                  {trimText(user?.userName, 20)}
-                </TruncateMarkup>{" "}
+                  {trimText(user?.userName, 20)}  
+                  {user?.isVerified ? (
+                    <span>
+                      <GoVerified className="verified_icon" />
+                    </span>
+                  ) : null}
+                  {isOnline && <span className="online__user"></span>}
               </p>
-              {user?.isVerified ? (
-                <span>
-                  <GoVerified className="verified_icon" />
-                </span>
-              ) : null}
-              {isOnline && <span className="online__user"></span>}
             </span>
 
             <span className="last__message">

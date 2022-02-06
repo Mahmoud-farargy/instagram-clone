@@ -39,7 +39,7 @@ body{
     line-height:18px;
     color:var(--font-black);
     background-color: var(--light-gray);
-    transition: background 0.3s linear;
+    transition: background 0.4s linear;
     -webkit-font-smoothing: antialiased;
 }
 ul{
@@ -117,6 +117,8 @@ input {
     --tweet-txt-clr: rgb(15, 20, 25);
     --err-clr: #FF0000;
     --modal-clr: #fff;
+    --b6a: 54,54,54;
+    --mobile-border-clr: #f3f3f3;
     /* borders */
     --main-border:  1px solid var(--gray);
     /* transitions */
@@ -144,7 +146,7 @@ body{
 .darkMode{
     --light-gray:rgba(18,18,18,1);
     --white:rgba(0,0,0,1);
-    --gray: #262626;
+    --gray: rgba(var(--b6a,219,219,219),1);
     --font-black: #d2d2d2;
     --main-black:  #ececec;
     --second--gray:#999999;
@@ -155,6 +157,7 @@ body{
     --links-clr: #9595f3;
     --tweet-txt-clr:#dbdbdb;
     --modal-clr: rgba(38,38,38,1);
+    --mobile-border-clr: #202020;
 }
 .darkMode img,.darkMode video{
     filter: brightness(95%);
@@ -171,7 +174,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
 .snorkelBlue{
     --light-gray:#034f84;
     --white:#02365b;
-    --gray:#024575;
+    --gray:#3e627a;
     --font-black: #d2d2d2;
     --main-black:  #ececec;
     --second--gray:#999999;
@@ -183,13 +186,14 @@ textarea::placeholder, input::placeholder, select::placeholder{
     --links-clr: #a8a8f7;
     --tweet-txt-clr:#dbdbdb;
     --modal-clr: #075085;
+    --mobile-border-clr: #415e75;
 }
 /* ---x----dusty cedar theme--x---- */
 /* -------dusty cedar theme------ */
 .blueIzis{
     --light-gray:#3e4074;
     --white:#363763;
-    --gray:#2d2e53;
+    --gray:#515377;
     --font-black: #d2d2d2;
     --main-black:  #ececec;
     --second--gray:#999999;
@@ -200,24 +204,26 @@ textarea::placeholder, input::placeholder, select::placeholder{
     --links-clr: #a8a8f7;
     --tweet-txt-clr:#dbdbdb;
     --modal-clr: #3e4074;
+    --mobile-border-clr: #444568;
 }
 /* ---x----dusty cedar theme--x---- */
 /* -------Iced Coffee theme------ */
 .icedCoffee{
     --light-gray:#a58057;
     --white:#816344;
-    --gray: #93714d;
-    --font-black: #d8d8d8;
+    --gray: #bd9a75;
+    --font-black: #eee8e8;
     --main-black:  #e2e2e2;
     --second--gray:#c9c9c9;
-    --shadow-white: #666666;
+    --shadow-white: #a89177;
     --bluish-sky: #a7cff3;
-    --light-black: #999999;
+    --light-black: #d4d4d4;
     --ultimate-black: #fff;
     --secondary-clr:#55bafd;
     --links-clr: #a8a8f7;
     --tweet-txt-clr:#dbdbdb;
     --modal-clr: #a58057;
+    --mobile-border-clr: #887369;
 }
 /* ----x---Iced Coffee theme---x--- */
 /* -------Buttercup theme------ */
@@ -229,6 +235,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
     --sugg-btn-clr: #f8e35b;
     --links-clr: #a8a8f7;
     --modal-clr: #fdf3b1;
+    --mobile-border-clr: #fcfaf1;
 }
 /* ----x---Buttercup theme---x--- */
 /* -------Iced Coffee theme------ */
@@ -244,6 +251,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
     --links-clr: #6666f7;
     --tweet-txt-clr:#616161;
     --modal-clr: #e1c1db;
+    --mobile-border-clr: #f3f0f2;
 }
 /* ----x---Iced Coffee theme---x--- */
 
@@ -257,6 +265,14 @@ a:visited{
     animation-direction: normal;
     animation-iteration-count: 1;
     animation-play-state: running;
+}
+.loader--btn{
+    height: 30px;
+    width: 80.19px;
+    margin: 0;
+    text-align:center;
+    display: grid;
+    place-items:center;
 }
 .auth--slide--container{
     width: 100%;
@@ -319,7 +335,7 @@ a:visited{
     min-height: 14px;
 }
 .main--app{
-    min-height: 100%;
+    min-height: 100vh;
     min-width: 250px;
     overflow: hidden;
 }
@@ -552,7 +568,7 @@ span.clear--search--box.voice__search__icon{
     min-height:200px;
 }
 .usersModal--inner{
-    margin:20px;
+    margin:0px;
     align-items:center;
     justify-content:center;
 }
@@ -1443,7 +1459,7 @@ button:active{
     margin:0;
 }
 .messages--view--users ul li{
-    padding:8px 20px;
+    padding:8px 15px;
     overflow-x:hidden;
     text-overflow:ellipsis;
     width:100%;
@@ -1452,7 +1468,7 @@ button:active{
     margin:0;
 }
 #messages .messages--view--users ul li .messages--user--info{
-    width: 140px;
+    width: 100%;
     margin-left:8px;
     align-items:center;
 }
@@ -1844,6 +1860,12 @@ button:active{
     font-size:16px;
     font-weight:600;
     align-items: center;
+}
+#messages.messages--container .messages--user--info p, #messages.messages--container .messages--user--info .last__message{
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 #messages.messages--container .messages--user--info div{
     flex:0;
@@ -2710,7 +2732,7 @@ a.prof__btn__unfollowed{
     justify-content:space-between;
     font-size:16px;
 }
-#usersProfile.users--profile--container .users--action--row div,
+#usersProfile.users--profile--container .users--action--row div:not(.loader--btn),
 #usersProfile.users--profile--container .users--action--row h5{
     flex-basis:48%;
     margin-bottom:19px;
@@ -3357,7 +3379,7 @@ a.prof__btn__unfollowed{
     #messages .desktop-comp{
         padding-top:0;
     }   
-    .messages--desktop--card{
+    #messages.messages--container .messages--desktop--card, #editProfile .edit--box.edit--box{
         border:none;
     }
     .post--card--container{
@@ -3489,7 +3511,7 @@ a.prof__btn__unfollowed{
         gap:3px;
     }
     #messages .desktop-comp{
-        padding:0;
+        padding:4rem 0 0;
     }
     #explore.explore-container .explore--upper--row{
         margin-bottom: 3px;

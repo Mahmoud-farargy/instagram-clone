@@ -218,7 +218,7 @@ const EditProfileOption = (props) => {
         onChange={(e) => onPhotoChange(e)}
       />
       {/* --x-Modals-x-- */}
-      <div className="option--container flex-column">
+      <div className="option--container flex-column fadeEffect">
         <div className="flex-row change--photo">
           <Avatar
             className="user__picture mr-3"

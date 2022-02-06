@@ -38,6 +38,7 @@ const Messages = (props) => {
     const inputRef = useRef(null);
     // end refs
     const context = useContext(AppContext);
+    const [isSending, setSendingState] = useState(false);
     const [compState, setCompState] = useState({
         inputValue: "",
         loadedChatLog: [],
@@ -128,11 +129,16 @@ const Messages = (props) => {
   },[messages, currentChat, compState.loading.state, _isMounted, userInfo]);
   useEffect(() => {
     compState.inputValue && setCompState({...compState, inputValue: ""});
-  }, [currUser, compState]);
+  }, [currUser?.uid]);
   const submitMessage = (v) => {
     v.preventDefault();
     if(compState?.inputValue){
-        handleSendingMessage({content:compState.inputValue, uid: currUser?.uid, type: "text", pathname: ""});  
+        setSendingState(true);
+        handleSendingMessage({content:compState.inputValue, uid: currUser?.uid, type: "text", pathname: ""}).then(() => {
+          setSendingState(false);
+        }).catch(() => {
+          setSendingState(false);
+        }); 
         setCompState({
           ...compState,
           inputValue: ""
@@ -155,7 +161,12 @@ const Messages = (props) => {
           fileUploadEl.current && fileUploadEl.current.click();
       }
     }else if(type === "like") {
-      handleSendingMessage({content: "", uid: currUser?.uid, type: "like", pathname: ""});
+      setSendingState(true);
+      handleSendingMessage({content: "", uid: currUser?.uid, type: "like", pathname: ""}).then(() => {
+        setSendingState(false);
+      }).catch(() => {
+        setSendingState(false);
+      });
     }
   }
 
@@ -198,7 +209,12 @@ const Messages = (props) => {
                           if(_isMounted?.current){
                             //post content on db
                             setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
-                            handleSendingMessage({content: url,uid: currUser?.uid,type: itemType, pathname: fileName });
+                            setSendingState(true);
+                            handleSendingMessage({content: url,uid: currUser?.uid,type: itemType, pathname: fileName }).then(() => {
+                              setSendingState(false);
+                            }).catch(() => {
+                              setSendingState(false);
+                            });
                             uploadedItem = "";
                           }
                         })
@@ -317,6 +333,7 @@ const Messages = (props) => {
                   messages={receivedData?.messages || []}
                   uid={receivedData?.uid}
                   blockList={receivedData.blockList}
+                  isSending={isSending}
                    />
                 </div>
               </div>
@@ -365,6 +382,7 @@ const Messages = (props) => {
                        messages={receivedData?.messages || []}
                        uid={receivedData?.uid}
                        blockList={receivedData.blockList}
+                       isSending={isSending}
                       />
                     </div>
                   </div>
@@ -409,8 +427,9 @@ const Messages = (props) => {
                       </div>
                       {/* -- */}
                     </div>
-                    <div className="messages--chatbox--body" >
+                    <div className="messages--chatbox--body fadeEffect" >
                       <ChatLogList
+                        isSending={isSending}
                         chatLog={msg?.chatLog}
                         messagerUid={msg?.uid}
                         receivedData={receivedData}
@@ -470,8 +489,17 @@ const Messages = (props) => {
                                 </div>
                             </div>
                               {compState.inputValue ? (
-                                <input type="submit" value="Send" className={`${!compState.inputValue && "disabled"}`} disabled={!compState.inputValue} />
-                              ) : 
+                                <input type="submit" value="Send" className={`${(!compState.inputValue || isSending) && "disabled"}`} disabled={(!compState.inputValue || isSending)} />
+                              )
+                              : isSending ? 
+                                <Loader
+                                  type="TailSpin"
+                                  color="#0095f6"
+                                  arialLabel="loading-indicator"
+                                  height={23}
+                                  width={23}
+                                />
+                              : 
                               <div className="message--mini--toolbox flex-row">
                                 <AiOutlinePicture onClick={() => onMessageAction("content")} className="message--pic--ico" />
                                 <FaRegHeart onClick={() => onMessageAction("like")} data-cy="heart_emoji" className="message--heart--ico"/> 
