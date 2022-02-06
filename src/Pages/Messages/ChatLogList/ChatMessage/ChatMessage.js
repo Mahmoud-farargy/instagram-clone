@@ -9,7 +9,7 @@ import { linkifyText } from "../../../../Utilities/ReplaceHashes";
 
 const Message = (props) => {
   const { unsendMessage, notify } = useContext(AppContext);
-  const { message, receivedData, user, openSidedrawer } = props;
+  const { message, receivedData, user, openSidedrawer, isSending } = props;
   const [openOptions, setOpeningOptions] = useState(false);
   const [fullScreenPic, setFullScreenPic] = useState(false);
   const onOptionClick = (type) => {
@@ -64,7 +64,6 @@ const Message = (props) => {
         {!isSender &&
           <Avatar className="messsage--sender--img" src={message?.userAvatarUrl} />}
         <div className="message--outer" >
-          {/* {openOptions && <div className="hidden--backdrop" onClick={() => setOpeningOptions(false)}></div> } */}
           <div
             style={{ backgroundColor: (message.type === "text" && isSender) && "var(--shadow-white)", border: (message.type === "text") && "1px solid var(--shadow-white)" }}
             className={`
@@ -74,14 +73,14 @@ const Message = (props) => {
             }
           >
 
-            {isSender &&
+            {(isSender && !isSending) &&
               <div className="message--options">
                 <div className="message--inner--options">
                   <HiOutlineDotsHorizontal onClick={() => setOpeningOptions(!openOptions)} />
                   {
                     openOptions &&
                     <div className="message--option flex-row fadeEffect">
-                      <span onClick={() => onOptionClick("unsend")} >unsend</span>
+                      <span onClick={() => !isSending && onOptionClick("unsend")} >unsend</span>
                       {message?.type === "text" && <span onClick={() => onOptionClick("copy")}>copy</span>}
                     </div>
                   }

@@ -224,8 +224,7 @@ const Explore = () => {
   return (
     <Fragment>
       {/* Modals */}
-      {modalsState?.post &&
-        usersProfileData?.posts?.[currentPostIndex?.index] && (
+      {modalsState?.post && (
           <PostModal disableArrows={true} />
         )}
         <div className="explore--modal">

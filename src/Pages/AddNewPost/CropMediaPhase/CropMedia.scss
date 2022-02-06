@@ -39,10 +39,15 @@
     .crop--media--preview{
         min-height: 250px;
         max-height: 100%;
+        overflow: hidden;
+        @media (max-width: 760px) {
+            max-height: 250px;
+        }
     }
     .crop--media--preview, .crop--media--img--video, .crop--media--preview img{
         width: 100%;
         height: 100%;
+        margin: auto;
     }
     .crop--media--preview img, .crop__content__style{
         min-height: 100%;

@@ -5,7 +5,7 @@ const BlockList = (props) => {
     const {receivedData, handleUserBlocking, notify} = props.context;
     return (
         <Auxiliary>
-            <section  className="option--container">
+            <section  className="option--container fadeEffect">
                 <div className="block--list--inner flex-column">
                     {
                         receivedData && receivedData?.blockList.length > 0 ?

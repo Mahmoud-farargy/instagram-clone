@@ -216,7 +216,7 @@ const ChangePassNEmail = (props) => {
   };
   return (
     <Auxiliary>
-      <div className="option--container">
+      <div className="option--container fadeEffect">
         <div className="flex-row change--photo mb-3">
           <Avatar
             className="user__picture mr-4"

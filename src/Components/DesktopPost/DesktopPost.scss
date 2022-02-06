@@ -1,12 +1,16 @@
 .post--modal--close{
     position: fixed;
-    top: 5%;
+    top: 2%;
     right:7%;
-    font-size: 30px;
+    font-size: 35px;
     font-weight: bold;
     cursor: pointer;
     z-index:1800;
-    padding: 1px 8px;
+    padding: 10px 8px;
+    &:active{
+        background-color: rgba(45, 86, 129,0.1);
+        border-radius: 5px;
+    }
 }
 .desktopPost{
     width:1100px;
@@ -113,7 +117,7 @@
                         .post--comments--layout{
                             height:320px;
                             overflow-y:auto !important;
-                            padding:10px 10px 20px;
+                            padding:10px 3px 20px;
                             .post--comment--item .comment__text{
                                 @media only screen and (max-width: 900px) {
                                     display: flex;

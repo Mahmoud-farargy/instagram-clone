@@ -101,6 +101,8 @@
    
     @media only screen and (max-width: 670px){
         margin:0;
+        border: none;
+        border-bottom: 1px solid var(--mobile-border-clr);
         .home--reels--ul{
             padding-right: 1px;
             padding-left: 1px;

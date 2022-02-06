@@ -195,7 +195,7 @@ const AuthPage = (props) => {
         authLogout(props.history);
         notify("It seems like you haven't logged out properly last time. Please try again.","error");
       }
-    }, 400);
+    }, 300);
 
   }
   const submitForm = async (event, authType) => {
@@ -365,7 +365,7 @@ const AuthPage = (props) => {
           setLoading(false);
           notify("It seems like you haven't logged out properly last time. Please try again.","error");
         }
-      }, 400);
+      }, 300);
     } else if (authType === "login") {
       loginWithEmail(formState.loginEmail?.val, formState.loginPassword?.val);
     }

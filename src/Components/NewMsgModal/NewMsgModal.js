@@ -6,7 +6,7 @@ import { Avatar } from "@material-ui/core";
 import { GoVerified } from "react-icons/go";
 import PropTypes from "prop-types";
 
-const NewMsgModal = ({sendPostForm, closeModal}) => {
+const NewMsgModal = ({closeModal}) => {
     const { receivedData, initializeChatDialog, searchUsers, searchInfo, suggestionsList, notify, changeMainState, changeModalState, handleSendingMessage } = useContext(AppContext);
     // --------------
     // REFS
@@ -43,42 +43,41 @@ const NewMsgModal = ({sendPostForm, closeModal}) => {
     const usersArr = searchText ? searchInfo?.results : suggestionsList;
     const commitMessage = () => {
         setLoading(true);
-        if(sendPostForm){
+        // if(sendPostForm){
 
-        }else{
+        // }else{
             if(Object.keys(newMsgData?.sendTo).length > 0 && newMsgData?.messageText){
                 var {uid, userName, userAvatarUrl, isVerified} = newMsgData?.sendTo;
                 
                 initializeChatDialog(uid, userName, userAvatarUrl, isVerified).then(() => {
                   if(_isMounted?.current){
-                    timeouts.current = setTimeout(() => {
                             setLoading(false);
                             changeMainState("currentChat", { uid: uid,index: 0 }).then(() => {
                                 handleSendingMessage({content: newMsgData?.messageText, uid: uid, type: "text", pathname: ""}).then(() => {
                                       const newIndex = receivedData && receivedData.messages?.map(d => d.uid).indexOf(uid);
                                           changeMainState("currentChat",{uid, index: newIndex !== -1 ? newIndex : 0}).then(() => {
-                                            changeModalState("newMsg", false);                              
+                                            timeouts.current = setTimeout(() => {
+                                                changeModalState("newMsg", false); 
+                                                closeModalFunc();
+                                                window.clearTimeout(timeouts?.current);  
+                                             }, 300);
                                           });
-                                     window.clearTimeout(timeouts?.current);
                                 }).catch(() => {
                                   changeModalState("newMsg", false);
-                                  window.clearTimeout(timeouts?.current);
                                 });
                             });
-                    }, 3000);
                       removeSelectedUser();
                   }
                        
                 }).catch(() => {
                   if(_isMounted?.current){
                       setLoading(false);
-                      notify("Failed to send22","error");
                   }
                 });
             }else{
                 notify("User and message must be defined","error");
             }
-        }
+        // }
     }
     const removeSelectedUser = () => {
         setMsgData({messageText: "", sendTo: {}});
@@ -93,7 +92,7 @@ const NewMsgModal = ({sendPostForm, closeModal}) => {
     const closeModalFunc = () => {
       if(!isLoading){
           changeModalState("newMsg", false);
-          sendPostForm && typeof closeModal === "function" && closeModal();  
+          typeof closeModal === "function" && closeModal();  
       }
     }
     return (
@@ -158,5 +157,8 @@ const NewMsgModal = ({sendPostForm, closeModal}) => {
 NewMsgModal.propTypes = {
     sendPostForm: PropTypes.object,
     closeModal: PropTypes.func
+}
+NewMsgModal.defaultProps = {
+    sendPostForm: {}
 }
 export default React.memo(NewMsgModal);

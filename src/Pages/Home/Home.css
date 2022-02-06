@@ -235,7 +235,7 @@
     }
     #home.main--home--container .home--posts--side{
         padding-right:0;
-        align-items:center;
+        align-items:flex-start;
     }
     #home.main--home--container .suggestions--home--container{
         width:100%;
