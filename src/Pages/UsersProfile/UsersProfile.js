@@ -26,7 +26,6 @@ import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollow
 import { trimText } from "../../Utilities/TrimText";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 import { linkifyText } from "../../Utilities/ReplaceHashes";
-import Loader from "react-loader-spinner";
 
 const UsersProfile = () => {
   const [, loading] = useAuthState(auth);
@@ -56,7 +55,6 @@ const UsersProfile = () => {
     modalsState,
     suggestionsList,
     handleUserBlocking,
-    currentPostIndex,
     updateReelsProfile,
     isUserOnline,
     getUsersProfile,
@@ -327,14 +325,7 @@ const UsersProfile = () => {
                       >
                         {
                           isInitializingMsg ? 
-                            <Loader
-                              className="loader--btn"
-                              type="TailSpin"
-                              color="#0095f6"
-                              arialLabel="loading-indicator"
-                              height={22}
-                              width={22}
-                            />
+                            "Initializing message.."
                           :
                           "Message"
                         }

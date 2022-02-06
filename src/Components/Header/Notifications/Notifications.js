@@ -19,7 +19,7 @@ const Notifications = ({ closeNotificationOnClick }) => {
      var timeout = setTimeout(() => {
         setLoading(false);
         window.clearTimeout(timeout);
-      }, 400);
+      }, 200);
     }
 
     return () => {

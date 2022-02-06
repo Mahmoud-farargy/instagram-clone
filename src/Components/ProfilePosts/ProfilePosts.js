@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useRef, useEffect, useState, useCallback, memo } from "react";
+import React, { Fragment, useContext, useRef, useEffect, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import ProfileItem from "../ProfileItem/ProfileItem";
 import { AppContext } from "../../Context";

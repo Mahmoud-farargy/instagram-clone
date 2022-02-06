@@ -19,10 +19,8 @@ const Explore = () => {
   const {
     explore,
     changeMainState,
-    usersProfileData,
     notify,
     modalsState,
-    currentPostIndex,
     receivedData,
     handleChangingSort,
     loadingState,

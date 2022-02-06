@@ -266,14 +266,6 @@ a:visited{
     animation-iteration-count: 1;
     animation-play-state: running;
 }
-.loader--btn{
-    height: 30px;
-    width: 80.19px;
-    margin: 0;
-    text-align:center;
-    display: grid;
-    place-items:center;
-}
 .auth--slide--container{
     width: 100%;
     height: 100%;
@@ -2732,7 +2724,7 @@ a.prof__btn__unfollowed{
     justify-content:space-between;
     font-size:16px;
 }
-#usersProfile.users--profile--container .users--action--row div:not(.loader--btn),
+#usersProfile.users--profile--container .users--action--row div,
 #usersProfile.users--profile--container .users--action--row h5{
     flex-basis:48%;
     margin-bottom:19px;
