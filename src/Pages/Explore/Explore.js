@@ -13,17 +13,15 @@ import { lowerCaseString } from "../../Utilities/Utility";
 import { CgUnavailable } from "react-icons/cg";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 import LoadingComponent from "../../Components/Generic/LoadingScreen/LoadingComponent";
+import { connect } from "react-redux";
 
-const Explore = () => {
+const Explore = ({ modalsState, explore, isUsersListLoading }) => {
   const context = useContext(AppContext);
   const {
-    explore,
     changeMainState,
     notify,
-    modalsState,
     receivedData,
     handleChangingSort,
-    loadingState,
     mutateLoadingState
   } = context;
   const [newExploreArr, setExploreArr] = useState([]);
@@ -291,7 +289,7 @@ const Explore = () => {
             <div className="explore--options--btn">
                 <button onClick={()=> setSortingModal(true)}><MdSort /></button>
             </div>
-            {  (loadingState?.suggList || loading) ? (
+            {  (isUsersListLoading || loading) ? (
                 <LoadingComponent />
               ) :
               (newExploreArr && newExploreArr.length > 0) ? (
@@ -331,5 +329,11 @@ const Explore = () => {
     </Fragment>
   );
 };
-
-export default memo(Explore);
+const mapStateToProps = state => {
+  return {
+      modalsState: state[Consts.reducers.MODALS].modalsState,
+      explore: state[Consts.reducers.USERSLIST].explore,
+      isUsersListLoading: state[Consts.reducers.USERSLIST].isLoading,
+  }
+}
+export default connect(mapStateToProps)(memo(Explore));

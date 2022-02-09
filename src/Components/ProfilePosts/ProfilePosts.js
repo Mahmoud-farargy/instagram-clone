@@ -4,8 +4,11 @@ import ProfileItem from "../ProfileItem/ProfileItem";
 import { AppContext } from "../../Context";
 import { useHistory } from "react-router-dom";
 import List from "../Generic/List/List";
-const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profile--posts", isSavedPost = false, ...props }) => {
-    const { getUsersProfile, changeMainState, notify, changeModalState, handleSavingPosts, healthyStorageConnection, openReel, isOpeningPost } = useContext(AppContext);
+import { connect } from "react-redux";
+import * as actionTypes from "../../Store/actions/actions";
+
+const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profile--posts", isSavedPost = false, changeModalState,...props }) => {
+    const { getUsersProfile, changeMainState, notify, handleSavingPosts, healthyStorageConnection, openReel, isOpeningPost } = useContext(AppContext);
     const history = useHistory();
     // REFS
     const _isMounted = useRef(true);
@@ -49,7 +52,7 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
                                 }
                         }
                     }).catch(() => {
-                        changeMainState("isOpeningPost", false);
+                        _isMounted.current && changeMainState("isOpeningPost", false);
                     });
                 }else{
                     notify("An error occurred", "error");
@@ -96,5 +99,11 @@ ProfilePosts.propTypes = {
     list: PropTypes.array.isRequired,
     parentClass: PropTypes.string,
     isSavedPost: PropTypes.bool,
+    changeModalState: PropTypes.func.isRequired
 }
-export default memo(ProfilePosts);
+const mapDispatchToProps = dispatch => {
+    return {
+        changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+    }
+}
+export default connect(null, mapDispatchToProps)(memo(ProfilePosts));

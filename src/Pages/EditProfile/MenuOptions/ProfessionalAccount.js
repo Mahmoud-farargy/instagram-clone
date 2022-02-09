@@ -15,6 +15,8 @@ import CheckboxIOS from "../../../Components/Generic/CheckboxIOS/CheckboxIOS";
 import Moment from "react-moment";
 import * as Consts from "../../../Utilities/Consts";
 import { retry } from "../../../Utilities/RetryImport" ;
+import { connect } from "react-redux";
+import { updateSuggestionsListAsync } from "../../../Store/actions/actionCreators";
 
 // lazy loading
 const InputForm = lazy(() =>
@@ -24,7 +26,8 @@ const InputForm = lazy(() =>
 
 const ProfessionalAccount = (props) => {
   const _isMounted = useRef(true);
-  const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser, handleFollowRequests, updateSuggestionsList } = useContext(AppContext);
+  const { history, updateSuggestionsList } = props;
+  const { receivedData, handleEditingProfile, notify , confirmPrompt, currentUser, handleFollowRequests } = useContext(AppContext);
   //useState
   const [formState, setForm] = useState({
     professionalAcc: { category: "", show: true, status: true, suggested: true, reelsForFollowing: false, notificationBell:{state: true, type: "Both"}, private: false, suggNotFollowed: false, disableComments: false, fontFam: Consts.availableFonts.RALEWAY},
@@ -80,7 +83,7 @@ const ProfessionalAccount = (props) => {
         if(_isMounted.current){
             updateSuggestionsList();
             notify("Profile updated", "success");
-            props.history.push("/profile");
+            history.push("/profile");
         }
       }).catch((err) => {
         if(_isMounted.current){
@@ -306,5 +309,9 @@ const ProfessionalAccount = (props) => {
     </Fragment>
   );
 };
-
-export default withRouter(ProfessionalAccount);
+const mapDispatchToProps = dispatch => {
+  return {
+      updateSuggestionsList: () => dispatch(updateSuggestionsListAsync())
+  }
+}
+export default  connect( null, mapDispatchToProps )(withRouter(ProfessionalAccount));

@@ -1,4 +1,4 @@
-import React, { Fragment, lazy, useContext, useRef, useEffect, useState } from "react";
+import React, { Fragment, lazy, useContext, useRef, useEffect, useState, memo } from "react";
 import "./MobileSearch.scss";
 import { RiSearchLine } from "react-icons/ri";
 import Loader from "react-loader-spinner";
@@ -8,11 +8,13 @@ import SearchItem from "../../Components/SearchItem/SearchItem";
 import { BsMicFill } from "react-icons/bs";
 import { debounce } from "../../Utilities/Debounce";
 import { retry } from "../../Utilities/RetryImport";
+import * as Consts from "../../Utilities/Consts";
+import { connect } from "react-redux";
 
 const Explore = lazy(() => retry(() => import("../../Pages/Explore/Explore")));
 
-const MobileSearch = () => {
-  const { explore, searchUsers, searchInfo, notify, changeMainState } = useContext(AppContext);
+const MobileSearch = ({ explore }) => {
+  const { searchUsers, searchInfo, notify, changeMainState } = useContext(AppContext);
   const [searchVal, setSearchVal] = useState("");
   const _isMounted = useRef(true);
   const timeIntervalId = useRef(null);
@@ -124,4 +126,9 @@ const MobileSearch = () => {
     </Fragment>
   )
 }
-export default MobileSearch;
+const mapStateToProps = state => {
+  return {
+      explore: state[Consts.reducers.USERSLIST].explore
+  }
+}
+export default  connect( mapStateToProps )(memo(MobileSearch));

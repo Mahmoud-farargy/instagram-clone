@@ -6,15 +6,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "font-awesome/css/font-awesome.min.css";
 import { AppProvider } from "./Context";
 import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "./Store/index";
 
 const mainApp = (
   <React.StrictMode>
-    <AppProvider>
-      <BrowserRouter>
-      <GlobalStyles />
-        <App />
-      </BrowserRouter>
-    </AppProvider>
+    <Provider store={store} >
+      <AppProvider>
+        <BrowserRouter>
+          <GlobalStyles />
+          <App />
+        </BrowserRouter>
+      </AppProvider>
+    </Provider>
   </React.StrictMode>
 
 );

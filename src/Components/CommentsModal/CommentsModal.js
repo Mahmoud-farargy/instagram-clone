@@ -1,6 +1,9 @@
 import React, {PureComponent} from "react";
 import Auxiliary from "../HOC/Auxiliary";
 import Comment from "../Comment/Comment";
+import { connect } from "react-redux";
+import * as Consts from "../../Utilities/Consts";
+import * as actionTypes from "../../Store/actions/actions";
 
 class CommentsModal extends PureComponent{
     constructor(props){
@@ -46,8 +49,8 @@ class CommentsModal extends PureComponent{
          
     }
     render(){
-        const {context} = this.props;
-        const {handleLikingComments, receivedData, uid, changeModalState , modalsState,usersProfileData,currentPostIndex, onCommentDeletion} = context;
+        const {context, changeModalState, modalsState} = this.props;
+        const {handleLikingComments, receivedData, uid, usersProfileData,currentPostIndex, onCommentDeletion} = context;
         if(usersProfileData?.posts){
             var {contentType, contentURL, comments, likes, postOwnerId} = usersProfileData?.posts[currentPostIndex?.index];
         }
@@ -84,7 +87,6 @@ class CommentsModal extends PureComponent{
                                         uid={uid}
                                         contentType= {contentType}
                                         contentURL= {contentURL}
-                                        changeModalState={changeModalState}
                                         deleteComment={onCommentDeletion}
                                         />
                                     )
@@ -106,4 +108,14 @@ class CommentsModal extends PureComponent{
         )
     }
 }
-export default CommentsModal;
+const mapDispatchToProps = dispatch => {
+    return {
+        changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+    }
+}
+const mapStateToProps = state => {
+    return {
+        modalsState: state[Consts.reducers.MODALS].modalsState
+    }
+  }
+export default connect(mapStateToProps, mapDispatchToProps)(CommentsModal);

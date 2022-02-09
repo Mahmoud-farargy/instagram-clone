@@ -4,10 +4,13 @@ import { IoIosArrowBack } from "react-icons/io";
 import { trimText } from "../../Utilities/TrimText";
 import { Avatar } from "@material-ui/core";
 import { GoVerified } from "react-icons/go";
+import { connect } from "react-redux";
+import * as Consts from "../../Utilities/Consts";
+import * as actionTypes from "../../Store/actions/actions";
 import PropTypes from "prop-types";
 
-const NewMsgModal = ({closeModal}) => {
-    const { receivedData, initializeChatDialog, searchUsers, searchInfo, suggestionsList, notify, changeMainState, changeModalState, handleSendingMessage } = useContext(AppContext);
+const NewMsgModal = ({ closeModal, changeModalState, suggestionsList }) => {
+    const { receivedData, initializeChatDialog, searchUsers, searchInfo, notify, changeMainState, handleSendingMessage } = useContext(AppContext);
     // --------------
     // REFS
     // ==============
@@ -53,18 +56,26 @@ const NewMsgModal = ({closeModal}) => {
                   if(_isMounted?.current){
                             setLoading(false);
                             changeMainState("currentChat", { uid: uid,index: 0 }).then(() => {
+                              if(_isMounted?.current){
                                 handleSendingMessage({content: newMsgData?.messageText, uid: uid, type: "text", pathname: ""}).then(() => {
+                                  if(_isMounted?.current){
                                       const newIndex = receivedData && receivedData.messages?.map(d => d.uid).indexOf(uid);
                                           changeMainState("currentChat",{uid, index: newIndex !== -1 ? newIndex : 0}).then(() => {
-                                            timeouts.current = setTimeout(() => {
-                                                changeModalState("newMsg", false); 
-                                                closeModalFunc();
-                                                window.clearTimeout(timeouts?.current);  
-                                             }, 300);
+                                            if(_isMounted?.current){
+                                              timeouts.current = setTimeout(() => {
+                                                if(_isMounted?.current){
+                                                  changeModalState("newMsg", false); 
+                                                  closeModalFunc();
+                                                  window.clearTimeout(timeouts?.current);
+                                                }
+                                              }, 300);
+                                            }
                                           });
+                                  }
                                 }).catch(() => {
-                                  changeModalState("newMsg", false);
+                                  _isMounted?.current && changeModalState("newMsg", false);
                                 });
+                              }
                             });
                       removeSelectedUser();
                   }
@@ -161,4 +172,14 @@ NewMsgModal.propTypes = {
 NewMsgModal.defaultProps = {
     sendPostForm: {}
 }
-export default React.memo(NewMsgModal);
+const mapDispatchToProps = dispatch => {
+  return {
+      changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+  }
+}
+const mapStateToProps = state => {
+  return {
+      suggestionsList: state[Consts.reducers.USERSLIST].suggestionsList
+  }
+}
+export default connect( mapStateToProps, mapDispatchToProps )(React.memo(NewMsgModal));

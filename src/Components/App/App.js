@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useContext, Suspense, lazy , useState, useCallback } from "react";
+import React, { Fragment, useEffect, useContext, Suspense, lazy , useState, useCallback, memo } from "react";
 import { Switch, Route, useHistory, useLocation } from "react-router-dom";
 import { AppContext } from "../../Context";
 import { auth, changeConnectivityStatus } from "../../Config/firebase";
@@ -14,6 +14,10 @@ import { retry } from "../../Utilities/RetryImport";
 import LostConnectivity from "../LostConnectivity/LostConnectivity";
 import { disableReactDevTools, lowerCaseString } from "../../Utilities/Utility";
 import { availableFonts } from "../../Utilities/Consts";
+import * as Consts from "../../Utilities/Consts";
+import * as actionTypes from "../../Store/actions/actions";
+import { updateSuggestionsListAsync } from "../../Store/actions/actionCreators";
+import { connect } from "react-redux";
 
 //lazy loading
 const Header = lazy(()=> retry(()=> import("../Header/Header")));
@@ -45,27 +49,21 @@ const Suggestions = lazy(() => retry(()=>  import("../../Pages/Suggestions/Sugge
 //--xx---//
 // TODO: REFACTOR CODE
 
-const App = () => {
+const App = ({ changeModalState, modalsState, usersModalList, updateSuggestionsList, suggestionsList, explore, isUsersListLoading }) => {
   const context = useContext(AppContext);
   const {
     updatedReceivedData,
     updateUserState,
     updateUID,
     receivedData,
-    updateSuggestionsList,
     currentPage,
     changeMainState,
     uid,
-    suggestionsList,
-    modalsState,
-    changeModalState,
-    usersModalList,
     unfollowModal,
     usersProfileData,
     reelsProfile,
     currentPostIndex,
     testStorageConnection,
-    explore,
     currentHour,
     loadingState,
     authLogout,
@@ -77,6 +75,7 @@ const App = () => {
   const location = useLocation();
   const [isConnected, setConnectivity] = useState(navigator.onLine);
   const renderHeader = (
+    user &&
     <Header
       receivedData = {receivedData}
       closeNotificationAlert = {closeNotificationAlert}
@@ -115,8 +114,9 @@ const App = () => {
         updateUserState(true);
         updateUID(authUser?.uid).then(() => {
           changeMainState("currentUser", authUser);
-          updatedReceivedData(authUser?.uid);
-          updateSuggestionsList();
+          updatedReceivedData(authUser?.uid, true).then(() => {
+            updateSuggestionsList();
+          });
         });
         changeConnectivityStatus(authUser?.uid);
         testStorageConnection();
@@ -206,7 +206,7 @@ const App = () => {
           <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div><LoadingScreen /></div>}>
             <Switch>
             <Route exact path="/">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 ?
+              {user ?
                 <>
                 {renderHeader}
                 <MobileHeader />
@@ -217,7 +217,7 @@ const App = () => {
             </Route>
             <Route exact path="/auth" component={AuthPage} />
             <Route exact path="/messages">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
+              {renderHeader}
               { //Guards
                 receivedData && Object.keys(receivedData).length > 0 && receivedData?.messages ?
                  <Messages history={history} />
@@ -227,13 +227,13 @@ const App = () => {
               <MobileNav />
             </Route>
             <Route exact path="/add-post">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
+              {renderHeader}
               <MobileHeader />
               <CreatePage loadingState={loadingState} />
               <MobileNav />
             </Route>
             <Route exact path="/notifications">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
+              {renderHeader}
               <MobileHeader />
               {
                 receivedData && receivedData?.notifications ?
@@ -244,7 +244,7 @@ const App = () => {
               <MobileNav />
             </Route>
             <Route exact path="/profile">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
+              {renderHeader}
               <MobileHeader />
               {
                 receivedData && Object.keys(receivedData).length > 0 ?
@@ -256,7 +256,7 @@ const App = () => {
               <Footer />
             </Route>
             <Route exact path="/user_profile/:name/:userId">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
+              {renderHeader}
               <MobileHeader />
               {
                 usersProfileData && Object.keys(usersProfileData).length > 0 && usersProfileData?.posts ? 
@@ -268,7 +268,7 @@ const App = () => {
               <Footer />
             </Route>
             <Route exact path="/browse-post">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
+              {renderHeader}
               <MobileHeader />
               {
                 Object.keys(usersProfileData).length > 0 && usersProfileData?.posts &&  usersProfileData?.posts[currentPostIndex?.index] ?
@@ -279,7 +279,7 @@ const App = () => {
               <MobileNav />
             </Route>
             <Route exact path="/edit-profile">
-              {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
+              {renderHeader}
               <MobileHeader />
               {
                  receivedData && Object.keys(receivedData).length > 0 && receivedData?.profileInfo?
@@ -299,7 +299,7 @@ const App = () => {
               }
             </Route>
             <Route exact path="/explore">
-            {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
+            {renderHeader}
             <MobileHeader />
               {  
                explore ?
@@ -311,21 +311,21 @@ const App = () => {
             <Footer />
             </Route>
             <Route exact path="/about">
-                {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
+                {renderHeader}
                 <MobileHeader />
                 <About changeMainState={changeMainState} />
                 <MobileNav />
                 <Footer />
             </Route>
             <Route exact path="/search">
-            {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
+            {renderHeader}
               <MobileHeader/>
               <MobileSearch />
               <MobileNav />
               <Footer />
             </Route>
             <Route path="/explore/people">
-            {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
+            {renderHeader}
             <MobileHeader />
             {
               suggestionsList && suggestionsList.length > 0 ?
@@ -335,7 +335,7 @@ const App = () => {
               changeMainState={changeMainState}
               changeModalState={changeModalState}
               receivedData={receivedData}
-              loadingState={loadingState}
+              loadingState={isUsersListLoading}
                />
               :
               <ErrorRoute type="403" />
@@ -344,7 +344,7 @@ const App = () => {
             <Footer />
             </Route>
             <Route path="*" >
-                {(user && receivedData && Object.keys(receivedData).length) > 0 && renderHeader}
+                {renderHeader}
                 <MobileHeader />
                 <ErrorRoute type="404"/>
                 <MobileNav />
@@ -358,5 +358,19 @@ const App = () => {
     </Fragment>
   );
 };
-
-export default App;
+const mapDispatchToProps = dispatch => {
+  return {
+      changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload:  {modalType, hasDataList, usersList, usersType}}),
+      updateSuggestionsList: () => dispatch(updateSuggestionsListAsync())
+  }
+}
+const mapStateToProps = state => {
+  return {
+      usersModalList: state[Consts.reducers.MODALS].usersModalList,
+      modalsState: state[Consts.reducers.MODALS].modalsState,
+      suggestionsList: state[Consts.reducers.USERSLIST].suggestionsList,
+      explore: state[Consts.reducers.USERSLIST].explore,
+      isUsersListLoading: state[Consts.reducers.USERSLIST].isLoading,
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(memo(App));

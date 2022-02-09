@@ -2,15 +2,27 @@ import React, { Fragment, memo } from "react";
 import { FiHeart } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import PropTypes from "prop-types";
+import Loader from "react-loader-spinner";
 
-const LikePost = ({isPostLiked, handleCurrLikes}) => {
+const LikePost = ({isPostLiked, handleCurrLikes, isLiking}) => {
     return (
         <Fragment>
-            {!isPostLiked ? (
+            {
+                isLiking ?
+                <span>
+                    <Loader
+                        type="Rings"
+                        color="var(--light-black)"
+                        arialLabel="loading-indicator"
+                        height={26}
+                        width={26}/>   
+                </span>
+                :
+                !isPostLiked ? (
                 <span data-cy="like" className="post--like--icon" onClick={() => handleCurrLikes(true)}>
                 <FiHeart />
                 </span>
-            ) : (
+                ) : (
                 <span
                 data-cy="like"
                 onClick={() => handleCurrLikes(false)}

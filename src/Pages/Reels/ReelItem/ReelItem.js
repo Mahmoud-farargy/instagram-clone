@@ -21,6 +21,9 @@ import OptionsModal from "../../../Components/Generic/OptionsModal/OptionsModal"
 import Loader from "react-loader-spinner";
 import { trimText } from "../../../Utilities/TrimText";
 import FollowUnfollowBtn from "../../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
+import { connect } from "react-redux";
+import * as actionTypes from "../../../Store/actions/actions";
+
 function ReelItem(props) {
   const reelVideo = useRef(null);
   const commentInputRef = useRef(null);
@@ -34,13 +37,12 @@ function ReelItem(props) {
   const [buffering, setBuffering] = useState(true);
   const [showOptions, setShowingOptions] =useState(false);
   const [hasError, setErrorState] = useState(false);
-  const { item, index, browseUser, groupName, setCurrPlayingReel, currentPlayingReel, maxLength } = props;
+  const { item, index, browseUser, groupName, setCurrPlayingReel, currentPlayingReel, maxLength, changeModalState } = props;
   const {
     handleReelsActions,
     receivedData = {},
     reelsProfile = {},
     currentReel,
-    changeModalState,
     notify,
   } = context;
 
@@ -360,6 +362,12 @@ ReelItem.propTypes = {
   groupName: PropTypes.string.isRequired,
   setCurrPlayingReel: PropTypes.func.isRequired,
   currentPlayingReel: PropTypes.number.isRequired,
-  maxLength: PropTypes.number
+  maxLength: PropTypes.number,
+  changeModalState: PropTypes.func.isRequired
 };
-export default withBrowseUser(React.memo(ReelItem));
+const mapDispatchToProps = dispatch => {
+  return {
+      changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+  }
+}
+export default connect(null, mapDispatchToProps)(withBrowseUser(React.memo(ReelItem)));

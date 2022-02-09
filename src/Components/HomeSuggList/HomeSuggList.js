@@ -11,7 +11,7 @@ const HomeSuggList = (props) => {
     setRandNum(Math.floor(Math.random() * suggestionsList?.length - 6));
   }, [suggestionsList]);
 
-  if (suggestionsList.length >= 1 && !loadingState?.suggList) {
+  if (receivedData && (Object.keys(receivedData).length > 0) && (suggestionsList.length) >= 1 && !loadingState) {
     return (
       <div className="suggestions--home--container">
         <div className="suggestions--header flex-row">
@@ -57,7 +57,7 @@ const HomeSuggList = (props) => {
         </div>
       </div>
     );
-  } else if (loadingState?.suggList) {
+  } else if (loadingState) {
     return (
       <div className="suggestions--home--container">
         <div className="suggestions--list">
@@ -86,7 +86,7 @@ const HomeSuggList = (props) => {
 };
 HomeSuggList.propTypes = {
   suggestionsList: PropTypes.array.isRequired,
-  loadingState: PropTypes.object.isRequired,
+  loadingState: PropTypes.bool.isRequired,
   receivedData: PropTypes.object.isRequired,
   onlineList: PropTypes.array.isRequired,
 };

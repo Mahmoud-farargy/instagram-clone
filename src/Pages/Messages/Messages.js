@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useRef, lazy, Suspense} from "react";
+import React, { useEffect, useState, useContext, useRef, lazy, Suspense, memo} from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
@@ -24,12 +24,15 @@ import NewMsgModal from "../../Components/NewMsgModal/NewMsgModal";
 import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollowBtn";
 import MSGUsers from "./Users/Users";
 import { retry } from "../../Utilities/RetryImport";
+import { connect } from "react-redux";
+import * as Consts from "../../Utilities/Consts";
+import * as actionTypes from "../../Store/actions/actions";
 
 const EmojiPicker = lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
 const OptionsModal = lazy(() => retry(() => import("../../Components/Generic/OptionsModal/OptionsModal")));
 
 const Messages = (props) => {
-    const { location, history } = props;
+    const { location, history, changeModalState, modalsState} = props;
     // refs
     const autoScroll = useRef(null);
     const fileUploadEl = useRef(null);
@@ -51,7 +54,7 @@ const Messages = (props) => {
     typingTo: "",
     viewing: "",
   });
-  const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, modalsState, changeModalState, deleteChat, handleUserBlocking, confirmPrompt } = context;
+  const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, deleteChat, handleUserBlocking, confirmPrompt } = context;
   const { messages } = receivedData;
   const currUser = receivedData?.messages[currentChat.index];
   const unreadedMessagesCount = receivedData?.messages?.filter(user => user?.notification)?.length;
@@ -135,9 +138,9 @@ const Messages = (props) => {
     if(compState?.inputValue){
         setSendingState(true);
         handleSendingMessage({content:compState.inputValue, uid: currUser?.uid, type: "text", pathname: ""}).then(() => {
-          setSendingState(false);
+          _isMounted.current && setSendingState(false);
         }).catch(() => {
-          setSendingState(false);
+          _isMounted.current && setSendingState(false);
         }); 
         setCompState({
           ...compState,
@@ -163,9 +166,9 @@ const Messages = (props) => {
     }else if(type === "like") {
       setSendingState(true);
       handleSendingMessage({content: "", uid: currUser?.uid, type: "like", pathname: ""}).then(() => {
-        setSendingState(false);
+        _isMounted.current && setSendingState(false);
       }).catch(() => {
-        setSendingState(false);
+        _isMounted.current && setSendingState(false);
       });
     }
   }
@@ -211,9 +214,9 @@ const Messages = (props) => {
                             setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
                             setSendingState(true);
                             handleSendingMessage({content: url,uid: currUser?.uid,type: itemType, pathname: fileName }).then(() => {
-                              setSendingState(false);
+                              _isMounted.current && setSendingState(false);
                             }).catch(() => {
-                              setSendingState(false);
+                              _isMounted.current && setSendingState(false);
                             });
                             uploadedItem = "";
                           }
@@ -281,8 +284,10 @@ const Messages = (props) => {
           const pickFirstContent = receivedData?.messages?.map(user => user.uid).indexOf(secondUserUid);
           if(pickFirstContent !== -1){
             timeouts.current = setTimeout(() => {
+              if(_isMounted.current){
                 changeMainState("currentChat", { uid: secondUserUid,index: 0 });
                 window.clearTimeout(timeouts.current);
+              }
             },300);
           }
         }
@@ -522,6 +527,17 @@ const Messages = (props) => {
 Messages.propTypes = {
   browseUser: PropTypes.func.isRequired,
   location: PropTypes.object,
-  history: PropTypes.object
+  history: PropTypes.object,
+  changeModalState: PropTypes.func.isRequired
 }
-export default withBrowseUser(withRouter(Messages));
+const mapDispatchToProps = dispatch => {
+  return {
+      changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+  }
+}
+const mapStateToProps = state => {
+  return {
+      modalsState: state[Consts.reducers.MODALS].modalsState
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withBrowseUser(withRouter(memo(Messages))));

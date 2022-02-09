@@ -49,7 +49,7 @@ function Reels(props) {
                         {
                             !loading ?
                            reelsProfile?.reels?.length > 0 && reelItems && reelItems.length > 0 && reelItems.sort((a,b) => b.date.seconds - a.date.seconds ).map((reel, i) => {
-                                return reel && <ReelItem setCurrPlayingReel={ memoizedSettingReel } currentPlayingReel={currentPlayingReel} key={i} maxLength={(reelItems?.length ? reelItems?.length : NaN)} groupName={reelsProfile?.reels?.[currentReel?.groupIndex]?.groupName} index={i} item={reel}/>
+                                return reel ? (<ReelItem setCurrPlayingReel={ memoizedSettingReel } currentPlayingReel={currentPlayingReel} key={i} maxLength={(reelItems?.length ? reelItems?.length : NaN)} groupName={reelsProfile?.reels?.[currentReel?.groupIndex]?.groupName} index={i} item={reel}/>) : <p>Reel may got deleted.</p>
                                 })
                             :
                             <div className="reels-loading flex-column">

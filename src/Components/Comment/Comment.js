@@ -1,4 +1,4 @@
-import React, { useState, Fragment,  useEffect } from "react";
+import React, { useState, Fragment,  useEffect, useRef } from "react";
 import { FiHeart } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import * as Consts from "../../Utilities/Consts";
@@ -7,35 +7,55 @@ import GetFormattedDate from "../../Utilities/FormatDate";
 import { Avatar } from "@material-ui/core";
 import { trimText } from "../../Utilities/TrimText";
 import { linkifyText } from "../../Utilities/ReplaceHashes";
+import { connect } from "react-redux";
+import * as actionTypes from "../../Store/actions/actions";
 import PropTypes from "prop-types";
 
 const Commment =(props)=>{
-    var { comment, replayFunc, postIndex , postId,commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, changeModalState, contentURL, contentType, deleteComment, browseUser, updateHomePost, handleHomePostLoading } = props;
+    var { changeModalState, comment, replayFunc, postIndex , postId,commentIndex , handleLikingComments, postOwnerId, myName, uid, userAvatar, contentURL, contentType, deleteComment, browseUser, updateHomePost, handleHomePostLoading } = props;
+    const _isMounted = useRef(true);
     const [viewSubComments, setSubComments] = useState(false); 
     const [postLiked, setPostLiked] = useState(false);
     useEffect(()=>{
         setPostLiked(comment?.likes.some(el => el.id === uid));
     },[comment, uid]);
+    useEffect(() => () => _isMounted.current = false,[]);
     const directTo = () => {
         browseUser( comment?.uid, comment?.userName ).then(() =>{
-             changeModalState("users", false, "", "");
+            if(_isMounted.current){
+                changeModalState("users", false, "", "");
+            }
         });
     }
     const funcValidator = (func, ...args) => {
         return typeof func === "function" && func(...args);
     }
     const likeComment = ({...rest}) => {
-        funcValidator(handleHomePostLoading, true);
+        const isMyPost = postOwnerId === uid;
+        !isMyPost && funcValidator(handleHomePostLoading, true);
         handleLikingComments({...rest}).then(() => {
-            funcValidator(updateHomePost,{uid: postOwnerId, postID: postId});
-        }).catch(() => funcValidator(handleHomePostLoading, false));
+            if(_isMounted.current){
+                !isMyPost && funcValidator(updateHomePost,{uid: postOwnerId, postID: postId});
+            }
+        }).catch(() => {
+            if(_isMounted.current){
+                !isMyPost && funcValidator(handleHomePostLoading, false);
+            }
+        });
     }   
 
     const delComment = ({...rest}) => {
-        funcValidator(handleHomePostLoading, true);
+        const isMyPost = postOwnerId === uid;
+        !isMyPost && funcValidator(handleHomePostLoading, true);
         deleteComment({...rest}).then(() => {
-            funcValidator(updateHomePost,{uid: postOwnerId, postID: postId});
-        }).catch(() => funcValidator(handleHomePostLoading, false));
+            if(_isMounted.current){
+                !isMyPost && funcValidator(updateHomePost,{uid: postOwnerId, postID: postId});
+            }
+        }).catch(() => {
+            if(_isMounted.current){
+                !isMyPost && funcValidator(handleHomePostLoading, false);
+            }
+        });
     }  
     return(
         <Fragment>
@@ -161,4 +181,9 @@ Comment.propTypes = {
     updateHomePost: PropTypes.func,
     handleHomePostLoading: PropTypes.func
 }
-export default withBrowseUser(Commment);
+const mapDispatchToProps = dispatch => {
+    return {
+        changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+    }
+}
+export default connect(null, mapDispatchToProps)(withBrowseUser(Commment));

@@ -13,6 +13,9 @@ const UserModal = () => {
        return () => _isMounted.current = false
     });
     const nameOutput = userName ? ("@" + userName) : "this user";
+    const closeModal = () => {
+        handleUnfollowingUsers({user: {}, state: false})
+    }
     return (
         <Fragment>
             <div id="unfollowWindow">
@@ -34,14 +37,14 @@ const UserModal = () => {
                         </div>
                     </div>
                     <span className="uf--btn">
-                        <FollowUnfollowBtn shape="quaternary" userData={{userId: uid, uName: userName, uAvatarUrl: userAvatarUrl, isVerified: isVerified}} confirmed={true} isRequestAuthorized={true}/>
+                        <FollowUnfollowBtn shape="quaternary" userData={{userId: uid, uName: userName, uAvatarUrl: userAvatarUrl, isVerified: isVerified}} confirmed={true} isRequestAuthorized={true} isFollowUnfollowModal={true}/>
                     </span>
-                    <span> Cancel </span>
+                    <span onClick={() => closeModal()}> Cancel </span>
                                
               </OptionsModal>)
                 <div
                 className="backdrop"
-                onClick={() => handleUnfollowingUsers({user: {}, state: false})}
+                onClick={() => closeModal()}
                 ></div>   
             </div>
 

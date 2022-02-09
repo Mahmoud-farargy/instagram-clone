@@ -12,12 +12,13 @@ import UserNameComp from "../../Components/UserName/UserName";
 const SuggestItem =(props)=>{
     const { userName, isVerified, userUid, userAvatarUrl, browseUser, creationDate, followers, isOnline, user, loadingState, receivedData } = props;
     const mutuals = receivedData?.following && receivedData?.following?.length > 0 && receivedData?.following?.filter(el => el.receiverUid !== receivedData?.uid && followers?.sort((a,b) => b?.date?.seconds -  a?.date?.seconds).some(item => item?.senderUid === el?.receiverUid)).slice(0,1);
+
     return(
         <Fragment>
             <>
                {
                 // SKELETON
-                loadingState?.suggList ?
+                loadingState ?
                 <li className="suggestion--item flex-row mb-3">
                     <div className="side--user--info flex-row">
                         <Skeleton count={1} circle={true} width={32} height={32} />
@@ -62,6 +63,7 @@ SuggestItem.propTypes = {
     userUid: PropTypes.string.isRequired,
     followers: PropTypes.array.isRequired,
     isOnline: PropTypes.bool,
+    loadingState: PropTypes.bool.isRequired,
     creationDate: PropTypes.oneOfType([
         PropTypes.object,
         PropTypes.string

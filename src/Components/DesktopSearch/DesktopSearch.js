@@ -45,9 +45,9 @@ const DesktopSearch = ({ controlSearchBox, openSearchBox }) => {
         if (_isMounted?.current && sentence && isVoiceSearching?.current) {
           setSearchVal(sentence);
           searchUsers(sentence, "regular").then((results) => {
-            isVoiceSearching.current = false;
-            setVoiceBox(false);
             if (_isMounted?.current && results) {
+              isVoiceSearching.current = false;
+              setVoiceBox(false);
               if (results.length > 0) {
                 convertSpeech({ type: "tts", phrase: `Here are the results found for ${sentence}` });
               } else {
