@@ -1,5 +1,4 @@
-import React, { Fragment, useContext, useState, useEffect, memo } from "react";
-import { AppContext } from "../../Context";
+import React, { Fragment, useState, useEffect, memo } from "react";
 import "./HomeReels.scss";
 import { auth } from "../../Config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -11,11 +10,11 @@ import {
   IoIosArrowDroprightCircle,
 } from "react-icons/io";
 import Carousel from "react-items-carousel";
+import { connect } from "react-redux";
+import * as Consts from "../../Utilities/Consts";
 
-const HomeReels = () => {
+const HomeReels = ({ homeReels, isUsersListLoading, isReceivedDataLoading }) => {
   const [activeItemIndex, setActiveItemIndex] = useState(0);
-  const context = useContext(AppContext);
-  const { homeReels, loadingState } = context;
   const [, loading] = useAuthState(auth);
   const [newReelsArr, setReelsArr] = useState([]);
   const [itemsPerSide, setItemsPerSlide] = useState(6);
@@ -89,7 +88,31 @@ const HomeReels = () => {
   }, [homeReels]);
   return (
     <Fragment>
-      {(!loading || !loadingState?.suggList) && newReelsArr.length > 0 ? (
+      {(isReceivedDataLoading || loading || isUsersListLoading) ? (
+        <div id="homeReels">
+          <div className="home--reels--inner">
+            <div className="home--reels--box flex-row">
+              <ul className="home--reels--ul flex-row">
+                <li className="flex-column">
+                  <Skeleton
+                    count={7}
+                    height={62}
+                    width={62}
+                    circle={true}
+                    className="ml-4"
+                  />
+                  <Skeleton
+                    count={7}
+                    height={7}
+                    width={62}
+                    className="ml-4 mt-2"
+                  />
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      ) : newReelsArr.length > 0 ? (
         <section id="homeReels">
           <div className="home--reels--deck">
             <div className="home--reels--inner">
@@ -131,33 +154,14 @@ const HomeReels = () => {
             </div>
           </div>
         </section>
-      ) : (loading || loadingState?.suggList) && newReelsArr.length <= 0 ? (
-        <div id="homeReels">
-          <div className="home--reels--inner">
-            <div className="home--reels--box flex-row">
-              <ul className="home--reels--ul flex-row">
-                <li className="flex-column">
-                  <Skeleton
-                    count={7}
-                    height={62}
-                    width={62}
-                    circle={true}
-                    className="ml-4"
-                  />
-                  <Skeleton
-                    count={7}
-                    height={7}
-                    width={62}
-                    className="ml-4 mt-2"
-                  />
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      ): null}
     </Fragment>
   );
 };
-
-export default memo(HomeReels);
+const mapStateToProps = state => {
+  return {
+      homeReels: state[Consts.reducers.USERSLIST].homeReels,
+      isUsersListLoading: state[Consts.reducers.USERSLIST].isLoading,
+  }
+}
+export default connect( mapStateToProps )(memo(HomeReels));

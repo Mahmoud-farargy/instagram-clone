@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Auxiliary from "../../HOC/Auxiliary";
 import { Avatar } from "@material-ui/core";
 import PropTypes from "prop-types";
@@ -7,15 +7,17 @@ import { GoVerified } from "react-icons/go";
 const FollowRequestItem =(props)=>{
     const { request, browseUser, handleFollowRequests } = props;
     const [isLoading, setLoading] = useState(false);
+    const _isMounted = useRef(true);
+    useEffect(() => ()=> _isMounted.current = false, []);
     const respond = (type) => {
         setLoading(true);
         handleFollowRequests({type: type, userId: request?.uid, userAvatarUrl: request?.userAvatarUrl, userName: request?.userName, isVerified: (request?.isVerified || false)})
         .then(() => {
-            setLoading(false);
+            _isMounted.current && setLoading(false);
         }).catch(() => {
-            setLoading(false);
+            _isMounted.current && setLoading(false);
         })
-    } 
+    }
     return(
         <Auxiliary >
             <li className="reuqest-item space__between noti--popup-item">

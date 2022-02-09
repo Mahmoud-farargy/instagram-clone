@@ -35,6 +35,7 @@
     "react-loading-skeleton": "^2.2.0",
     "react-modal": "^3.14.3",
     "react-moment": "^1.1.1",
+    "react-redux": "^7.2.6",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.4",
@@ -42,6 +43,8 @@
     "react-toastify": "^7.0.4",
     "react-truncate": "^2.4.0",
     "react-youtube": "^7.14.0",
+    "redux": "^4.1.2",
+    "redux-thunk": "^2.4.1",
     "save": "^2.4.0",
     "styled-components": "^5.3.0"
   },
@@ -74,6 +77,7 @@
   "devDependencies": {
     "cypress": "^7.5.0",
     "cypress-firebase": "^1.9.1",
-    "firebase-admin": "^9.9.0"
+    "firebase-admin": "^9.9.0",
+    "redux-devtools-extension": "^2.13.9"
   }
 }

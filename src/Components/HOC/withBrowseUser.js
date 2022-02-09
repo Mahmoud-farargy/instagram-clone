@@ -22,12 +22,10 @@ export const withBrowseUser = WrappedComponent => {
             if (specialUid && name) {
                 if(specialUid !== uid){
                     getUsersProfile(specialUid).then(()=>{
+                      resolve();
                       if(this._isMounted){
                         this.setState({...this.state,isLoading: false});
                         this.props.history.push(`/user_profile/${name}/${specialUid}`);
-                        resolve();
-                      }else{
-                        reject();
                       }
                     }).catch((err) =>{
                       reject();

@@ -166,23 +166,25 @@ const ChangePassNEmail = (props) => {
       auth.currentUser
         .reauthenticateAndRetrieveDataWithCredential(credentials)
         .then(() => {
-          auth.currentUser
-            .updateEmail(formState?.email.value)
-            .then(() => {
-              if(_isMounted?.current){
-                  notify("Email updated successfully", "success");
-                  setModal({ ...openModal, passModal: false });
-                  setSubmission({ ...isSubmitted, modalForm: false });
-              }
-            })
-            .catch(() => {
-              if(_isMounted?.current){
-                notify(
-                  "Failed to update email. Please try again later!",
-                  "error"
-                );
-              }
-            });
+          if(_isMounted?.current){
+            auth.currentUser
+              .updateEmail(formState?.email.value)
+              .then(() => {
+                if(_isMounted?.current){
+                    notify("Email updated successfully", "success");
+                    setModal({ ...openModal, passModal: false });
+                    setSubmission({ ...isSubmitted, modalForm: false });
+                }
+              })
+              .catch(() => {
+                if(_isMounted?.current){
+                  notify(
+                    "Failed to update email. Please try again later!",
+                    "error"
+                  );
+                }
+              });
+          }
         })
         .catch(() => {
           if(_isMounted?.current){

@@ -50,7 +50,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
   useEffect(() =>{
       if(contentPreview && new URL(contentPreview).protocol === 'blob:'){
         async function convertBlobToFile() {
-          return await fetch(contentPreview).then(r => r.blob());
+          return await fetch(contentPreview).then(r => _isMounted.current && r.blob());
         }
         convertBlobToFile().then(res => {
           if(_isMounted?.current){
@@ -301,7 +301,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                 {
                   loadingState.uploading ?
                     <div className="uploading__in__progress flex-column">
-                        <h4 className="mb-3">{ shareState.progressBarPercentage <= 0 ? "Preparing..": shareState.progressBarPercentage >= 80 ?  "Finishing up..." : "Uploading..." }</h4>
+                        <h4 className="mb-3">{ shareState.progressBarPercentage <= 0 ? "Preparing..": shareState.progressBarPercentage >= 80 ?  "Finishing up... Hang tight!" : "Uploading..." }</h4>
                         <div className="my-4 w-100">
                         <Box display="flex" alignItems="center">
                             <Box width="100%" mr={1}>

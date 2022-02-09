@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef, memo } from "react";
 import Auxiliary from "../../Components/HOC/Auxiliary";
 import "./Home.css";
 import Post from "../../Components/Post/Post";
@@ -20,28 +20,29 @@ import GSCardItem from "./GSCardItem/GSCardItem";
 import { GOU } from "../../Utilities/GetOnlineUsers";
 import List from "../../Components/Generic/List/List";
 import appConfig from "../../Config/app-config.json";
+import { connect } from "react-redux";
+import * as Consts from "../../Utilities/Consts";
+import * as actionTypes from "../../Store/actions/actions";
+import { updateSuggestionsListAsync } from "../../Store/actions/actionCreators";
 
 const Home = (props) => {
+  const { changeModalState, updateSuggestionsList, suggestionsList, homeFeed, isUsersListLoading } = props;
   let {
     receivedData,
     handlePeopleLikes,
     handleSubmittingComments,
-    suggestionsList,
     uid,
     deletePost,
     handleSubComments,
     handleLikingComments,
-    changeModalState,
     changeMainState,
     onCommentDeletion,
     isUserOnline,
-    homeReels,
-    loadingState,
     handleSavingPosts,
-    homeFeed
+    loadingState
   } = useContext(AppContext);
 
-  let posts = [...homeFeed,...receivedData?.posts]?.sort((a,b) => b.date?.seconds - a.date?.seconds); 
+  let posts = (receivedData && Object.keys(receivedData).length > 0) ? [...homeFeed,...receivedData?.posts]?.sort((a,b) => b.date?.seconds - a.date?.seconds): []; 
   posts = Array.from(
     new Set(posts.map((itemId) => itemId.id))
   ).map((ID) => posts.find((el) => el.id === ID));
@@ -70,7 +71,6 @@ const Home = (props) => {
     changeMainState("currentPage", "Home");
     return () => _isMounted.current = false;
   }, [uid]);
-
   const recievedAuth = localStorage.getItem("user");
   return (
     <Auxiliary>
@@ -79,11 +79,16 @@ const Home = (props) => {
           <div className="main--home--inner desktop-comp">
             <div className="home--posts--side flex-column">
               {
-                homeReels && homeReels.length > 0 && <HomeReels />
+                <HomeReels isReceivedDataLoading={loadingState.receivedData}/>
               } 
-              {!loading && posts?.length >= 1 ? 
+              { (loading || loadingState.receivedData) ? (
+                <div className="w-100 flex-column">
+                  <Skeleton count={6}height={500} className="mb-5" />
+                </div>
+              ) : posts?.length >= 1 ? 
                     <List list={posts} areHomePosts ={true} parentClass="full--width" increaseBy={3} intervalTime={900}>
                           <Post
+                           loadingState={loadingState}
                             myName={receivedData?.userName}
                             id={uid}
                             myAvatar={receivedData?.userAvatarUrl}
@@ -93,6 +98,7 @@ const Home = (props) => {
                             handleLikingComments={handleLikingComments}
                             isVerified={receivedData?.isVerified}
                             changeModalState={changeModalState}
+                            updateSuggestionsList={updateSuggestionsList}
                             deletePost={deletePost}
                             onCommentDeletion={onCommentDeletion}
                             handleSavingPosts={handleSavingPosts}
@@ -102,11 +108,7 @@ const Home = (props) => {
                             areCommentsDisabled= {(receivedData?.profileInfo?.professionalAcc?.disableComments) || false}
                           />
                     </List>
-              : loading ? (
-                <div className="w-100 flex-column">
-                  <Skeleton count={6}height={500} className="mb-5" />
-                </div>
-              ) : posts?.length < 1 ? (
+              : posts?.length < 1 ? (
                 <div className="voxgram--set--up--conainer">
                 <div className="voxgram--greeting">
                     <div className="empty--card">
@@ -163,7 +165,7 @@ const Home = (props) => {
                   <button className="txt_follow disabled">Switch</button>
                 </div>
               ) : null}
-              <HomeSuggsList receivedData={receivedData} loadingState={loadingState} suggestionsList={suggestionsList} onlineList={onlineList} />
+              <HomeSuggsList receivedData={receivedData} loadingState={isUsersListLoading} suggestionsList={suggestionsList} onlineList={onlineList} />
               <div className="home--footer desktop-only">
                <nav>
                  <ul className="flex-row">
@@ -187,4 +189,17 @@ const Home = (props) => {
     </Auxiliary>
   );
 };
-export default withRouter(Home);
+const mapDispatchToProps = dispatch => {
+  return {
+      changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}}),
+      updateSuggestionsList: () => dispatch(updateSuggestionsListAsync())
+  }
+}
+const mapStateToProps = state => {
+  return {
+      suggestionsList: state[Consts.reducers.USERSLIST].suggestionsList,
+      homeFeed: state[Consts.reducers.USERSLIST].homeFeed,
+      isUsersListLoading: state[Consts.reducers.USERSLIST].isLoading
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(memo(Home)));

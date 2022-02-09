@@ -10,12 +10,14 @@ import { trimText } from "../../../Utilities/TrimText";
 import { GoVerified } from "react-icons/go";
 import * as Consts from "../../../Utilities/Consts";
 import { useHistory } from "react-router-dom";
+import { connect } from "react-redux";
+import * as actionTypes from "../../../Store/actions/actions";
 
 const ModalListItem =(props)=>{
-    const {uid, userName, avatarUrl, date, isVerified , browseUser, type} = props;
+    const {uid, userName, avatarUrl, date, isVerified , browseUser, type, changeModalState} = props;
     const _isMounted = useRef(true);
     useEffect(() => () => _isMounted.current = false, []);
-    const {changeModalState, receivedData} = useContext(AppContext);
+    const { receivedData } = useContext(AppContext);
     const notMyItem = receivedData?.uid !== uid;
     const history = useHistory();
     const directTo = () => {
@@ -61,6 +63,12 @@ ModalListItem.propTypes = {
         PropTypes.string
     ]),
     browseUser: PropTypes.func.isRequired,
-    type: PropTypes.string
+    type: PropTypes.string,
+    changeModalState: PropTypes.func.isRequired
 }
-export default withBrowseUser(ModalListItem);
+const mapDispatchToProps = dispatch => {
+    return {
+        changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+    }
+}
+export default connect(null, mapDispatchToProps)(withBrowseUser(ModalListItem));

@@ -3,7 +3,7 @@ import React, {
   useState,
   useContext,
   useEffect,
-  useRef,
+  useRef
 } from "react";
 import "./DesktopPost.scss";
 import "../../Components/Post/Post.css";
@@ -40,12 +40,31 @@ import TweetContent from "../TweetContent/TweetContent";
 import PollContent from "../PollContent/PollContent";
 import YoutubeContent from "../YoutubeContent/YoutubeContent";
 import LikePost from "../Generic/LikePost/LikePost";
+import { connect } from "react-redux";
+import * as actionTypes from "../../Store/actions/actions";
 const EmojiPicker = React.lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
 
 const DesktopPost = (props) => {
-  const { browseUser, disableArrows } = props;
+  const { browseUser, disableArrows, changeModalState, modalsState } = props;
   const history = useHistory();
   const context = useContext(AppContext);
+  const [currPost, setCurrPost] = useState({
+    caption: "",
+    contentType: "",
+    contentURL: "",
+    comments: [],
+    likes: {},
+    location: "",
+    date: {},
+    postOwnerId: "",
+    id: "",
+    contentName: "",
+    userName: "",
+    songInfo: {},
+    pollData: {},
+    youtubeData: {},
+    disableComments: false
+  });
   const {
     changeMainState,
     usersProfileData,
@@ -55,14 +74,13 @@ const DesktopPost = (props) => {
     receivedData,
     handleSubmittingComments,
     handleSubComments,
-    changeModalState,
     handleUserBlocking,
     handleLikingComments,
     onCommentDeletion,
-    modalsState,
     deletePost,
     handleVoting,
-    isOpeningPost
+    isOpeningPost,
+    loadingState
   } = context;
   const [ currentIDX, setCurrentIDX ] = useState(0);
   const [isSendingComment, setSendingComment] = useState(false);
@@ -82,23 +100,23 @@ const DesktopPost = (props) => {
   const scrollToBottom = useRef(null);
   // xxxx-Refs--xxx
   var following = receivedData?.following;
-  var {
-    caption = "",
-    contentType,
-    contentURL = "",
-    comments = [],
-    likes = {},
-    location = "",
-    date = {},
-    postOwnerId = "",
-    id= "",
-    contentName= "",
-    userName= "",
-    songInfo= {},
-    pollData= {},
-    youtubeData = {},
-    disableComments
-  } = usersProfileData?.posts[currentIDX];
+  const currData = (typeof currentIDX === "number" && usersProfileData?.posts) ? usersProfileData?.posts[currentIDX] : {   
+  caption: "",
+  contentType: "",
+  contentURL: "",
+  comments: [],
+  likes: {},
+  location: "",
+  date: {},
+  postOwnerId: "",
+  id: "",
+  contentName: "",
+  userName: "",
+  songInfo: {},
+  pollData: {},
+  youtubeData: {},
+  disableComments: false
+};
   useEffect(() => {
     changeMainState("currentPage", "Post");
     return () => {
@@ -112,20 +130,19 @@ const DesktopPost = (props) => {
   }, []);
   useEffect(() => { 
     updateUsersWhoLiked();
-    setCurrentIDX(currentPostIndex?.index || 0);
+    setCurrentIDX(typeof currentPostIndex?.index === "number" ? currentPostIndex.index : 0);
     if(compState.insertedComment) setCompState({...compState, insertedComment: ""});
 }, [((currentPostIndex && currentPostIndex.index) && currentPostIndex.index)]);
 useEffect(() => {
   (scrollToBottom && scrollToBottom.current && scrollToBottom.current?.scrollIntoView) && scrollToBottom.current.scrollIntoView({block: "end"});
-},[comments.length]);
-  var postLiked = usersProfileData?.posts && usersProfileData?.posts[currentIDX]?.likes?.people?.some((el) => el.id === uid);
-  const areCommentsDisabled = (usersProfileData?.profileInfo?.professionalAcc?.disableComments || disableComments);
+},[currPost?.comments?.length]);
+useEffect(() => {
+  setCurrPost(currData);
+}, [currData]);
+  var postLiked = usersProfileData?.posts && currPost?.likes?.people?.some((el) => el.id === uid);
+  const areCommentsDisabled = (usersProfileData?.profileInfo?.professionalAcc?.disableComments || currPost?.disableComments);
   const handleCurrLikes = (boolean) => {
-    let postsData = usersProfileData?.posts;
-    if (postsData) {
-      const { postOwnerId, contentURL, contentType, id } = postsData[
-        currentIDX
-      ];
+      const { postOwnerId, contentURL, contentType, id } = currPost;
       handlePeopleLikes(
         boolean,
         id,
@@ -136,7 +153,6 @@ useEffect(() => {
         contentURL,
         contentType
       );
-    }
   };
   const directTo = () => {
     browseUser(usersProfileData?.uid, usersProfileData?.userName ).then(() => {
@@ -184,7 +200,7 @@ useEffect(() => {
   const updateUsersWhoLiked = () => {
     setCompState({
       ...compState,
-      alsoLiked: following?.filter(user => likes?.people?.some((el) => (user?.receiverUid !== receivedData?.uid) && (user?.receiverUid === el?.id))).slice(0,3) 
+      alsoLiked: following?.filter(user => currPost?.likes?.people?.some((el) => (user?.receiverUid !== receivedData?.uid) && (user?.receiverUid === el?.id))).slice(0,3) 
     })
   }
   useEffect(()=> {
@@ -195,9 +211,7 @@ useEffect(() => {
 
     let postsData = usersProfileData?.posts;
     if (postsData) {
-      const { id, postOwnerId, contentURL, contentType } = postsData[
-        currentIDX
-      ];
+      const { id, postOwnerId, contentURL, contentType } =  currPost;
       if (compState.insertedComment !== "") {
         setSendingComment(true);
         // //subcomment
@@ -214,9 +228,13 @@ useEffect(() => {
               contentURL,
               contentType
             ).then(() => {
-              setSendingComment(false);
+              if(_isMounted.current){
+                setSendingComment(false);
+              }
             }).catch(() =>{
-              setSendingComment(false);
+              if(_isMounted.current){
+                setSendingComment(false);
+              }
             });
           }else{
             setSendingComment(false);
@@ -234,9 +252,13 @@ useEffect(() => {
             contentURL,
             contentType
           ).then(() => {
-            setSendingComment(false);
+            if(_isMounted?.current){
+              setSendingComment(false);
+            }
           }).catch(() => {
-            setSendingComment(false);
+            if(_isMounted?.current){
+              setSendingComment(false);
+            }
           });
         }
         setCompState({
@@ -321,7 +343,7 @@ useEffect(() => {
       insertedComment: insertIntoText(compState?.insertedComment, x.emoji)
     })
   }
-  const similarsStr = (likes?.people?.some(el => el?.id === uid) && likes?.people?.length >3) ? (likes?.people?.length?.toLocaleString() -3) : (likes?.people?.length?.toLocaleString() -2);
+  const similarsStr = (currPost?.likes?.people?.some(el => el?.id === uid) && currPost?.likes?.people?.length >3) ? (currPost?.likes?.people?.length?.toLocaleString() -3) : (currPost?.likes?.people?.length?.toLocaleString() -2);
   return (
     <Fragment> 
         <span
@@ -349,7 +371,7 @@ useEffect(() => {
               <OptionsModal>
                {
                   usersProfileData?.uid === receivedData?.uid ?
-                  <span className="text-danger font-weight-bold" onClick={() => deletePost( usersProfileData?.posts[currentIDX]?.id, currentIDX, usersProfileData?.posts[currentIDX]?.contentName, usersProfileData?.posts[currentIDX]?.contentURL )}>
+                  <span className="text-danger font-weight-bold" onClick={() => deletePost( currPost?.id, currentIDX, currPost?.contentName, currPost?.contentURL ).then(() => _isMounted.current && changeModalState("comments", false))}>
                           Delete post
                   </span>
                   :
@@ -430,13 +452,13 @@ useEffect(() => {
                 <div id="post" className="post--card--container modalShow post--page">
                   <article className="post--card--article">
                   <div className="post--card--body desktop--left">
-                      {contentType === Consts.Image ? (
+                      {currPost?.contentType === Consts.Image ? (
                         <div className="w-100 h-100" style={{position: "relative"}}>
                           <img
                             loading="lazy"
                             onClick={() => doubleClickEvent()}
                             className="post__card__content"
-                            src={contentURL}
+                            src={currPost?.contentURL}
                             alt="post"
                             draggable="false"
                           />
@@ -458,25 +480,25 @@ useEffect(() => {
                             </div>
                           ) : null}
                         </div>
-                      ) : contentType === Consts.Video ? (
+                      ) : currPost?.contentType === Consts.Video ? (
                         <div className="w-100 h-100" style={{position: "relative"}}>
                           <VideoPostComp
-                            src={contentURL}
+                            src={currPost?.contentURL}
                             isMuted={true}
                             ref={vidRef}
                             isVidPlaying={true}
                             />
                         </div>
-                      ) :  contentType === Consts.Audio ? (
+                      ) :  currPost?.contentType === Consts.Audio ? (
                         <div className="post__card__content__outer">
-                            <AudioContent autoPlay url={contentURL} songInfo={songInfo || {}} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()}/>
+                            <AudioContent autoPlay url={currPost?.contentURL} songInfo={currPost?.songInfo || {}} userName={usersProfileData?.userName} doubleClickEvent={() => doubleClickEvent()}/>
                         </div>
-                      ) : contentType === Consts.Tweet ?
-                            <TweetContent text={contentURL} doubleClickEvent={() => doubleClickEvent()}/>
-                        : (contentType === Consts.Poll && pollData && Object.keys(pollData).length > 0) ?
-                            <PollContent pollData={pollData} postId={id} postOwnerId={postOwnerId} uid={uid} handleVoting={handleVoting}/>
-                        : (contentType === Consts.YoutubeVid && youtubeData && Object.keys(youtubeData).length > 0) ?
-                            <YoutubeContent youtubeData={youtubeData} autoPlay={true} />
+                      ) : currPost?.contentType === Consts.Tweet ?
+                            <TweetContent text={currPost?.contentURL} doubleClickEvent={() => doubleClickEvent()}/>
+                        : (currPost?.contentType === Consts.Poll && currPost?.pollData && Object.keys(currPost?.pollData).length > 0) ?
+                            <PollContent pollData={currPost?.pollData} postId={currPost?.id} postOwnerId={currPost?.postOwnerId} uid={uid} handleVoting={handleVoting}/>
+                        : (currPost?.contentType === Consts.YoutubeVid && currPost.youtubeData && Object.keys(currPost.youtubeData).length > 0) ?
+                            <YoutubeContent youtubeData={currPost.youtubeData} autoPlay={true} />
                       : null}
                     </div>
                     <div className="desktop--right desktop-only">
@@ -511,7 +533,7 @@ useEffect(() => {
                             <span tabIndex="0" aria-disabled="false" role="button" aria-label="View location">
                               <p style={{minHeight:"20px"}}>
                                 <TruncateMarkup line={1} ellipsis="...">
-                                  {location}
+                                  {currPost?.location}
                                 </TruncateMarkup>
                               </p>
                             </span>
@@ -536,36 +558,36 @@ useEffect(() => {
                                         <h6  onClick={() => directTo()} className="comment__text mt-1"> <strong>{usersProfileData?.userName}</strong> 
                                           
                                         </h6>
-                                        <Caption caption={caption} isFullCaption={true} userName="" />
+                                        <Caption caption={currPost?.caption} isFullCaption={true} userName="" />
                                       </span>
                                 </div>
                                 <div className="post--comment--actions flex-row">
-                                  <span><GetFormattedDate date={date?.seconds} ago /></span>
+                                  <span><GetFormattedDate date={currPost?.date?.seconds} ago /></span>
                                 </div>
                           </div>
                       
                         { 
                         !areCommentsDisabled ?
-                        (comments?.length >= 1 ? 
+                        (currPost?.comments?.length >= 1 ? 
                         <div className="h-100 w-100">
-                              {comments?.map((comment, i) => {
+                              {currPost?.comments?.map((comment, i) => {
                                 return (
                                   <Comment
                                     key={i}
                                     comment={comment}
                                     handleLikingComments={handleLikingComments}
-                                    postOwnerId={postOwnerId}
-                                    postId={id}
+                                    postOwnerId={currPost?.postOwnerId}
+                                    postId={currPost?.id}
                                     commentIndex={i}
                                     date={comment?.date}
                                     replayFunc={replayFunc}
                                     postIndex={currentPostIndex.index}
                                     myName={receivedData?.userName}
-                                    likes={likes}
+                                    likes={currPost?.likes}
                                     userAvatar={receivedData?.userAvatarUrl}
                                     uid={uid}
-                                    contentType={contentType}
-                                    contentURL={contentURL}
+                                    contentType={currPost?.contentType}
+                                    contentURL={currPost?.contentURL}
                                     changeModalState={changeModalState}
                                     deleteComment={onCommentDeletion}
                                   />
@@ -585,7 +607,7 @@ useEffect(() => {
                       <div className="post--card--footer flex-column">
                         <div className="post--footer--upper--row flex-row">
                           <div className=" flex-row">
-                            <LikePost isPostLiked={postLiked} handleCurrLikes={handleCurrLikes}/>
+                            <LikePost isPostLiked={postLiked} handleCurrLikes={handleCurrLikes} isLiking={loadingState.liking}/>
                             { 
                               !areCommentsDisabled && 
                               <span onClick={() =>inputField && inputField?.current && inputField?.current?.focus()}>
@@ -598,30 +620,30 @@ useEffect(() => {
                           </div>
                           <div className="bookmark__icon">
                           {
-                          receivedData?.savedposts?.some(sp => (sp.postOwnerId === postOwnerId && sp.id === id)) ?
-                          <RiBookmarkFill onClick={() => (contentType === Consts.Image || contentType === Consts.Video) && context.handleSavingPosts({boolean:false,data: {postOwnerId, id, userName, contentName, contentURL,contentType, date}})} />
+                          receivedData?.savedposts?.some(sp => (sp.postOwnerId === currPost?.postOwnerId && sp.id === currPost?.id)) ?
+                          <RiBookmarkFill onClick={() => context.handleSavingPosts({boolean:false,data: {postOwnerId: currPost?.postOwnerId, id: currPost?.id, userName: currPost?.userName, contentName: currPost?.contentName, contentURL: currPost?.contentURL,contentType: currPost?.contentType, date: currPost?.date}})} />
                           :
-                          <RiBookmarkLine onClick={() => (contentType === Consts.Image || contentType === Consts.Video) && context.handleSavingPosts({boolean:true,data: {postOwnerId, id, userName, contentName, contentURL,contentType, date}})}/>
+                          <RiBookmarkLine onClick={() => context.handleSavingPosts({boolean:true,data: {postOwnerId: currPost?.postOwnerId, id: currPost?.id, userName: currPost?.userName, contentName: currPost?.contentName, contentURL: currPost?.contentURL,contentType: currPost?.contentType, date: currPost?.date}})}/>
                         }
                           </div>
                         </div>
-                        {likes?.people?.length >= 1 && compState?.alsoLiked?.length > 0 ?
+                        {currPost?.likes?.people?.length >= 1 && compState?.alsoLiked?.length > 0 ?
                       <div className="people--also--liked flex-row">
                         <Avatar src={compState?.alsoLiked?.[0]?.receiverAvatarUrl} alt="people who also liked this feed"/>
-                            <p onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}>Liked by
+                            <p onClick={() => changeModalState("users", true, (currPost?.likes?.people?.length > 0 ? currPost?.likes?.people : []), Consts.LIKES)}>Liked by
                               <span>
                                 {
                                     compState?.alsoLiked?.map(el => <MutualLikes key={el?.receiverUid}item={el}/> )
                                 }
                                 {
-                                  (likes?.people?.some(el => el?.id === uid) ? likes?.people?.length -1 : likes?.people?.length ) > compState?.alsoLiked?.length && similarsStr > 0 &&
+                                  (currPost?.likes?.people?.some(el => el?.id === uid) ? currPost?.likes?.people?.length -1 : currPost?.likes?.people?.length ) > compState?.alsoLiked?.length && similarsStr > 0 &&
                                   <strong className="you--followed">
-                                  {likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr !== isNaN ? similarsStr : "many"} {similarsStr < 2 ? " person" : " others"}</strong>
+                                  {currPost?.likes?.people?.some(el => el?.id === uid) ? "" : " and"}<strong className="other__likers"> {similarsStr !== isNaN ? similarsStr : "many"} {similarsStr < 2 ? " person" : " others"}</strong>
                                   </strong>
                                 }
                                 {
                                   <strong className="you__followed">
-                                    {likes?.people?.some(el => el?.id === uid) && ", and you"}
+                                    {currPost?.likes?.people?.some(el => el?.id === uid) && ", and you"}
                                   </strong>
                                 }
                               </span>
@@ -629,21 +651,21 @@ useEffect(() => {
                             </p>
                       </div>
 
-                  : likes?.people?.length >= 1 && compState?.alsoLiked?.length <= 0 ?(
+                  : currPost?.likes?.people?.length >= 1 && compState?.alsoLiked?.length <= 0 ?(
                     <div
                       className="likes__count"
-                      onClick={() => changeModalState("users", true, (likes?.people?.length > 0 ? likes?.people : []), Consts.LIKES)}
+                      onClick={() => changeModalState("users", true, (currPost?.likes?.people?.length > 0 ? currPost?.likes?.people : []), Consts.LIKES)}
                     >
-                      {likes?.people?.length.toLocaleString()}{" "}
-                      {likes?.people?.length === 1 ? "like" : "likes"}
+                      {currPost?.likes?.people?.length.toLocaleString()}{" "}
+                      {currPost?.likes?.people?.length === 1 ? "like" : "likes"}
                     </div>
-                  )  :  (likes?.people?.length <= 0 && postOwnerId !== id) ?
+                  )  :  (currPost?.likes?.people?.length <= 0 && currPost?.postOwnerId !== currPost?.id) ?
                         <span className="like__invitation">Be the first to <strong onClick={() => handleCurrLikes(true)}>like this</strong> </span>
                     : null
                   }
 
                         <small className="post__date">
-                          <GetFormattedDate date={date?.seconds} /> • <time>{new Date(date?.seconds * 1000).toDateString()}</time>
+                          <GetFormattedDate date={currPost?.date?.seconds} /> • <time>{new Date(currPost?.date?.seconds * 1000).toDateString()}</time>
                         </small>
                         {
                           !areCommentsDisabled &&
@@ -712,6 +734,17 @@ useEffect(() => {
 };
 DesktopPost.propTypes = {
   browseUser: PropTypes.func.isRequired,
-  disableArrows: PropTypes.bool
+  disableArrows: PropTypes.bool,
+  changeModalState: PropTypes.func.isRequired
 };
-export default withBrowseUser(React.memo(DesktopPost));
+const mapDispatchToProps = dispatch => {
+  return {
+      changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+  }
+}
+const mapStateToProps = state => {
+  return {
+      modalsState: state[Consts.reducers.MODALS].modalsState
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withBrowseUser(React.memo(DesktopPost)));

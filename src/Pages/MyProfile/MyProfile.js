@@ -1,4 +1,4 @@
-import React, { useContext, Fragment, useState, useEffect, useRef, useCallback } from "react";
+import React, { useContext, Fragment, useState, useEffect, useRef, useCallback, memo } from "react";
 import { AppContext } from "../../Context";
 import { Avatar } from "@material-ui/core";
 import { useHistory, Link } from "react-router-dom";
@@ -23,8 +23,10 @@ import { trimText } from "../../Utilities/TrimText";
 import { linkifyText } from "../../Utilities/ReplaceHashes";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 import ProfileOptionsModal from "./ProfileOptionsModal";
+import { connect } from "react-redux";
+import * as actionTypes from "../../Store/actions/actions";
 
-const MyProfile =()=>{
+const MyProfile =({changeModalState, modalsState})=>{
     const _isMounted = useRef(true);
     const timeouts = useRef(null); 
     const history = useHistory();
@@ -36,7 +38,7 @@ const MyProfile =()=>{
         {sectionId: "saved", title: "saved", logo: <VscBookmark />},
     ]);
     const [reelsList, setReelsList] = useState([]);
-    const { receivedData,changeModalState, authLogout, usersProfileData, changeMainState, uid, currentPostIndex, modalsState, updateReelsProfile, activeProfileSection, testStorageConnection } = useContext(AppContext);
+    const { receivedData, authLogout, usersProfileData, changeMainState, uid, currentPostIndex, updateReelsProfile, activeProfileSection, testStorageConnection } = useContext(AppContext);
     useEffect(()=>{
         changeMainState("currentPage", "Profile");
        
@@ -67,9 +69,11 @@ const MyProfile =()=>{
         updateReelsProfile(uid).then(() => {
             if(_isMounted?.current){
                 timeouts.current = setTimeout(() => {
-                    changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
-                    window.clearTimeout(timeouts?.current);
-                    history.push("/reels");
+                    if(_isMounted?.current){
+                        changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
+                        window.clearTimeout(timeouts?.current);
+                        history.push("/reels");
+                    }
                 },250);
             }
         });
@@ -300,4 +304,14 @@ const MyProfile =()=>{
         </Fragment>
     )
 }
-export default MyProfile;
+const mapDispatchToProps = dispatch => {
+    return {
+        changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+    }
+}
+const mapStateToProps = state => {
+    return {
+        modalsState: state[Consts.reducers.MODALS].modalsState
+    }
+  }
+export default connect(mapStateToProps, mapDispatchToProps)(memo(MyProfile));

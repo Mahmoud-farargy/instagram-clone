@@ -94,28 +94,31 @@ const YoutubePhase = () => {
                     vidChecking: true
                 })
                 API().get(`https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${vidId}&format=json`).then((res) => {
-                    if (res.data) {
-                        const { thumbnail_url = "" } = res.data;
-                        setVidExistingState(true);
-                        setFormState({
-                            ...formState,
-                            vidChecking: false,
-                            vidThumbnail: thumbnail_url
-                        })
-                    } else {
+                    if(_isMounted.current){
+                        if (res.data) {
+                            const { thumbnail_url = "" } = res.data;
+                            setVidExistingState(true);
+                            setFormState({
+                                ...formState,
+                                vidChecking: false,
+                                vidThumbnail: thumbnail_url
+                            })
+                        } else {
+                            setVidExistingState(false);
+                            setFormState({
+                                ...formState,
+                                vidChecking: false
+                            })
+                        }
+                    }
+                }).catch(() => {
+                    if(_isMounted.current){
                         setVidExistingState(false);
                         setFormState({
                             ...formState,
                             vidChecking: false
                         })
                     }
-
-                }).catch(() => {
-                    setVidExistingState(false);
-                    setFormState({
-                        ...formState,
-                        vidChecking: false
-                    })
                 });
             }, 1400, timeIntervalId, false))();
         }

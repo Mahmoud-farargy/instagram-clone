@@ -8,6 +8,12 @@ function loopThroughSlides ({start= 1, finish= 5}){
         .auth--slide--content {
             img:nth-child(${i}){
                 z-index: ${ 88 + (i * 2)};
+                ${
+                finish <= 5 &&
+                    `&:not(.active__slide){
+                        opacity: ${(Math.floor(i * 1.3)) /10};
+                    }`
+                }
             }
         }
         `;
@@ -268,7 +274,16 @@ a:visited{
 }
 .auth--slide--container{
     width: 100%;
-    height: 100%;
+    align-self: center;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: 454px 618px;
+    -webkit-flex-basis: 454px;
+    -ms-flex-preferred-size: 454px;
+    flex-basis: 610px;
+    height: 618px;
+    margin-left: 0;
+    margin-right: -15px;
 }
 .fadeEffect{
     animation: fadeIn 0.1s ease-out;
@@ -717,22 +732,22 @@ time{
 .auth--slide--content{
     margin: 99px 0 0 151px;
     position: relative;
-    height: 427px;
+    height: auto;
 }
 .auth--slide--content img{
     position: absolute;
     inset: 0;
-    opacity:0.2;
+    opacity:0;
     background-color: var(--white);
-    transition: opacity 1.5s ease-in;
-    -webkit-transition: opacity 1.5s ease-in;
     pointer-events: none;
+    height: 427px;
+    width: 240px;
+    transition: opacity 1.5s ease-in;
 }
 ${loopThroughSlides({start: 1, finish: 5})}
 #slideContent .active__slide{
     opacity: 1;
     visibility: visible;
-    
     z-index:100 !important;
 }
 .auth{
@@ -3128,6 +3143,10 @@ a.prof__btn__unfollowed{
     }
     .noti--popup-item .noti--row{
         width:55%;
+    }
+    .increase--posts--count img{
+        width: 21px;
+        height: 21px;
     }
     .react-confirm-alert-body{
         width: 90% !important;

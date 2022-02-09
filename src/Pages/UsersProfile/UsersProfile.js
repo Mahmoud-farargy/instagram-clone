@@ -26,8 +26,10 @@ import FollowUnfollowBtn from "../../Components/FollowUnfollowBtn/FollowUnfollow
 import { trimText } from "../../Utilities/TrimText";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 import { linkifyText } from "../../Utilities/ReplaceHashes";
+import { connect } from "react-redux";
+import * as actionTypes from "../../Store/actions/actions";
 
-const UsersProfile = () => {
+const UsersProfile = ({ changeModalState, modalsState, suggestionsList }) => {
   const [, loading] = useAuthState(auth);
   // STATES
   const [isFollowed, setFollowingState] = useState(false);
@@ -51,9 +53,6 @@ const UsersProfile = () => {
     changeMainState,
     initializeChatDialog,
     receivedData,
-    changeModalState,
-    modalsState,
-    suggestionsList,
     handleUserBlocking,
     updateReelsProfile,
     isUserOnline,
@@ -74,10 +73,14 @@ const UsersProfile = () => {
     }
     setMsgInitialization(true);
     initializeChatDialog(uid, username, avatarUrl, isVerified).then(() => {
-      history.push("/messages");
+      if(_isMounted.current){
+         history.push("/messages");
+      }
       setMsgInitialization(false);
     }).catch(() => {
-      setMsgInitialization(false);
+      if(_isMounted.current){
+        setMsgInitialization(false);
+      }
     });
   };
   useEffect(() => {
@@ -140,9 +143,11 @@ const UsersProfile = () => {
     updateReelsProfile(usersProfileData?.uid).then(() => {
       if(_isMounted?.current){
         timeouts.current = setTimeout(() => {
+          if(_isMounted?.current){
             changeMainState("currentReel",  {groupIndex: currentGroupIndex , groupId: currentGroupId, reelIndex: currentReelIndex, reelId: currentReelId });
             window.clearTimeout(timeouts?.current);
             history.push("/reels");
+          }
         },250);
       } 
     });
@@ -442,8 +447,8 @@ const UsersProfile = () => {
                         (item) =>
                           item?.uid !== receivedData?.uid &&
                           item?.uid !== usersProfileData?.uid
-                      ).slice(randNum, suggestionsList?.length -1).slice(0,10)
-                      .map((item, i) => <SuggList key={(item?.uid || i)} item={item} receivedData={receivedData} setSuggestionsBox={setSuggestionsBox}/>)}
+                      ).slice(randNum, suggestionsList?.length -1).slice(0,15)
+                      ?.map((item, i) => <SuggList key={(item?.uid || i)} item={item} receivedData={receivedData} setSuggestionsBox={setSuggestionsBox}/>)}
                   </ul>
                 </div>
               </div>
@@ -614,4 +619,15 @@ const UsersProfile = () => {
     </Fragment>
   );
 };
-export default memo(UsersProfile);
+const mapDispatchToProps = dispatch => {
+  return {
+      changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+  }
+}
+const mapStateToProps = state => {
+  return {
+      modalsState: state[Consts.reducers.MODALS].modalsState,
+      suggestionsList: state[Consts.reducers.USERSLIST].suggestionsList,
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(memo(UsersProfile));

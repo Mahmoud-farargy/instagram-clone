@@ -1,7 +1,11 @@
 {
   "short_name": "Voxgram",
   "name": "Voxgram",
-  "description": "A non-official social media app similar to Instagram",
+  "description": "A non-official social media app similar to Instagram that people can actually use",
+  "orientation":"portrait",
+  "gcm_sender_id":"524223308106",
+  "gcm_user_visible_only":true,
+  "status":"ok",
   "icons": [
     {
       "src": "favicon.ico",

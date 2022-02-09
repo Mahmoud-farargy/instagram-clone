@@ -30,3 +30,9 @@ export const availableFonts = {
      ROMAN: "'Times New Roman', serif",
      GORGIA: "Georgia, serif"
 }
+
+// store reducers names
+export const reducers = {
+     MODALS: "modals",
+     USERSLIST: "userList"
+}

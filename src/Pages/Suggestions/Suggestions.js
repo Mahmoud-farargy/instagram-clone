@@ -75,6 +75,6 @@ Suggestions.propTypes = {
     changeMainState: PropTypes.func.isRequired,
     changeModalState: PropTypes.func.isRequired,
     receivedData: PropTypes.object.isRequired,
-    loadingState: PropTypes.object.isRequired
+    loadingState: PropTypes.bool.isRequired
 }
 export default memo(Suggestions);

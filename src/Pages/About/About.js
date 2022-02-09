@@ -41,7 +41,6 @@ const About = (props) => {
                         repoUrl: html_url
                     })
                 }
-
             }
         }).catch(err => {
             if (_isMounted.current) {

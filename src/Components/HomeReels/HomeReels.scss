@@ -15,7 +15,7 @@
         position: relative;
             .home--reel--left--arrow, .home--reel--right--arrow{
                 top:50%;
-                transform: translate(-50%, -50%);
+                transform: translate(0px, -50%);
                 position: absolute;
                 background: 0 0;
                 border: none;
@@ -40,10 +40,13 @@
                 }
             }
             .home--reel--left--arrow{
-                left:3px;
+                left:0;
             }
             .home--reel--right--arrow{
-                right:-3px;
+                right:10px;
+                @media (max-width: 670px){
+                    right:1px;
+                }
             }
     }
 

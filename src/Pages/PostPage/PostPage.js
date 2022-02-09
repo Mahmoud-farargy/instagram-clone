@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext , useEffect, useRef, lazy} from "react";
+import React, { Fragment, useState, useContext , useEffect, useRef, lazy, memo} from "react";
 import "../../Components/Post/Post.css";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Avatar } from "@material-ui/core";
@@ -26,12 +26,15 @@ import YoutubeContent from "../../Components/YoutubeContent/YoutubeContent";
 import LikePost from "../../Components/Generic/LikePost/LikePost";
 import Loader from "react-loader-spinner";
 import { retry } from "../../Utilities/RetryImport";
+import { connect } from "react-redux";
+import * as actionTypes from "../../Store/actions/actions";
 
 const EmojiPicker = lazy(() => retry(() => import("../../Components/Generic/EmojiPicker/EmojiPicker")));
 
 const PostPage  = (props) => {
+  const { changeModalState, modalsState, history } = props;
   const context = useContext(AppContext);
-  const { changeMainState, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, changeModalState,  handleUserBlocking, handleVoting, modalsState, handleLikingComments, onCommentDeletion, deletePost, handleSavingPosts } = context;
+  const { changeMainState, usersProfileData, currentPostIndex, uid,handlePeopleLikes, receivedData, handleSubmittingComments, handleSubComments, handleUserBlocking, handleVoting, handleLikingComments, onCommentDeletion, deletePost, handleSavingPosts, loadingState } = context;
   const [isSendingComment, setSendingComment] = useState(false);
   const [compState, setCompState] = useState({
         postLiked: false,
@@ -141,9 +144,9 @@ const PostPage  = (props) => {
             contentURL,
             contentType
           ).then(() => {
-            setSendingComment(false);
+            _isMounted.current && setSendingComment(false);
           }).catch(() =>{
-            setSendingComment(false);
+            _isMounted.current && setSendingComment(false);
           });
         } else {
           //comment
@@ -157,9 +160,9 @@ const PostPage  = (props) => {
             contentURL,
             contentType
           ).then(() => {
-            setSendingComment(false);
+            _isMounted.current && setSendingComment(false);
           }).catch(() => {
-            setSendingComment(false);
+            _isMounted.current && setSendingComment(false);
           });
         }
         setCompState({
@@ -220,6 +223,14 @@ const PostPage  = (props) => {
     },[comments?.length]);
     const similarsStr = (likes?.people?.some(el => el?.id === uid) && likes?.people?.length >3) ? (likes?.people?.length?.toLocaleString() -3) : (likes?.people?.length?.toLocaleString() -2);
     const areCommentsDisabled = (usersProfileData?.profileInfo?.professionalAcc?.disableComments || disableComments);
+    const deleteCurrentPost = () => {
+      deletePost( id, currentPostIndex?.index, contentName, contentURL ).then(() => {
+        if(_isMounted.current){
+          changeModalState("comments", false);
+          history.push("/");
+        }
+      });
+    }
     return (
       <Fragment>
         {
@@ -228,7 +239,7 @@ const PostPage  = (props) => {
             <div>
                 {
                     usersProfileData?.uid === uid ?
-                    <span className="text-danger font-weight-bold" onClick={() => deletePost( id, currentPostIndex?.index, contentName, contentURL )}>
+                    <span className="text-danger font-weight-bold" onClick={() => deleteCurrentPost()}>
                             Delete post
                     </span>
                     :
@@ -336,7 +347,7 @@ const PostPage  = (props) => {
               <div className="post--card--footer flex-column">
                 <div className="post--footer--upper--row flex-row">
                   <div className=" flex-row">
-                    <LikePost isPostLiked={likesCheck()} handleCurrLikes={handleCurrLikes}/>
+                    <LikePost isPostLiked={likesCheck()} handleCurrLikes={handleCurrLikes} isLiking={loadingState.liking}/>
                    {
                      !areCommentsDisabled &&
                       <span onClick={() => inputField?.current && inputField.current?.focus()}>
@@ -497,4 +508,14 @@ const PostPage  = (props) => {
     );
   
 }
-export default withRouter(PostPage);
+const mapDispatchToProps = dispatch => {
+  return {
+      changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+  }
+}
+const mapStateToProps = state => {
+  return {
+    modalsState: state[Consts.reducers.MODALS].modalsState
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(memo(PostPage)));

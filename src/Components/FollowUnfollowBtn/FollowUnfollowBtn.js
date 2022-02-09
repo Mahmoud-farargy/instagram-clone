@@ -2,9 +2,11 @@ import React, { Fragment, useState, useContext, useEffect, memo, useRef } from "
 import { VscLoading } from "react-icons/vsc";
 import { AppContext } from "../../Context";
 import { FaUserCheck } from "react-icons/fa";
+import { connect } from "react-redux";
+import * as actionTypes from "../../Store/actions/actions";
 import PropTypes from "prop-types";
 
-const FollowUnfollowBtn = ({shape, userData, confirmed = false, isRequestAuthorized= false}) => {
+const FollowUnfollowBtn = ({shape, userData, confirmed = false, isRequestAuthorized= false, changeModalState, isFollowUnfollowModal = false}) => {
     const {userId, uName,uAvatarUrl, isVerified = false} = userData;
     const {receivedData, handleFollowing, handleUnfollowingUsers } = useContext(AppContext);
     const [isFollowLoading, setFollowLoad] = useState(false);
@@ -16,10 +18,11 @@ const FollowUnfollowBtn = ({shape, userData, confirmed = false, isRequestAuthori
     const onFollowing = ( state, senderUid, senderUserName, senderUserAvatarUrl, k ) => {
         k.stopPropagation();
         setFollowLoad(true);
-        confirmed && handleUnfollowingUsers({user: {}, state: false});
+        confirmed && changeModalState("unfollow", false);
         handleFollowing(state, senderUid, senderUserName, senderUserAvatarUrl,(isVerified || false), receivedData?.uid,receivedData?.userName, receivedData?.userAvatarUrl, confirmed, isRequestAuthorized)
         .then(() =>{
           if(_isMounted?.current){
+            isFollowUnfollowModal && handleUnfollowingUsers({user: {}, state: false});
             tOut = setTimeout(() => {
                 setFollowLoad(false);
                 window.clearTimeout(tOut);
@@ -166,6 +169,21 @@ const FollowUnfollowBtn = ({shape, userData, confirmed = false, isRequestAuthori
 }
 FollowUnfollowBtn.propTypes = {
     userData: PropTypes.object.isRequired,
-    shape: PropTypes.string.isRequired
+    shape: PropTypes.string.isRequired,
+    changeModalState: PropTypes.func.isRequired,
+    confirmed: PropTypes.bool,
+    isFollowUnfollowModal: PropTypes.bool,
 }
-export default memo(FollowUnfollowBtn);
+FollowUnfollowBtn.defaultTypes = {
+  shape: "",
+  userData: {},
+  confirmed:false,
+  isRequestAuthorized: false,
+  isFollowUnfollowModal: false
+}
+const mapDispatchToProps = dispatch => {
+  return {
+      changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+  }
+}
+export default connect(null, mapDispatchToProps)(memo(FollowUnfollowBtn));

@@ -1,15 +1,13 @@
-import React, { Fragment, useContext, memo } from "react";
+import React, { Fragment, memo } from "react";
 import "./OptionsModal.scss";
-import {AppContext} from "../../../Context";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import * as actionTypes from "../../../Store/actions/actions";
 
-const OptionsModal = ({children, isUnfollowModal = false, closeModalFunc}, {...args}) => {
-  const { changeModalState, handleUnfollowingUsers } = useContext(AppContext);
+const OptionsModal = ({children, isUnfollowModal = false, closeModalFunc, changeModalState }, {...args}) => {
   const closeModal = (x) => {
-    if(x.target.tagName === "SPAN"){
-      if(isUnfollowModal){
-        handleUnfollowingUsers({user: {}, state: false});
-      }else if( closeModalFunc && typeof closeModalFunc === "function"){
+    if((x.target.tagName === "SPAN" || x.target.tagName === "BUTTON") && !isUnfollowModal){
+      if( closeModalFunc && typeof closeModalFunc === "function"){
           closeModalFunc(false);
       }else{
         changeModalState("options",false);
@@ -34,4 +32,10 @@ OptionsModal.propTypes ={
   isUnfollowModal: PropTypes.bool,
   closeModalFunc: PropTypes.func
 }
-export default memo(OptionsModal);
+const mapDispatchToProps = dispatch => {
+  return {
+      changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+  }
+}
+
+export default connect(null, mapDispatchToProps)(memo(OptionsModal));

@@ -142,6 +142,7 @@ Give me a star if you like it. ⭐
                                                  <ul class="bullet--2">
                                                     <li><p>Passed multiple automated tests on different functionalites using Cypress.io</p></li>
                                                     <li><p>Fully responsive on mobile and tablet devices as well</p></li>
+                                                    <li><p>Blazing fast performance</p></li>
                                                     <li><p>Compatible with all modern browsers including Internet explorer, Firefox, Chrome, Edge ,Opera and Safari.</p></li>
                                                 </ul>
                                             </li>
@@ -150,6 +151,7 @@ Give me a star if you like it. ⭐
   <ul class="bullet--1">
                                                     <li><p>React.js</p></li>
                                                     <li><p>Context API</p></li>
+                                                    <li><p>Redux & Redux Thunk</p></li>
                                                     <li><p>Firebase</p></li>
                                                     <li><p>SCSS</p></li>
                                                     <li><p>Styled Components</p></li>

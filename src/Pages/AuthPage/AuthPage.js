@@ -23,11 +23,11 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import AuthInput from "./AuthInput/AuthInput";
 //-------------- Import slides-------------------
 import loginRevBg from "../../Assets/phone-frame.png";
-import slide1 from "../../Assets/Login-Slides/slide (1).jpg";
-import slide2 from "../../Assets/Login-Slides/slide (2).jpg";
-import slide3 from "../../Assets/Login-Slides/slide (3).jpg";
-import slide4 from "../../Assets/Login-Slides/slide (4).jpg";
-import slide5 from "../../Assets/Login-Slides/slide (5).jpg";
+import slide1 from "../../Assets/Login-Slides/slide (1).jpeg";
+import slide2 from "../../Assets/Login-Slides/slide (2).jpeg";
+import slide3 from "../../Assets/Login-Slides/slide (3).jpeg";
+import slide4 from "../../Assets/Login-Slides/slide (4).jpeg";
+import slide5 from "../../Assets/Login-Slides/slide (5).jpeg";
 // ------x----------Import slides-------x--------
 
 //TODO: REFACTOR THIS PAGE
@@ -72,21 +72,24 @@ const AuthPage = (props) => {
     return new Promise((resolve, reject) => {
       if(nameToMatch){
           firebase.database().ref('/userNames/').once("value").then((res) => {
-            const dataObj = res.val();
-            if(dataObj !== null){
-               if(typeof dataObj === "object"){
-                    resolve(Object.values(dataObj)?.some(name => name?.toLowerCase() === nameToMatch.toLowerCase()));
-                }else{
-                  context.notify("An unexpected error occurred. Please try again later.", "error");
-                  reject(null);
-                } 
-            }else{
-                resolve(false);
+            if(_isMounted?.current){
+              const dataObj = res.val();
+              if(dataObj !== null){
+                if(typeof dataObj === "object"){
+                      resolve(Object.values(dataObj)?.some(name => name?.toLowerCase() === nameToMatch.toLowerCase()));
+                  }else{
+                    context.notify("An unexpected error occurred. Please try again later.", "error");
+                    reject(null);
+                  } 
+              }else{
+                  resolve(false);
+              }
             }
-
           }).catch(() => {
+            if(_isMounted?.current){
               context.notify("An unexpected error occurred. Please try again later.", "error");
               reject(null);
+            }
           }); 
       }else{
           context.notify("Please type a username.");
@@ -97,10 +100,12 @@ const AuthPage = (props) => {
   const slide = () => {
           const slideContainer = document.querySelector("#slideContent");
           if( slideContainer){
-            const slideItems = slideContainer.querySelectorAll("img");
-            slideItems.forEach(item => item.classList.remove("active__slide"));
-            activeSlideIndex = activeSlideIndex + 1 >= slideItems.length ? 0 : activeSlideIndex + 1;
-            slideItems[activeSlideIndex].classList.add("active__slide");
+            const slideItems = slideContainer?.querySelectorAll("img");
+            if(slideItems?.length > 0){
+              slideItems.forEach(item => item.classList.remove("active__slide"));
+              activeSlideIndex = activeSlideIndex + 1 >= slideItems.length ? 0 : activeSlideIndex + 1;
+              slideItems[activeSlideIndex].classList.add("active__slide");
+            }
           }
   }
   useEffect(() => {

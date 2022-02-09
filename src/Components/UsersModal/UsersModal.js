@@ -1,11 +1,11 @@
-import React, { Fragment, useContext } from "react";
-import { AppContext } from "../../Context";
+import React, { Fragment, memo } from "react";
 import ModalListItem from "./ModalListItem/ModalListItem";
 import * as Consts from "../../Utilities/Consts";
 import { BsPersonPlus } from "react-icons/bs";
+import { connect } from "react-redux";
+import * as actionTypes from "../../Store/actions/actions";
 
-const UsersModal = () => {
-    const { changeModalState, modalsState, usersModalList } = useContext(AppContext);
+const UsersModal = ({changeModalState, usersModalList, modalsState}) => {
     const renderList = () => {
         if(usersModalList?.type){
             switch (usersModalList.type) {
@@ -86,4 +86,15 @@ const UsersModal = () => {
         </Fragment>
     )
 }
-export default UsersModal;
+const mapDispatchToProps = dispatch => {
+    return {
+        changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+    }
+}
+const mapStateToProps = state => {
+    return {
+        usersModalList: state[Consts.reducers.MODALS].usersModalList,
+        modalsState: state[Consts.reducers.MODALS].modalsState
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(memo(UsersModal));

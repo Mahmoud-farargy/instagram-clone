@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useContext, useState, useEffect, useRef } from "react";
+import React, { Suspense, lazy, useContext, useState, useEffect, useRef, memo } from "react";
 import Auxiliary from "../../../Components/HOC/Auxiliary";
 import { Avatar } from "@material-ui/core";
 import { AppContext } from "../../../Context";
@@ -8,6 +8,9 @@ import OptionsModal from "../../../Components/Generic/OptionsModal/OptionsModal"
 import { storage, storageRef } from "../../../Config/firebase";
 import { GoVerified } from "react-icons/go";
 import { retry } from "../../../Utilities/RetryImport";
+import { connect } from "react-redux";
+import * as Consts from "../../../Utilities/Consts";
+import * as actionTypes from "../../../Store/actions/actions";
 
 const InputForm = lazy(() => 
     retry(() =>
@@ -15,6 +18,7 @@ const InputForm = lazy(() =>
 ));
 
 const EditProfileOption = (props) => {
+  const { changeModalState, modalsState } = props;
   // refs
   const _isMounted = useRef(true);
   const fileUploader = useRef(null);
@@ -39,8 +43,6 @@ const EditProfileOption = (props) => {
     handleEditingProfile,
     notify,
     changeProfilePic,
-    modalsState,
-    changeModalState,
   } = useContext(AppContext);
   // useEffct
   useEffect(() => () => _isMounted.current = false, []);
@@ -414,5 +416,14 @@ const EditProfileOption = (props) => {
     </Auxiliary>
   );
 };
-
-export default withRouter(EditProfileOption);
+const mapDispatchToProps = dispatch => {
+  return {
+      changeModalState: (modalType, hasDataList, usersList, usersType) => dispatch({type: actionTypes.CHANGE_MODAL_STATE, payload: {modalType, hasDataList, usersList, usersType}})
+  }
+}
+const mapStateToProps = state => {
+  return {
+      modalsState: state[Consts.reducers.MODALS].modalsState
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(memo(EditProfileOption)));

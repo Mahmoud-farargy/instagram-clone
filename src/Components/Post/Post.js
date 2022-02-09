@@ -87,14 +87,6 @@ class Post extends PureComponent {
     if((prevProps.following !== this.props.following) || (prevProps.likes !== this.props.likes)){
        this.updateUsersWhoLiked();
     }
-    // if((prevProps.initialLikes !== this.props.initialLikes) || (prevProps.initialComments !== this.props.initialComments) || (prevProps.initialPollData !== this.props.initialPollData)){
-    //   this.setState({
-    //     ...this.state,
-    //     comments: initialComments,
-    //     likes: initialLikes,
-    //     ...(initialPollData && Object.keys(initialPollData).length > 0) && {pollData: initialPollData}
-    //   })
-    // }
   }
   handlePostLoading = (loadState) => {
     typeof loadState === "boolean" && this.setState({...this.state, isPostLoading: loadState, ...(!loadState && this.state.isPostingComment) && { isPostingComment: false }});
@@ -103,16 +95,21 @@ class Post extends PureComponent {
     const { postId, handlePeopleLikes, postOwnerId , myName,myAvatar,id, contentURL,contentType } = this.props;
     (postOwnerId !== id) && this.handlePostLoading(true);
     handlePeopleLikes(boolean, postId, postOwnerId, myName, myAvatar, id, contentURL, contentType).then(() => {
+      if(this._isMounted){
         this.updateLikesNComments({uid: postOwnerId, postID: postId});
+      }
     }).catch(() => {
-      this.handlePostLoading(false);
-      const { notify} = this.context;
-      notify("Error has occurred. Please try again later","error");
+      if(this._isMounted){
+        this.handlePostLoading(false);
+        const { notify} = this.context;
+        notify("Error has occurred. Please try again later","error");
+      }
     });
   };
   // const update 
   openPost(postId){
-    const { changeMainState,changeModalState, receivedData, notify, postOwnerId,id, getUsersProfile} = this.context
+    const { changeMainState, receivedData, notify, postOwnerId,id, getUsersProfile} = this.context;
+    const { changeModalState } = this.props;
     if(postOwnerId === id && postId){
         getUsersProfile(receivedData?.uid).then((data) => {
           if(this._isMounted){
@@ -161,9 +158,11 @@ class Post extends PureComponent {
       }, 1000);
     }
     this.timeouts.current = setTimeout(() => {
-      resetCounter();
-      window.clearTimeout(this.timeouts?.current);
-    }, 800);
+      if(this._isMounted){
+        resetCounter();
+        window.clearTimeout(this.timeouts?.current);
+      }
+    }, 500);
   };
   resetCommentForm(){
     this.setState({
@@ -208,10 +207,14 @@ class Post extends PureComponent {
                 contentURL,
                 contentType
           ).then(() => {
-            this.updateLikesNComments({uid: postOwnerId, postID: postId});
-            this.resetCommentForm();
+            if(this._isMounted){
+              this.updateLikesNComments({uid: postOwnerId, postID: postId});
+              this.resetCommentForm();
+            }
           }).catch(() => {
-            this.handlePostLoading(false);
+            if(this._isMounted){
+              this.handlePostLoading(false);
+            }
           })
         } else {   //regular comment
             handleSubmittingComments(
@@ -224,10 +227,14 @@ class Post extends PureComponent {
               contentURL,
               contentType
             ).then(() => {
-              this.updateLikesNComments({uid: postOwnerId, postID: postId});
-              this.resetCommentForm();
+              if(this._isMounted){
+                this.updateLikesNComments({uid: postOwnerId, postID: postId});
+                this.resetCommentForm();
+              }
             }).catch(() => {
-              this.handlePostLoading(false)
+              if(this._isMounted){
+                this.handlePostLoading(false);
+              }
             });
         }
   }
@@ -292,36 +299,21 @@ class Post extends PureComponent {
     this.setState({...this.state, openOptionsModal: false, openNewMsgModal: false });
   }
   delPost () {
-      const {postId, index, contentName, contentURL, postOwnerId, id, deletePost} = this.props;
+      const {postId, index, contentName, contentURL, postOwnerId, id, deletePost, changeModalState} = this.props;
       if(postOwnerId === id){
-          deletePost( postId, index, contentName, contentURL );
+          deletePost( postId, index, contentName, contentURL ).then(() => {
+            if(this._isMounted){
+              changeModalState("comments", false);
+            }
+          });
           this.setState({...this.state, openOptionsModal:false})
+      }else{
+        this.context.notify("This post is not yours to delete.","error");
       }
   }
   updateLikesNComments({uid, postID}){
     if(uid && postID && (uid !== this.props.id)){
-          // db.collection(Consts.USERS)
-          //   .doc(uid)
-          //   .get()
-          //   .then((items) => {
-          //   const dataCopy = items?.data()?.posts || [];
-          //       const postIndex = dataCopy?.length > 0 ? (dataCopy.map(x => x.id).indexOf(postID)) : -1;
-          //         if(dataCopy && postIndex !== -1 && dataCopy[postIndex]){
-          //           const { likes = {}, comments = [], pollData = {} } = dataCopy[postIndex];
-          //         ((comments && likes) || pollData) && this.setState({
-          //             ...this.state,
-          //             likes: likes,
-          //             comments: comments,
-          //             isPostLoading: false,
-          //             ...( pollData && Object.keys(pollData).length > 0) && {pollData}
-          //           });
-          //         }else{
-          //           this.handlePostLoading(false);
-          //         }
-          //   }).catch(() => {
-          //     this.handlePostLoading(false);
-          //   });
-          this.context.updateSuggestionsList().then(() => this.handlePostLoading(false)).catch(() => this.handlePostLoading(false));
+          this.props.updateSuggestionsList().then(() => this._isMounted && this.handlePostLoading(false)).catch(() => this._isMounted && this.handlePostLoading(false));
     }else{
       this.handlePostLoading(false);
     }
@@ -354,11 +346,13 @@ class Post extends PureComponent {
       youtubeData,
       songInfo,
       areCommentsDisabled,
-      disableComments
+      disableComments,
+      loadingState
     } = this.props;
     const { openNewMsgModal, isPostLoading, doubleLikeClicked } = this.state;
     return (
       <Fragment>
+        
           {
             openNewMsgModal &&
               <NewMsgModal closeModal={this.closeAllModals} sendPostForm={{postOwnerId, userAvatar ,userName, caption, contentType, contentURL, location, postId, isVerified}} />
@@ -451,7 +445,7 @@ class Post extends PureComponent {
             <div className="post--card--footer flex-column">
               <div className="post--footer--upper--row flex-row">
                 <div className="flex-row">
-                  <LikePost isPostLiked={likes?.people?.some((el) => el.id === id)} handleCurrLikes={this.handleCurrLikes}/>
+                  <LikePost isPostLiked={likes?.people?.some((el) => el.id === id)} handleCurrLikes={this.handleCurrLikes} isLiking={loadingState.liking}/>
                  {
                    (!areCommentsDisabled && !disableComments) &&
                     <span data-cy="comment" onClick={() => this.onCommentBtnClick()}>
@@ -470,9 +464,9 @@ class Post extends PureComponent {
                 <div className="bookmark__icon">
                   {
                     savedPosts?.some(sp => (sp.postOwnerId === postOwnerId && sp.id === postId)) ?
-                    <RiBookmarkFill onClick={() => (contentType === Consts.Image || contentType === Consts.Video) && handleSavingPosts({boolean:false,data: {postOwnerId, id: postId, userName, contentName, contentURL,contentType, postDate}})} />
+                    <RiBookmarkFill onClick={() => handleSavingPosts({boolean:false,data: {postOwnerId, id: postId, userName, contentName, contentURL,contentType, postDate}})} />
                     :
-                    <RiBookmarkLine onClick={() => (contentType === Consts.Image || contentType === Consts.Video) && handleSavingPosts({boolean:true,data: {postOwnerId, id: postId, userName, contentName, contentURL,contentType, postDate}})} />
+                    <RiBookmarkLine onClick={() => handleSavingPosts({boolean:true,data: {postOwnerId, id: postId, userName, contentName, contentURL,contentType, postDate}})} />
                   }
                 </div>
               </div>
