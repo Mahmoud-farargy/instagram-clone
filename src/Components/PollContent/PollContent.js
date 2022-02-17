@@ -10,13 +10,15 @@ const PollContent = ({pollData, handleVoting, postOwnerId, postId, uid, updateLi
     const [ voteState, setVoteState] = useState("");
     const [ iAmTheOwner, setVoteOwnership ] = useState(false);
     useEffect(() => {
-        if(answers.length > 0){
+        const answersLength = answers.length;
+        if(answersLength > 0){
             let tempCounter = 0;
-            answers.forEach(el => {
-                if(el.votes){
-                    tempCounter += el.votes.length;
+            for(let i = 0; i< answersLength; i++){
+                const currAnswer = answers[i];
+                if(currAnswer.votes){
+                    tempCounter += currAnswer.votes.length;
                 }
-            });
+            }
             setVoteState(answers.some(el => el.votes.some(item => item === uid)));
             setVotesCounts(+tempCounter);
             const percentageArr = answers.map(ansItem => Math.round((ansItem.votes?.length) *100 / (tempCounter)));

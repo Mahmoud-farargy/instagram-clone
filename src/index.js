@@ -8,6 +8,7 @@ import { AppProvider } from "./Context";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./Store/index";
+import ErrorBoundary from "./Components/HOC/ErrorBoundries";
 
 const mainApp = (
   <React.StrictMode>
@@ -15,7 +16,9 @@ const mainApp = (
       <AppProvider>
         <BrowserRouter>
           <GlobalStyles />
-          <App />
+          <ErrorBoundary>
+            <App />
+          </ErrorBoundary>
         </BrowserRouter>
       </AppProvider>
     </Provider>

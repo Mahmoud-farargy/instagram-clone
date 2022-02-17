@@ -44,6 +44,22 @@
                 width: 100%;
                 height:100%;
             }
+            .error--500{
+                img{
+                    width: clamp(130px, 80%, 400px);
+                    margin: 0 auto 30px auto;
+                }
+                .error--btn--container{
+                    margin-top: calc(30px -  1rem);
+                    button{
+                        margin:0 auto;
+                        align-items: center;
+                        svg{
+                            margin-right: 0.2rem;
+                        }
+                    }
+                }
+            }
     } 
     @media only screen and (max-width: 670px){
         .error--inner{
