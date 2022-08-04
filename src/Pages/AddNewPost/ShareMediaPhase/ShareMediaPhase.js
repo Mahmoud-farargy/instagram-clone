@@ -212,12 +212,15 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                                         publishedDate: trackInfo?.wiki?.published || "",
                                         tags: (trackInfo?.topTags && trackInfo?.topTags?.tag?.length >0) ? trackInfo?.topTags?.tag : []
                                       }
-                                      onDataAdding({songInfo, type: Consts.Post, url: url});  
+                                      onDataAdding({songInfo, type: Consts.Post, url});  
                                     }
 
                                   }).catch(() =>{
                                     if(_isMounted?.current){
-                                      onDataAdding({type: Consts.Post, url: url});
+                                      const songInfo = {
+                                        songLyrics: songLyrics || "",
+                                      }
+                                      onDataAdding({songInfo, type: Consts.Post, url});
                                     }
                                   });
                                 }
@@ -236,11 +239,11 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                               notify(`${!shareState.songName ? "Song Name" : "Artist"} field is required`,"info");
                             }
                           }else{
-                            onDataAdding({type: Consts.Post, url: url});
+                            onDataAdding({type: Consts.Post, url});
                           }
 
                         }else{
-                          onDataAdding({type: Consts.Post, url: url});
+                          onDataAdding({type: Consts.Post, url});
                         }
                       // xxxx
                       } else {

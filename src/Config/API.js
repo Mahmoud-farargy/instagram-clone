@@ -9,7 +9,7 @@ const API = (urlBaseType) => {
             "Content-Type": "application.json"
         }
     })
-    axios.defaults.timeout = 10000;
+    axios.defaults.timeout = 60000;
     axiosInstance.interceptors.request.use(request => {
         return request;
     }, err => {

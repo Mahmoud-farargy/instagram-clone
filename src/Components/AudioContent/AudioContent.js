@@ -54,7 +54,7 @@ const AudioContent = ({ url, userName, doubleClickEvent, songInfo, ...args }) =>
           className="pb-3"
         />
         <MdAudiotrack className="video__top__icon" />
-        {songInfo && Object.keys(songInfo).length > 0 && <span onClick={() => setShowingDetails(prevState => !prevState)} style={{ color: showDetails ? "var(--sugg-btn-clr)" : "#fff" }} className="lyrics--top--icon flex-column"><MdDescription /></span>}
+        {songInfo && (Object.keys(songInfo || {}).length > 1 || songInfo?.songLyrics) && <span onClick={() => setShowingDetails(prevState => !prevState)} style={{ color: showDetails ? "var(--sugg-btn-clr)" : "#fff" }} className="lyrics--top--icon flex-column"><MdDescription /></span>}
 
       </div>
     </div>
