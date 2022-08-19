@@ -106,6 +106,10 @@ input {
     --desktop-padding-top: 80px;
     --desktop-padding-bottom: 30px;
     --padding-sides: 9vw;
+    --feed--sidebar-padding: 32px;
+    --feed-sidebar-width: 319px;
+    /* margins */
+    --mobile-grid-item-margin: 2px;
     /* colors */
     --white: #fff;
     --gray: #dbdbdb;
@@ -148,6 +152,19 @@ body{
 .react-confirm-alert-overlay{
     z-index: 6000;
 }
+.profile--posts--container{
+    position: relative;
+    .content--icon{
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 5;
+        font-size: 23px;
+        color: #fff;
+        -webkit-filter: drop-shadow(0 0 0.75px rgba(0, 0, 0, .42)) drop-shadow(0 1px 0.5px rgba(0, 0, 0, .18)) drop-shadow(0 2px 3px rgba(0, 0, 0, .2));
+    }  
+}
+
 /* -------dark theme------ */
 .darkMode{
     --light-gray:rgba(18,18,18,1);
@@ -3111,10 +3128,6 @@ a.prof__btn__unfollowed{
 }
 /* -----------Query less than or equal 300px------------ */
 @media only screen and (max-width: 300px){
-    #usersProfile.users--profile--container .users--profile--posts, #explore.explore-container .explore--upper--row{
-        grid-template-columns: 1fr !important;
-        gap:18px;
-    }
     .sender, .receiver{
         max-width: 80%;
     }
@@ -3140,6 +3153,13 @@ a.prof__btn__unfollowed{
 @media only screen and (max-width: 670px){
     :root{
         --padding-sides: 4vw;
+    }
+    .profile--posts--container{
+        .content--icon{
+            top: 5px;
+            right: 5px;
+            font-size: 18px;
+        }
     }
     .noti--popup-item .noti--row{
         width:55%;
@@ -3291,12 +3311,6 @@ a.prof__btn__unfollowed{
     }
     .auth--input--form input[type="text"], .auth--input--form input[type="password"],.auth--input--form input[type="email"], .auth--input--form input[type="submit"] {
         width: 100%;
-    }
-    #usersProfile.users--profile--container .users--profile--posts, #explore.explore-container .explore--upper--row{
-        gap:1px !important;
-    }
-    #explore.explore-container .explore--upper--row{
-        margin-bottom: 1px !important;
     }
     .similar__followers{
         font-size: 13px;
@@ -3478,9 +3492,6 @@ a.prof__btn__unfollowed{
     #usersProfile.users--profile--container, .post--comments--layout{
         padding-bottom:40px;
     }
-    #usersProfile.users--profile--container .users__profile__image, #explore.explore-container .explore--upper--row .users__profile__image{
-        height: 150px !important;
-    }
     /* #commentsModal.comments--modal--container{
         position:static !important;
     } */
@@ -3518,14 +3529,8 @@ a.prof__btn__unfollowed{
     #usersProfile.users--profile--container .users--action--row h5{
         flex-basis:auto; 
     }
-    #usersProfile.users--profile--container .users--profile--posts, #explore.explore-container .explore--upper--row{
-        gap:3px;
-    }
     #messages .desktop-comp{
         padding:4rem 0 0;
-    }
-    #explore.explore-container .explore--upper--row{
-        margin-bottom: 3px;
     }
 }
 /* more than 1160px */
@@ -3539,6 +3544,9 @@ a.prof__btn__unfollowed{
 }
 /* more than 760px */
 @media only screen and (min-width:760px){
+    :root{
+        --mobile-grid-item-margin: 28px;
+    }
     .auth--review--pic{
         animation: slideRight 1.5s forwards ease-out;
     }

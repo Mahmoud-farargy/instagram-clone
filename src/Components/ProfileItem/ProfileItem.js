@@ -1,6 +1,5 @@
 import React, { Fragment, useRef, useState, useEffect, memo } from "react";
-import { FaHeart } from "react-icons/fa";
-import { FaComment } from "react-icons/fa";
+import { FaComment, FaHeart, FaVideo, FaPoll, FaImages, FaTwitter, FaYoutube } from "react-icons/fa";
 import PropTypes from "prop-types";
 import igAudioImg from "../../Assets/ig-audio.jpeg";
 import ScrollTrigger from 'react-scroll-trigger';
@@ -11,6 +10,7 @@ import * as Consts from "../../Utilities/Consts";
 import { lowerCaseString } from "../../Utilities/Utility";
 import YoutubeItem from "./YoutubeItem/YoutubeItem";
 import TextItem from "./TextItem/TextItem";
+import { BsMusicNote } from "react-icons/bs";
 
 const ProfileItem = ({ itemType = "post" ,post, openPost, index, className, withOwnersName, isSavedPost , onLoadingFail }) => {
   const videoPost = useRef(null);
@@ -58,6 +58,33 @@ const ProfileItem = ({ itemType = "post" ,post, openPost, index, className, with
     if(isSavedPost) onLoadingFail(post?.postOwnerId, post?.id);
     setFailingState(true);
   }
+  const getItemIcon = (contentType) => {
+      let icon = <div></div>
+        switch(contentType){
+          case Consts.Image:
+            icon = <FaImages/>
+            break;
+          case Consts.Audio:
+            icon = <BsMusicNote />
+            break;
+          case Consts.Video:
+            icon = <FaVideo />
+            break;
+          case Consts.Tweet:
+            icon = <FaTwitter />
+            break;
+          case Consts.Poll:
+            icon = <FaPoll />
+            break;
+          case Consts.YoutubeVid:
+            icon = <FaYoutube />
+            break;
+          default: {
+            icon = <div></div>
+          }
+      }
+      return icon;
+  }
   return post &&(
         <Fragment>
       <div className={`profile--posts--container w-100 ${className ? className : ""}`}>
@@ -68,14 +95,16 @@ const ProfileItem = ({ itemType = "post" ,post, openPost, index, className, with
         <div
             onClick={() => openPost({type: lowerCaseString(itemType), postId: post?.id, postOwnerId: post?.postOwnerId})}
             className="user--img--container flex-column fadeEffect"
+            tabIndex={0}
           >
-            {post?.contentType === Consts.Image ? (
+            {post.contentType === Consts.Image ? (
               <>
               <img
                 loading="lazy"
                 className={`users__profile__image ${isBuffering && "blurry_img"}`}
                 src={post?.contentURL}
                 alt={`post #${index}`}
+                decoding="auto"
                 onLoad={(x) => {setBuffering(false); x.persist()}}
                 onError={() => onFailing()}/>
 
@@ -88,7 +117,7 @@ const ProfileItem = ({ itemType = "post" ,post, openPost, index, className, with
                   </div>
                   }
               </>
-            ) : post?.contentType === Consts.Video ? (
+            ) : post.contentType === Consts.Video ? (
               <ScrollTrigger onEnter={() => handleVideoPlaying("on-view")} onExit={() => handleVideoPlaying("out-of-view")} >
               <video
                 ref={videoPost}
@@ -120,13 +149,13 @@ const ProfileItem = ({ itemType = "post" ,post, openPost, index, className, with
                   </div>
                   }
               </ScrollTrigger>
-            ) : post?.contentType === Consts.Audio ? (
-              <img className="users__profile__image" src={post?.songInfo?.artwork || igAudioImg} loading="lazy" alt={`post #${index}`} />)
-              : post?.contentType === Consts.Tweet?
+            ) : post.contentType === Consts.Audio ? (
+              <img className="users__profile__image" src={post.songInfo?.artwork || igAudioImg} loading="lazy" alt={`post #${index}`} />)
+              : post.contentType === Consts.Tweet?
                 <TextItem txt={post.contentURL} />
-              : (post?.contentType === Consts.Poll && post.pollData?.question) ?
+              : (post.contentType === Consts.Poll && post.pollData?.question) ?
                 <TextItem txt={post.pollData.question} />
-              : (post?.contentType === Consts.YoutubeVid && post.youtubeData) ?
+              : (post.contentType === Consts.YoutubeVid && post.youtubeData) ?
                 <YoutubeItem thumbnail={post.youtubeData.thumbnail} index={index}/>
               : <h4>Not found</h4>
             }
@@ -136,12 +165,12 @@ const ProfileItem = ({ itemType = "post" ,post, openPost, index, className, with
                 !isSavedPost &&
                 <div className="flex-row">
                 <span className="mr-3">
-                  <FaHeart /> {post?.likes?.people?.length.toLocaleString()}
+                  <FaHeart /> {post.likes?.people?.length.toLocaleString()}
                 </span>
                 <span>
                   <FaComment />{" "}
-                  {post?.comments?.length &&
-                    post?.comments?.length.toLocaleString()}{" "}
+                  {post.comments?.length &&
+                    post.comments?.length.toLocaleString()}{" "}
                 </span>
 
               </div>
@@ -149,7 +178,7 @@ const ProfileItem = ({ itemType = "post" ,post, openPost, index, className, with
               {
                   withOwnersName &&
                   <span className="owner--post--name mt-1">
-                    By {post?.userName}
+                    By {post.userName}
                   </span>
               }
             </div>
@@ -157,26 +186,26 @@ const ProfileItem = ({ itemType = "post" ,post, openPost, index, className, with
           :  lowerCaseString(itemType) === Consts.Reel ?
           //REEL
           <div
-          onClick={() => post?.id && openPost({type: lowerCaseString(itemType), reelId: post?.id, groupId: post?.groupId , reelUid: post?.reelOwnerId})}
+          onClick={() => post.id && openPost({type: lowerCaseString(itemType), reelId: post.id, groupId: post.groupId , reelUid: post.reelOwnerId})}
           className="user--img--container flex-column"
         >
           <img
               loading="lazy"
               src={reelPlaceholder}
               className={`users__profile__image`}
-              alt={`A Reel by ${post?.userName}`}
+              alt={`A Reel by ${post.userName}`}
               decoding="auto"
              />
           <div className="user--img--cover flex-column fadeEffect">
             {
               <div className="flex-row">
                 <span className="mr-3">
-                  <FaHeart /> {post?.likes?.length.toLocaleString()}
+                  <FaHeart /> {post.likes?.length.toLocaleString()}
                 </span>
                 <span>
                   <FaComment />{" "}
-                  {post?.comments?.length &&
-                    post?.comments?.length.toLocaleString()}{" "}
+                  {post.comments?.length &&
+                    post.comments?.length.toLocaleString()}{" "}
                 </span>
 
               </div>
@@ -185,7 +214,9 @@ const ProfileItem = ({ itemType = "post" ,post, openPost, index, className, with
         </div>
           : <h4>Not Found</h4>
      }   
-
+      <div className="content--icon">
+        {(lowerCaseString(itemType) === Consts.Post) ? getItemIcon(post.contentType) : ''}
+      </div>
       </div>
     </Fragment>
   )

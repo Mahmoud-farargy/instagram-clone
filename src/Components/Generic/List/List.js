@@ -1,7 +1,7 @@
 import React, { Fragment, useRef, useState, useEffect, useCallback, cloneElement } from 'react';
 import loadingGif from "../../../Assets/loadingGif.gif";
 
-function List({ children, list, parentClass, childrenClass, parentId, increaseBy = 5 ,intervalTime = 1100, areHomePosts = false }) {
+function List({ children, list, parentClass, childrenClass, parentId, increaseBy = 5 ,intervalTime = 1100, areHomePosts = false, isExploreList = false }) {
     // refs
     const _isMounted = useRef(true);
     const timeouts = useRef(null);
@@ -48,6 +48,7 @@ function List({ children, list, parentClass, childrenClass, parentId, increaseBy
             <div id={parentId || ""} className={`${parentClass || ""}`}>
                 {
                     list?.slice(0, currLimit)?.map((post, index) => {
+                            const isEleventhElement = ((index + 1) % 11 === 0);
                             const homePostsProps =  {
                                 userName: post.userName  || "",
                                 caption : post.caption || "",
@@ -68,8 +69,9 @@ function List({ children, list, parentClass, childrenClass, parentId, increaseBy
                                 disableComments: post.disableComments || false
                             }
                             if (currLimit === index + 1) {
+                                
                                 return post &&
-                                    <div className={`${childrenClass || ""} full--width`} key={post.id || index} ref={lastPostElementRef}>
+                                    <div className={`${childrenClass || ""} ${isExploreList && ( index === 0 || isEleventhElement) ? 'bigger-cell' : ''} ${isExploreList && isEleventhElement ? 'right-cell' : ''} profile-item full--width `.trim()} key={post.id || index} ref={lastPostElementRef}>
                                         {cloneElement(children, {
                                             post,
                                             index,
@@ -77,7 +79,7 @@ function List({ children, list, parentClass, childrenClass, parentId, increaseBy
                                             })}
                                     </div>
                             } else {
-                                return post && <div className={`${childrenClass || ""} full--width`}  key={post.id || index}>
+                                return post && <div className={`${childrenClass || ""} ${isExploreList && ( index === 0 || isEleventhElement ) ? 'bigger-cell' : ''}  ${isExploreList && isEleventhElement ? 'right-cell' : ''} profile-item full--width`.trim()}  key={post.id || index}>
                                     {cloneElement(children, {
                                         post,
                                         index,
@@ -112,6 +114,7 @@ List.defaultProps = {
     parentId: "",
     increaseBy: 5,
     intervalTime: 1100,
-    areHomePosts: false
+    areHomePosts: false,
+    isExploreList: false
 }
 export default List;

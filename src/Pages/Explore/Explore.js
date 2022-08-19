@@ -68,7 +68,7 @@ const Explore = ({ modalsState, explore, isUsersListLoading }) => {
   }
   useEffect(() => {
     mutateLoadingState({key: "suggList", val: true});
-    changeMainState("currentPage", "Explore");
+    changeMainState("currentPage", "Explore people");
     return() => _isMounted.current = false;
   }, []);
   useEffect(() => {
@@ -282,7 +282,7 @@ const Explore = ({ modalsState, explore, isUsersListLoading }) => {
         </div>
         
       {/* End of Modals */}
-      <section id="explore" className="explore-container flex-column">
+      <main id="explore" className="explore-container flex-column" role="main">
         <div className="desktop-comp explore-inner flex-column">
           {/* explore start */}
           <div id="usersProfile" className="users--profile--container ">
@@ -295,13 +295,9 @@ const Explore = ({ modalsState, explore, isUsersListLoading }) => {
               (newExploreArr && newExploreArr.length > 0) ? (
               explore &&
               explore?.length > 0 ? (
-                // TODO: USE CSS GRID INSTEAD
                 <div>
-                  <div>
-                   {newExploreArr?.length > 0 && <ProfilePosts listType="post" list={ newExploreArr.slice(0,2) } className="explore--upper--row--item" withOwnersName={true} parentClass="explore--upper--row"/>}
-                  </div>
-                  <div>
-                      {newExploreArr?.length >= 2 && <ProfilePosts listType="post" list={ newExploreArr.slice(2) } parentClass="users--profile--posts" withOwnersName={true} />}
+                  <div >
+                      {newExploreArr?.length > 0 && <ProfilePosts isExploreList={true} listType="post" list={ newExploreArr } parentClass="explore-posts" withOwnersName={true} />}
                   </div>
                 </div>
               ) : (
@@ -325,7 +321,7 @@ const Explore = ({ modalsState, explore, isUsersListLoading }) => {
           </div>
           {/* explore end */}
         </div>
-      </section>
+      </main>
     </Fragment>
   );
 };
