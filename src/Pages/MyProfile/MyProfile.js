@@ -78,7 +78,7 @@ const MyProfile =({changeModalState, modalsState})=>{
             }
         });
     }
-    const isEmailAndNotAnon = (receivedData?.profileInfo?.registrationMethod === "email" && !receivedData?.uid?.includes("L9nP3dEZpyTg7AMIg8JBkrGQIji2"));
+    const isEmailAndNotAnon = (receivedData?.profileInfo?.registrationMethod === "email" && !receivedData?.uid?.includes("ysDvCWDFljMb4AKzqvtK4mANp6i2"));
     const changeDirection = useCallback((index, id) => {
         changeMainState("activeOption", {activeIndex: isEmailAndNotAnon ? index : index - 1, activeID:  id}); history.push("/edit-profile")
     },[]);

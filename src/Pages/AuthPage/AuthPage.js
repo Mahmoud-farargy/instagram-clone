@@ -309,7 +309,8 @@ const AuthPage = (props) => {
                                                       }
                                                       timeouts.current = setTimeout(() => {
                                                         notify(
-                                                          "Welcome to Voxgram. Start by adding posts to your account."
+                                                          `Welcome to Voxgram. Start by adding posts to your account.
+                                                          Please be respectful to others and only post appropriate content.`
                                                         );
                                                         setLoading(false);
                                                         props.history.push("/");
@@ -451,7 +452,9 @@ const AuthPage = (props) => {
                           setLoading(false);
                           context.updatedReceivedData();
                           context.notify(
-                            `Welcome to Voxgram${given_name && ", " +given_name}. Start by adding posts to your account.`
+                            `Welcome to Voxgram${given_name && ", " +given_name}. Start by adding posts to your account.
+                             Please be respectful to others and only post appropriate content.
+                            `
                           );
                           props.history.push("/");
                         }, 150);
@@ -570,7 +573,9 @@ const AuthPage = (props) => {
                           setLoading(false);
                           context.updatedReceivedData();
                           context.notify(
-                            `Welcome to Voxgram${name && ", " +name}. Start by adding posts to your account.`
+                            `Welcome to Voxgram${name && ", " +name}. Start by adding posts to your account.
+                             Please be respectful to others and only post appropriate content.
+                            `
                           );
                           props.history.push("/");
                         }, 150);
@@ -678,7 +683,9 @@ const AuthPage = (props) => {
                         timeouts.current = setTimeout(() => {
                           context.updatedReceivedData();
                           context.notify(
-                            "Welcome to Voxgram. Start by adding posts to your account."
+                            `Welcome to Voxgram. Start by adding posts to your account.
+                            Please be respectful to others and only post appropriate content.
+                            `
                           );
                           props.history.push("/");
                         }, 150);

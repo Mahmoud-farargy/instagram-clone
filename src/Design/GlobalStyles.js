@@ -3164,6 +3164,9 @@ a.prof__btn__unfollowed{
     .noti--popup-item .noti--row{
         width:55%;
     }
+    #usersProfile.users--profile--container .users--profile--posts{
+        gap: var(--mobile-grid-item-margin);
+    }
     .increase--posts--count img{
         width: 21px;
         height: 21px;
