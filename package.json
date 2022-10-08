@@ -1,6 +1,6 @@
 {
   "name": "voxgram",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.4",
@@ -9,13 +9,14 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.21.4",
+    "bad-words-plus": "^3.0.4",
     "bootstrap": "^4.3.1",
     "emoji-picker-react": "^3.4.8",
     "enzyme": "^3.11.0",
     "firebase": "^7.24.0",
     "font-awesome": "^4.7.0",
     "material-ui": "^0.20.2",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "node-sass": "^4.14.1",
     "react": "^17.0.2",
     "react-app-polyfill": "^1.0.6",
@@ -40,12 +41,13 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.4",
     "react-scroll-trigger": "^0.6.10",
+    "react-share": "^4.4.0",
     "react-toastify": "^7.0.4",
     "react-truncate": "^2.4.0",
     "react-youtube": "^7.14.0",
     "redux": "^4.1.2",
     "redux-thunk": "^2.4.1",
-    "save": "^2.4.0",
+    "save": "^2.5.0",
     "styled-components": "^5.3.0"
   },
   "scripts": {

@@ -13,9 +13,10 @@ import { GoVerified } from "react-icons/go";
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import ImageMarker from 'react-image-marker';
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploadedItem, contentName }) => {
-    const { mutateLoadingState, loadingState, receivedData } = context;
+    const { mutateLoadingState, loadingState, receivedData,  cleanseText } = context;
     const history = useHistory();
     const _isMounted = useRef(true);
     const [loadState, setLoadState] = useState({
@@ -89,7 +90,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
     if(uid && url && contentType && receivedData?.userName && contentName){
       if(type.toLowerCase() === Consts.Post){
           const addedPost = {
-            caption: shareState.caption,
+            caption: cleanseText(shareState.caption),
             id: generateNewId(),
             contentType: contentType,
             contentURL: url,
@@ -470,7 +471,7 @@ const ShareMediaPhase = ({ contentType, contentPreview, method, context, uploade
                         </div>
                         </div>
                         <span className="phase__media__next_btn mt-4">
-                      <Button disabled={!isValid || loadingState.uploading} className={`share--btn profile__btn ${(!isValid || loadingState.uploading) && "disabled"}`} type="submit" value="Post" > {loadingState.uploading ? "Uploading..." : "Share"}</Button> 
+                      <Button disabled={!isValid || loadingState.uploading} className={`share--btn profile__btn ${(!isValid || loadingState.uploading) && "disabled"}`} type="submit" value="Post" > {loadingState.uploading ? <div className="flex-row align-items-center" style={{gap: "0.5rem"}}><AiOutlineLoading3Quarters className="rotate__anim_infinite"/><span>Uploading...</span></div> : "Share"}</Button>
                         </span>
                     </div>
                 </form>

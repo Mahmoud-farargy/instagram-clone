@@ -131,60 +131,66 @@ const EditProfileOption = (props) => {
     }
   };
   const onPhotoChange = (e) => {
-    const uploadedPhoto = e.target.files[0];
-    if (uploadedPhoto) {
-      const metadata = {
-        contentType: uploadedPhoto?.type,
-      };
-      if (
-        /(image)/g.test(metadata.contentType) &&
-        uploadedPhoto.size <= 12378523
-      ) {
-        if (uploadedPhoto?.name.split("").length <= 200) {
-          notify("In progress...");
-          const uploadContent = storage
-            .ref(`avatars/${receivedData?.uid}`)
-            .put(uploadedPhoto, metadata);
-          uploadContent.on(
-            "state_changed",
-            () => {},
-            (error) => {
-              notify(error.message, "error");
-            },
-            () => {
-              const curr = auth.currentUser;
-              storage
-                .ref(`/avatars`)
-                .child(receivedData?.uid)
-                .getDownloadURL()
-                .then((url) => {
-                  if(_isMounted?.current){
-                    changeProfilePic(url);
-                    curr.updateProfile({
-                      photoURL: url,
-                    });
-                    notify("Profile picture updated successfully.", "success");
-                  }
-                }).catch((err) => {
-                  if(_isMounted?.current){
-                    notify((err?.message ||"Failed to upload picture.Please try again later"), "error");
-                  }
-                });
-            }
-          );
+    const uploadedPhoto = e.target?.files[0];
+    if(!uploadedPhoto){
+      return;
+    }
+    
+      if (uploadedPhoto) {
+        const metadata = {
+          contentType: uploadedPhoto?.type,
+        };
+        if (
+          /(image)/g.test(metadata.contentType) &&
+          uploadedPhoto.size <= 2097152
+        ) {
+          if (uploadedPhoto?.name.split("").length <= 400) {
+            notify("In progress...");
+            const uploadContent = storage
+              .ref(`avatars/${receivedData?.uid}`)
+              .put(uploadedPhoto, metadata);
+            uploadContent.on(
+              "state_changed",
+              () => {},
+              (error) => {
+                notify(error.message, "error");
+              },
+              () => {
+                const curr = auth.currentUser;
+                storage
+                  .ref(`/avatars`)
+                  .child(receivedData?.uid)
+                  .getDownloadURL()
+                  .then((url) => {
+                    if(_isMounted?.current){
+                      changeProfilePic(url);
+                      curr.updateProfile({
+                        photoURL: url,
+                      });
+                      notify("Profile picture updated successfully.", "success");
+                    }
+                  }).catch((err) => {
+                    if(_isMounted?.current){
+                      notify((err?.message ||"Failed to upload picture.Please try again later"), "error");
+                    }
+                  });
+              }
+            );
+          } else {
+            notify(
+              `The name of the photo is too long. it should not exceed 400 characters`,
+              "error"
+            );
+          }
         } else {
           notify(
-            `The name of the photo is too long. it should not exceed 200 characters`,
+            "Please choose a photo that doesn't exceed the size of 2 MB.",
             "error"
           );
         }
-      } else {
-        notify(
-          "Please choose a photo that doesn't exceed the size of 12MB.",
-          "error"
-        );
+
       }
-    }
+
   };
   return (
     <Auxiliary>

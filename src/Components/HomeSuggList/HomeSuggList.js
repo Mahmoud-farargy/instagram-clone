@@ -90,4 +90,9 @@ HomeSuggList.propTypes = {
   receivedData: PropTypes.object.isRequired,
   onlineList: PropTypes.array.isRequired,
 };
+HomeSuggList.defaultProps = {
+  suggestionsList: [],
+  receivedData: {},
+  onlineList: [],
+};
 export default memo(HomeSuggList);

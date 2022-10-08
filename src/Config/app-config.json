@@ -3,5 +3,13 @@
     "description": "Instagram clone",
     "baseUrl": "https://instagram-clone-21d9b.firebaseio.com/",
     "audioscrobbler": "https://ws.audioscrobbler.com/2.0",
-    "lyricsOvh": "https://api.lyrics.ovh"
+    "lyricsOvh": "https://api.lyrics.ovh",
+    "websiteUrl": "https://instagram-clone-21d9b.web.app",
+    "alternativeWebsiteUrl": "https://voxgram.netlify.app",
+    "getMyRepoUrl": "https://api.github.com/repos/Mahmoud-farargy/instagram-clone",
+    "repoUrl": "https://github.com/Mahmoud-farargy/instagram-clone",
+    "codepenUrl": "https://codepen.io/mahmoud-farargy/pens/public",
+    "instagramUrl": "https://www.instagram.com/codepugilist",
+    "emailAddress": "mahmoudfarargy9@gmail.com",
+    "githubUrl": "https://github.com/Mahmoud-farargy"
 }

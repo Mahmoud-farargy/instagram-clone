@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, Fragment, useRef, memo } from "react";
+import React, { useContext, useEffect, useState, Fragment, useRef, memo, useMemo } from "react";
 import "./Explore.scss";
 import { AppContext } from "../../Context";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -9,7 +9,7 @@ import Modal from "react-modal";
 import InputForm from "../../Components/Generic/InpuForm/InputForm";
 import { BiCog } from "react-icons/bi";
 import * as Consts from "../../Utilities/Consts";
-import { lowerCaseString } from "../../Utilities/Utility";
+import { lowerCaseString, ModalStyles } from "../../Utilities/Utility";
 import { CgUnavailable } from "react-icons/cg";
 import ProfilePosts from "../../Components/ProfilePosts/ProfilePosts";
 import LoadingComponent from "../../Components/Generic/LoadingScreen/LoadingComponent";
@@ -179,16 +179,7 @@ const Explore = ({ modalsState, explore, isUsersListLoading }) => {
       updateSortedElements();
     }
   }, [explore]);
-  const customStyles = {
-    content : {
-      top                   : '50%',
-      left                  : '50%',
-      right                 : 'auto',
-      bottom                : 'auto',
-      marginRight           : '-50%',
-      transform             : 'translate(-50%, -50%)',
-    }
-  };
+
   const onSettingsSubmission = (c) => {
     c.preventDefault();
     if(!sortForm?.sortDirection){
@@ -209,14 +200,17 @@ const Explore = ({ modalsState, explore, isUsersListLoading }) => {
       notify("An option on each field should be selected","error");
     }
   }
-  let isValid = true;
-  if (sortForm && Object.keys(sortForm).length > 0 && receivedData?.profileInfo?.sort && Object.keys(receivedData?.profileInfo?.sort).length > 0) {
-    isValid =
-    Object.values(sortForm)?.every(item => item && item !== "") &&
-      Object.keys(sortForm).some(
-        (el) => sortForm[el] !== receivedData?.profileInfo?.sort?.[el]
-      );
-  }
+  let isValid = useMemo(() => {
+      if (sortForm && Object.keys(sortForm).length > 0 && receivedData?.profileInfo?.sort && Object.keys(receivedData?.profileInfo?.sort).length > 0) {
+        return Object.values(sortForm)?.every(item => item && item !== "") &&
+          Object.keys(sortForm).some(
+            (el) => sortForm[el] !== receivedData?.profileInfo?.sort?.[el]
+          );
+      }else{
+        return false;
+      }
+  }, [receivedData, sortForm]);
+
   return (
     <Fragment>
       {/* Modals */}
@@ -227,8 +221,10 @@ const Explore = ({ modalsState, explore, isUsersListLoading }) => {
             <Modal
           ariaHideApp={false}
           isOpen={ sortingModalIsOpen }
-          onRequestClose={() =>setSortingModal(false)}
-          style={customStyles}
+          onRequestClose={() => setSortingModal(false)}
+          style={ModalStyles}
+          id="exploreSortingModal"
+          closeTimeoutMS={300}
           contentLabel="Sorting Modal"
         >
 
@@ -286,9 +282,10 @@ const Explore = ({ modalsState, explore, isUsersListLoading }) => {
         <div className="desktop-comp explore-inner flex-column">
           {/* explore start */}
           <div id="usersProfile" className="users--profile--container ">
-            <div className="explore--options--btn">
+            {(explore &&
+              explore?.length > 0) && <div className="explore--options--btn">
                 <button onClick={()=> setSortingModal(true)}><MdSort /></button>
-            </div>
+            </div>}
             {  (isUsersListLoading || loading) ? (
                 <LoadingComponent />
               ) :

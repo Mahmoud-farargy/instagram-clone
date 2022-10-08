@@ -85,7 +85,7 @@ const ProfileItem = ({ itemType = "post" ,post, openPost, index, className, with
       }
       return icon;
   }
-  return post &&(
+  return post ? (
         <Fragment>
       <div className={`profile--posts--container w-100 ${className ? className : ""}`}>
         
@@ -219,7 +219,7 @@ const ProfileItem = ({ itemType = "post" ,post, openPost, index, className, with
       </div>
       </div>
     </Fragment>
-  )
+  ) : <></>
 
 };
 ProfileItem.propTypes = {

@@ -54,12 +54,12 @@ class TweetPhase extends PureComponent {
         this.setState(updateObject(this.state, { submitted: true }));
         if (!error.show && currentLimit >= 0 && typeof textValue === "string") {
             this.setState({ ...this.state, loading: true });
-            let { receivedData, uid, notify, generateNewId, addPost } = this.context;
+            let { receivedData, uid, notify, generateNewId, addPost, cleanseText } = this.context;
             const addedPost = {
                 caption: "",
                 id: generateNewId(),
                 contentType: Consts.Tweet,
-                contentURL: `${textValue?.charAt(0)?.toUpperCase()}${textValue?.slice(1)}`,
+                contentURL: cleanseText(`${textValue?.charAt(0)?.toUpperCase()}${textValue?.slice(1)}`),
                 comments: [],
                 date: new Date(),
                 likes: { people: [] },
