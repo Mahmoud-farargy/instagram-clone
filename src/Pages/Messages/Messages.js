@@ -54,7 +54,7 @@ const Messages = (props) => {
     typingTo: "",
     viewing: "",
   });
-  const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, deleteChat, handleUserBlocking, confirmPrompt } = context;
+  const { handleSendingMessage, receivedData, currentChat, changeMainState, notify, deleteChat, handleUserBlocking, confirmPrompt} = context;
   const { messages } = receivedData;
   const currUser = receivedData?.messages[currentChat.index];
   const unreadedMessagesCount = receivedData?.messages?.filter(user => user?.notification)?.length;
@@ -172,84 +172,85 @@ const Messages = (props) => {
       });
     }
   }
+  const acceptContent = ({uploadedItem, metadata, fileName, itemType}) => {
+    if (
+      /(image|video|audio|pdf|plain)/g.test(metadata.contentType)
+    ) {
+      if(uploadedItem.size <= 12378523){
 
+          if (uploadedItem.name.split("").length < 300) {
+            const uploadContent = storage
+              .ref(`messages/${receivedData?.uid}/${fileName}`)
+              .put(uploadedItem, metadata);
+            uploadContent.on(
+              "state_changed",
+              (snapshot) => {
+                //Progress function ..
+                const progress =
+                  Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  setCompState({...compState,loading: {uid: currUser?.uid,state:true, progress: progress }});
+              },
+              (error) => {
+                setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
+                notify((error?.message || `Failed to send ${itemType}. Please try again later.`), "error");
+              },
+              () => {
+                // Complete function..
+                storage
+                  .ref(`messages/${receivedData?.uid}`)
+                  .child(fileName)
+                  .getDownloadURL()
+                  .then((url) => {
+                    if(_isMounted?.current){
+                      //post content on db
+                      setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
+                      setSendingState(true);
+                      handleSendingMessage({content: url,uid: currUser?.uid,type: itemType, pathname: fileName }).then(() => {
+                        _isMounted.current && setSendingState(false);
+                      }).catch(() => {
+                        _isMounted.current && setSendingState(false);
+                      });
+                      uploadedItem = "";
+                    }
+                  })
+                  .catch((err) => {
+                    if(_isMounted?.current){
+                      setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
+                      notify((err?.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
+                    }
+                  });
+              }
+            );
+          } else {
+            notify(
+              `The name of the ${itemType} is too long. it should not exceed 250 characters`,
+              "info"
+            );
+          }
+      }else{
+        notify(
+          `The ${itemType} must not exceed the size of 12MB.`,
+          "info"
+        );
+      }
+
+    } else {
+      notify(
+        "Only images, videos, audio, txts, and pdfs are accepted.",
+        "info"
+      );
+    }
+  }
     const onPickingContent = (event) => {
-      if(event && event.target.files[0]){
+      if(event && event.target?.files[0]){
             let uploadedItem = event.target.files[0];
             const fileName = `${Math.random()}${uploadedItem?.name}`;
             const metadata = {
               contentType: uploadedItem !== "" ? uploadedItem?.type : "",
             }
           const itemType = /image/g.test(metadata.contentType) ? "picture" : /video/g.test(metadata.contentType) ? "video": /audio/g.test(metadata.contentType) ? "audio" : "document";
-          if (
-            /(image|video|audio|pdf|plain)/g.test(metadata.contentType)
-          ) {
-            if(uploadedItem.size <= 12378523){
-
-                if (uploadedItem.name.split("").length < 300) {
-                  const uploadContent = storage
-                    .ref(`messages/${receivedData?.uid}/${fileName}`)
-                    .put(uploadedItem, metadata);
-                  uploadContent.on(
-                    "state_changed",
-                    (snapshot) => {
-                      //Progress function ..
-                      const progress =
-                        Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        setCompState({...compState,loading: {uid: currUser?.uid,state:true, progress: progress }});
-                    },
-                    (error) => {
-                      setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
-                      notify((error?.message || `Failed to send ${itemType}. Please try again later.`), "error");
-                    },
-                    () => {
-                      // Complete function..
-                      storage
-                        .ref(`messages/${receivedData?.uid}`)
-                        .child(fileName)
-                        .getDownloadURL()
-                        .then((url) => {
-                          if(_isMounted?.current){
-                            //post content on db
-                            setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
-                            setSendingState(true);
-                            handleSendingMessage({content: url,uid: currUser?.uid,type: itemType, pathname: fileName }).then(() => {
-                              _isMounted.current && setSendingState(false);
-                            }).catch(() => {
-                              _isMounted.current && setSendingState(false);
-                            });
-                            uploadedItem = "";
-                          }
-                        })
-                        .catch((err) => {
-                          if(_isMounted?.current){
-                            setCompState({...compState,loading: { uid: "",state:false, progress: 0 }});
-                            notify((err?.message|| `Failed to upload ${itemType}. Please try again later.`), "error");
-                          }
-                        });
-                    }
-                  );
-                } else {
-                  notify(
-                    `The name of the ${itemType} is too long. it should not exceed 250 characters`,
-                    "info"
-                  );
-                }
-            }else{
-              notify(
-                `The ${itemType} must not exceed the size of 12MB.`,
-                "info"
-              );
-            }
-
-          } else {
-            notify(
-              "Only images, videos, audio, txts, and pdfs are accepted.",
-              "info"
-            );
-          }
+          acceptContent({uploadedItem, metadata, fileName, itemType});
       }
-        
     }
     const blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
       handleUserBlocking(true, blockedUid || "", userName || "", userAvatarUrl || "", profileName || "").then(() => _isMounted?.current && history.push("/"));

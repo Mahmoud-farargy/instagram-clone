@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import * as actionTypes from "../../Store/actions/actions";
 import PropTypes from "prop-types";
 
-const FollowUnfollowBtn = ({shape, userData, confirmed = false, isRequestAuthorized= false, changeModalState, isFollowUnfollowModal = false}) => {
+const FollowUnfollowBtn = ({shape, userData, confirmed = false, isRequestAuthorized= false, changeModalState, isFollowUnfollowModal = false, btnDisabled = false}) => {
     const {userId, uName,uAvatarUrl, isVerified = false} = userData;
     const {receivedData, handleFollowing, handleUnfollowingUsers } = useContext(AppContext);
     const [isFollowLoading, setFollowLoad] = useState(false);
@@ -158,7 +158,7 @@ const FollowUnfollowBtn = ({shape, userData, confirmed = false, isRequestAuthori
                             )}
                         className={`
                             ${conditionalClass}
-                            ${(!userId || isFollowLoading) && "disabled"}
+                            ${(!userId || isFollowLoading || btnDisabled) && "disabled"}
                         `}
                         >
                         {" "}
@@ -179,7 +179,8 @@ FollowUnfollowBtn.defaultTypes = {
   userData: {},
   confirmed:false,
   isRequestAuthorized: false,
-  isFollowUnfollowModal: false
+  isFollowUnfollowModal: false,
+  btnDisabled: false
 }
 const mapDispatchToProps = dispatch => {
   return {

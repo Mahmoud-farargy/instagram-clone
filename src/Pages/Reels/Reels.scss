@@ -1,4 +1,63 @@
 #reels{
+    .indicator{
+        display: block;
+        position:relative;
+        width:30px;
+        height:30px;
+        transform:rotate(45deg);
+        span{
+          display: block;
+          position:absolute;
+          left:0;
+          top:0;
+          width:100%;
+          height:100%;
+          box-sizing:border-box;
+          border:none;
+          border-bottom:3px solid #fff;
+          border-right:3px solid #fff;
+          animation: animateArrows 1.5s ease-in-out infinite;
+          &:nth-child(1){
+            top:-30px;
+            left:-30px;
+            animation-delay:0s;
+          }
+          &:nth-child(2){
+            top:-15px;
+            left:-15px;
+            animation-delay:0.2s;
+          }
+          &:nth-child(3){
+            top:0;
+            left:0;
+            animation-delay:0.4s;
+          }
+          &:nth-child(4){
+            top:15px;
+            left:15px;
+            animation-delay:0.6s;
+          }
+          &:nth-child(5){
+            top:30px;
+            left:30px;
+            animation-delay:0.8s;
+          }
+        }
+      }
+    
+    @keyframes animateArrows{
+      0%{
+        border-color:#fff;
+        transform:translate(0,0);
+      }
+       20%{
+        border-color:#fff;
+         transform:translate(15px,15px);
+      }
+       20.1%,100%{
+        border-color:var(--secondary-clr);
+      }
+    }
     .reels--main--container{
         width:100%;
         height: 100vh;
@@ -39,19 +98,23 @@
             overflow: hidden;
             height:100vh;
             .reel--video--box{
-                max-width:400px;
+                max-width:372px;
                 max-height:1200px;
-                width:70%;
+                width:auto;
+                min-width: 337px;
                 height:100%;                    
-                border-radius: 8px;
+                border-radius: 12px;
                 position: relative;
                 overflow-y: scroll;
                 scroll-snap-type: y mandatory;
-                height: 80vh;
+                height: 85vh;
                 position: relative; 
                 -ms-overflow-style: none;
                 scrollbar-width: none;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                @media only screen and (max-width: 400px) {
+                    width: 100%;
+                }
                 .reel--video--content{
                     width: 100%;
                     height: 100%;
@@ -61,6 +124,16 @@
                         width: 100%;
                         height: 100%;
                         position: relative;
+                        .next--reel--arrow--container{
+                            position: absolute;
+                            bottom: 22%;
+                            z-index: 15;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            width: 100%;
+                            left:0;
+                        }
                         #commentsBox{
                             .comments--box--header{
                                 align-items: center;
@@ -122,11 +195,15 @@
                             border:none;
                        }
                         video{
-                            border-radius: 8px;
+                            display: block;
+                            border-radius: 12px;
                             object-fit: fill;
                             width:100%;
                             height:100%;
                             min-height: 100%;
+                            position: absolute;
+                            left:0;
+                            top:0;
                             @media only screen and (max-width:670px){
                                 border-radius: 0px;
                             }
@@ -244,9 +321,15 @@
                                     }
                                     .send__reel__comment{
                                         position: absolute;
+                                        top: 50%;
+                                        transform: translateY(-50%);
+                                        padding: 0;
+                                        margin: 0;
                                         right:13px;
                                         font-size: 14px;
                                         font-weight:600;
+                                        text-align: center;
+                                        line-height: 19px;
                                         color: #fff;
                                         cursor: pointer;
                                     }

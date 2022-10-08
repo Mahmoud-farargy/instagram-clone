@@ -49,7 +49,8 @@ class Post extends PureComponent {
       isPostLoading: false,
       isPostingComment: false,
       alsoLiked: [],
-      preLoad: (this.props.contentType === Consts.Video && this.props.index === 0) ? "metadata" : "none"
+      preLoad: (this.props.contentType === Consts.Video && this.props.index === 0) ? "metadata" : "none",
+      isBlockingUser: false
     };
     this._isMounted = true;
     this.similarsStr = (this.props.likes?.people?.some(el => el?.id === this.props.id) && this.props.likes?.people?.length >3) ? (this.props.likes?.people?.length?.toLocaleString() -3) : (this.props.likes?.people?.length?.toLocaleString() -2);
@@ -318,7 +319,19 @@ class Post extends PureComponent {
       this.handlePostLoading(false);
     }
   }
-
+  blockUser = (blockedUid, userName, userAvatarUrl, profileName) => {
+    const { handleUserBlocking } = this.context;
+    this.isBlockingUser = true;
+    handleUserBlocking(true, blockedUid, userName, userAvatarUrl, profileName || "").then(() =>  {
+      if(this._isMounted){
+        this.isBlockingUser = false;
+      }
+    }).catch(() => {
+      if(this._isMounted){
+        this.isBlockingUser = false;
+      }
+    });
+  }
   render() {
     const {
       userName,
@@ -590,7 +603,13 @@ class Post extends PureComponent {
                   </span>
                 </>
                 :
-                <FollowUnfollowBtn shape="quaternary" userData={{userId: postOwnerId, uName: userName, uAvatarUrl: userAvatar, isVerified: isVerified}} />
+                <>
+                <FollowUnfollowBtn shape="quaternary" btnDisabled={this.isBlockingUser} userData={{userId: postOwnerId, uName: userName, uAvatarUrl: userAvatar, isVerified: isVerified}} />
+                <span className={`text-danger font-weight-bold ${this.isBlockingUser ? "disabled": ""}`} onClick={() => this.blockUser(postOwnerId, userName, userAvatar, "" )}>
+                  Block {userName}
+                </span>
+                </>
+                
               }
               <span onClick={() => this.setState({openOptionsModal:false})}>
                 {" "}

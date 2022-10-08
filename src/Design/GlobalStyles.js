@@ -112,6 +112,7 @@ input {
     --mobile-grid-item-margin: 2px;
     /* colors */
     --white: #fff;
+    --elevated-background: 255,255,255;
     --gray: #dbdbdb;
     --light-gray:#fafafa;
     --light-black: rgb(38, 38, 38);
@@ -169,6 +170,7 @@ body{
 .darkMode{
     --light-gray:rgba(18,18,18,1);
     --white:rgba(0,0,0,1);
+    --elevated-background: 0,0,0;
     --gray: rgba(var(--b6a,219,219,219),1);
     --font-black: #d2d2d2;
     --main-black:  #ececec;
@@ -197,6 +199,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
 .snorkelBlue{
     --light-gray:#034f84;
     --white:#02365b;
+    --elevated-background: 2, 54, 91;
     --gray:#3e627a;
     --font-black: #d2d2d2;
     --main-black:  #ececec;
@@ -216,6 +219,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
 .blueIzis{
     --light-gray:#3e4074;
     --white:#363763;
+    --elevated-background: 54, 55, 99;
     --gray:#515377;
     --font-black: #d2d2d2;
     --main-black:  #ececec;
@@ -234,6 +238,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
 .icedCoffee{
     --light-gray:#a58057;
     --white:#816344;
+    --elevated-background: 129, 99, 68;
     --gray: #bd9a75;
     --font-black: #eee8e8;
     --main-black:  #e2e2e2;
@@ -253,6 +258,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
 .butterCup{
     --light-gray:#fdf3b1;
     --white:#fef9d8;
+    --elevated-background: 254, 249, 216;
     --gray: #fae03c;
     --secondary-clr:#d4b905;
     --sugg-btn-clr: #f8e35b;
@@ -265,6 +271,7 @@ textarea::placeholder, input::placeholder, select::placeholder{
 .honeysucle{
     --light-gray:#e1c1db;
     --white:#f0e0ed;
+    --elevated-background: 240, 224, 237;
     --gray: #d2a2c9;
     --second--gray:#747474;
     --font-black:  #262626;
@@ -348,12 +355,21 @@ a:visited{
     -moz-animation: rotateAnim 1.5s ease-out;
     -webkit-animation: rotateAnim 1.5s ease-out;
     animation-iteration-count: 1;
-    -webkit-animation-iteration-count:1;
+    -webkit-animation-iteration-count: 1;
     -moz-animation-iteration-count:1;
     animation-fill-mode: backwards;
     -webkit-animation-fill-mode: backwards;
 }
-
+.rotate__anim_infinite{
+    animation: rotateAnim 1.5s ease-out;
+    -moz-animation: rotateAnim 1.5s ease-out;
+    -webkit-animation: rotateAnim 1.5s ease-out;
+    animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count:infinite;
+    animation-fill-mode: backwards;
+    -webkit-animation-fill-mode: backwards;
+}
 .MuiAvatar-img{
     background-color: rgb(98, 98, 98);
     min-height: 14px;
@@ -662,6 +678,119 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
     cursor: pointer;
     padding: 4px 9px;
     text-decoration: none;
+}
+.socials--container{
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content:center;
+}
+#shareAppModal{
+    max-width: 450px;
+    @media only screen and (max-width: 670px){
+        width: 95%;
+    }
+    header{
+        justify-content: space-between;
+        align-items:center;
+        .close--modal{
+            cursor: pointer;
+            font-size: 2.1rem;
+            padding: 0.3rem 0.2rem;
+        }
+    }
+    .link--container{
+        justify-content: space-between;
+        align-items:center;
+        margin-top: 0.5rem;
+        border-radius: 0.2rem;
+        background: rgba(0,0,0,0.1);
+        padding: 0.4rem 0.6rem;
+        min-height: 38.77px;
+        cursor: pointer;
+        &:active{
+            background: rgba(0,0,0,0.2);
+        }
+        .link__url{
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width:90%;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        .link__copy__icon{
+            font-weight: 700;
+            border: none;
+            background: none;
+            border-radius: 0.2rem;
+            padding: 0.2rem 0.5rem;
+            font-size:  1.10rem;
+            color: inherit;
+        }
+    }
+}
+.ReactModal__Overlay {
+    opacity: 0;
+    transition: opacity 300ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open{
+    opacity: 1;
+}
+
+.ReactModal__Overlay--before-close{
+    opacity: 0;
+}
+#exploreSortingModal {
+        width: 400px;
+        z-index: 5800;
+        h2{
+            align-items: center;
+            font-size:20px;
+            font-weight: 600;
+        }
+        form{
+            margin-top:10px;
+            #input--form--field .form-group{
+                width: 100%;
+                label {
+                    margin: 10px 20px 0 0;
+                    width: 160px;
+                    display: inline-block;
+                    flex: 1 0 150px;
+                }
+                .form--input--side{
+                    flex:1 75%;
+                    width:auto;
+                }
+            }
+            .explore__modal__btns{
+                margin-top: 6px;
+                width: 100%;
+                align-items: center;
+                justify-content: flex-end;
+                .explore__close__btn{
+                    padding:2px 9px;
+                    margin-right: 10px;
+                    border: 1px solid rgb(53, 53, 53);
+                    border-radius: 4px;
+                    transition: background-color 0.3s linear;
+                    &:hover{
+                        background-color: var(--ultimate-black);
+                        color: var(--white);
+                    }
+                }
+            }
+        }
+       
+        @media only screen and (max-width: 670px){
+            width: 90%;
+            form #input--form--field .form-group label{
+                flex: 0 0 0;
+            }
+           
+        }
 }
 .txt_follow:focus, .txt_unfollow:focus{
     outline: none;
@@ -1962,8 +2091,8 @@ ul.getting--started--inner li.getting--started--box .profile__btn.primary__btn{
     transition: all 0.2s ease-out;
 }
 ul.getting--started--inner li.getting--started--box .profile__btn.primary__btn:hover{
-    background-color: #d1558d;
-    border:1px solid#d1558d;
+    border:1px solid #d1558d;
+    filter: brightness(1.2);
 }
 ul.getting--started--inner{
     overflow-x:auto;
@@ -1973,7 +2102,8 @@ ul.getting--started--inner{
     overflow: hidden;
 }
 #usersProfile .suggestion--items, ul.getting--started--inner{
-    width:100%;
+    width: auto;
+    gap: 1rem;
     padding-left:10px;
     flex-wrap:nowrap;
     white-space: nowrap;
@@ -2000,8 +2130,8 @@ ul.getting--started--inner{
     position: relative;
     border: 1px solid var(--gray);
     background-color: var(--white);
-    margin-right: 18px;
-    width: 180px;
+    margin-right: 11px;
+    width: 176px;
     height:auto;
     border-radius:4px;
     align-items:center;
@@ -2455,7 +2585,8 @@ ul.getting--started--inner{
     /* background-color:#63baf4; */
     padding:0 20px;
     color:var(--white);
-    transition:background-color 0.2s linear ;
+    transition:0.2s linear;
+    transition-property: filter, background-color;
 }
 .reuqest-item button{
     padding: 0 9px;
@@ -2476,7 +2607,7 @@ ul.getting--started--inner{
     height: 15px;
 }
 .primary__btn:hover{
-    background-color:#34a3ee;
+    filter: brightness(1.2);
 }
 .primary__btn:active{
     color:rgb(224, 224, 224);
@@ -3160,6 +3291,9 @@ a.prof__btn__unfollowed{
             right: 5px;
             font-size: 18px;
         }
+    }
+    #usersProfile .suggestion--items, ul.getting--started--inner{
+        gap: 0.7rem;
     }
     .noti--popup-item .noti--row{
         width:55%;

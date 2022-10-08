@@ -9,7 +9,7 @@ const NotificationPeriod = ({list = [], title= ""}) => {
         igVideoImg,
         igAudioImg,
         changeMainState} = useContext(AppContext);
-    return list && list.length > 0 &&(
+    return list && list.length > 0 ? (
       <div className="noti__period">
         <h3 className="noti__period__title">{title}</h3>
             {list
@@ -33,7 +33,7 @@ const NotificationPeriod = ({list = [], title= ""}) => {
       </div>
        
 
-    )
+    ) : <></>
 }
 NotificationPeriod.propTypes = {
     list: PropTypes.array.isRequired,

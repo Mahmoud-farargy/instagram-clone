@@ -14,7 +14,7 @@ const YoutubePhase = () => {
     const history = useHistory();
     const timeIntervalId = useRef(null);
     const _isMounted = useRef(true);
-    const { notify, generateNewId, receivedData, uid, addPost } = useContext(AppContext);
+    const { notify, generateNewId, receivedData, uid, addPost, cleanseText } = useContext(AppContext);
     const [doesVidExist, setVidExistingState] = useState(false);
     const [YTID, setYTID] = useState("");
     const [formState, setFormState] = useState({
@@ -36,7 +36,7 @@ const YoutubePhase = () => {
         if (formState.youtubeUrl && YTID) {
             setFormState({ ...formState, isLoading: true });
             const addedPost = {
-                caption: formState.caption || "",
+                caption: cleanseText(formState.caption) || "",
                 id: generateNewId(),
                 contentType: Consts.YoutubeVid,
                 contentURL: "",

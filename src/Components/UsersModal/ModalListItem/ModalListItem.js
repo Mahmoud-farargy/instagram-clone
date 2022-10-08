@@ -16,7 +16,14 @@ import * as actionTypes from "../../../Store/actions/actions";
 const ModalListItem =(props)=>{
     const {uid, userName, avatarUrl, date, isVerified , browseUser, type, changeModalState} = props;
     const _isMounted = useRef(true);
-    useEffect(() => () => _isMounted.current = false, []);
+    useEffect(() => {
+        // lazy loads all avatar images
+        const allAvatarImgs = document.querySelectorAll(".avatar--img img");
+        allAvatarImgs.forEach((imgEl) => {
+            imgEl.setAttribute("loading", "lazy");
+        });
+        return () => _isMounted.current = false;
+    }, []);
     const { receivedData } = useContext(AppContext);
     const notMyItem = receivedData?.uid !== uid;
     const history = useHistory();
@@ -36,7 +43,7 @@ const ModalListItem =(props)=>{
         <Auxiliary>
             <div className="modal--user--item flex-row">
                 <div className="modal--item--inner flex-row acc-action clickable" >
-                   <Avatar src={avatarUrl} alt={userName} />
+                   <Avatar src={avatarUrl} alt={userName} className="avatar--img"/>
                     <div className="modal--user--info flex-column" onClick={()=> directTo()}>
                         <h3 className="flex-row trim__txt">{trimText(userName, 20)}{isVerified && (
                       <GoVerified className="verified_icon" />

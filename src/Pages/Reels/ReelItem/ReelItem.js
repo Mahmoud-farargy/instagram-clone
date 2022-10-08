@@ -31,6 +31,7 @@ function ReelItem(props) {
   const _isMounted = useRef(true);
   const context = useContext(AppContext);
   const [isVideoPlaying, setVideoPlaying] = useState(false);
+  const [isReelEnded, setEndedState] = useState(false);
   const [muteVolume, setVolumeState] = useState(false);
   const [comments, setComments] = useState(false);
   const [commentTxt, setCommentTxt] = useState("");
@@ -55,6 +56,7 @@ function ReelItem(props) {
         reelVideo && reelVideo.current.play();
         setVideoPlaying(true);
         setCurrPlayingReel(index);
+        isReelEnded && setEndedState(false);
       }
     }
 
@@ -128,6 +130,12 @@ function ReelItem(props) {
         reelVideo.current.addEventListener("loadedmetadata", () =>{
           if(_isMounted.current){
               setBuffering(false);
+              setEndedState(false);
+          }
+        })
+        reelVideo.current.addEventListener("ended", () =>{
+          if(_isMounted.current){
+              setEndedState(true);
           }
         })  
     }
@@ -199,7 +207,7 @@ function ReelItem(props) {
               ref={reelVideo}
               src={item?.contentURL}
               onKeyDown={(c) => onKeyPressing(c)}
-              loop
+              loop={maxLength > 1 ? index !== 0 : true}
               onError={() => setErrorState(true)}
               playsInline
               tabIndex="0"
@@ -298,7 +306,7 @@ function ReelItem(props) {
             <form onSubmit={(s) => submitComment(s)} className="reel--comment w-100 flex-row">
                                 <input type="text" ref={commentInputRef} value={commentTxt} onChange={(f) => setCommentTxt(f.target.value)} placeholder={`Replay to ${reelsProfile?.userName}...`} />  
                                 {
-                                    commentTxt && <span className="send__reel__comment">Send</span>
+                                    commentTxt && <input type="submit" className="send__reel__comment" value="Send" />
                                 }
 
             </form>
@@ -350,6 +358,17 @@ function ReelItem(props) {
                 <small>{item?.comments && item?.comments.length > 0 && item?.comments.length.toLocaleString()}</small>
             </div>
           </div>
+          {(index === 0 && (maxLength > 1) && isReelEnded) && <div className="next--reel--arrow--container">
+                <div className="next--reel--arrow-inner" >
+                <div className="indicator">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                </div>
+          </div>}
         </div>
       </div>
     </Fragment>

@@ -35,10 +35,21 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    white-space: nowrap;
+    transition: background 0.2s linear;
     &:active {
-      background-color: var(--light-gray);
+      background: var(--light-gray);
+    }
+
+  }    
+  .optionsM--container--inner span, .optionsM--container--inner button {
+    &:hover{
+        background: rgba(0,0,0,0.060);
     }
   }
+
   .optionsM--container--inner > *:first-child {
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;

@@ -18,15 +18,10 @@ const Message = (props) => {
     if (type === "unsend") {
       unsendMessage({ user: user, id: message?.id, type: message?.type, pathname: message?.contentName });
     } else if (type === "copy") {
-      const $body = document.getElementsByTagName("body")[0];
-      const $tempInput = document.createElement("textarea");
-      $body.appendChild($tempInput);
-      $tempInput.innerHTML = message?.textMsg;
-      $tempInput.style.whiteSpace = "pre-wrap";
-      $tempInput.select();
-      $tempInput.setSelectionRange(0, 99999);
-      document.execCommand("copy");
-      $body.removeChild($tempInput);
+      if(!message?.textMsg){
+        return;
+      }
+      navigator.clipboard.writeText(message?.textMsg);
       notify("Copied to Clipboard", "info");
     }
   }

@@ -29,7 +29,7 @@ const PollContent = ({pollData, handleVoting, postOwnerId, postId, uid, updateLi
         setVoteOwnership(postOwnerId === uid);
     }, [postOwnerId]);
 
-    return Object.keys(pollData)?.length > 0 && (
+    return Object.keys(pollData)?.length > 0 ? (
         <Fragment>
             <div id="pollContent">
                 <h5 className="poll__content__quiz">{capFirstLetter(question)}</h5>
@@ -49,7 +49,7 @@ const PollContent = ({pollData, handleVoting, postOwnerId, postId, uid, updateLi
                 }
             </div>
         </Fragment>
-    )
+    ): <></>
 };
 
 export default PollContent;

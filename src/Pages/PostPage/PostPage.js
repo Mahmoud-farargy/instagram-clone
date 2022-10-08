@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext , useEffect, useRef, lazy, memo} from "react";
+import React, { Fragment, useState, useContext , useEffect, useRef, lazy, memo, useMemo} from "react";
 import "../../Components/Post/Post.css";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Avatar } from "@material-ui/core";
@@ -207,8 +207,8 @@ const PostPage  = (props) => {
   }
 
     var {caption = "",contentType,contentURL = "",comments = [],likes= {},location = "",date = {},postOwnerId = "", id = "", pollData = {}, youtubeData = {},userName, contentName="", songInfo = {}, disableComments = false } = usersProfileData?.posts[currentPostIndex?.index];       
-    var isVerified = usersProfileData?.isVerified;
-    var following = receivedData?.following;
+    var isVerified = useMemo(() => usersProfileData?.isVerified, [usersProfileData]);
+    var following = useMemo(() => receivedData?.following, [receivedData]);
     const updateUsersWhoLiked = () => {
       setCompState({
         ...compState,
@@ -221,8 +221,8 @@ const PostPage  = (props) => {
     useEffect(() => {
       (scrollToBottom && scrollToBottom.current && scrollToBottom.current?.scrollIntoView) && scrollToBottom.current.scrollIntoView({block: "end"});
     },[comments?.length]);
-    const similarsStr = (likes?.people?.some(el => el?.id === uid) && likes?.people?.length >3) ? (likes?.people?.length?.toLocaleString() -3) : (likes?.people?.length?.toLocaleString() -2);
-    const areCommentsDisabled = (usersProfileData?.profileInfo?.professionalAcc?.disableComments || disableComments);
+    const similarsStr = useMemo(() => (likes?.people?.some(el => el?.id === uid) && likes?.people?.length >3) ? (likes?.people?.length?.toLocaleString() -3) : (likes?.people?.length?.toLocaleString() -2),[likes, uid]) ;
+    const areCommentsDisabled = useMemo(() => (usersProfileData?.profileInfo?.professionalAcc?.disableComments || disableComments), [usersProfileData, disableComments]);
     const deleteCurrentPost = () => {
       deletePost( id, currentPostIndex?.index, contentName, contentURL ).then(() => {
         if(_isMounted.current){

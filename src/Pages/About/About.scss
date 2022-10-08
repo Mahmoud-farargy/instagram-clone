@@ -7,9 +7,12 @@
   .about--inner {
     .about-sub {
       width: 100%;
-      padding: 55px 0 0;
+      padding: 120px 0 0;
       justify-content: center;
       align-items: center;
+      @media only screen and (max-width: 670px) {
+        padding: 80px 0 0;
+      }
     }
     .about-section-inner {
       width: 60%;
@@ -45,14 +48,13 @@
           p{
               margin-bottom: 0.7rem;
           }
-          a{
-             text-decoration: none;
-             strong, em{
+             a, em{
                 display: flex;
                 flex-direction: row;
                 align-items: center;
              }
-             strong{
+             a{ 
+                text-decoration: none;
                 color: var(--font-black); 
                  transition: color 0.2s linear;
                 &:hover{
@@ -68,9 +70,6 @@
                     font-size: 1.2rem;
                 }
              }
- 
-          }
-
       }
     }
     .socials--links {

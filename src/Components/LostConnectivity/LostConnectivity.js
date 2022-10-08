@@ -28,6 +28,7 @@ const LostConnectivity = () => {
                 ariaHideApp={false}
                 isOpen={true}
                 style={customStyles}
+                closeTimeoutMS={300}
                 contentLabel="Network lost"
                 >
                 <div>You appear to have lost connection!</div>

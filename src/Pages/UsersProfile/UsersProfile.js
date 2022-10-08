@@ -40,7 +40,7 @@ const UsersProfile = ({ changeModalState, modalsState, suggestionsList }) => {
   const [randNum, setRandNum] = useState(0);
   const [connectivityStatus, setConnectivityStatus] = useState({});
   const [reelsList, setReelsList] = useState([]);
-  const [profSections] = useState([
+  const profSections = Object.freeze([
       {sectionId: "grid",title: "grid", logo: <IoMdGrid />},
       {sectionId: "stacked",title: "stacked", logo: <RiLayoutRowLine/>},
       {sectionId: "reels", title: "reels", logo: <MdOndemandVideo />}
@@ -211,7 +211,7 @@ const UsersProfile = ({ changeModalState, modalsState, suggestionsList }) => {
                         </div>
                     }
                     {
-                      similarFollowers && similarFollowers.length > 0 &&
+                      (similarFollowers && similarFollowers.length > 0 && !isPrivate) &&
                       <p onClick={()=> changeModalState("users",true, similarFollowers, Consts.MUTUALFRIENDS)}  className="similar__followers">Followed by <span>
                         {
                         similarFollowers.slice(0,3).map(q => <MutualFriendsItem key={q?.receiverUid} item={q} />)

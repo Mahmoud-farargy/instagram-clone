@@ -10,7 +10,7 @@ import InputForm from "../../../Components/Generic/InpuForm/InputForm";
 import "./PollQuizPhase.scss";
 
 const PollQuizPhase = () => {
-    const { addPost, notify, receivedData, uid, generateNewId } = useContext(AppContext);
+    const { addPost, notify, receivedData, uid, generateNewId, cleanseText } = useContext(AppContext);
     const history = useHistory();
     const _isMounted = useRef(true);
     const defaultAnswers = [
@@ -110,10 +110,10 @@ const PollQuizPhase = () => {
                         contentType: Consts.Poll,
                         contentURL: "",
                         pollData: {
-                            question: formState.question,
+                            question: cleanseText(formState.question),
                             answers: formState.answers.map(answerEl => {
                                 return {
-                                    text: answerEl.value,
+                                    text: cleanseText(answerEl.value),
                                     id: answerEl.id,
                                     votes: []
                                 }

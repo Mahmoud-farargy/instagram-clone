@@ -17,7 +17,7 @@ const SuggList = (props) => {
         }
       });
     }
-    return (
+    return (item && item.uid) ? (
         <>
                 <li className="suggestion--item flex-column">
                             <div className="suggestion--item-inner">
@@ -50,7 +50,8 @@ const SuggList = (props) => {
                             </div>
                           </li>
         </>
-    )
+    ) :
+  <></>
 }
 
 SuggList.propTypes = {

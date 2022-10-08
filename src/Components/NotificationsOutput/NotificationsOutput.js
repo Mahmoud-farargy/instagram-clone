@@ -22,7 +22,7 @@ const NotificationOutput =(props)=>{
         //     props.history.push("/browse-post");
         // });
     }
-    return notification && (
+    return notification ? (
         <Auxiliary >
             <li className="space__between noti--popup-item">
                     <div className="flex-row noti--row">
@@ -59,7 +59,7 @@ const NotificationOutput =(props)=>{
                                                             
             </li>
         </Auxiliary>
-    )
+    ): <></>
 }
 NotificationOutput.propTypes = {
     notification: PropTypes.object.isRequired,
