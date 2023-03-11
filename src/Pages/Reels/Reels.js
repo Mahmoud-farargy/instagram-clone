@@ -35,7 +35,7 @@ function Reels(props) {
         <Fragment>
             <section id="reels"> 
                 <div className="reels--main--container flex-column">
-                    <div className="reels--outer--header desktop-only flex-row">
+                    <div className="reels--outer--header flex-row">
                         <Link to="/">
                             <h1 className="logoText">Voxgram</h1>
                         </Link>

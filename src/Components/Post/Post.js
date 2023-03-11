@@ -470,8 +470,8 @@ class Post extends PureComponent {
                     } 
                     </span>
                  } 
-                  <span>
-                    <FiSend onClick={() => this.setState({...this.state, openNewMsgModal: true})} />
+                  <span onClick={() => this.setState({...this.state, openNewMsgModal: true})}>
+                    <FiSend />
                   </span>
                 </div>
                 <div className="bookmark__icon">

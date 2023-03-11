@@ -356,18 +356,18 @@ const Messages = (props) => {
                     />
                   )}
                 </div>
-                {compState.openSidedrawer ? (
+                
                   <>
-                  <div
+                  {compState.openSidedrawer &&<div
                     className="backdrop mobile-only"
                     onClick={() => setCompState({...compState, openSidedrawer: false })}
-                  ></div>
-                                  <div
+                  ></div>}
+                   <div
                   style={{
                     transform: compState.openSidedrawer
-                      ? "translate(0)"
-                      : "translate(90vw)",
-                    transition: "all 0.5s linear",
+                      ? "translate3d(0, 0, 0)"
+                      : "translate3d(100%, 0, 0)",
+                    transition: "transform 0.2s, opacity 0.2s",
                     opacity: compState.openSidedrawer ? "1" : "0",
                   }}
                   id="mobileChat"
@@ -394,7 +394,7 @@ const Messages = (props) => {
                   </div>
                 </div>
                   </>
-                ) : null}
+                
 
                 {(compState.loadedChatLog < 1 || messages.length <= 0 ) ? (
                   <div className="messages--empty--container flex-column">

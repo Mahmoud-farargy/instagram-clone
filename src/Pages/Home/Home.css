@@ -189,7 +189,6 @@
         align-items:auto;
         overflow: scroll;
         scroll-snap-type: y mandatory;
-        /* height: 100vh; */
         position: relative; 
         -ms-overflow-style: none;
         scrollbar-width: none;

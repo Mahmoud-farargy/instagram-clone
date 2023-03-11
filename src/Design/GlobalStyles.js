@@ -376,6 +376,7 @@ a:visited{
 }
 .main--app{
     min-height: 100vh;
+    min-height: 100svh;
     min-width: 250px;
     overflow: hidden;
 }
@@ -592,6 +593,7 @@ span.clear--search--box.voice__search__icon{
     left:0;
     width:100%;
     height: 100vh;
+    height: 100svh;
     background-color: rgba(0,0,0,.5);
     z-index:1300;
     overflow-x: hidden;
@@ -1002,6 +1004,7 @@ ${loopThroughSlides({start: 1, finish: 5})}
     text-align:center;
     cursor:pointer;
     min-height: 35px;
+    transition: filter 0.2s linear;
 }
 .loading__btn{
     justify-content: center;
@@ -1051,9 +1054,6 @@ ${loopThroughSlides({start: 1, finish: 5})}
 }
 .auth--input--form input[type="submit"]:focus, .resetPassBtn:focus, .auth--input--form button{
     border:none;
-}
-.auth--input--form input[type="submit"]:hover{
-    background-color:#1d8cd6;
 }
 .auth .auth--bottom--card span strong{
     font-weight:600;
@@ -2090,9 +2090,11 @@ ul.getting--started--inner li.getting--started--box .profile__btn.primary__btn{
     border:1px solid #DD2A7B;
     transition: all 0.2s ease-out;
 }
+ul.getting--started--inner li.getting--started--box .profile__btn.primary__btn:hover, .auth--input--form input[type="submit"]:hover{
+    filter: brightness(1.2);
+}
 ul.getting--started--inner li.getting--started--box .profile__btn.primary__btn:hover{
     border:1px solid #d1558d;
-    filter: brightness(1.2);
 }
 ul.getting--started--inner{
     overflow-x:auto;
@@ -2618,6 +2620,7 @@ ul.getting--started--inner{
     padding:0px 9px;
     background-color: transparent;
     color:var(--font-black);
+    transition: filter 0.2s linear;
 }
 .prof__btn__unfollowed:focus, .primary__btn:focus{
     outline: none;
@@ -2633,8 +2636,7 @@ a.prof__btn__unfollowed{
     text-decoration: none;
 }
 .prof__btn__unfollowed:active{
-    color:#424242 !important;
-    background-color: #f1f1f1;
+    filter: brightness(0.9);
 }
 #usersProfile.users--profile--container .users__profile__image{
     width:100%;
@@ -3373,6 +3375,7 @@ a.prof__btn__unfollowed{
     .message--pic--fullScreen .pic--fullScreen--inner{
         width: 100%;
         height: 100vh;
+        height: 100svh;
         padding:0;
         margin:0;
         border-radius:0;
@@ -3386,6 +3389,7 @@ a.prof__btn__unfollowed{
         right: 0;
         width: 100%;
         height: 100vh;
+        height: 100svh;
         transform: none;
         z-index: 5950;
     }
@@ -3473,6 +3477,7 @@ a.prof__btn__unfollowed{
         flex-direction: column;
         flex-wrap: wrap;
         height:100vh;
+        height: 100svh;
     }
     #messages.messages--container .messages--users--side, #messages.messages--container .messages--side{
         flex-basis: 100%;
@@ -3516,7 +3521,9 @@ a.prof__btn__unfollowed{
     .messages--side .mobile--users--sidedrawer{
         position: fixed;
         top:0px;
+        bottom:0px;
         height:100vh;
+        height: 100svh;
         width:70%;
         right:0;
         padding-top: 13px;
@@ -3609,6 +3616,7 @@ a.prof__btn__unfollowed{
     .usersModal--inner .usersModal--card, #commentsModal.comments--modal--container{
         border-radius:0;
         height:100vh;
+        height: 100svh;
         width:100%;
     }
     .getting--started--container h4{
@@ -3636,6 +3644,7 @@ a.prof__btn__unfollowed{
         width:100%;
         border-radius:0;
         height:100vh;
+        height: 100svh;
         max-height:auto;
     } */
     #commentsModal.comments--modal--container .comments--modal--card {
@@ -3652,9 +3661,23 @@ a.prof__btn__unfollowed{
     }
     
 }
-
+/* -----------Query less than or equal 780px------------ */
+@media only screen and (max-width: 780px){
+    :root{
+        --padding-sides: 5vw;
+    }
+    .messages--users--side{
+        border: none;
+    }
+    .home--reel--right--arrow, .home--reel--left--arrow{
+        display: none;
+    }
+}
 /* ---------Query less than or equal 9300px------------ */
 @media only screen and (max-width:930px){
+    :root{
+        --padding-sides: 7vw;
+    }
     #usersProfile.users--profile--container .users--action--row{
         flex-direction: column;
         flex-wrap: wrap !important;

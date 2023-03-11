@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, Fragment, useRef, memo, useMemo } from "react";
+import React, { useContext, useEffect, useState, Fragment, useRef, memo, useMemo, useCallback } from "react";
 import "./Explore.scss";
 import { AppContext } from "../../Context";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -211,6 +211,9 @@ const Explore = ({ modalsState, explore, isUsersListLoading }) => {
       }
   }, [receivedData, sortForm]);
 
+  const closeSortingModal = useCallback(() => {
+    setSortingModal(false);
+  }, [])
   return (
     <Fragment>
       {/* Modals */}
@@ -221,7 +224,7 @@ const Explore = ({ modalsState, explore, isUsersListLoading }) => {
             <Modal
           ariaHideApp={false}
           isOpen={ sortingModalIsOpen }
-          onRequestClose={() => setSortingModal(false)}
+          onRequestClose={() => closeSortingModal()}
           style={ModalStyles}
           id="exploreSortingModal"
           closeTimeoutMS={300}
@@ -268,7 +271,7 @@ const Explore = ({ modalsState, explore, isUsersListLoading }) => {
                       } 
 
                       <div className="explore__modal__btns flex-row">
-                        <span className="profile__btn explore__close__btn" onClick={() => setSortingModal(false)}>close</span>
+                        <span className="profile__btn explore__close__btn" onClick={() => closeSortingModal()}>close</span>
                         <input disabled={!isValid} className={`profile__btn primary__btn ${!isValid && "disabled"}`} type="submit" value="Save"/>
                       </div>
                      

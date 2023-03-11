@@ -3,7 +3,7 @@
         margin:0 auto;
     }
     .suggestions--p--inner{
-        width: 60%;
+        width: 570px;
         margin: 5px auto;
         padding: 7px;
         h4{
@@ -34,15 +34,20 @@
                     outline: none;
                 }
         }
-        @media only screen and (max-width: 670px){
-            width: 100%;
-            overflow-y:auto;
-            h4, .online__title{
-                padding-left:10px;
-            }
+    }
+    @media screen and (max-width: 800px) {
+        .suggestions--p--inner{
+            width: 90%;
         }
     }
-    @media screen and (max-width:670px) {
+    @media screen and (max-width: 670px) {
         background-color: var(--white);
+        .suggestions--p--inner{
+                width: 100%;
+                overflow-y:auto;
+                h4, .online__title{
+                    padding-left: 10px;
+                }
+        }
     }
 }

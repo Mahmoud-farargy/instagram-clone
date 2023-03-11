@@ -167,7 +167,7 @@
     border-left: 1px solid var(--shadow-white);
     border-top: 1px solid var(--shadow-white);
     background-color:var(--white);
-    z-index:9;
+    z-index:-1;
 }
 .noti--popup--window, .search--pop--window{
     position: absolute;
@@ -413,6 +413,7 @@ p.noti__text{
     position:fixed;
     width:100%;
     height: 100vh;
+    height: 100svh;
     z-index:100;
     left:0;
     top:0;
