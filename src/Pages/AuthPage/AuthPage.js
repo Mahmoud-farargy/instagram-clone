@@ -796,7 +796,7 @@ const AuthPage = (props) => {
                     >
                       {!getPasswordMode ? (
                         <div className="flex-column">
-                          <AuthInput inputType="text" type="email" val={formState.loginEmail?.val} title="Email" name="loginEmail" required autoFocus onInputChange={onInputChange} isValid={formState.loginEmail?.isValid} isSubmitted={isSubmitted}/>
+                          <AuthInput inputType="text" type="email" val={formState.loginEmail?.val} title="Email" name="loginEmail" required autoFocus={false} onInputChange={onInputChange} isValid={formState.loginEmail?.isValid} isSubmitted={isSubmitted}/>
                           <AuthInput inputType="password" val={formState.loginPassword?.val} required title="Password" name="loginPassword" onInputChange={onInputChange} isValid={formState.loginPassword?.isValid} isSubmitted={isSubmitted}/>
                           <AuthSubmissionBtn value="Log In" type="login" formState={formState} isRecapVerified={true} inProgress={inProgress} loading={loading} />
                           <span
@@ -875,7 +875,7 @@ const AuthPage = (props) => {
                         onSubmit={(event) => submitForm(event, "signUp")}
                         className="auth--input--form flex-column"
                       >
-                        <AuthInput inputType="text" type="email" val={formState.signUpEmail?.val} errorMsg={formState.signUpEmail?.errorMsg} title="Email" required name="signUpEmail" autoFocus onInputChange={onInputChange} isValid={formState.signUpEmail?.isValid} isSubmitted={isSubmitted}/>
+                        <AuthInput inputType="text" type="email" val={formState.signUpEmail?.val} errorMsg={formState.signUpEmail?.errorMsg} title="Email" required name="signUpEmail" autoFocus={false} onInputChange={onInputChange} isValid={formState.signUpEmail?.isValid} isSubmitted={isSubmitted}/>
                         <AuthInput inputType="text" type="text" val={formState.fullName?.val} errorMsg={formState.fullName?.errorMsg} title="Full Name" name="fullName" required onInputChange={onInputChange} isValid={formState.fullName.isValid} isSubmitted={isSubmitted}/>
                         <AuthInput inputType="text" type="text" val={formState.signUpUsername?.val?.charAt(0).toUpperCase() +
                             formState.signUpUsername?.val?.slice(1)} errorMsg={formState.signUpUsername?.errorMsg} title="Username" name="signUpUsername" required onInputChange={onInputChange} isValid={formState.signUpUsername?.isValid} isSubmitted={isSubmitted}/>

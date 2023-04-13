@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { AppContext } from "../../Context";
+import NProgress from "../Generic/NProgress";
 
 export const withBrowseUser = WrappedComponent => {
     class newComponent extends PureComponent {
@@ -47,7 +48,7 @@ export const withBrowseUser = WrappedComponent => {
       
         return (
           <>
-            {this._isMounted && this.state.isLoading && <div className="global__loading"><span className="global__loading__inner"></span></div>}
+            {this._isMounted && this.state.isLoading && <NProgress/>}
             <WrappedComponent {...this.props} browseUser={this.memoizedBrowseUser} />
           </>
         )

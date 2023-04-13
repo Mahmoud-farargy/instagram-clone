@@ -9,6 +9,7 @@ import { storage, storageRef } from "../../../Config/firebase";
 import { GoVerified } from "react-icons/go";
 import { retry } from "../../../Utilities/RetryImport";
 import { connect } from "react-redux";
+import NProgress from "../../../Components/Generic/NProgress";
 import * as Consts from "../../../Utilities/Consts";
 import * as actionTypes from "../../../Store/actions/actions";
 
@@ -250,7 +251,7 @@ const EditProfileOption = (props) => {
           className="flex-column edit--prof--form"
           onSubmit={(e) => submitForm(e)}
         >
-           <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div></div>}>
+           <Suspense fallback={<NProgress />}>
             <InputForm
               type="text"
               changeInput={onInputChange}

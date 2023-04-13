@@ -6,6 +6,7 @@ import { withRouter } from "react-router-dom";
 import fbimg from "../../Assets/f0e27bf15519.png";
 import MenuOption from "./MenuOption";
 import { retry } from "../../Utilities/RetryImport";
+import NProgress from "../../Components/Generic/NProgress";
 
 // ------------lazy loading-------------
 const EditProfileOption = lazy(() => retry(() => import("./MenuOptions/EditProfileOption")));
@@ -67,7 +68,7 @@ class EditProfile extends PureComponent {
                   </div>
                 </ul>
                 {/* end left side */}
-                <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div></div>}>
+                <Suspense fallback={<NProgress />}>
                     <div className="flex-column right--side">
                     {activeOption.activeID === this.state.sideMenuOptions[0].id ? (
                       <EditProfileOption

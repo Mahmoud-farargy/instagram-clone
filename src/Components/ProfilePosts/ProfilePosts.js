@@ -5,6 +5,7 @@ import { AppContext } from "../../Context";
 import { useHistory } from "react-router-dom";
 import List from "../Generic/List/List";
 import { connect } from "react-redux";
+import NProgress from "../Generic/NProgress";
 import * as actionTypes from "../../Store/actions/actions";
 
 const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profile--posts", isSavedPost = false, changeModalState, isExploreList, ...props }) => {
@@ -87,7 +88,7 @@ const ProfilePosts = ({listType = "post", list = [], parentClass = "users--profi
                         <List list={list} isExploreList={isExploreList} parentClass={parentClass} areHomePosts={false} intervalTime={1100} increaseBy={5} parentId="userPosts" >
                             <ProfileItem itemType={listType} isSavedPost={isSavedPost} {...props} onLoadingFail={onLoadingFail} openPost={openPost}/>
                         </List>
-                    {isOpeningPost && <div className="global__loading"><span className="global__loading__inner"></span></div>}
+                    {isOpeningPost && <NProgress />}
                 </section>
             } 
            

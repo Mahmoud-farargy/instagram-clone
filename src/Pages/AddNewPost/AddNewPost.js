@@ -9,6 +9,7 @@ import InputForm from "../../Components/Generic/InpuForm/InputForm";
 import { updateObject, lowerCaseString } from "../../Utilities/Utility";
 import Files from "react-files";
 import * as Consts from "../../Utilities/Consts";
+import NProgress from "../../Components/Generic/NProgress";
 import { retry } from "../../Utilities/RetryImport";
 
 const CropMediaPhase = lazy(() => retry(() => import("./CropMediaPhase/CropMediaPhase")));
@@ -220,7 +221,7 @@ class AddNewPost extends PureComponent {
       switch (lowerCaseString(this.state.contentType)) {
         case Consts.Image: {
           return (
-            <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div></div>}>
+            <Suspense fallback={<NProgress />}>
               {
                 currentPhase.index === 1 ?
                   <CropMediaPhase setCurrentPhase={setCurrentPhase} contentType={this.state.contentType} changeContentPreview={this.changeContentPreview} contentPreview={this.state.contentPreview} />

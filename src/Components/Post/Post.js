@@ -9,6 +9,7 @@ import { FaRegComment , FaRegCommentDots} from "react-icons/fa";
 import { RiBookmarkLine, RiBookmarkFill } from "react-icons/ri";
 import CommentsList from "./Comments/Comments";
 import { updateObject } from "../../Utilities/Utility";
+import NProgress from "../Generic/NProgress";
 import OptionsModal from "../Generic/OptionsModal/OptionsModal";
 import * as Consts from "../../Utilities/Consts";
 import GetFormattedDate from "../../Utilities/FormatDate";
@@ -551,7 +552,7 @@ class Post extends PureComponent {
                 >
                  <div className="form--input--container w-100 flex-row">
                     <div className="form--input--container--inner flex-row">
-                      <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div></div>}>
+                      <Suspense fallback={<NProgress />}>
                          <EmojiPicker onEmojiClick={this.onEmojiClick} />
                       </Suspense>
                       <input

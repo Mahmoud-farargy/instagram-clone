@@ -1373,6 +1373,14 @@ button:active{
     -webkit-animation: fakeLoading 0.8s ease-out 1, waveBg 2s ease infinite;
     user-select: none;
 }
+#nprogress .bar{
+    height:3px;
+    background: #f09433;
+    background: -moz-linear-gradient(45deg, #f09433 20%,#3bd175 25%,#dc2743 50%,#b120be 75%,#bc1888 100%); 
+    background: -webkit-linear-gradient(45deg, #f09433 20%,#3bd175 25%,#dc2743 50%,#b120be 75%,#bc1888 100%); 
+    background: linear-gradient(45deg, #f09433 20%,#3bd175 25%,#dc2743 50%,#b120be 75%,#bc1888 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
+}
 .global__loading{
     padding: 0;
     margin:0;

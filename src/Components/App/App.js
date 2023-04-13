@@ -5,11 +5,13 @@ import { auth, changeConnectivityStatus } from "../../Config/firebase";
 import AppConfig from "../../Config/app-config.json";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "react-confirm-alert/src/react-confirm-alert.css";
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import 'react-toastify/dist/ReactToastify.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import 'react-h5-audio-player/lib/styles.css';
+import 'nprogress/nprogress.css';
 import LoadingScreen from "../Generic/LoadingScreen/LoadingScreen";
+import NProgress from "../Generic/NProgress";
 import { retry } from "../../Utilities/RetryImport";
 import LostConnectivity from "../LostConnectivity/LostConnectivity";
 import { disableReactDevTools, lowerCaseString } from "../../Utilities/Utility";
@@ -71,6 +73,7 @@ const App = ({ changeModalState, modalsState, usersModalList, updateSuggestionsL
   } = context;
   const [isAnyModalOpen, setAllModalsState] = useState(false);
   const [user,loading] = useAuthState(auth);
+  const [isAppStarting, setStartingState]= useState(true);
   const history = useHistory();
   const location = useLocation();
   const [isConnected, setConnectivity] = useState(navigator.onLine);
@@ -109,6 +112,7 @@ const App = ({ changeModalState, modalsState, usersModalList, updateSuggestionsL
     }
     window.addEventListener('offline', ()=> setConnectivity(false));
     window.addEventListener('online', () => setConnectivity(true));
+    window.addEventListener('load', () =>  setStartingState(false));
     const unsubscribe = isConnected && auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         updateUserState(true);
@@ -132,6 +136,7 @@ const App = ({ changeModalState, modalsState, usersModalList, updateSuggestionsL
       typeof unsubscribe === "function" && unsubscribe();
       window.removeEventListener('offline', () => {});
       window.removeEventListener('online', () => {});
+      window.removeEventListener('load', () => {});
     };
   }, [isConnected]);
   useEffect(() => {
@@ -183,7 +188,7 @@ const App = ({ changeModalState, modalsState, usersModalList, updateSuggestionsL
             <CommentsModal context={context} />
           ) : null}
 
-          {loading && <div className="global__loading"><span className="global__loading__inner"></span></div>} 
+          {loading && <NProgress/>} 
          {
            isAnyModalOpen &&
             <div
@@ -197,13 +202,14 @@ const App = ({ changeModalState, modalsState, usersModalList, updateSuggestionsL
               ></div> 
          }          
         </Suspense>
+        {isAppStarting && <LoadingScreen />}
         {!isConnected && <LostConnectivity />}
         
         {/* Notifications container */}
         <ToastContainer />
         {/* Routes */}
         {/* TODO: put these routes in a routes.js component */}
-          <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div><LoadingScreen /></div>}>
+          <Suspense fallback={<NProgress/>}>
             <Switch>
             <Route exact path="/">
               {user ?

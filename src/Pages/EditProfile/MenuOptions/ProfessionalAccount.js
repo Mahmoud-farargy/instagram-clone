@@ -15,6 +15,7 @@ import CheckboxIOS from "../../../Components/Generic/CheckboxIOS/CheckboxIOS";
 import Moment from "react-moment";
 import * as Consts from "../../../Utilities/Consts";
 import { retry } from "../../../Utilities/RetryImport" ;
+import NProgress from "../../../Components/Generic/NProgress";
 import { connect } from "react-redux";
 import { updateSuggestionsListAsync } from "../../../Store/actions/actionCreators";
 
@@ -138,7 +139,7 @@ const ProfessionalAccount = (props) => {
     <Fragment>
       <div className="option--container fadeEffect">
         <form onSubmit={(s) => onSubmission(s)} className="flex-column">
-        <Suspense fallback={<div><div className="global__loading"><span className="global__loading__inner"></span></div></div>}>
+        <Suspense fallback={<NProgress />}>
             <InputForm
               type="select"
               changeInput={onInputChange}
