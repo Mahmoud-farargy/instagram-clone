@@ -1,5 +1,5 @@
 {
-  "name": "voxgram",
+  "name": "buzzwave",
   "version": "1.1.0",
   "private": true,
   "dependencies": {
@@ -17,7 +17,6 @@
     "font-awesome": "^4.7.0",
     "material-ui": "^0.20.2",
     "moment": "^2.29.4",
-    "node-sass": "^4.14.1",
     "nprogress": "^0.2.0",
     "react": "^17.0.2",
     "react-app-polyfill": "^1.0.6",
@@ -48,6 +47,7 @@
     "react-youtube": "^7.14.0",
     "redux": "^4.1.2",
     "redux-thunk": "^2.4.1",
+    "sass": "^1.77.5",
     "save": "^2.5.0",
     "styled-components": "^5.3.0"
   },

@@ -104,7 +104,7 @@ const App = ({ changeModalState, modalsState, usersModalList, updateSuggestionsL
       "border: 1px dashed;" 
   ].join(";") 
     console.log(`%c Hi 👋 ! Glad you made it down here. Welcome to a console.log() adventure.`, consoleStyles);
-    console.log('%c If you like Voxgram, I suggest you see more projects on my portfolio: https://mahmoud-farargy.web.app. Kiss from me 😘', 'background: #ee11cc; color: #eee; font-size: 15px');
+    console.log('%c If you like BuzzWave, I suggest you see more projects on my portfolio: https://mahmoud-farargy.web.app. Kiss from me 😘', 'background: #ee11cc; color: #eee; font-size: 15px');
     if(process.env.NODE_ENV === "development"){
           typeof window !== "undefined" && (window.React = React);
     }else{

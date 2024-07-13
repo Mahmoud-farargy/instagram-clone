@@ -10,7 +10,7 @@ const MobileHeader = () => {
                 <nav className="header--nav flex-row" >
                     <div className="mobile--header--inner header--inner flex-row" >
                         <Link to="/">
-                            <h1 className="logoText">Voxgram</h1>
+                            <h1 className="logoText">BuzzWave</h1>
                         </Link>
                     <ul className="header--ul flex-row">
                         <li>

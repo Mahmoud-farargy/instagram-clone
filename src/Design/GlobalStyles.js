@@ -387,6 +387,7 @@ a:visited{
     max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
+    touch-action: pan-x;
     user-select: none;
     -webkit-user-select: none;
 }
@@ -650,6 +651,7 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
     width:99%;
     overflow-y:auto;
     overflow-x: hidden;
+    touch-action: pan-x;
 }
 .modal--user--item{
     padding:8px 16px;
@@ -2058,6 +2060,7 @@ button:active{
     -webkit-box-align: stretch;
     justify-content:flex-start;
     overflow-x: auto;
+    touch-action: pan-x;
     gap:10px;
     flex-wrap: nowrap;
     padding:0px 10px 10px 10px;
@@ -2125,6 +2128,7 @@ ul.getting--started--inner{
 #usersProfile ul.suggestions--p--ul{
     max-width: 100%;
     overflow-x: auto;
+    touch-action: pan-x;
 }
 #usersProfile .my__settings__btn{
     background: transparent;
@@ -2239,6 +2243,7 @@ ul.getting--started--inner{
     white-space:nowrap;
     overflow-x: auto;
     user-select: none;
+    touch-action: pan-x;
 }
 #messages.messages--container .chat--emojis--box::-webkit-scrollbar{
     width:0;

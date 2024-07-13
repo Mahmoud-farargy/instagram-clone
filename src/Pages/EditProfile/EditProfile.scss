@@ -124,6 +124,7 @@
       height:auto;
       flex-direction: row !important;
       overflow-x: auto;
+      touch-action: pan-x;
       &::-webkit-scrollbar{
         display: none;
         width: 0;

@@ -131,7 +131,7 @@ const Extra = () => {
                   {
                     !hasRated ?
                       <div>
-                        <h3>Enjoy Voxgram? </h3>
+                        <h3>Enjoy BuzzWave? </h3>
                         <p>Tap a star to rate it based on your experience </p>
                       </div>
                       :

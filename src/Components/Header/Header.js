@@ -160,7 +160,7 @@ const Header = (props) => {
 
       <header ref={headerRef} id="header" className="main--header flex-row">
         <div className="header--inner flex-row">
-          <div title="Voxgram" className="header--logo--box flex-row">
+          <div title="BuzzWave" className="header--logo--box flex-row">
             <div style={{
               animation: "0.5s ease-in disappear-item 1",
             }}
@@ -176,7 +176,7 @@ const Header = (props) => {
             }}
               className="logo--verti--divider"></div>
             <Link to="/">
-              <h1 className="logoText">Voxgram</h1>
+              <h1 className="logoText">BuzzWave</h1>
             </Link>
           </div>
 

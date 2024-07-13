@@ -165,7 +165,7 @@ const ProfessionalAccount = (props) => {
                      <label htmlFor="private">Account Privacy</label>
                 <CheckboxIOS checked={(formState?.professionalAcc?.private || false)} changeInput={onInputChange} id="private" name="private" />
                 </div>
-             <small>When your account is private, only people you approve can see your photos, music and videos on Voxgram. Your existing followers won't be affected.</small>
+             <small>When your account is private, only people you approve can see your photos, music and videos on BuzzWave. Your existing followers won't be affected.</small>
               </div>
               
             </div>
@@ -194,7 +194,7 @@ const ProfessionalAccount = (props) => {
                      <label htmlFor="status">Show Activity Status</label>
                 <CheckboxIOS checked={(formState?.professionalAcc?.status || false)} changeInput={onInputChange} id="status" name="status" />
                 </div>
-             <small>Allow accounts you follow and anyone you message to see when you were last active on Voxgram app. When this is turned off, you won't be able to see the activity status of other accounts.</small>
+             <small>Allow accounts you follow and anyone you message to see when you were last active on BuzzWave app. When this is turned off, you won't be able to see the activity status of other accounts.</small>
               </div>
               
             </div>

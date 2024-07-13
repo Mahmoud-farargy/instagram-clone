@@ -37,7 +37,7 @@ function Reels(props) {
                 <div className="reels--main--container flex-column">
                     <div className="reels--outer--header flex-row">
                         <Link to="/">
-                            <h1 className="logoText">Voxgram</h1>
+                            <h1 className="logoText">BuzzWave</h1>
                         </Link>
                         {/* redirect to user's profile */}
                         <span onClick={() => props.routeHistory.goBack()}className="reels--close--btn">
