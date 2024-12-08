@@ -48,8 +48,12 @@ const ErrorRoute = lazy(() => retry(()=> import("../../Pages/ErrorRoute/ErrorRou
 const MobileHeader = lazy(() => retry(()=> import("../../Components/MobileHeader/MobileHeader")));
 const MobileSearch = lazy(() => retry(()=>  import("../../Pages/MobileSearch/MobileSearch")));
 const Suggestions = lazy(() => retry(()=>  import("../../Pages/Suggestions/Suggestions")));
-//--xx---//
-// TODO: REFACTOR CODE
+//--xx---// 
+// 2024 NOTES:
+// - CODE SHOULD BE REFACTORED
+// - CONTEXT API SHOULD BE REPLACED WITH REDUX FOR BETTER STORAGE ORGANIZATION AND TO AVOID UNNECESSARY RE-RENDERINGS
+// - BOOTSTRAP AND SCSS SHOULD BE REPLACED WITH STYLED COMPONENTS
+// - I WAS MAKING THIS APP WHILE LEARNING REACT BACK IN 2020
 
 const App = ({ changeModalState, modalsState, usersModalList, updateSuggestionsList, suggestionsList, explore, isUsersListLoading }) => {
   const context = useContext(AppContext);
@@ -104,7 +108,7 @@ const App = ({ changeModalState, modalsState, usersModalList, updateSuggestionsL
       "border: 1px dashed;" 
   ].join(";") 
     console.log(`%c Hi 👋 ! Glad you made it down here. Welcome to a console.log() adventure.`, consoleStyles);
-    console.log('%c If you like BuzzWave, I suggest you see more projects on my portfolio: https://mahmoud-farargy.web.app. Kiss from me 😘', 'background: #ee11cc; color: #eee; font-size: 15px');
+    console.log('%c If you like Twixie, I suggest you see more projects on my portfolio: https://mahmoud-farargy.web.app. Kiss from me 😘', 'background: #ee11cc; color: #eee; font-size: 15px');
     if(process.env.NODE_ENV === "development"){
           typeof window !== "undefined" && (window.React = React);
     }else{

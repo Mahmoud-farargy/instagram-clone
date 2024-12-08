@@ -1,5 +1,5 @@
 {
-  "name": "buzzwave",
+  "name": "twixie",
   "version": "1.1.0",
   "private": true,
   "dependencies": {
@@ -12,7 +12,6 @@
     "bad-words-plus": "^3.0.4",
     "bootstrap": "^4.3.1",
     "emoji-picker-react": "^3.4.8",
-    "enzyme": "^3.11.0",
     "firebase": "^7.24.0",
     "font-awesome": "^4.7.0",
     "material-ui": "^0.20.2",

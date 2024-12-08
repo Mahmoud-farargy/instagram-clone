@@ -309,7 +309,7 @@ const AuthPage = (props) => {
                                                       }
                                                       timeouts.current = setTimeout(() => {
                                                         notify(
-                                                          `Welcome to BuzzWave. Start by adding posts to your account.
+                                                          `Welcome to Twixie. Start by adding posts to your account.
                                                           Please be respectful to others and only post appropriate content.`
                                                         );
                                                         setLoading(false);
@@ -452,7 +452,7 @@ const AuthPage = (props) => {
                           setLoading(false);
                           context.updatedReceivedData();
                           context.notify(
-                            `Welcome to BuzzWave ${given_name && ", " +given_name}. Start by adding posts to your account.
+                            `Welcome to Twixie ${given_name && ", " +given_name}. Start by adding posts to your account.
                              Please be respectful to others and only post appropriate content.
                             `
                           );
@@ -573,7 +573,7 @@ const AuthPage = (props) => {
                           setLoading(false);
                           context.updatedReceivedData();
                           context.notify(
-                            `Welcome to BuzzWave ${name && ", " +name}. Start by adding posts to your account.
+                            `Welcome to Twixie ${name && ", " +name}. Start by adding posts to your account.
                              Please be respectful to others and only post appropriate content.
                             `
                           );
@@ -683,7 +683,7 @@ const AuthPage = (props) => {
                         timeouts.current = setTimeout(() => {
                           context.updatedReceivedData();
                           context.notify(
-                            `Welcome to BuzzWave. Start by adding posts to your account.
+                            `Welcome to Twixie. Start by adding posts to your account.
                             Please be respectful to others and only post appropriate content.
                             `
                           );
@@ -764,7 +764,7 @@ const AuthPage = (props) => {
         :
         <section className="auth--main flex-column">
           <div className="auth--inner w-100 flex-row-reverse">
-            <div className="auth--review--pic flex-column">
+            {/* <div className="auth--review--pic flex-column">
               <div className="auth--slide--container unselectable" style={{backgroundImage: `url(${loginRevBg})`}} alt="insta review">
                 <div className="auth--slide--content" id="slideContent">
                     <img loading="lazy" src={slide1} alt="login slide 1" className="active__slide" />
@@ -774,17 +774,17 @@ const AuthPage = (props) => {
                     <img loading="lazy" src={slide5} alt="login slide 5" />
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="auth flex-column mt-5">
               <div className="auth--upper--card w-100 flex-column">
                 <div className="auth--logo flex-row">
                   <span className="mr-2">
                     <GrInstagram />
                   </span>
-                  <h1 className="logoText">BuzzWave</h1>
+                  <h1 className="logoText">Twixie</h1>
                 </div>
                 <small className="insta--warning">
-                  Note: this is not the official Instagram website.
+                  Note: this website is intended to be a side-project only
                 </small>
 
                 {
@@ -836,7 +836,7 @@ const AuthPage = (props) => {
                       <div className="signIn--options--box">
                         <SignInOption
                           method="anonymous"
-                          methTitle="Log in without credentials just to experiment with the app. However, you may not get all the features BuzzWave offers. Also, all your information will be public."
+                          methTitle="Log in without credentials just to experiment with the app. However, you may not get all the features Twixie offers. Also, all your information will be public."
                           isLoading={(loading || inProgress)}
                           signInFunc={(x) => signInMethods(x)}
                         />

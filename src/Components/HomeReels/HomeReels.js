@@ -65,7 +65,7 @@ const HomeReels = ({ homeReels, isUsersListLoading, isReceivedDataLoading }) => 
       }
       const arr = shuffleReels(
         homeReels?.map((reels) => {
-          if (reels && reels?.length > 0) {
+          if (reels?.length > 0) {
             const randomGroup = reels?.[getRandom(reels?.length)];
             return {
               ...randomGroup?.reelItems?.[

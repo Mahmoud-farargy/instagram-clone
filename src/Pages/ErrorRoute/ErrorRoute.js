@@ -38,7 +38,7 @@ const ErrorRoute = (props) => {
               <h2>Sorry, this page isn't available.</h2>
               <h5>
                 The link you followed may be broken, or the page may have been
-                removed. <Link to="/">Go back to BuzzWave.</Link>
+                removed. <Link to="/">Go back to Twixie.</Link>
               </h5>
               <p>{location.pathname} is not found.</p>
             </div>

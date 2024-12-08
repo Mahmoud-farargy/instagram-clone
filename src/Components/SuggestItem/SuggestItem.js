@@ -41,7 +41,7 @@ const SuggestItem =(props)=>{
                                 { isOnline && <span className="online__user"></span>}
                             </span>
                             <small>{ //if account creation's date is less than 2 weeks
-                            (creationDate && (withinPeriod({date: creationDate?.seconds, period: 1209600000 }))) ? "New to BuzzWave"
+                            (creationDate && (withinPeriod({date: creationDate?.seconds, period: 1209600000 }))) ? "New to Twixie"
                             : mutuals?.length > 0 ?
                                 (<span className="flex-row trim__txt" title={mutuals[0]?.receiverName}> 
                                         {trimText(`followed by ${mutuals[0]?.receiverName}`,20)}

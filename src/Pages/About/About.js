@@ -74,7 +74,7 @@ const About = (props) => {
     });
     const { changeMainState } = props;
     const appShareUrl = appConfig.websiteUrl || "";
-    const appShareTitle = "Recommendation - BuzzWave";
+    const appShareTitle = "Recommendation - Twixie";
     const appShareDescription = `Hello, I just discovered the greatest social media clone on Github and I really like it. You should go check it out.`;
     useEffect(() => {
         changeMainState("currentPage", "About");

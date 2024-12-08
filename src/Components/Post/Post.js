@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent, Suspense } from "react";
+import React, { Fragment, PureComponent, Suspense, memo } from "react";
 import "./Post.css";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Avatar } from "@material-ui/core";
@@ -633,4 +633,4 @@ class Post extends PureComponent {
     );
   }
 }
-export default Post;
+export default memo(Post);
