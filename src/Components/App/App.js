@@ -48,12 +48,6 @@ const ErrorRoute = lazy(() => retry(()=> import("../../Pages/ErrorRoute/ErrorRou
 const MobileHeader = lazy(() => retry(()=> import("../../Components/MobileHeader/MobileHeader")));
 const MobileSearch = lazy(() => retry(()=>  import("../../Pages/MobileSearch/MobileSearch")));
 const Suggestions = lazy(() => retry(()=>  import("../../Pages/Suggestions/Suggestions")));
-//--xx---// 
-// 2024 NOTES:
-// - CODE SHOULD BE REFACTORED
-// - CONTEXT API SHOULD BE REPLACED WITH REDUX FOR BETTER STORAGE ORGANIZATION AND TO AVOID UNNECESSARY RE-RENDERINGS
-// - BOOTSTRAP AND SCSS SHOULD BE REPLACED WITH STYLED COMPONENTS
-// - I WAS MAKING THIS APP WHILE LEARNING REACT BACK IN 2020
 
 const App = ({ changeModalState, modalsState, usersModalList, updateSuggestionsList, suggestionsList, explore, isUsersListLoading }) => {
   const context = useContext(AppContext);

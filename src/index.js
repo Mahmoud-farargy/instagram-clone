@@ -10,6 +10,12 @@ import { Provider } from "react-redux";
 import { store } from "./Store/index";
 import ErrorBoundary from "./Components/HOC/ErrorBoundries";
 
+// 2024 NOTES:
+// - CODE SHOULD BE REFACTORED
+// - CONTEXT API SHOULD BE REPLACED WITH REDUX FOR BETTER STORAGE ORGANIZATION AND TO AVOID UNNECESSARY RE-RENDERINGS
+// - BOOTSTRAP AND SCSS SHOULD BE REPLACED WITH STYLED COMPONENTS
+// - I WAS MAKING THIS APP TO PRACTICE REACT.JS BACK IN 2020
+
 const mainApp = (
   <React.StrictMode>
     <Provider store={store} >
