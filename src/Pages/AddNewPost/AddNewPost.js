@@ -24,7 +24,6 @@ class AddNewPost extends PureComponent {
     super(props);
     this.maxSizeLimits = {
       image: { bytes: 2097152, mbs: 2 },
-      audio: { bytes: 10485760, mbs: 10 },
       video: { bytes: 10485760, mbs: 10 },
       highest: { bytes: 11534336, mbs: 11 }
     };
@@ -87,10 +86,10 @@ class AddNewPost extends PureComponent {
       if (lowerCaseString(state.method.value) === Consts.Post) {
         //checks uploaded file type
         if (
-          !/(image|video|audio)/g.test(uploadedItem.type)
+          !/(image|video)/g.test(uploadedItem.type)
         ) {
           notify(
-            `You can only upload image, video or audio content.`,
+            `You can only upload image or video content.`,
             "info"
           );
           return;
@@ -107,14 +106,6 @@ class AddNewPost extends PureComponent {
         if (itemType === Consts.Video ? uploadedItem.size > maxSizeLimits.video.bytes : false) {
           notify(
             `The ${itemType} should not exceed the size of ${maxSizeLimits.video.mbs} MB.`,
-            "info"
-          );
-          return;
-        }
-        //checks max size for images
-        if (itemType === Consts.Audio ? uploadedItem.size > maxSizeLimits.audio.bytes : false) {
-          notify(
-            `The ${itemType} should not exceed the size of ${maxSizeLimits.audio.mbs} MB.`,
             "info"
           );
           return;
@@ -187,7 +178,7 @@ class AddNewPost extends PureComponent {
             <Files
               data-cy="upload_file"
               className="files__dropzone"
-              accepts={lowerCaseString(this.state.method.value) === Consts.Post ? ['image/*', 'video/*', 'audio/*'] : lowerCaseString(this.state.method.value) === Consts.Reel ? ['video/*'] : null}
+              accepts={lowerCaseString(this.state.method.value) === Consts.Post ? ['image/*', 'video/*'] : lowerCaseString(this.state.method.value) === Consts.Reel ? ['video/*'] : null}
               maxFileSize={this.maxSizeLimits.highest.bytes}
               minFileSize={0}
               clickable
@@ -197,9 +188,9 @@ class AddNewPost extends PureComponent {
               onError={(error) => notify(error.message, "error")}
               dragActiveClassName="files-dropzone-active"
             >  <span className="upload__files__icon"><MdPermMedia /></span>
-              {`${lowerCaseString(this.state.method.value) === Consts.Post ? "Drop an image, video or audio here to upload " : lowerCaseString(this.state.method.value) === Consts.Reel ? "Drop a video here to upload" : "Drop a file here or click to upload"}`}
+              {`${lowerCaseString(this.state.method.value) === Consts.Post ? "Drop an image or video here to upload " : lowerCaseString(this.state.method.value) === Consts.Reel ? "Drop a video here to upload" : "Drop a file here or click to upload"}`}
               <br />
-              <p className="mt-2 text--size--2">{this.state.method.value  === Consts.Post ? `(Should not exceed ${this.maxSizeLimits.image.mbs} MB for images and ${this.maxSizeLimits.video.mbs} MB for videos and audio content)` : this.state.method.value  === Consts.Reel ? `(Should not exeed ${this.maxSizeLimits.video.mbs} MB)` : null }</p>
+              <p className="mt-2 text--size--2">{this.state.method.value  === Consts.Post ? `(Should not exceed ${this.maxSizeLimits.image.mbs} MB for images and ${this.maxSizeLimits.video.mbs} MB for video content)` : this.state.method.value  === Consts.Reel ? `(Should not exeed ${this.maxSizeLimits.video.mbs} MB)` : null }</p>
             </Files>
           )
         }
@@ -236,8 +227,7 @@ class AddNewPost extends PureComponent {
             </Suspense>
           )
         }
-        case Consts.Video:
-        case Consts.Audio: {
+        case Consts.Video: {
           return (<ShareMediaPhase contentName={this.state.contentName} uploadedItem={this.state.uploadedItem} context={this.context} method={this.state.method.value} setCurrentPhase={setCurrentPhase} contentType={this.state.contentType} changeContentPreview={this.changeContentPreview} contentPreview={this.state.contentPreview} />)
         }
         case Consts.Tweet: {
