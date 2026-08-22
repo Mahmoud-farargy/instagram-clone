@@ -164,7 +164,7 @@ Give me a star if you like it. ⭐
    </ul>
 
 ## Available Scripts
-Please note before cloning the project: All functions that are responsible for handling actions like following, liking, commenting, etc.. are exist in Context.js which will not be pushed to the repo until this project gets at least 150 stars. without that file, the app won't work.
+Please note before cloning the project: All functions that are responsible for handling actions like following, liking, commenting, etc.. are exist in Context.js which will not be pushed to the repo until this project gets at least 110 stars. without that file, the app won't work.
 Knowing that, In the project directory, you can run:
 
 ### `npm start`
